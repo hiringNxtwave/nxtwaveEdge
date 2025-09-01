@@ -1,0 +1,135 @@
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Link, useLocation } from "wouter";
+import { Handshake, Menu } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
+
+export default function Header() {
+  const { isAuthenticated, user } = useAuth();
+  const [location] = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  return (
+    <header className="bg-card shadow-sm border-b border-border sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <Link href="/" className="flex items-center space-x-2" data-testid="link-home">
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <Handshake className="text-primary-foreground w-5 h-5" />
+            </div>
+            <span className="text-xl font-bold text-foreground">TalentConnect India</span>
+          </Link>
+          
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link 
+              href="/browse" 
+              className={cn(
+                "transition-colors",
+                location === "/browse" 
+                  ? "text-foreground font-medium" 
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+              data-testid="link-browse"
+            >
+              Browse Talent
+            </Link>
+            {isAuthenticated && (
+              <Link 
+                href="/dashboard" 
+                className={cn(
+                  "transition-colors",
+                  location === "/dashboard" 
+                    ? "text-foreground font-medium" 
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                data-testid="link-dashboard"
+              >
+                Dashboard
+              </Link>
+            )}
+          </nav>
+          
+          <div className="flex items-center space-x-4">
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                <div className="hidden sm:flex items-center space-x-2">
+                  {user?.profileImageUrl && (
+                    <img 
+                      src={user.profileImageUrl} 
+                      alt="Profile" 
+                      className="w-8 h-8 rounded-full object-cover"
+                      data-testid="img-profile-avatar"
+                    />
+                  )}
+                  <span className="text-sm font-medium" data-testid="text-user-name">
+                    {user?.firstName || user?.email}
+                  </span>
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.location.href = "/api/logout"}
+                  data-testid="button-logout"
+                >
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => window.location.href = "/api/login"}
+                  data-testid="button-signin"
+                >
+                  Sign In
+                </Button>
+                <Button 
+                  onClick={() => window.location.href = "/api/login"}
+                  data-testid="button-start-hiring"
+                >
+                  Start Hiring
+                </Button>
+              </div>
+            )}
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              data-testid="button-mobile-menu"
+            >
+              <Menu className="w-5 h-5" />
+            </Button>
+          </div>
+        </div>
+        
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-border py-4">
+            <nav className="flex flex-col space-y-4">
+              <Link 
+                href="/browse" 
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="link-mobile-browse"
+              >
+                Browse Talent
+              </Link>
+              {isAuthenticated && (
+                <Link 
+                  href="/dashboard" 
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="link-mobile-dashboard"
+                >
+                  Dashboard
+                </Link>
+              )}
+            </nav>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+}
