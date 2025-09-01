@@ -24,20 +24,48 @@ export default function Header() {
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">
-            {isAuthenticated && shortlistCount > 0 && (
-              <Link 
-                href="/shortlist" 
-                className={cn(
-                  "transition-colors flex items-center gap-2",
-                  location === "/shortlist" 
-                    ? "text-foreground font-medium" 
-                    : "text-muted-foreground hover:text-foreground"
+            {isAuthenticated && (
+              <>
+                <Link 
+                  href="/" 
+                  className={cn(
+                    "transition-colors font-medium",
+                    location === "/" 
+                      ? "text-foreground border-b-2 border-primary pb-1" 
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                  data-testid="link-home"
+                >
+                  Home
+                </Link>
+                <Link 
+                  href="/browse" 
+                  className={cn(
+                    "transition-colors font-medium",
+                    location === "/browse" 
+                      ? "text-foreground border-b-2 border-primary pb-1" 
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                  data-testid="link-browse"
+                >
+                  Browse Candidates
+                </Link>
+                {shortlistCount > 0 && (
+                  <Link 
+                    href="/shortlist" 
+                    className={cn(
+                      "transition-colors flex items-center gap-2 font-medium",
+                      location === "/shortlist" 
+                        ? "text-foreground border-b-2 border-primary pb-1" 
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                    data-testid="link-shortlist"
+                  >
+                    <Heart className="w-4 h-4" />
+                    Shortlisted ({shortlistCount})
+                  </Link>
                 )}
-                data-testid="link-shortlist"
-              >
-                <Heart className="w-4 h-4" />
-                Shortlisted ({shortlistCount})
-              </Link>
+              </>
             )}
           </nav>
           
@@ -96,27 +124,63 @@ export default function Header() {
         </div>
         
         {/* Mobile menu */}
-        {mobileMenuOpen && isAuthenticated && shortlistCount > 0 && (
+        {mobileMenuOpen && isAuthenticated && (
           <div className="md:hidden border-t border-border py-4">
             <nav className="flex flex-col space-y-4">
               <Link 
-                href="/shortlist" 
+                href="/" 
                 onClick={() => setMobileMenuOpen(false)}
-                data-testid="link-mobile-shortlist"
+                data-testid="link-mobile-home"
               >
                 <Button 
-                  variant={location === "/shortlist" ? "default" : "ghost"} 
+                  variant={location === "/" ? "default" : "ghost"} 
                   className={cn(
                     "w-full justify-start font-medium transition-colors",
-                    location === "/shortlist" 
+                    location === "/" 
                       ? "bg-primary text-primary-foreground" 
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
                 >
-                  <Heart className="w-4 h-4 mr-2" />
-                  Shortlisted ({shortlistCount})
+                  Home
                 </Button>
               </Link>
+              <Link 
+                href="/browse" 
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="link-mobile-browse"
+              >
+                <Button 
+                  variant={location === "/browse" ? "default" : "ghost"} 
+                  className={cn(
+                    "w-full justify-start font-medium transition-colors",
+                    location === "/browse" 
+                      ? "bg-primary text-primary-foreground" 
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}
+                >
+                  Browse Candidates
+                </Button>
+              </Link>
+              {shortlistCount > 0 && (
+                <Link 
+                  href="/shortlist" 
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="link-mobile-shortlist"
+                >
+                  <Button 
+                    variant={location === "/shortlist" ? "default" : "ghost"} 
+                    className={cn(
+                      "w-full justify-start font-medium transition-colors",
+                      location === "/shortlist" 
+                        ? "bg-primary text-primary-foreground" 
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    )}
+                  >
+                    <Heart className="w-4 h-4 mr-2" />
+                    Shortlisted ({shortlistCount})
+                  </Button>
+                </Link>
+              )}
             </nav>
           </div>
         )}
