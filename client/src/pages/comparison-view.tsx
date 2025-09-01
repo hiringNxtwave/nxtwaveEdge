@@ -21,7 +21,9 @@ import {
   MapPin,
   BarChart3,
   Mail,
-  Send
+  Send,
+  MessageCircle,
+  Phone
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -407,6 +409,56 @@ export default function ComparisonView() {
                         </div>
                       )}
                     </div>
+                    
+                    {/* Contact Actions for Individual Candidates */}
+                    <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Contact Options</h4>
+                      <div className="flex flex-wrap gap-3">
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          className="flex items-center gap-2 border-blue-200 text-blue-700 hover:bg-blue-50"
+                          onClick={() => {
+                            const subject = encodeURIComponent(`Interview Opportunity - Entry-Level Software Engineer`);
+                            const body = encodeURIComponent(`Hi ${analysis.student.firstName},\n\nWe are impressed with your profile and would like to discuss a potential opportunity for an entry-level software engineer position at our company.\n\nWould you be available for a brief conversation this week?\n\nBest regards`);
+                            window.open(`mailto:${analysis.student.email}?subject=${subject}&body=${body}`, '_blank');
+                          }}
+                          data-testid={`button-email-${analysis.student.id}`}
+                        >
+                          <Mail className="w-4 h-4" />
+                          Email
+                        </Button>
+                        
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          className="flex items-center gap-2 border-green-200 text-green-700 hover:bg-green-50"
+                          onClick={() => {
+                            const message = encodeURIComponent(`Hi ${analysis.student.firstName}, we are impressed with your profile and would like to discuss a potential software engineer opportunity. Are you available for a quick chat?`);
+                            const phoneNumber = analysis.student.phone?.replace(/[^0-9]/g, '') || '919999999999'; // fallback phone
+                            window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+                          }}
+                          data-testid={`button-whatsapp-${analysis.student.id}`}
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          WhatsApp
+                        </Button>
+                        
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          className="flex items-center gap-2 border-gray-200 text-gray-700 hover:bg-gray-50"
+                          onClick={() => {
+                            const phoneNumber = analysis.student.phone?.replace(/[^0-9]/g, '') || '919999999999';
+                            window.open(`tel:+${phoneNumber}`, '_self');
+                          }}
+                          data-testid={`button-call-${analysis.student.id}`}
+                        >
+                          <Phone className="w-4 h-4" />
+                          Call
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -425,11 +477,13 @@ export default function ComparisonView() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                  <div className="space-y-4">
                     <div className="text-sm text-gray-600 dark:text-gray-300">
-                      Selected candidates will receive a professional email notifying them that they've been shortlisted for the next round of the hiring process.
+                      Selected candidates will receive professional notifications that they've been shortlisted for the next round of the hiring process.
                     </div>
-                    <div className="flex gap-3">
+                    
+                    {/* Bulk Action Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3">
                       <Button 
                         variant="outline"
                         onClick={() => setSelectedCandidates(new Set())}
@@ -437,14 +491,39 @@ export default function ComparisonView() {
                       >
                         Clear Selection
                       </Button>
+                      
                       <Button 
                         onClick={() => sendShortlistEmail.mutate(Array.from(selectedCandidates))}
                         disabled={sendShortlistEmail.isPending}
-                        className="bg-green-600 hover:bg-green-700"
+                        className="bg-blue-600 hover:bg-blue-700"
                         data-testid="button-send-shortlist-email"
                       >
-                        <Send className="w-4 h-4 mr-2" />
-                        {sendShortlistEmail.isPending ? "Sending..." : "Send Shortlist Email"}
+                        <Mail className="w-4 h-4 mr-2" />
+                        {sendShortlistEmail.isPending ? "Sending..." : "Send Bulk Email"}
+                      </Button>
+                      
+                      <Button 
+                        onClick={() => {
+                          const selectedStudents = students?.filter((s: any) => selectedCandidates.has(s.id)) || [];
+                          const message = encodeURIComponent(`Congratulations! You have been shortlisted for our entry-level software engineer position. We will contact you soon with next steps.`);
+                          
+                          selectedStudents.forEach((student: any, index: number) => {
+                            setTimeout(() => {
+                              const phoneNumber = student.phone?.replace(/[^0-9]/g, '') || '919999999999';
+                              window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+                            }, index * 500); // Stagger the WhatsApp opens
+                          });
+                          
+                          toast({
+                            title: "WhatsApp messages initiated",
+                            description: `Opening WhatsApp for ${selectedCandidates.size} candidates.`,
+                          });
+                        }}
+                        className="bg-green-600 hover:bg-green-700"
+                        data-testid="button-send-bulk-whatsapp"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        Send WhatsApp Messages
                       </Button>
                     </div>
                   </div>

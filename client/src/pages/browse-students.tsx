@@ -96,6 +96,36 @@ export default function BrowseStudents() {
           />
         </div>
 
+        {/* Limited Access Banner for Unauthenticated Users */}
+        {!isAuthenticated && (
+          <div className="mb-8">
+            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <Lock className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg text-gray-900">Preview Mode - Limited Access</CardTitle>
+                      <p className="text-sm text-gray-600 mt-1">
+                        You're viewing a limited preview. Sign in to access full profiles, contact details, and hiring tools.
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                    onClick={() => window.location.href = "/api/login"}
+                    data-testid="button-signup-for-full-access"
+                  >
+                    Sign In for Full Access
+                  </Button>
+                </div>
+              </CardHeader>
+            </Card>
+          </div>
+        )}
+
         {/* Student Results */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -107,6 +137,12 @@ export default function BrowseStudents() {
                   : `Showing ${students.length} of 2.5M+ Students (Preview)`
               }
             </h2>
+            {!isAuthenticated && (
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <Users className="w-4 h-4" />
+                <span>2.5M+ total students available</span>
+              </div>
+            )}
           </div>
 
           {isLoading ? (
