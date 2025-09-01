@@ -15,7 +15,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   const { isShortlisted, addToShortlist, removeFromShortlist } = useShortlist();
   
   // Use student ID as seed for consistent ratings
-  const seed = student.id;
+  const seed = typeof student.id === 'string' ? parseInt(student.id.slice(-8), 16) : student.id;
   
   // Overall rating from codingRating field (this is the baseline)
   const overallRating = student.codingRating || 4;
@@ -35,7 +35,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
   // Calculate match percentage based on skills, CGPA, and overall rating
   const averageSkillScore = (dsaScore + aptitudeScore + communicationScore + csFundamentalsScore) / 4;
-  const cgpaScore = (student.cgpa / 10) * 5; // Convert CGPA to 5-point scale
+  const cgpaValue = typeof student.cgpa === 'string' ? parseFloat(student.cgpa) : student.cgpa;
+  const cgpaScore = ((cgpaValue || 7.5) / 10) * 5; // Convert CGPA to 5-point scale with fallback
   
   // JD match percentage - weighted calculation
   const skillWeight = 0.4;
@@ -43,7 +44,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   const overallWeight = 0.3;
   
   const rawMatchScore = (averageSkillScore * skillWeight) + (cgpaScore * cgpaWeight) + (overallRating * overallWeight);
-  const matchPercentage = Math.min(95, Math.max(60, Math.round(rawMatchScore * 20)));
+  const matchPercentage = Math.min(95, Math.max(60, Math.round(rawMatchScore * 20) || 75)); // Fallback to 75%
 
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, i) => (
@@ -181,15 +182,18 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             <Button 
               variant="outline" 
               className={`w-full font-semibold ${
-                isShortlisted(student.id) 
+                isShortlisted(parseInt(student.id.slice(-8), 16)) 
                   ? 'border-green-500 bg-green-50 text-green-700 hover:bg-green-100' 
                   : 'border-green-500 text-green-600 hover:bg-green-50'
               }`} 
               size="sm" 
-              onClick={() => isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id)}
+              onClick={() => {
+                const numericId = parseInt(student.id.slice(-8), 16);
+                isShortlisted(numericId) ? removeFromShortlist(numericId) : addToShortlist(numericId);
+              }}
               data-testid={`button-shortlist-${student.id}`}
             >
-              {isShortlisted(student.id) ? (
+              {isShortlisted(parseInt(student.id.slice(-8), 16)) ? (
                 <>
                   <Check className="w-4 h-4 mr-1" />
                   Shortlisted

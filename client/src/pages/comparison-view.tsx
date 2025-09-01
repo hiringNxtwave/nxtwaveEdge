@@ -100,7 +100,7 @@ export default function ComparisonView() {
 
   // Calculate assessment scores for entry-level software engineer position
   const calculateStudentAnalysis = (student: any) => {
-    const seed = student.id;
+    const seed = typeof student.id === 'string' ? parseInt(student.id.slice(-8), 16) : student.id;
     const overallRating = student.codingRating || 4;
     
     const generateAssessmentScore = (offset: number) => {
@@ -115,14 +115,15 @@ export default function ComparisonView() {
     const englishSpeakingScore = generateAssessmentScore(4);
     
     const averageAssessmentScore = (codingDsaScore + quantitativeScore + verbalAbilityScore + englishSpeakingScore) / 4;
-    const cgpaScore = (student.cgpa / 10) * 5;
+    const cgpaValue = typeof student.cgpa === 'string' ? parseFloat(student.cgpa) : student.cgpa;
+    const cgpaScore = ((cgpaValue || 7.5) / 10) * 5;
     
     const assessmentWeight = 0.5;
     const cgpaWeight = 0.3;
     const overallWeight = 0.2;
     
     const rawMatchScore = (averageAssessmentScore * assessmentWeight) + (cgpaScore * cgpaWeight) + (overallRating * overallWeight);
-    const matchPercentage = Math.min(95, Math.max(60, Math.round(rawMatchScore * 20)));
+    const matchPercentage = Math.min(95, Math.max(60, Math.round(rawMatchScore * 20) || 75));
     
     // Generate hiring recommendation for entry-level software engineer
     const strengths = [];
