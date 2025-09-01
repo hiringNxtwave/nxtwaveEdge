@@ -40,17 +40,10 @@ export default function Home() {
               Streamline your recruiting with advanced tools to improve candidate quality and 
               reduce time to hire. Experience the future of hiring in India.
             </p>
-            <div className="flex justify-center gap-4 mb-16">
-              <Link href="/browse">
-                <Button size="lg" className="px-8 py-4 text-lg bg-green-500 hover:bg-green-600 text-black font-semibold" data-testid="button-start-hiring">
-                  Browse Profiles
-                </Button>
-              </Link>
-              <Link href="/browse">
-                <Button size="lg" variant="outline" className="px-8 py-4 text-lg border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-semibold" data-testid="button-start-hiring-alt">
-                  Start Hiring
-                </Button>
-              </Link>
+            <div className="flex justify-center mb-16">
+              <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+                Use the "Browse Talent" button in the header to explore our talent pool
+              </p>
             </div>
           </div>
 
@@ -329,12 +322,6 @@ export default function Home() {
             </Card>
           </div>
 
-          <div className="text-center mt-8">
-            <Button variant="outline" size="lg" data-testid="button-all-case-studies">
-              Explore All Success Stories
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </div>
         </div>
       </section>
 
@@ -350,13 +337,7 @@ export default function Home() {
           <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto text-gray-300 leading-relaxed">
             Join thousands of companies already using TalentConnect India to build exceptional teams from India's top universities.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-6">
-            <Link href="/browse">
-              <Button size="lg" className="px-12 py-4 text-lg bg-green-500 hover:bg-green-600 text-black font-semibold shadow-2xl hover:shadow-green-500/25 transition-all duration-300" data-testid="button-get-started">
-                Get Started Today
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+          <div className="flex justify-center">
             <Button size="lg" variant="outline" className="px-12 py-4 text-lg border-2 border-white text-white hover:bg-white hover:text-slate-900 transition-all duration-300" data-testid="button-contact-sales">
               Contact Sales
             </Button>

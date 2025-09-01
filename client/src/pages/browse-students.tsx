@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/useAuth";
 import Header from "@/components/header";
 import StudentCard from "@/components/student-card";
 import StudentFilters from "@/components/student-filters";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Lock, Users, Star, Zap } from "lucide-react";
 
 export default function BrowseStudents() {
+  const { isAuthenticated } = useAuth();
   const [filters, setFilters] = useState({
     skills: [] as string[],
     location: "",
@@ -16,7 +21,8 @@ export default function BrowseStudents() {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const studentsPerPage = 48;
+  // Show limited results for non-authenticated users
+  const studentsPerPage = isAuthenticated ? 48 : 6;
 
   const { data: studentsData, isLoading } = useQuery({
     queryKey: ["/api/students", filters, currentPage],
@@ -94,7 +100,12 @@ export default function BrowseStudents() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              {isLoading ? "Loading..." : `${totalCount} Students Found`}
+              {isLoading 
+                ? "Loading..." 
+                : isAuthenticated 
+                  ? `${totalCount} Students Found`
+                  : `Showing ${students.length} of 2.5M+ Students (Preview)`
+              }
             </h2>
           </div>
 
@@ -180,6 +191,72 @@ export default function BrowseStudents() {
             </div>
           )}
         </div>
+
+        {/* Login Prompt for Non-Authenticated Users */}
+        {!isAuthenticated && students && students.length > 0 && (
+          <div className="mt-12">
+            <Card className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-blue-200 dark:border-blue-800">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center justify-center gap-2">
+                  <Lock className="w-6 h-6 text-blue-600" />
+                  See More Talent
+                </CardTitle>
+                <p className="text-gray-600 dark:text-gray-300 text-lg">
+                  You've seen a preview of {students.length} candidates. Sign in to access our full database of 2.5M+ verified students.
+                </p>
+              </CardHeader>
+              <CardContent className="text-center space-y-6">
+                <div className="grid md:grid-cols-3 gap-6 mb-8">
+                  <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mb-3">
+                      <Users className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Full Access</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Browse all 2.5M+ student profiles</p>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mb-3">
+                      <Star className="w-6 h-6 text-green-600" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Shortlisting</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Save and compare candidates</p>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mb-3">
+                      <Zap className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-1">AI Analysis</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Get hiring recommendations</p>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button 
+                    size="lg" 
+                    className="px-8 py-3 text-lg"
+                    onClick={() => window.location.href = "/api/login"}
+                    data-testid="button-sign-in-to-continue"
+                  >
+                    Sign In to Continue
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="px-8 py-3 text-lg"
+                    onClick={() => window.location.href = "/api/login"}
+                    data-testid="button-start-free-trial"
+                  >
+                    Start Free Trial
+                  </Button>
+                </div>
+                
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Join 15,000+ companies already using TalentConnect India
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );

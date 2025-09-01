@@ -24,17 +24,13 @@ export default function Header() {
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/browse" 
-              className={cn(
-                "transition-colors",
-                location === "/browse" 
-                  ? "text-foreground font-medium" 
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-              data-testid="link-browse"
-            >
-              Browse Talent
+            <Link href="/browse" data-testid="link-browse">
+              <Button 
+                variant={location === "/browse" ? "default" : "outline"} 
+                className="font-medium"
+              >
+                Browse Talent
+              </Button>
             </Link>
             {isAuthenticated && shortlistCount > 0 && (
               <Link 
@@ -113,11 +109,15 @@ export default function Header() {
             <nav className="flex flex-col space-y-4">
               <Link 
                 href="/browse" 
-                className="text-muted-foreground hover:text-foreground transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
                 data-testid="link-mobile-browse"
               >
-                Browse Talent
+                <Button 
+                  variant={location === "/browse" ? "default" : "outline"} 
+                  className="w-full justify-start font-medium"
+                >
+                  Browse Talent
+                </Button>
               </Link>
             </nav>
           </div>
