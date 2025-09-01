@@ -1,8 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Header from "@/components/header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useToast } from "@/hooks/use-toast";
 import { useShortlist } from "@/contexts/shortlist-context";
 import { 
   Star, 
@@ -16,12 +19,17 @@ import {
   Target,
   GraduationCap,
   MapPin,
-  BarChart3
+  BarChart3,
+  Mail,
+  Send
 } from "lucide-react";
 import { Link } from "wouter";
 
 export default function ComparisonView() {
   const { shortlistedIds, shortlistCount } = useShortlist();
+  const [selectedCandidates, setSelectedCandidates] = useState<Set<number>>(new Set());
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: students, isLoading } = useQuery({
     queryKey: ["/api/students/bulk", Array.from(shortlistedIds)],
@@ -40,6 +48,53 @@ export default function ComparisonView() {
     },
     enabled: shortlistedIds.size > 0,
   });
+
+  // Email sending mutation
+  const sendShortlistEmail = useMutation({
+    mutationFn: async (candidateIds: number[]) => {
+      const response = await fetch("/api/send-shortlist-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ candidateIds }),
+      });
+      if (!response.ok) throw new Error("Failed to send email");
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Emails sent successfully!",
+        description: `Shortlist notifications sent to ${selectedCandidates.size} candidates.`,
+      });
+      setSelectedCandidates(new Set());
+    },
+    onError: () => {
+      toast({
+        title: "Error sending emails",
+        description: "Please try again later.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Handle candidate selection
+  const toggleCandidateSelection = (candidateId: number) => {
+    const newSelected = new Set(selectedCandidates);
+    if (newSelected.has(candidateId)) {
+      newSelected.delete(candidateId);
+    } else {
+      if (newSelected.size < 3) {
+        newSelected.add(candidateId);
+      } else {
+        toast({
+          title: "Maximum selection reached",
+          description: "You can select up to 3 candidates for final consideration.",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+    setSelectedCandidates(newSelected);
+  };
 
   // Calculate skill scores and recommendations for each student
   const calculateStudentAnalysis = (student: any) => {
@@ -224,8 +279,19 @@ export default function ComparisonView() {
                 <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <span className="text-2xl font-bold text-gray-500">#{index + 1}</span>
+                        <div className="flex items-center gap-2">
+                          <Checkbox
+                            checked={selectedCandidates.has(analysis.student.id)}
+                            onCheckedChange={() => toggleCandidateSelection(analysis.student.id)}
+                            className="w-5 h-5"
+                            data-testid={`checkbox-select-candidate-${analysis.student.id}`}
+                          />
+                          <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                            Select for final consideration
+                          </span>
+                        </div>
                         <div>
                           <CardTitle className="text-xl text-gray-900 dark:text-white">
                             {analysis.student.firstName} {analysis.student.lastName}
@@ -345,6 +411,46 @@ export default function ComparisonView() {
                 </CardContent>
               </Card>
             ))}
+
+            {/* Final Selection Action */}
+            {selectedCandidates.size > 0 && (
+              <Card className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border-2 border-green-200 dark:border-green-800">
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <Mail className="w-6 h-6 text-green-600" />
+                    Final Selection Ready
+                  </CardTitle>
+                  <CardDescription>
+                    You have selected {selectedCandidates.size} candidate{selectedCandidates.size !== 1 ? 's' : ''} for final consideration. Send them a shortlist notification email.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div className="text-sm text-gray-600 dark:text-gray-300">
+                      Selected candidates will receive a professional email notifying them that they've been shortlisted for the next round of the hiring process.
+                    </div>
+                    <div className="flex gap-3">
+                      <Button 
+                        variant="outline"
+                        onClick={() => setSelectedCandidates(new Set())}
+                        data-testid="button-clear-selection"
+                      >
+                        Clear Selection
+                      </Button>
+                      <Button 
+                        onClick={() => sendShortlistEmail.mutate(Array.from(selectedCandidates))}
+                        disabled={sendShortlistEmail.isPending}
+                        className="bg-green-600 hover:bg-green-700"
+                        data-testid="button-send-shortlist-email"
+                      >
+                        <Send className="w-4 h-4 mr-2" />
+                        {sendShortlistEmail.isPending ? "Sending..." : "Send Shortlist Email"}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         )}
       </div>

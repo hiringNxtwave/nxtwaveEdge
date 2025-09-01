@@ -42,7 +42,7 @@ export default function Home() {
             </p>
             <div className="flex justify-center mb-16">
               <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                Use the "Browse Talent" button in the header to explore our talent pool
+                Use the "Browse Candidates" button in the header to explore our talent pool
               </p>
             </div>
           </div>

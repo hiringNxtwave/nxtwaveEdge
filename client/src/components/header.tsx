@@ -34,7 +34,7 @@ export default function Header() {
                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                 )}
               >
-                Browse Talent
+                Browse Candidates
               </Button>
             </Link>
             {isAuthenticated && shortlistCount > 0 && (
@@ -91,7 +91,7 @@ export default function Header() {
                   onClick={() => window.location.href = "/api/login"}
                   data-testid="button-start-hiring"
                 >
-                  Browse Talent
+                  Browse Candidates
                 </Button>
               </div>
             )}
@@ -126,7 +126,7 @@ export default function Header() {
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
                 >
-                  Browse Talent
+                  Browse Candidates
                 </Button>
               </Link>
             </nav>

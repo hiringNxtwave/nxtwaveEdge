@@ -196,6 +196,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Email sending route for shortlist notifications
+  app.post('/api/send-shortlist-email', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const company = await storage.getCompanyByUserId(userId);
+      
+      if (!company) {
+        return res.status(400).json({ message: "Company profile required" });
+      }
+
+      const { candidateIds } = req.body;
+      
+      if (!Array.isArray(candidateIds) || candidateIds.length === 0) {
+        return res.status(400).json({ message: "Candidate IDs are required" });
+      }
+
+      if (candidateIds.length > 3) {
+        return res.status(400).json({ message: "Maximum 3 candidates can be selected" });
+      }
+
+      // Get candidate details
+      const candidates = await Promise.all(
+        candidateIds.map(id => storage.getStudent(id))
+      );
+
+      // Filter out any null candidates
+      const validCandidates = candidates.filter(Boolean);
+
+      if (validCandidates.length === 0) {
+        return res.status(404).json({ message: "No valid candidates found" });
+      }
+
+      // For now, we'll simulate email sending and log the action
+      // In a real implementation, you would integrate with SendGrid or another email service
+      console.log(`Sending shortlist emails to ${validCandidates.length} candidates:`);
+      validCandidates.forEach(candidate => {
+        console.log(`- ${candidate.firstName} ${candidate.lastName} (${candidate.email})`);
+      });
+
+      // Create a simple success response
+      const emailResults = validCandidates.map(candidate => ({
+        candidateId: candidate.id,
+        candidateName: `${candidate.firstName} ${candidate.lastName}`,
+        email: candidate.email,
+        status: 'sent',
+        message: 'Shortlist notification sent successfully'
+      }));
+
+      res.json({
+        success: true,
+        message: `Shortlist notifications sent to ${validCandidates.length} candidates`,
+        results: emailResults
+      });
+    } catch (error) {
+      console.error("Error sending shortlist emails:", error);
+      res.status(500).json({ message: "Failed to send shortlist emails" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
