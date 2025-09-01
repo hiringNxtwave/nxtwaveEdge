@@ -27,19 +27,30 @@ export default function Home() {
           {/* Top notification banner */}
           <div className="text-center mb-8">
             <div className="inline-flex items-center bg-green-500/20 border border-green-500/30 rounded-full px-4 py-2 text-green-300 text-sm">
-              → Get advice to convert candidates this fall
+              → Connect with India's brightest talent
             </div>
           </div>
 
           <div className="text-center mb-16">
-            <h1 className="text-7xl md:text-8xl lg:text-9xl font-bold mb-6 tracking-tight" data-testid="text-hero-title">
-              <span className="block">Hire</span>
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400">fast</span>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 tracking-tight" data-testid="text-hero-title">
+              <span className="block mb-2">Where</span>
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400 mb-2">students become</span>
+              <span className="block">professionals</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
-              Streamline your recruiting with advanced tools to improve candidate quality and 
-              reduce time to hire. Experience the future of hiring in India.
+            <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+              TalentConnect India is the recruitment platform where 2.5M+ students and recent grads 
+              launch careers at companies they love.
             </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/browse">
+                <Button size="lg" className="px-8 py-4 text-lg bg-green-500 hover:bg-green-600 text-black font-semibold" data-testid="button-browse-candidates">
+                  Browse Candidates
+                </Button>
+              </Link>
+              <Button size="lg" variant="outline" className="px-8 py-4 text-lg border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-semibold" data-testid="button-request-demo">
+                Request a Demo
+              </Button>
+            </div>
           </div>
 
           {/* Key Statistics - Handshake Style */}
