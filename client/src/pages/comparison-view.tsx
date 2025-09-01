@@ -348,7 +348,7 @@ export default function ComparisonView() {
                           { name: 'English Speaking/Versant', score: analysis.englishSpeakingScore, color: 'orange' }
                         ].map(skill => (
                           <div key={skill.name} className="flex items-center justify-between">
-                            <span className="font-medium">{skill.name}</span>
+                            <span className="font-medium whitespace-nowrap">{skill.name}</span>
                             <div className="flex items-center gap-2">
                               <div className="flex">
                                 {[...Array(5)].map((_, i) => (

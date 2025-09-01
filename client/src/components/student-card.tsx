@@ -104,7 +104,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             <div className="grid grid-cols-4 gap-4">
               {/* DSA */}
               <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">DSA</div>
+                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">DSA</div>
                 <div className="flex justify-center space-x-1 mb-1">
                   {renderStars(dsaScore)}
                 </div>
@@ -115,7 +115,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
               {/* Aptitude */}
               <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">Aptitude</div>
+                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">Aptitude</div>
                 <div className="flex justify-center space-x-1 mb-1">
                   {renderStars(aptitudeScore)}
                 </div>
@@ -126,7 +126,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
               {/* Communication */}
               <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">Communication</div>
+                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">Communication</div>
                 <div className="flex justify-center space-x-1 mb-1">
                   {renderStars(communicationScore)}
                 </div>
@@ -137,7 +137,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
               {/* CS Fundamentals */}
               <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2">CS Fundamentals</div>
+                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">CS Fundamentals</div>
                 <div className="flex justify-center space-x-1 mb-1">
                   {renderStars(csFundamentalsScore)}
                 </div>
@@ -158,7 +158,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               <div className="text-lg font-bold text-gray-900 dark:text-white mb-1" data-testid={`text-student-rating-${student.id}`}>
                 {overallRating}/5
               </div>
-              <div className={`text-lg font-bold px-3 py-1 rounded-full ${
+              <div className={`text-lg font-bold px-3 py-1 rounded-full whitespace-nowrap ${
                 matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
               }`}>
                 {matchPercentage}% JD Match

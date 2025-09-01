@@ -160,7 +160,7 @@ export default function StudentProfile() {
                         'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200'
                       }`} data-testid="badge-jd-match">
                         <TrendingUp className="w-4 h-4 mr-2" />
-                        {jdMatchPercentage}% Match to Job Description
+                        {jdMatchPercentage}% Job Description Match
                       </div>
                     </div>
 
@@ -202,7 +202,7 @@ export default function StudentProfile() {
                   {/* DSA */}
                   <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-blue-900 dark:text-blue-200">Data Structures & Algorithms</h3>
+                      <h3 className="font-semibold text-blue-900 dark:text-blue-200 whitespace-nowrap">Data Structures & Algorithms</h3>
                       <span className="text-sm font-bold text-blue-600 dark:text-blue-400">{skillScores.dsaScore}/5</span>
                     </div>
                     <div className="flex items-center space-x-2 mb-2">
@@ -230,7 +230,7 @@ export default function StudentProfile() {
                   {/* Communication */}
                   <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-purple-900 dark:text-purple-200">Communication Skills</h3>
+                      <h3 className="font-semibold text-purple-900 dark:text-purple-200 whitespace-nowrap">Communication Skills</h3>
                       <span className="text-sm font-bold text-purple-600 dark:text-purple-400">{skillScores.communicationScore}/5</span>
                     </div>
                     <div className="flex items-center space-x-2 mb-2">
@@ -244,7 +244,7 @@ export default function StudentProfile() {
                   {/* CS Fundamentals */}
                   <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-orange-900 dark:text-orange-200">CS Fundamentals</h3>
+                      <h3 className="font-semibold text-orange-900 dark:text-orange-200 whitespace-nowrap">CS Fundamentals</h3>
                       <span className="text-sm font-bold text-orange-600 dark:text-orange-400">{skillScores.csFundamentalsScore}/5</span>
                     </div>
                     <div className="flex items-center space-x-2 mb-2">

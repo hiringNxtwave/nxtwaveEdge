@@ -219,7 +219,7 @@ export default function Home() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span>Coding & DSA</span>
+                      <span className="whitespace-nowrap">Coding & DSA</span>
                       <span className="font-medium text-blue-600">92/100</span>
                     </div>
                     <div className="flex justify-between text-sm">
@@ -263,7 +263,7 @@ export default function Home() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span>Coding & DSA</span>
+                      <span className="whitespace-nowrap">Coding & DSA</span>
                       <span className="font-medium text-blue-600">88/100</span>
                     </div>
                     <div className="flex justify-between text-sm">
@@ -307,7 +307,7 @@ export default function Home() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span>Coding & DSA</span>
+                      <span className="whitespace-nowrap">Coding & DSA</span>
                       <span className="font-medium text-blue-600">85/100</span>
                     </div>
                     <div className="flex justify-between text-sm">
@@ -351,7 +351,7 @@ export default function Home() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span>Coding & DSA</span>
+                      <span className="whitespace-nowrap">Coding & DSA</span>
                       <span className="font-medium text-blue-600">94/100</span>
                     </div>
                     <div className="flex justify-between text-sm">
@@ -395,7 +395,7 @@ export default function Home() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span>Coding & DSA</span>
+                      <span className="whitespace-nowrap">Coding & DSA</span>
                       <span className="font-medium text-blue-600">90/100</span>
                     </div>
                     <div className="flex justify-between text-sm">
