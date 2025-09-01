@@ -51,7 +51,7 @@ export default function StudentFilters({
                 <SelectValue placeholder="Select Skills" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Skills</SelectItem>
+                <SelectItem value="all">All Skills</SelectItem>
                 <SelectItem value="JavaScript">JavaScript</SelectItem>
                 <SelectItem value="Python">Python</SelectItem>
                 <SelectItem value="Java">Java</SelectItem>
@@ -73,7 +73,7 @@ export default function StudentFilters({
                 <SelectValue placeholder="All Cities" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Cities</SelectItem>
+                <SelectItem value="all">All Cities</SelectItem>
                 <SelectItem value="Bangalore">Bangalore</SelectItem>
                 <SelectItem value="Mumbai">Mumbai</SelectItem>
                 <SelectItem value="Delhi">Delhi</SelectItem>
@@ -94,7 +94,7 @@ export default function StudentFilters({
                 <SelectValue placeholder="All Universities" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Universities</SelectItem>
+                <SelectItem value="all">All Universities</SelectItem>
                 <SelectItem value="IIT Delhi">IIT Delhi</SelectItem>
                 <SelectItem value="IIT Bombay">IIT Bombay</SelectItem>
                 <SelectItem value="IIT Bangalore">IIT Bangalore</SelectItem>
@@ -116,7 +116,7 @@ export default function StudentFilters({
                 <SelectValue placeholder="Any CGPA" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any CGPA</SelectItem>
+                <SelectItem value="all">Any CGPA</SelectItem>
                 <SelectItem value="9.0">9.0+</SelectItem>
                 <SelectItem value="8.5">8.5+</SelectItem>
                 <SelectItem value="8.0">8.0+</SelectItem>

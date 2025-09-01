@@ -55,17 +55,17 @@ export default function BrowseStudents() {
           <div className="lg:col-span-1">
             <StudentFilters
               filters={{
-                skills: filters.skills.join(","),
-                location: filters.location,
-                university: filters.university,
-                minCgpa: filters.minCgpa?.toString() || ""
+                skills: filters.skills.length > 0 ? filters.skills.join(",") : "all",
+                location: filters.location || "all",
+                university: filters.university || "all",
+                minCgpa: filters.minCgpa?.toString() || "all"
               }}
               onFiltersChange={(newFilters) => {
                 setFilters({
-                  skills: newFilters.skills ? newFilters.skills.split(",").filter(Boolean) : [],
-                  location: newFilters.location,
-                  university: newFilters.university,
-                  minCgpa: newFilters.minCgpa ? parseFloat(newFilters.minCgpa) : undefined
+                  skills: newFilters.skills && newFilters.skills !== "all" ? newFilters.skills.split(",").filter(Boolean) : [],
+                  location: newFilters.location === "all" ? "" : newFilters.location,
+                  university: newFilters.university === "all" ? "" : newFilters.university,
+                  minCgpa: newFilters.minCgpa && newFilters.minCgpa !== "all" ? parseFloat(newFilters.minCgpa) : undefined
                 });
               }}
               onSearch={() => setCurrentPage(1)}
