@@ -94,12 +94,39 @@ export default function BrowseStudents() {
           </div>
 
           {isLoading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
+            <div className="space-y-4">
               {Array.from({ length: 48 }).map((_, i) => (
-                <div key={i} className="space-y-3">
-                  <Skeleton className="h-48 w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
+                <div key={i} className="bg-white dark:bg-gray-800 rounded-lg border p-6">
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center space-x-6 flex-1">
+                      <Skeleton className="w-16 h-16 rounded-full" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-5 w-48" />
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-4 w-24" />
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-8 flex-1">
+                      <div className="grid grid-cols-4 gap-6 flex-1">
+                        {Array.from({ length: 4 }).map((_, j) => (
+                          <div key={j} className="text-center space-y-1">
+                            <Skeleton className="h-3 w-16 mx-auto" />
+                            <Skeleton className="h-4 w-20 mx-auto" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-6">
+                      <div className="text-center space-y-1">
+                        <Skeleton className="h-3 w-12 mx-auto" />
+                        <Skeleton className="h-4 w-16 mx-auto" />
+                      </div>
+                      <div className="space-y-2">
+                        <Skeleton className="h-8 w-24" />
+                        <Skeleton className="h-8 w-24" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -113,7 +140,7 @@ export default function BrowseStudents() {
               </p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6" data-testid="grid-students">
+            <div className="space-y-4" data-testid="list-students">
               {students?.map((student: any) => (
                 <StudentCard key={student.id} student={student} />
               ))}
