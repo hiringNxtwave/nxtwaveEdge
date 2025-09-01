@@ -15,11 +15,14 @@ export default function Landing() {
             Connecting India's brightest students with top companies. Find the perfect talent or showcase your skills to leading employers.
           </p>
           <div className="flex gap-4 justify-center">
-            <Link href="/">
-              <Button size="lg" className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold" data-testid="button-explore-talent">
-                Explore Talent Pool
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold" 
+              onClick={() => window.location.href = "/api/login"}
+              data-testid="button-explore-talent"
+            >
+              Explore Talent Pool
+            </Button>
           </div>
         </div>
 
