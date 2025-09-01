@@ -41,13 +41,13 @@ export default function Home() {
               launch careers at companies they love.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/browse">
-                <Button size="lg" className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold" data-testid="button-browse-candidates">
-                  Browse Candidates
+              <Link href="/shortlist">
+                <Button size="lg" className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold" data-testid="button-view-shortlist">
+                  View Your Shortlist
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="px-8 py-4 text-lg border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold" data-testid="button-request-demo">
-                Request a Demo
+              <Button size="lg" variant="outline" className="px-8 py-4 text-lg border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold" data-testid="button-recruitment-analytics">
+                  Recruitment Analytics
               </Button>
             </div>
           </div>
@@ -433,15 +433,9 @@ export default function Home() {
           </div>
 
           <div className="text-center">
-            <Link href="/browse">
-              <Button 
-                size="lg" 
-                className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-                data-testid="button-browse-all-talent"
-              >
-                Browse All Talent <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </Link>
+            <p className="text-gray-600 text-lg">
+              Explore more profiles using the <strong>Browse Candidates</strong> option above
+            </p>
           </div>
         </div>
       </section>
@@ -567,9 +561,9 @@ export default function Home() {
             Join thousands of companies using TalentConnect India to hire exceptional entry-level software engineers.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/browse">
-              <Button size="lg" className="px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 font-semibold" data-testid="button-start-hiring">
-                Start Hiring Now
+            <Link href="/shortlist">
+              <Button size="lg" className="px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 font-semibold" data-testid="button-view-shortlist">
+                View Your Shortlist
               </Button>
             </Link>
             <Button size="lg" variant="outline" className="px-8 py-4 border-white text-white hover:bg-white hover:text-blue-600 font-semibold" data-testid="button-contact-sales">

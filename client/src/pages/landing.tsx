@@ -16,13 +16,10 @@ export default function Landing() {
           </p>
           <div className="flex gap-4 justify-center">
             <Link href="/browse">
-              <Button size="lg" data-testid="button-browse-students">
-                Browse Talent
+              <Button size="lg" className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold" data-testid="button-explore-talent">
+                Explore Talent Pool
               </Button>
             </Link>
-            <Button variant="outline" size="lg" data-testid="button-login">
-              Sign In
-            </Button>
           </div>
         </div>
 
@@ -75,11 +72,9 @@ export default function Landing() {
           <p className="text-gray-600 dark:text-gray-300 mb-8">
             Join thousands of students and companies already using TalentConnect India
           </p>
-          <Link href="/browse">
-            <Button size="lg" data-testid="button-get-started">
-              Get Started Today
-            </Button>
-          </Link>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Browse talent above to explore our platform
+          </p>
         </div>
       </div>
     </div>

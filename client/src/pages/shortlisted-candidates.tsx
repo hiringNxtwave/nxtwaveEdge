@@ -41,11 +41,9 @@ export default function ShortlistedCandidates() {
             <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
               Start browsing through our talent pool and shortlist candidates that match your requirements.
             </p>
-            <Link href="/browse">
-              <Button className="px-8 py-4 text-lg">
-                Browse Candidates
-              </Button>
-            </Link>
+            <p className="text-sm text-gray-500">
+              Use <strong>Browse Candidates</strong> in the navigation above to start shortlisting
+            </p>
           </div>
         </div>
       </div>

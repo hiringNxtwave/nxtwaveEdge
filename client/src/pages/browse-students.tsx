@@ -116,9 +116,9 @@ export default function BrowseStudents() {
                   <Button 
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                     onClick={() => window.location.href = "/api/login"}
-                    data-testid="button-signup-for-full-access"
+                    data-testid="button-unlock-full-access"
                   >
-                    Sign In for Full Access
+                    Unlock Full Access
                   </Button>
                 </div>
               </CardHeader>
