@@ -40,11 +40,6 @@ export default function Home() {
               Streamline your recruiting with advanced tools to improve candidate quality and 
               reduce time to hire. Experience the future of hiring in India.
             </p>
-            <div className="flex justify-center mb-16">
-              <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                Use the "Browse Candidates" button in the header to explore our talent pool
-              </p>
-            </div>
           </div>
 
           {/* Key Statistics - Handshake Style */}
