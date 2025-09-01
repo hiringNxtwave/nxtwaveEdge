@@ -16,7 +16,7 @@ export default function BrowseStudents() {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
-  const studentsPerPage = 12;
+  const studentsPerPage = 48;
 
   const { data: students, isLoading } = useQuery({
     queryKey: ["/api/students", filters, currentPage],
@@ -94,8 +94,8 @@ export default function BrowseStudents() {
           </div>
 
           {isLoading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {Array.from({ length: 12 }).map((_, i) => (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
+              {Array.from({ length: 48 }).map((_, i) => (
                 <div key={i} className="space-y-3">
                   <Skeleton className="h-48 w-full" />
                   <Skeleton className="h-4 w-3/4" />
@@ -113,7 +113,7 @@ export default function BrowseStudents() {
               </p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" data-testid="grid-students">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6" data-testid="grid-students">
               {students?.map((student: any) => (
                 <StudentCard key={student.id} student={student} />
               ))}
