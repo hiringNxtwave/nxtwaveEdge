@@ -39,14 +39,14 @@ export default function ComparisonView() {
       if (shortlistedIds.size === 0) return [];
       
       const idsArray = Array.from(shortlistedIds);
-      const promises = idsArray.map(id => 
-        fetch(`/api/students/${id}`).then(res => {
-          if (!res.ok) throw new Error("Failed to fetch student");
-          return res.json();
-        })
-      );
+      const response = await fetch("/api/students/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: idsArray }),
+      });
       
-      return Promise.all(promises);
+      if (!response.ok) throw new Error("Failed to fetch students");
+      return response.json();
     },
     enabled: shortlistedIds.size > 0,
   });

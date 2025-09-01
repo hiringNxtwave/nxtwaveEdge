@@ -134,6 +134,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Bulk students endpoint for comparison page
+  app.post('/api/students/bulk', isAuthenticated, async (req, res) => {
+    try {
+      const { ids } = req.body;
+      
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return res.status(400).json({ message: "Student IDs are required" });
+      }
+
+      if (ids.length > 10) {
+        return res.status(400).json({ message: "Maximum 10 students can be fetched at once" });
+      }
+
+      // Get student details
+      const students = await Promise.all(
+        ids.map(id => storage.getStudentById(id.toString()))
+      );
+
+      // Filter out any null/undefined students
+      const validStudents = students.filter(Boolean);
+
+      res.json(validStudents);
+    } catch (error) {
+      console.error("Error fetching students in bulk:", error);
+      res.status(500).json({ message: "Failed to fetch students" });
+    }
+  });
+
   // Skill routes
   app.get('/api/skills', async (req, res) => {
     try {
@@ -218,7 +246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Get candidate details
       const candidates = await Promise.all(
-        candidateIds.map(id => storage.getStudent(id))
+        candidateIds.map(id => storage.getStudentById(id.toString()))
       );
 
       // Filter out any null candidates
@@ -231,12 +259,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // For now, we'll simulate email sending and log the action
       // In a real implementation, you would integrate with SendGrid or another email service
       console.log(`Sending shortlist emails to ${validCandidates.length} candidates:`);
-      validCandidates.forEach(candidate => {
+      validCandidates.forEach((candidate: any) => {
         console.log(`- ${candidate.firstName} ${candidate.lastName} (${candidate.email})`);
       });
 
       // Create a simple success response
-      const emailResults = validCandidates.map(candidate => ({
+      const emailResults = validCandidates.map((candidate: any) => ({
         candidateId: candidate.id,
         candidateName: `${candidate.firstName} ${candidate.lastName}`,
         email: candidate.email,
