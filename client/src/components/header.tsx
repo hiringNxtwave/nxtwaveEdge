@@ -91,7 +91,7 @@ export default function Header() {
                   onClick={() => window.location.href = "/api/login"}
                   data-testid="button-start-hiring"
                 >
-                  Start Hiring
+                  Browse Talent
                 </Button>
               </div>
             )}
