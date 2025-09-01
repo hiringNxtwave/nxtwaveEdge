@@ -61,6 +61,7 @@ export const students = pgTable("students", {
   major: varchar("major").notNull(),
   graduationYear: integer("graduation_year").notNull(),
   cgpa: decimal("cgpa", { precision: 3, scale: 2 }),
+  codingRating: integer("coding_rating").notNull().default(3), // 1-5 stars
   location: varchar("location").notNull(),
   bio: text("bio"),
   profileImageUrl: varchar("profile_image_url"),

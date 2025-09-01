@@ -10,6 +10,8 @@ interface FilterState {
   location: string;
   university: string;
   minCgpa: string;
+  maxCgpa: string;
+  codingRating: string;
 }
 
 interface StudentFiltersProps {
@@ -40,7 +42,7 @@ export default function StudentFilters({
   return (
     <Card className="mb-8">
       <CardContent className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           <div className="space-y-2">
             <Label htmlFor="skills-select" className="text-sm font-medium text-foreground">Skills</Label>
             <Select 
@@ -59,6 +61,9 @@ export default function StudentFilters({
                 <SelectItem value="Machine Learning">Machine Learning</SelectItem>
                 <SelectItem value="Data Science">Data Science</SelectItem>
                 <SelectItem value="AWS">AWS</SelectItem>
+                <SelectItem value="Angular">Angular</SelectItem>
+                <SelectItem value="Node.js">Node.js</SelectItem>
+                <SelectItem value="TypeScript">TypeScript</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -107,21 +112,62 @@ export default function StudentFilters({
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="cgpa-select" className="text-sm font-medium text-foreground">CGPA</Label>
+            <Label htmlFor="min-cgpa-select" className="text-sm font-medium text-foreground">Min CGPA</Label>
             <Select 
               value={filters.minCgpa} 
               onValueChange={(value) => handleFilterChange('minCgpa', value)}
             >
-              <SelectTrigger id="cgpa-select" data-testid="select-cgpa">
-                <SelectValue placeholder="Any CGPA" />
+              <SelectTrigger id="min-cgpa-select" data-testid="select-min-cgpa">
+                <SelectValue placeholder="Min CGPA" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Any CGPA</SelectItem>
-                <SelectItem value="9.0">9.0+</SelectItem>
-                <SelectItem value="8.5">8.5+</SelectItem>
-                <SelectItem value="8.0">8.0+</SelectItem>
-                <SelectItem value="7.5">7.5+</SelectItem>
+                <SelectItem value="all">Any</SelectItem>
                 <SelectItem value="7.0">7.0+</SelectItem>
+                <SelectItem value="7.5">7.5+</SelectItem>
+                <SelectItem value="8.0">8.0+</SelectItem>
+                <SelectItem value="8.5">8.5+</SelectItem>
+                <SelectItem value="9.0">9.0+</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="max-cgpa-select" className="text-sm font-medium text-foreground">Max CGPA</Label>
+            <Select 
+              value={filters.maxCgpa} 
+              onValueChange={(value) => handleFilterChange('maxCgpa', value)}
+            >
+              <SelectTrigger id="max-cgpa-select" data-testid="select-max-cgpa">
+                <SelectValue placeholder="Max CGPA" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Any</SelectItem>
+                <SelectItem value="7.5">7.5</SelectItem>
+                <SelectItem value="8.0">8.0</SelectItem>
+                <SelectItem value="8.5">8.5</SelectItem>
+                <SelectItem value="9.0">9.0</SelectItem>
+                <SelectItem value="9.5">9.5</SelectItem>
+                <SelectItem value="10.0">10.0</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="coding-rating-select" className="text-sm font-medium text-foreground">Coding Rating</Label>
+            <Select 
+              value={filters.codingRating} 
+              onValueChange={(value) => handleFilterChange('codingRating', value)}
+            >
+              <SelectTrigger id="coding-rating-select" data-testid="select-coding-rating">
+                <SelectValue placeholder="⭐ Rating" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Any Rating</SelectItem>
+                <SelectItem value="1">⭐ (1 star)</SelectItem>
+                <SelectItem value="2">⭐⭐ (2 stars)</SelectItem>
+                <SelectItem value="3">⭐⭐⭐ (3 stars)</SelectItem>
+                <SelectItem value="4">⭐⭐⭐⭐ (4 stars)</SelectItem>
+                <SelectItem value="5">⭐⭐⭐⭐⭐ (5 stars)</SelectItem>
               </SelectContent>
             </Select>
           </div>

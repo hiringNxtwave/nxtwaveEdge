@@ -324,213 +324,159 @@ export class DatabaseStorage implements IStorage {
       { name: "AWS", category: "technical" },
       { name: "Docker", category: "technical" },
       { name: "MongoDB", category: "technical" },
+      { name: "Angular", category: "technical" },
+      { name: "Vue.js", category: "technical" },
+      { name: "TypeScript", category: "technical" },
+      { name: "C++", category: "technical" },
+      { name: "C#", category: "technical" },
+      { name: "Go", category: "technical" },
+      { name: "Rust", category: "technical" },
+      { name: "Kotlin", category: "technical" },
+      { name: "Swift", category: "technical" },
+      { name: "Flutter", category: "technical" },
+      { name: "React Native", category: "technical" },
+      { name: "Django", category: "technical" },
+      { name: "Flask", category: "technical" },
+      { name: "Spring Boot", category: "technical" },
+      { name: "Express.js", category: "technical" },
+      { name: "PostgreSQL", category: "technical" },
+      { name: "MySQL", category: "technical" },
+      { name: "Redis", category: "technical" },
+      { name: "Elasticsearch", category: "technical" },
+      { name: "Kubernetes", category: "technical" },
+      { name: "Azure", category: "technical" },
+      { name: "GCP", category: "technical" },
+      { name: "DevOps", category: "technical" },
+      { name: "CI/CD", category: "technical" },
+      { name: "Git", category: "technical" },
+      { name: "Blockchain", category: "technical" },
+      { name: "Cybersecurity", category: "technical" },
+      { name: "IoT", category: "technical" },
+      { name: "Android Development", category: "technical" },
+      { name: "iOS Development", category: "technical" },
+      { name: "Web Development", category: "technical" },
+      { name: "UI/UX Design", category: "technical" },
       { name: "Communication", category: "soft" },
       { name: "Leadership", category: "soft" },
       { name: "Problem Solving", category: "soft" },
       { name: "Teamwork", category: "soft" },
       { name: "Time Management", category: "soft" },
+      { name: "Project Management", category: "soft" },
+      { name: "Critical Thinking", category: "soft" },
+      { name: "Adaptability", category: "soft" },
     ];
 
     await db.insert(skills).values(skillData);
 
-    // Seed sample students
-    const studentData = [
-      {
-        firstName: "Arjun",
-        lastName: "Sharma",
-        email: "arjun.sharma@email.com",
-        university: "IIT Delhi",
-        degree: "Bachelor of Technology",
-        major: "Computer Science",
-        graduationYear: 2024,
-        cgpa: "9.2",
-        location: "New Delhi",
-        bio: "Passionate software developer with expertise in full-stack development and machine learning.",
-        profileImageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Priya",
-        lastName: "Patel",
-        email: "priya.patel@email.com",
-        university: "BITS Pilani",
-        degree: "Bachelor of Engineering",
-        major: "Information Technology",
-        graduationYear: 2024,
-        cgpa: "8.8",
-        location: "Bangalore",
-        bio: "Backend developer specializing in Java and cloud technologies.",
-        profileImageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Rahul",
-        lastName: "Krishna",
-        email: "rahul.krishna@email.com",
-        university: "NIT Trichy",
-        degree: "Bachelor of Technology",
-        major: "Electronics Engineering",
-        graduationYear: 2024,
-        cgpa: "9.0",
-        location: "Chennai",
-        bio: "Electronics engineer with focus on IoT and embedded systems.",
-        profileImageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Ananya",
-        lastName: "Gupta",
-        email: "ananya.gupta@email.com",
-        university: "IIT Bombay",
-        degree: "Bachelor of Technology",
-        major: "Computer Science",
-        graduationYear: 2024,
-        cgpa: "9.1",
-        location: "Mumbai",
-        bio: "Full-stack developer with expertise in React, Node.js, and AWS cloud services.",
-        profileImageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Vikash",
-        lastName: "Singh",
-        email: "vikash.singh@email.com",
-        university: "NIT Warangal",
-        degree: "Bachelor of Technology",
-        major: "Mechanical Engineering",
-        graduationYear: 2024,
-        cgpa: "8.6",
-        location: "Hyderabad",
-        bio: "Mechanical engineer with interest in robotics and automation technologies.",
-        profileImageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Shreya",
-        lastName: "Reddy",
-        email: "shreya.reddy@email.com",
-        university: "IIIT Hyderabad",
-        degree: "Bachelor of Technology",
-        major: "Data Science",
-        graduationYear: 2024,
-        cgpa: "9.3",
-        location: "Hyderabad",
-        bio: "Data scientist specializing in machine learning, deep learning, and big data analytics.",
-        profileImageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Karthik",
-        lastName: "Iyer",
-        email: "karthik.iyer@email.com",
-        university: "IIT Madras",
-        degree: "Bachelor of Technology",
-        major: "Electrical Engineering",
-        graduationYear: 2024,
-        cgpa: "8.9",
-        location: "Chennai",
-        bio: "Electrical engineer with focus on power systems and renewable energy technologies.",
-        profileImageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Aditi",
-        lastName: "Joshi",
-        email: "aditi.joshi@email.com",
-        university: "BITS Pilani",
-        degree: "Bachelor of Engineering",
-        major: "Computer Science",
-        graduationYear: 2024,
-        cgpa: "8.7",
-        location: "Pune",
-        bio: "Software engineer passionate about web development and user experience design.",
-        profileImageUrl: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Rohan",
-        lastName: "Kumar",
-        email: "rohan.kumar@email.com",
-        university: "IIT Kanpur",
-        degree: "Bachelor of Technology",
-        major: "Civil Engineering",
-        graduationYear: 2024,
-        cgpa: "8.5",
-        location: "Delhi",
-        bio: "Civil engineer with expertise in structural design and construction management.",
-        profileImageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Meera",
-        lastName: "Nair",
-        email: "meera.nair@email.com",
-        university: "NIT Calicut",
-        degree: "Bachelor of Technology",
-        major: "Biotechnology",
-        graduationYear: 2024,
-        cgpa: "9.0",
-        location: "Kochi",
-        bio: "Biotechnology researcher with focus on pharmaceutical development and bioinformatics.",
-        profileImageUrl: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Aryan",
-        lastName: "Agarwal",
-        email: "aryan.agarwal@email.com",
-        university: "IIT Kharagpur",
-        degree: "Bachelor of Technology",
-        major: "Computer Science",
-        graduationYear: 2024,
-        cgpa: "9.4",
-        location: "Kolkata",
-        bio: "AI researcher with expertise in computer vision and natural language processing.",
-        profileImageUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Divya",
-        lastName: "Mehta",
-        email: "divya.mehta@email.com",
-        university: "BITS Goa",
-        degree: "Bachelor of Engineering",
-        major: "Chemical Engineering",
-        graduationYear: 2024,
-        cgpa: "8.4",
-        location: "Goa",
-        bio: "Chemical engineer with interest in process optimization and sustainable technologies.",
-        profileImageUrl: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Siddharth",
-        lastName: "Malhotra",
-        email: "siddharth.malhotra@email.com",
-        university: "NIT Surathkal",
-        degree: "Bachelor of Technology",
-        major: "Information Technology",
-        graduationYear: 2024,
-        cgpa: "8.8",
-        location: "Bangalore",
-        bio: "IT professional with expertise in cybersecurity and network administration.",
-        profileImageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Kavya",
-        lastName: "Rao",
-        email: "kavya.rao@email.com",
-        university: "IIT Roorkee",
-        degree: "Bachelor of Technology",
-        major: "Electronics Engineering",
-        graduationYear: 2024,
-        cgpa: "8.9",
-        location: "Delhi",
-        bio: "Electronics engineer with focus on embedded systems and signal processing.",
-        profileImageUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face",
-      },
-      {
-        firstName: "Aarav",
-        lastName: "Chopra",
-        email: "aarav.chopra@email.com",
-        university: "IIIT Bangalore",
-        degree: "Bachelor of Technology",
-        major: "Computer Science",
-        graduationYear: 2024,
-        cgpa: "9.1",
-        location: "Bangalore",
-        bio: "Software developer with passion for mobile app development and blockchain technology.",
-        profileImageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&h=200&fit=crop&crop=face",
-      },
+    // Generate 100+ diverse student profiles
+    const firstNames = [
+      "Arjun", "Priya", "Rahul", "Ananya", "Vikash", "Shreya", "Karthik", "Aditi", "Rohan", "Meera",
+      "Aryan", "Divya", "Siddharth", "Kavya", "Aarav", "Neha", "Aditya", "Pooja", "Varun", "Sneha",
+      "Aman", "Ritika", "Nikhil", "Ishita", "Abhishek", "Sakshi", "Harsh", "Nidhi", "Rajesh", "Swati",
+      "Gaurav", "Kritika", "Amit", "Deepika", "Ravi", "Preeti", "Ajay", "Shweta", "Suresh", "Sunita",
+      "Dev", "Isha", "Akash", "Pallavi", "Vinay", "Bhavya", "Mohit", "Tanvi", "Sameer", "Riya",
+      "Ashish", "Megha", "Manoj", "Sonal", "Rohit", "Kavita", "Sandeep", "Priyanka", "Yogesh", "Shradha",
+      "Vivek", "Anjali", "Naveen", "Sapna", "Ramesh", "Geeta", "Arun", "Madhu", "Jatin", "Rekha",
+      "Deepak", "Nisha", "Sanjay", "Lata", "Rakesh", "Veena", "Mukesh", "Kiran", "Pankaj", "Suman",
+      "Sunil", "Usha", "Vishal", "Jyoti", "Anil", "Sunaina", "Pramod", "Vandana", "Manish", "Ritu",
+      "Kamal", "Seema", "Rajeev", "Pinki", "Sachin", "Monika", "Narayan", "Laxmi", "Dinesh", "Radha"
     ];
+
+    const lastNames = [
+      "Sharma", "Patel", "Singh", "Kumar", "Gupta", "Agarwal", "Verma", "Joshi", "Reddy", "Nair",
+      "Iyer", "Chopra", "Malhotra", "Rao", "Shah", "Bansal", "Saxena", "Tiwari", "Pandey", "Mishra",
+      "Srivastava", "Mathur", "Jain", "Aggarwal", "Goel", "Mittal", "Singhal", "Goyal", "Arora", "Kapoor",
+      "Mehta", "Dutta", "Bhattacharya", "Mukherjee", "Ghosh", "Roy", "Das", "Bose", "Saha", "Sen",
+      "Chatterjee", "Banerjee", "Chakraborty", "Majumdar", "Sarkar", "Ganguly", "Paul", "Biswas", "Mitra", "Dey"
+    ];
+
+    const universities = [
+      "IIT Delhi", "IIT Bombay", "IIT Madras", "IIT Kanpur", "IIT Kharagpur", "IIT Roorkee", "IIT Guwahati", "IIT Hyderabad",
+      "BITS Pilani", "BITS Goa", "BITS Hyderabad", "NIT Trichy", "NIT Warangal", "NIT Surathkal", "NIT Calicut", "NIT Durgapur",
+      "IIIT Hyderabad", "IIIT Bangalore", "IIIT Delhi", "IIIT Allahabad", "Delhi University", "Mumbai University", "Pune University",
+      "Anna University", "Jadavpur University", "Calcutta University", "Bangalore University", "Osmania University",
+      "VIT Vellore", "VIT Chennai", "SRM University", "Manipal Institute", "PES University", "RV College", "BMS College",
+      "PSG College", "Coimbatore Institute", "Thapar University", "LPU", "Amity University", "Shiv Nadar University"
+    ];
+
+    const locations = [
+      "New Delhi", "Mumbai", "Bangalore", "Chennai", "Hyderabad", "Pune", "Kolkata", "Ahmedabad", "Surat", "Jaipur",
+      "Lucknow", "Kanpur", "Nagpur", "Indore", "Thane", "Bhopal", "Visakhapatnam", "Vadodara", "Firozabad", "Ludhiana",
+      "Rajkot", "Agra", "Siliguri", "Nashik", "Faridabad", "Patiala", "Ghaziabad", "Kalyan", "Dombivli", "Howrah",
+      "Ranchi", "Raipur", "Kota", "Gwalior", "Chandigarh", "Noida", "Gurgaon", "Coimbatore", "Madurai", "Kochi"
+    ];
+
+    const majors = [
+      "Computer Science", "Information Technology", "Electronics Engineering", "Mechanical Engineering", "Civil Engineering",
+      "Electrical Engineering", "Chemical Engineering", "Biotechnology", "Data Science", "Artificial Intelligence",
+      "Cybersecurity", "Software Engineering", "Aerospace Engineering", "Automobile Engineering", "Industrial Engineering",
+      "Environmental Engineering", "Materials Science", "Telecommunications", "Robotics", "Biomedical Engineering"
+    ];
+
+    const degrees = [
+      "Bachelor of Technology", "Bachelor of Engineering", "Bachelor of Computer Applications", "Bachelor of Science",
+      "Master of Technology", "Master of Computer Applications", "Master of Science"
+    ];
+
+    const profileImages = [
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1494790108755-2616b612b47c?w=200&h=200&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=200&h=200&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=200&h=200&fit=crop&crop=face"
+    ];
+
+    const bioTemplates = [
+      "Passionate software developer with expertise in full-stack development and machine learning.",
+      "Backend developer specializing in microservices and cloud technologies.",
+      "Front-end enthusiast with focus on React and modern web development.",
+      "Data scientist with expertise in ML, AI, and big data analytics.",
+      "Mobile app developer passionate about creating user-friendly applications.",
+      "DevOps engineer with experience in containerization and CI/CD pipelines.",
+      "Cybersecurity specialist focusing on network security and ethical hacking.",
+      "AI researcher with interest in computer vision and natural language processing.",
+      "Blockchain developer with experience in smart contracts and DeFi applications.",
+      "IoT engineer specializing in embedded systems and sensor networks."
+    ];
+
+    const studentData = [];
+    for (let i = 0; i < 120; i++) {
+      const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+      const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+      const university = universities[Math.floor(Math.random() * universities.length)];
+      const location = locations[Math.floor(Math.random() * locations.length)];
+      const major = majors[Math.floor(Math.random() * majors.length)];
+      const degree = degrees[Math.floor(Math.random() * degrees.length)];
+      const profileImage = profileImages[Math.floor(Math.random() * profileImages.length)];
+      const bio = bioTemplates[Math.floor(Math.random() * bioTemplates.length)];
+      
+      // Generate CGPA between 7.0 and 9.8
+      const cgpa = (Math.random() * 2.8 + 7.0).toFixed(2);
+      
+      // Generate coding rating (1-5 stars), with bias towards higher ratings
+      const codingRating = Math.floor(Math.random() * 5) + 1;
+      
+      // Graduation years between 2023-2025
+      const graduationYear = 2023 + Math.floor(Math.random() * 3);
+
+      studentData.push({
+        firstName,
+        lastName,
+        email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@email.com`,
+        university,
+        degree,
+        major,
+        graduationYear,
+        cgpa,
+        codingRating,
+        location,
+        bio,
+        profileImageUrl: profileImage,
+      });
+    }
 
     const insertedStudents = await db.insert(students).values(studentData).returning();
     const allSkills = await db.select().from(skills);
@@ -554,32 +500,17 @@ export class DatabaseStorage implements IStorage {
     await db.insert(studentSkills).values(studentSkillData);
 
     // Seed sample projects
-    const projectData = [
-      {
-        studentId: insertedStudents[0].id,
-        title: "AI-powered Recommendation System",
-        description: "Built a machine learning recommendation engine using Python and TensorFlow",
-        technologies: JSON.stringify(["Python", "TensorFlow", "Flask", "MongoDB"]),
-        githubUrl: "https://github.com/arjun/recommendation-system",
-        featured: true,
-      },
-      {
-        studentId: insertedStudents[1].id,
-        title: "Microservices E-commerce Platform",
-        description: "Developed a scalable e-commerce platform using Spring Boot microservices",
-        technologies: JSON.stringify(["Java", "Spring Boot", "Docker", "AWS"]),
-        githubUrl: "https://github.com/priya/ecommerce-platform",
-        featured: true,
-      },
-      {
-        studentId: insertedStudents[2].id,
-        title: "Smart Home Automation System",
-        description: "IoT-based home automation using Arduino and Raspberry Pi",
-        technologies: JSON.stringify(["C++", "Arduino", "Raspberry Pi", "IoT"]),
-        githubUrl: "https://github.com/rahul/smart-home",
-        featured: true,
-      },
-    ];
+    const projectData = [];
+    for (let i = 0; i < Math.min(20, insertedStudents.length); i++) {
+      projectData.push({
+        studentId: insertedStudents[i].id,
+        title: `Project ${i + 1} - ${["AI System", "Web App", "Mobile App", "Data Pipeline", "IoT Device"][Math.floor(Math.random() * 5)]}`,
+        description: `Innovative project showcasing technical skills and problem-solving abilities`,
+        technologies: JSON.stringify(["JavaScript", "Python", "React", "Node.js"].slice(0, Math.floor(Math.random() * 4) + 1)),
+        githubUrl: `https://github.com/student${i}/project${i}`,
+        featured: Math.random() > 0.7,
+      });
+    }
 
     await db.insert(projects).values(projectData);
   }

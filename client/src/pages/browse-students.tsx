@@ -11,6 +11,8 @@ export default function BrowseStudents() {
     location: "",
     university: "",
     minCgpa: undefined as number | undefined,
+    maxCgpa: undefined as number | undefined,
+    codingRating: undefined as number | undefined,
   });
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,6 +26,8 @@ export default function BrowseStudents() {
       if (filters.location) params.append("location", filters.location);
       if (filters.university) params.append("university", filters.university);
       if (filters.minCgpa) params.append("minCgpa", filters.minCgpa.toString());
+      if (filters.maxCgpa) params.append("maxCgpa", filters.maxCgpa.toString());
+      if (filters.codingRating) params.append("codingRating", filters.codingRating.toString());
       params.append("limit", studentsPerPage.toString());
       params.append("offset", ((currentPage - 1) * studentsPerPage).toString());
 
@@ -62,14 +66,18 @@ export default function BrowseStudents() {
               skills: filters.skills.length > 0 ? filters.skills.join(",") : "all",
               location: filters.location || "all",
               university: filters.university || "all",
-              minCgpa: filters.minCgpa?.toString() || "all"
+              minCgpa: filters.minCgpa?.toString() || "all",
+              maxCgpa: filters.maxCgpa?.toString() || "all",
+              codingRating: filters.codingRating?.toString() || "all"
             }}
             onFiltersChange={(newFilters) => {
               setFilters({
                 skills: newFilters.skills && newFilters.skills !== "all" ? newFilters.skills.split(",").filter(Boolean) : [],
                 location: newFilters.location === "all" ? "" : newFilters.location,
                 university: newFilters.university === "all" ? "" : newFilters.university,
-                minCgpa: newFilters.minCgpa && newFilters.minCgpa !== "all" ? parseFloat(newFilters.minCgpa) : undefined
+                minCgpa: newFilters.minCgpa && newFilters.minCgpa !== "all" ? parseFloat(newFilters.minCgpa) : undefined,
+                maxCgpa: newFilters.maxCgpa && newFilters.maxCgpa !== "all" ? parseFloat(newFilters.maxCgpa) : undefined,
+                codingRating: newFilters.codingRating && newFilters.codingRating !== "all" ? parseInt(newFilters.codingRating) : undefined
               });
             }}
             onSearch={() => setCurrentPage(1)}
