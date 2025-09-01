@@ -51,84 +51,94 @@ export default function BrowseStudents() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-1">
-            <StudentFilters
-              filters={{
-                skills: filters.skills.length > 0 ? filters.skills.join(",") : "all",
-                location: filters.location || "all",
-                university: filters.university || "all",
-                minCgpa: filters.minCgpa?.toString() || "all"
-              }}
-              onFiltersChange={(newFilters) => {
-                setFilters({
-                  skills: newFilters.skills && newFilters.skills !== "all" ? newFilters.skills.split(",").filter(Boolean) : [],
-                  location: newFilters.location === "all" ? "" : newFilters.location,
-                  university: newFilters.university === "all" ? "" : newFilters.university,
-                  minCgpa: newFilters.minCgpa && newFilters.minCgpa !== "all" ? parseFloat(newFilters.minCgpa) : undefined
-                });
-              }}
-              onSearch={() => setCurrentPage(1)}
-              skills={(skills as any) || []}
-            />
+        {/* Filters at the top for better visibility */}
+        <div className="mb-8 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+          <div className="mb-4">
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Filter Candidates</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-300">Find the perfect candidates by using the filters below</p>
+          </div>
+          <StudentFilters
+            filters={{
+              skills: filters.skills.length > 0 ? filters.skills.join(",") : "all",
+              location: filters.location || "all",
+              university: filters.university || "all",
+              minCgpa: filters.minCgpa?.toString() || "all"
+            }}
+            onFiltersChange={(newFilters) => {
+              setFilters({
+                skills: newFilters.skills && newFilters.skills !== "all" ? newFilters.skills.split(",").filter(Boolean) : [],
+                location: newFilters.location === "all" ? "" : newFilters.location,
+                university: newFilters.university === "all" ? "" : newFilters.university,
+                minCgpa: newFilters.minCgpa && newFilters.minCgpa !== "all" ? parseFloat(newFilters.minCgpa) : undefined
+              });
+            }}
+            onSearch={() => setCurrentPage(1)}
+            skills={(skills as any) || []}
+          />
+        </div>
+
+        {/* Student Results */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              {isLoading ? "Loading..." : `${students?.length || 0} Students Found`}
+            </h2>
           </div>
 
-          <div className="lg:col-span-3">
-            {isLoading ? (
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="space-y-3">
-                    <Skeleton className="h-48 w-full" />
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-4 w-1/2" />
-                  </div>
-                ))}
-              </div>
-            ) : students?.length === 0 ? (
-              <div className="text-center py-12" data-testid="text-no-students">
-                <p className="text-gray-500 dark:text-gray-400 text-lg">
-                  No students found matching your criteria.
-                </p>
-                <p className="text-gray-400 dark:text-gray-500 mt-2">
-                  Try adjusting your filters to see more results.
-                </p>
-              </div>
-            ) : (
-              <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6" data-testid="grid-students">
-                {students?.map((student: any) => (
-                  <StudentCard key={student.id} student={student} />
-                ))}
-              </div>
-            )}
-
-            {students && students.length > 0 && (
-              <div className="mt-8 flex justify-center" data-testid="pagination-controls">
-                <div className="flex gap-2">
-                  {currentPage > 1 && (
-                    <button
-                      onClick={() => setCurrentPage(currentPage - 1)}
-                      className="px-4 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
-                      data-testid="button-prev-page"
-                    >
-                      Previous
-                    </button>
-                  )}
-                  <span className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400" data-testid="text-page-info">
-                    Page {currentPage}
-                  </span>
-                  {students.length === studentsPerPage && (
-                    <button
-                      onClick={() => setCurrentPage(currentPage + 1)}
-                      className="px-4 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
-                      data-testid="button-next-page"
-                    >
-                      Next
-                    </button>
-                  )}
+          {isLoading ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div key={i} className="space-y-3">
+                  <Skeleton className="h-48 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
                 </div>
+              ))}
+            </div>
+          ) : students?.length === 0 ? (
+            <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700" data-testid="text-no-students">
+              <p className="text-gray-500 dark:text-gray-400 text-lg">
+                No students found matching your criteria.
+              </p>
+              <p className="text-gray-400 dark:text-gray-500 mt-2">
+                Try adjusting your filters to see more results.
+              </p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" data-testid="grid-students">
+              {students?.map((student: any) => (
+                <StudentCard key={student.id} student={student} />
+              ))}
+            </div>
+          )}
+
+          {students && students.length > 0 && (
+            <div className="mt-8 flex justify-center" data-testid="pagination-controls">
+              <div className="flex gap-2">
+                {currentPage > 1 && (
+                  <button
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    className="px-4 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+                    data-testid="button-prev-page"
+                  >
+                    Previous
+                  </button>
+                )}
+                <span className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400" data-testid="text-page-info">
+                  Page {currentPage}
+                </span>
+                {students.length === studentsPerPage && (
+                  <button
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    className="px-4 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+                    data-testid="button-next-page"
+                  >
+                    Next
+                  </button>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
