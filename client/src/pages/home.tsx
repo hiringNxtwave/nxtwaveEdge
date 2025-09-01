@@ -19,201 +19,154 @@ export default function Home() {
     <div className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
       
-      {/* Hero Section - Handshake Style */}
-      <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 to-slate-800/50 opacity-20"></div>
-        
+      {/* Hero Section - Clean Professional Design */}
+      <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20 relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
-          {/* Top notification banner */}
+          {/* Clean notification banner */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center bg-green-500/20 border border-green-500/30 rounded-full px-4 py-2 text-green-300 text-sm">
-              → Connect with India's brightest talent
+            <div className="inline-flex items-center bg-blue-100 border border-blue-200 rounded-full px-4 py-2 text-blue-700 text-sm font-medium">
+              🚀 Connect with India's brightest talent
             </div>
           </div>
 
           <div className="text-center mb-16">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 tracking-tight" data-testid="text-hero-title">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8 tracking-tight text-gray-900" data-testid="text-hero-title">
               <span className="block mb-2">Where</span>
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400 mb-2">students become</span>
+              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 mb-2">students become</span>
               <span className="block">professionals</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
               TalentConnect India is the recruitment platform where 2.5M+ students and recent grads 
               launch careers at companies they love.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/browse">
-                <Button size="lg" className="px-8 py-4 text-lg bg-green-500 hover:bg-green-600 text-black font-semibold" data-testid="button-browse-candidates">
+                <Button size="lg" className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold" data-testid="button-browse-candidates">
                   Browse Candidates
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="px-8 py-4 text-lg border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-semibold" data-testid="button-request-demo">
+              <Button size="lg" variant="outline" className="px-8 py-4 text-lg border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold" data-testid="button-request-demo">
                 Request a Demo
               </Button>
             </div>
           </div>
 
-          {/* Key Statistics - Handshake Style */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 text-center">
-            <div data-testid="stat-students">
-              <div className="text-5xl md:text-6xl font-bold mb-2">2.5M</div>
-              <div className="text-gray-300 text-lg">active college students and recent alumni</div>
+          {/* Key Statistics - Clean Design */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-center">
+            <div data-testid="stat-students" className="bg-white rounded-lg p-6 shadow-sm">
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-blue-600">2.5M+</div>
+              <div className="text-gray-600 text-sm">Active Students</div>
             </div>
-            <div data-testid="stat-universities">
-              <div className="text-5xl md:text-6xl font-bold mb-2">95%</div>
-              <div className="text-gray-300 text-lg">top ranked institutions in India</div>
+            <div data-testid="stat-universities" className="bg-white rounded-lg p-6 shadow-sm">
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-blue-600">95%</div>
+              <div className="text-gray-600 text-sm">Top Institutions</div>
             </div>
-            <div data-testid="stat-companies">
-              <div className="text-5xl md:text-6xl font-bold mb-2">15K</div>
-              <div className="text-gray-300 text-lg">employers</div>
+            <div data-testid="stat-companies" className="bg-white rounded-lg p-6 shadow-sm">
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-blue-600">15K+</div>
+              <div className="text-gray-600 text-sm">Employers</div>
             </div>
-            <div data-testid="stat-partnerships">
-              <div className="text-5xl md:text-6xl font-bold mb-2">400+</div>
-              <div className="text-gray-300 text-lg">official partnerships with colleges and universities</div>
+            <div data-testid="stat-partnerships" className="bg-white rounded-lg p-6 shadow-sm">
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-blue-600">400+</div>
+              <div className="text-gray-600 text-sm">University Partners</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Trusted Companies Section - Handshake Style */}
-      <section className="py-20 bg-slate-900 text-white">
+      {/* Trusted Companies Section - Consistent Design */}
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6" data-testid="text-trusted-by">
-              100% of India's Fortune 100 companies use TalentConnect<br />
-              to find their next generation of talent
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900" data-testid="text-trusted-by">
+              Trusted by India's leading companies
             </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              From Fortune 500 to fast-growing startups, companies trust TalentConnect to find exceptional talent
+            </p>
           </div>
 
-          {/* Company Logos Grid - Handshake Style */}
-          <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-10 gap-8 items-center justify-items-center mb-16">
-            {/* Row 1 - Indian IT Giants */}
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-tcs">
+          {/* Company Logos Grid - Uniform Design */}
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center justify-items-center">
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-tcs">
               <div className="text-blue-900 font-bold text-xl">TCS</div>
             </div>
-            <div className="flex items-center justify-center h-16 w-24 text-white hover:text-blue-400 transition-colors" data-testid="logo-infosys">
-              <SiInfosys size={50} />
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-infosys">
+              <div className="text-blue-700 font-bold text-lg">Infosys</div>
             </div>
-            <div className="flex items-center justify-center h-16 w-24 text-white hover:text-green-400 transition-colors" data-testid="logo-wipro">
-              <SiWipro size={50} />
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-wipro">
+              <div className="text-green-700 font-bold text-lg">Wipro</div>
             </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-hcl">
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-hcl">
               <div className="text-blue-600 font-bold text-lg">HCL</div>
             </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-tech-mahindra">
-              <div className="text-red-600 font-bold text-sm">Tech Mahindra</div>
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-google">
+              <div className="text-gray-700 font-bold text-lg">Google</div>
             </div>
-
-            {/* Row 2 - Global Tech */}
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-microsoft">
-              <div className="text-blue-600 font-bold text-lg">MSFT</div>
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-amazon">
+              <div className="text-orange-600 font-bold text-lg">Amazon</div>
             </div>
-            <div className="flex items-center justify-center h-16 w-24 text-white hover:text-blue-400 transition-colors" data-testid="logo-google">
-              <SiGoogle size={50} />
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-microsoft">
+              <div className="text-blue-600 font-bold text-lg">Microsoft</div>
             </div>
-            <div className="flex items-center justify-center h-16 w-24 text-white hover:text-orange-400 transition-colors" data-testid="logo-amazon">
-              <SiAmazon size={50} />
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-flipkart">
+              <div className="text-orange-600 font-bold text-lg">Flipkart</div>
             </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-ibm">
-              <div className="text-blue-600 font-bold text-xl">IBM</div>
-            </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-oracle">
-              <div className="text-red-600 font-bold text-lg">Oracle</div>
-            </div>
-
-            {/* Row 3 - Indian Unicorns */}
-            <div className="flex items-center justify-center h-16 w-24 text-white hover:text-orange-400 transition-colors" data-testid="logo-flipkart">
-              <SiFlipkart size={50} />
-            </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-paytm">
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-paytm">
               <div className="text-blue-600 font-bold text-lg">Paytm</div>
             </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-ola">
-              <div className="text-green-600 font-bold text-xl">OLA</div>
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-ola">
+              <div className="text-green-600 font-bold text-lg">Ola</div>
             </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-swiggy">
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-swiggy">
               <div className="text-orange-600 font-bold text-lg">Swiggy</div>
             </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-zomato">
+            <div className="flex items-center justify-center h-16 w-32 bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow" data-testid="logo-zomato">
               <div className="text-red-600 font-bold text-lg">Zomato</div>
-            </div>
-
-            {/* Row 4 - Financial & Conglomerates */}
-            <div className="flex items-center justify-center h-16 w-24 text-white hover:text-blue-400 transition-colors" data-testid="logo-tata">
-              <SiTata size={50} />
-            </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-reliance">
-              <div className="text-blue-600 font-bold text-lg">Reliance</div>
-            </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-hdfc">
-              <div className="text-blue-800 font-bold text-lg">HDFC</div>
-            </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-icici">
-              <div className="text-orange-600 font-bold text-lg">ICICI</div>
-            </div>
-            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-sbi">
-              <div className="text-blue-700 font-bold text-xl">SBI</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section - Enhanced */}
-      <section className="py-24 bg-gradient-to-br from-white to-blue-50">
+      {/* Features Section - Simplified and Consistent */}
+      <section className="py-20 bg-blue-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Everything you need<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">to hire top talent</span>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Why choose TalentConnect India?
             </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Everything you need to find and hire exceptional entry-level software engineers
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
-            <div className="text-center group" data-testid="feature-brand">
-              <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl flex items-center justify-center shadow-2xl group-hover:shadow-blue-500/25 transition-all duration-300 group-hover:scale-105">
-                  <Award className="h-12 w-12 text-white" />
-                </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-white rounded-lg p-8 shadow-sm hover:shadow-md transition-shadow" data-testid="feature-filter">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                <Target className="h-6 w-6 text-blue-600" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Build your brand</h3>
-              <p className="text-gray-600 text-lg leading-relaxed">
-                Stay top of mind for 2.5M+ verified candidates and drive consistent touch points to boost engagement.
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Smart Filtering</h3>
+              <p className="text-gray-600">
+                Find the right candidates using advanced filters for skills, university, CGPA, and more.
               </p>
             </div>
 
-            <div className="text-center group" data-testid="feature-filter">
-              <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-green-500 to-green-600 rounded-3xl flex items-center justify-center shadow-2xl group-hover:shadow-green-500/25 transition-all duration-300 group-hover:scale-105">
-                  <Target className="h-12 w-12 text-white" />
-                </div>
+            <div className="bg-white rounded-lg p-8 shadow-sm hover:shadow-md transition-shadow" data-testid="feature-assessment">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                <Award className="h-6 w-6 text-blue-600" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Find the right candidates</h3>
-              <p className="text-gray-600 text-lg leading-relaxed">
-                Refine your talent pool using enhanced filtering and targeting capabilities across India's top institutions.
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Skills Assessment</h3>
+              <p className="text-gray-600">
+                Evaluate candidates on coding, quantitative ability, verbal skills, and English proficiency.
               </p>
             </div>
 
-            <div className="text-center group" data-testid="feature-connect">
-              <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-purple-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl group-hover:shadow-purple-500/25 transition-all duration-300 group-hover:scale-105">
-                  <MessageSquare className="h-12 w-12 text-white" />
-                </div>
+            <div className="bg-white rounded-lg p-8 shadow-sm hover:shadow-md transition-shadow" data-testid="feature-hire">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                <CheckCircle className="h-6 w-6 text-blue-600" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Connect with Gen Z</h3>
-              <p className="text-gray-600 text-lg leading-relaxed">
-                Build meaningful relationships by posting and engaging with candidates on the feed.
-              </p>
-            </div>
-
-            <div className="text-center group" data-testid="feature-hire">
-              <div className="relative mb-8">
-                <div className="w-32 h-32 mx-auto bg-gradient-to-br from-orange-500 to-orange-600 rounded-3xl flex items-center justify-center shadow-2xl group-hover:shadow-orange-500/25 transition-all duration-300 group-hover:scale-105">
-                  <CheckCircle className="h-12 w-12 text-white" />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Reduce time to hire</h3>
-              <p className="text-gray-600 text-lg leading-relaxed">
-                Create a seamless hiring experience for your team with tools for end-to-end recruiting.
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Streamlined Hiring</h3>
+              <p className="text-gray-600">
+                Complete end-to-end hiring workflow from browsing to final selection and notifications.
               </p>
             </div>
           </div>
@@ -221,7 +174,7 @@ export default function Home() {
       </section>
 
       {/* Success Stories / Testimonials */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-800">
+      <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Success Stories</h2>
@@ -331,20 +284,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Call to Action - Enhanced */}
-      <section className="py-24 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-blue-900/20 opacity-30"></div>
-        
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-5xl md:text-6xl font-bold mb-6" data-testid="text-cta-title">
-            Ready to transform your<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400">campus recruitment?</span>
+      {/* Call to Action - Clean Design */}
+      <section className="py-20 bg-blue-600 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6" data-testid="text-cta-title">
+            Ready to find your next star engineer?
           </h2>
-          <p className="text-xl md:text-2xl mb-12 max-w-4xl mx-auto text-gray-300 leading-relaxed">
-            Join thousands of companies already using TalentConnect India to build exceptional teams from India's top universities.
+          <p className="text-lg mb-8 max-w-2xl mx-auto opacity-90">
+            Join thousands of companies using TalentConnect India to hire exceptional entry-level software engineers.
           </p>
-          <div className="flex justify-center">
-            <Button size="lg" variant="outline" className="px-12 py-4 text-lg border-2 border-white text-white hover:bg-white hover:text-slate-900 transition-all duration-300" data-testid="button-contact-sales">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/browse">
+              <Button size="lg" className="px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 font-semibold" data-testid="button-start-hiring">
+                Start Hiring Now
+              </Button>
+            </Link>
+            <Button size="lg" variant="outline" className="px-8 py-4 border-white text-white hover:bg-white hover:text-blue-600 font-semibold" data-testid="button-contact-sales">
               Contact Sales
             </Button>
           </div>
