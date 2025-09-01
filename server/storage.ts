@@ -130,6 +130,20 @@ export class DatabaseStorage implements IStorage {
     limit?: number;
     offset?: number;
   }): Promise<StudentWithSkills[]> {
+    const whereConditions = [];
+    
+    if (filters?.location) {
+      whereConditions.push(ilike(students.location, `%${filters.location}%`));
+    }
+    
+    if (filters?.university) {
+      whereConditions.push(ilike(students.university, `%${filters.university}%`));
+    }
+    
+    if (filters?.minCgpa) {
+      whereConditions.push(gte(students.cgpa, filters.minCgpa.toString()));
+    }
+
     let query = db
       .select()
       .from(students)
@@ -137,24 +151,15 @@ export class DatabaseStorage implements IStorage {
       .leftJoin(skills, eq(studentSkills.skillId, skills.id))
       .leftJoin(projects, eq(students.id, projects.studentId));
 
-    if (filters?.location) {
-      query = query.where(ilike(students.location, `%${filters.location}%`));
-    }
-    
-    if (filters?.university) {
-      query = query.where(ilike(students.university, `%${filters.university}%`));
-    }
-    
-    if (filters?.minCgpa) {
-      query = query.where(gte(students.cgpa, filters.minCgpa.toString()));
+    if (whereConditions.length > 0) {
+      query = query.where(and(...whereConditions));
     }
 
-    query = query
+    const results = await query
       .orderBy(desc(students.cgpa))
       .limit(filters?.limit || 20)
       .offset(filters?.offset || 0);
 
-    const results = await query;
     
     // Group results by student
     const studentMap = new Map<string, StudentWithSkills>();
@@ -238,18 +243,24 @@ export class DatabaseStorage implements IStorage {
     university?: string;
     minCgpa?: number;
   }): Promise<number> {
-    let query = db.select({ count: sql`count(*)` }).from(students);
-
+    const whereConditions = [];
+    
     if (filters?.location) {
-      query = query.where(ilike(students.location, `%${filters.location}%`));
+      whereConditions.push(ilike(students.location, `%${filters.location}%`));
     }
     
     if (filters?.university) {
-      query = query.where(ilike(students.university, `%${filters.university}%`));
+      whereConditions.push(ilike(students.university, `%${filters.university}%`));
     }
     
     if (filters?.minCgpa) {
-      query = query.where(gte(students.cgpa, filters.minCgpa.toString()));
+      whereConditions.push(gte(students.cgpa, filters.minCgpa.toString()));
+    }
+
+    let query = db.select({ count: sql`count(*)` }).from(students);
+    
+    if (whereConditions.length > 0) {
+      query = query.where(and(...whereConditions));
     }
 
     const [result] = await query;

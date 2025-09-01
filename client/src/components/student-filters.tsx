@@ -16,6 +16,7 @@ interface StudentFiltersProps {
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
   onSearch: () => void;
+  skills?: any[];
   resultCount?: number;
   totalCount?: number;
 }
@@ -23,7 +24,8 @@ interface StudentFiltersProps {
 export default function StudentFilters({ 
   filters, 
   onFiltersChange, 
-  onSearch, 
+  onSearch,
+  skills = [],
   resultCount = 0, 
   totalCount = 0 
 }: StudentFiltersProps) {
