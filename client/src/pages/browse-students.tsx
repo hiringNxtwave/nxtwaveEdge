@@ -18,7 +18,7 @@ export default function BrowseStudents() {
   const [currentPage, setCurrentPage] = useState(1);
   const studentsPerPage = 48;
 
-  const { data: students, isLoading } = useQuery({
+  const { data: studentsData, isLoading } = useQuery({
     queryKey: ["/api/students", filters, currentPage],
     queryFn: async () => {
       const params = new URLSearchParams();
@@ -36,6 +36,9 @@ export default function BrowseStudents() {
       return response.json();
     },
   });
+
+  const students = studentsData?.students || studentsData || [];
+  const totalCount = studentsData?.total || students.length;
 
   const { data: skills } = useQuery({
     queryKey: ["/api/skills"],
@@ -82,6 +85,8 @@ export default function BrowseStudents() {
             }}
             onSearch={() => setCurrentPage(1)}
             skills={(skills as any) || []}
+            resultCount={students.length}
+            totalCount={totalCount}
           />
         </div>
 
@@ -89,7 +94,7 @@ export default function BrowseStudents() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              {isLoading ? "Loading..." : `${students?.length || 0} Students Found`}
+              {isLoading ? "Loading..." : `${totalCount} Students Found`}
             </h2>
           </div>
 

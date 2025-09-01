@@ -40,17 +40,18 @@ export default function StudentFilters({
   };
 
   return (
-    <Card className="mb-8">
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="skills-select" className="text-sm font-medium text-foreground">Skills</Label>
+    <Card className="mb-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+      <CardContent className="p-4">
+        <div className="flex flex-wrap items-end gap-3">
+          {/* Skills */}
+          <div className="space-y-1 min-w-[140px]">
+            <Label htmlFor="skills-select" className="text-xs font-medium text-gray-600 dark:text-gray-400">Skills</Label>
             <Select 
               value={filters.skills} 
               onValueChange={(value) => handleFilterChange('skills', value)}
             >
-              <SelectTrigger id="skills-select" data-testid="select-skills">
-                <SelectValue placeholder="Select Skills" />
+              <SelectTrigger id="skills-select" data-testid="select-skills" className="h-8 text-sm">
+                <SelectValue placeholder="All Skills" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Skills</SelectItem>
@@ -68,13 +69,14 @@ export default function StudentFilters({
             </Select>
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="location-select" className="text-sm font-medium text-foreground">Location</Label>
+          {/* Location */}
+          <div className="space-y-1 min-w-[120px]">
+            <Label htmlFor="location-select" className="text-xs font-medium text-gray-600 dark:text-gray-400">Location</Label>
             <Select 
               value={filters.location} 
               onValueChange={(value) => handleFilterChange('location', value)}
             >
-              <SelectTrigger id="location-select" data-testid="select-location">
+              <SelectTrigger id="location-select" data-testid="select-location" className="h-8 text-sm">
                 <SelectValue placeholder="All Cities" />
               </SelectTrigger>
               <SelectContent>
@@ -89,13 +91,14 @@ export default function StudentFilters({
             </Select>
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="university-select" className="text-sm font-medium text-foreground">University</Label>
+          {/* University */}
+          <div className="space-y-1 min-w-[140px]">
+            <Label htmlFor="university-select" className="text-xs font-medium text-gray-600 dark:text-gray-400">University</Label>
             <Select 
               value={filters.university} 
               onValueChange={(value) => handleFilterChange('university', value)}
             >
-              <SelectTrigger id="university-select" data-testid="select-university">
+              <SelectTrigger id="university-select" data-testid="select-university" className="h-8 text-sm">
                 <SelectValue placeholder="All Universities" />
               </SelectTrigger>
               <SelectContent>
@@ -111,76 +114,79 @@ export default function StudentFilters({
             </Select>
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="min-cgpa-select" className="text-sm font-medium text-foreground">Min CGPA</Label>
-            <Select 
-              value={filters.minCgpa} 
-              onValueChange={(value) => handleFilterChange('minCgpa', value)}
-            >
-              <SelectTrigger id="min-cgpa-select" data-testid="select-min-cgpa">
-                <SelectValue placeholder="Min CGPA" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Any</SelectItem>
-                <SelectItem value="7.0">7.0+</SelectItem>
-                <SelectItem value="7.5">7.5+</SelectItem>
-                <SelectItem value="8.0">8.0+</SelectItem>
-                <SelectItem value="8.5">8.5+</SelectItem>
-                <SelectItem value="9.0">9.0+</SelectItem>
-              </SelectContent>
-            </Select>
+          {/* CGPA Range */}
+          <div className="space-y-1 min-w-[100px]">
+            <Label className="text-xs font-medium text-gray-600 dark:text-gray-400">CGPA Range</Label>
+            <div className="flex items-center space-x-1">
+              <Select 
+                value={filters.minCgpa} 
+                onValueChange={(value) => handleFilterChange('minCgpa', value)}
+              >
+                <SelectTrigger data-testid="select-min-cgpa" className="h-8 text-xs w-16">
+                  <SelectValue placeholder="Min" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any</SelectItem>
+                  <SelectItem value="7.0">7.0</SelectItem>
+                  <SelectItem value="7.5">7.5</SelectItem>
+                  <SelectItem value="8.0">8.0</SelectItem>
+                  <SelectItem value="8.5">8.5</SelectItem>
+                  <SelectItem value="9.0">9.0</SelectItem>
+                </SelectContent>
+              </Select>
+              <span className="text-xs text-gray-400">-</span>
+              <Select 
+                value={filters.maxCgpa} 
+                onValueChange={(value) => handleFilterChange('maxCgpa', value)}
+              >
+                <SelectTrigger data-testid="select-max-cgpa" className="h-8 text-xs w-16">
+                  <SelectValue placeholder="Max" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Any</SelectItem>
+                  <SelectItem value="8.0">8.0</SelectItem>
+                  <SelectItem value="8.5">8.5</SelectItem>
+                  <SelectItem value="9.0">9.0</SelectItem>
+                  <SelectItem value="9.5">9.5</SelectItem>
+                  <SelectItem value="10.0">10.0</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="max-cgpa-select" className="text-sm font-medium text-foreground">Max CGPA</Label>
-            <Select 
-              value={filters.maxCgpa} 
-              onValueChange={(value) => handleFilterChange('maxCgpa', value)}
-            >
-              <SelectTrigger id="max-cgpa-select" data-testid="select-max-cgpa">
-                <SelectValue placeholder="Max CGPA" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Any</SelectItem>
-                <SelectItem value="7.5">7.5</SelectItem>
-                <SelectItem value="8.0">8.0</SelectItem>
-                <SelectItem value="8.5">8.5</SelectItem>
-                <SelectItem value="9.0">9.0</SelectItem>
-                <SelectItem value="9.5">9.5</SelectItem>
-                <SelectItem value="10.0">10.0</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="coding-rating-select" className="text-sm font-medium text-foreground">Coding Rating</Label>
+          {/* Rating */}
+          <div className="space-y-1 min-w-[100px]">
+            <Label htmlFor="coding-rating-select" className="text-xs font-medium text-gray-600 dark:text-gray-400">Min Rating</Label>
             <Select 
               value={filters.codingRating} 
               onValueChange={(value) => handleFilterChange('codingRating', value)}
             >
-              <SelectTrigger id="coding-rating-select" data-testid="select-coding-rating">
-                <SelectValue placeholder="⭐ Rating" />
+              <SelectTrigger id="coding-rating-select" data-testid="select-coding-rating" className="h-8 text-sm">
+                <SelectValue placeholder="⭐ Any" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Any Rating</SelectItem>
-                <SelectItem value="1">⭐ (1 star)</SelectItem>
-                <SelectItem value="2">⭐⭐ (2 stars)</SelectItem>
-                <SelectItem value="3">⭐⭐⭐ (3 stars)</SelectItem>
-                <SelectItem value="4">⭐⭐⭐⭐ (4 stars)</SelectItem>
-                <SelectItem value="5">⭐⭐⭐⭐⭐ (5 stars)</SelectItem>
+                <SelectItem value="1">⭐ 1+</SelectItem>
+                <SelectItem value="2">⭐⭐ 2+</SelectItem>
+                <SelectItem value="3">⭐⭐⭐ 3+</SelectItem>
+                <SelectItem value="4">⭐⭐⭐⭐ 4+</SelectItem>
+                <SelectItem value="5">⭐⭐⭐⭐⭐ 5</SelectItem>
               </SelectContent>
             </Select>
           </div>
-        </div>
-        
-        <div className="flex justify-between items-center mt-6">
-          <p className="text-sm text-muted-foreground" data-testid="text-results-count">
-            Showing <span className="font-semibold">{resultCount}</span> of <span className="font-semibold">{totalCount}</span> students
-          </p>
-          <Button onClick={onSearch} data-testid="button-search">
-            <Search className="w-4 h-4 mr-2" />
+          
+          {/* Search Button */}
+          <Button onClick={onSearch} data-testid="button-search" className="h-8 px-4 bg-blue-600 hover:bg-blue-700">
+            <Search className="w-4 h-4 mr-1" />
             Search
           </Button>
+          
+          {/* Results Count */}
+          <div className="ml-auto">
+            <p className="text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-md" data-testid="text-results-count">
+              <span className="font-semibold text-blue-600 dark:text-blue-400">{resultCount}</span> of <span className="font-semibold">{totalCount}</span> students
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>

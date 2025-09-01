@@ -11,19 +11,36 @@ interface StudentCardProps {
 }
 
 export default function StudentCard({ student, showFullInfo = false }: StudentCardProps) {
-  // Calculate skill scores based on coding rating and skills
-  const dsaScore = Math.floor(Math.random() * 5) + 1; // 1-5 stars
-  const aptitudeScore = Math.floor(Math.random() * 5) + 1; // 1-5 stars
-  const communicationScore = Math.floor(Math.random() * 5) + 1; // 1-5 stars
-  const csFundamentalsScore = Math.floor(Math.random() * 5) + 1; // 1-5 stars
-
-  // Overall rating from codingRating field
+  // Use student ID as seed for consistent ratings
+  const seed = student.id;
+  
+  // Overall rating from codingRating field (this is the baseline)
   const overallRating = student.codingRating || 4;
+  
+  // Generate consistent skill scores based on overall rating with some variation
+  // Higher overall rating = higher individual skill scores, but with realistic variation
+  const generateSkillScore = (offset: number) => {
+    const baseScore = overallRating;
+    const variation = ((seed * 37 + offset) % 3) - 1; // -1, 0, or 1
+    return Math.max(1, Math.min(5, baseScore + variation));
+  };
+  
+  const dsaScore = generateSkillScore(1);
+  const aptitudeScore = generateSkillScore(2); 
+  const communicationScore = generateSkillScore(3);
+  const csFundamentalsScore = generateSkillScore(4);
 
-  // Calculate match percentage based on skills and CGPA
+  // Calculate match percentage based on skills, CGPA, and overall rating
   const averageSkillScore = (dsaScore + aptitudeScore + communicationScore + csFundamentalsScore) / 4;
   const cgpaScore = (student.cgpa / 10) * 5; // Convert CGPA to 5-point scale
-  const matchPercentage = Math.min(95, Math.max(60, Math.round(((averageSkillScore + cgpaScore + overallRating) / 3) * 20)));
+  
+  // JD match percentage - weighted calculation
+  const skillWeight = 0.4;
+  const cgpaWeight = 0.3;
+  const overallWeight = 0.3;
+  
+  const rawMatchScore = (averageSkillScore * skillWeight) + (cgpaScore * cgpaWeight) + (overallRating * overallWeight);
+  const matchPercentage = Math.min(95, Math.max(60, Math.round(rawMatchScore * 20)));
 
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, i) => (
