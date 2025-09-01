@@ -26,8 +26,13 @@ export default function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/browse" data-testid="link-browse">
               <Button 
-                variant={location === "/browse" ? "default" : "outline"} 
-                className="font-medium"
+                variant={location === "/browse" ? "default" : "ghost"} 
+                className={cn(
+                  "font-medium transition-colors",
+                  location === "/browse" 
+                    ? "bg-primary text-primary-foreground" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                )}
               >
                 Browse Talent
               </Button>
@@ -113,8 +118,13 @@ export default function Header() {
                 data-testid="link-mobile-browse"
               >
                 <Button 
-                  variant={location === "/browse" ? "default" : "outline"} 
-                  className="w-full justify-start font-medium"
+                  variant={location === "/browse" ? "default" : "ghost"} 
+                  className={cn(
+                    "w-full justify-start font-medium transition-colors",
+                    location === "/browse" 
+                      ? "bg-primary text-primary-foreground" 
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                  )}
                 >
                   Browse Talent
                 </Button>
