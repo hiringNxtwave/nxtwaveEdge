@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Users, Building2, MessageSquare, TrendingUp, Star, Award, Globe, Target, CheckCircle, ArrowRight } from "lucide-react";
-import { SiTata, SiInfosys, SiWipro, SiMicrosoft, SiGoogle, SiAmazon, SiFlipkart } from "react-icons/si";
+import { SiTata, SiInfosys, SiWipro, SiGoogle, SiAmazon, SiFlipkart } from "react-icons/si";
 import Header from "@/components/header";
 
 export default function Home() {
@@ -21,7 +21,7 @@ export default function Home() {
       
       {/* Hero Section - Handshake Style */}
       <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/50 to-slate-800/50 opacity-20"></div>
         
         <div className="container mx-auto px-4 relative z-10">
           {/* Top notification banner */}
@@ -99,8 +99,8 @@ export default function Home() {
             </div>
 
             {/* Row 2 - Global Tech */}
-            <div className="flex items-center justify-center h-16 w-24 text-white hover:text-gray-300 transition-colors" data-testid="logo-microsoft">
-              <SiMicrosoft size={50} />
+            <div className="flex items-center justify-center h-16 w-24 bg-white rounded-lg p-2" data-testid="logo-microsoft">
+              <div className="text-blue-600 font-bold text-lg">MSFT</div>
             </div>
             <div className="flex items-center justify-center h-16 w-24 text-white hover:text-blue-400 transition-colors" data-testid="logo-google">
               <SiGoogle size={50} />
@@ -333,7 +333,7 @@ export default function Home() {
 
       {/* Call to Action - Enhanced */}
       <section className="py-24 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900/20 to-blue-900/20 opacity-30"></div>
         
         <div className="container mx-auto px-4 text-center relative z-10">
           <h2 className="text-5xl md:text-6xl font-bold mb-6" data-testid="text-cta-title">
