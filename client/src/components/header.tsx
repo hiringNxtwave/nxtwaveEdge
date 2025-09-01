@@ -1,14 +1,16 @@
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
-import { Handshake, Menu } from "lucide-react";
+import { Handshake, Menu, Heart } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useShortlist } from "@/contexts/shortlist-context";
 
 export default function Header() {
   const { isAuthenticated, user } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { shortlistCount } = useShortlist();
 
   return (
     <header className="bg-card shadow-sm border-b border-border sticky top-0 z-50">
@@ -34,18 +36,19 @@ export default function Header() {
             >
               Browse Talent
             </Link>
-            {isAuthenticated && (
+            {isAuthenticated && shortlistCount > 0 && (
               <Link 
-                href="/dashboard" 
+                href="/shortlist" 
                 className={cn(
-                  "transition-colors",
-                  location === "/dashboard" 
+                  "transition-colors flex items-center gap-2",
+                  location === "/shortlist" 
                     ? "text-foreground font-medium" 
                     : "text-muted-foreground hover:text-foreground"
                 )}
-                data-testid="link-dashboard"
+                data-testid="link-shortlist"
               >
-                Dashboard
+                <Heart className="w-4 h-4" />
+                Shortlisted ({shortlistCount})
               </Link>
             )}
           </nav>
@@ -116,16 +119,6 @@ export default function Header() {
               >
                 Browse Talent
               </Link>
-              {isAuthenticated && (
-                <Link 
-                  href="/dashboard" 
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="link-mobile-dashboard"
-                >
-                  Dashboard
-                </Link>
-              )}
             </nav>
           </div>
         )}

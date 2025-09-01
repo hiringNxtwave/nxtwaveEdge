@@ -41,9 +41,16 @@ export default function Home() {
               reduce time to hire. Experience the future of hiring in India.
             </p>
             <div className="flex justify-center gap-4 mb-16">
-              <Button size="lg" className="px-8 py-4 text-lg bg-green-500 hover:bg-green-600 text-black font-semibold" data-testid="button-request-demo">
-                Request a demo
-              </Button>
+              <Link href="/browse">
+                <Button size="lg" className="px-8 py-4 text-lg bg-green-500 hover:bg-green-600 text-black font-semibold" data-testid="button-start-hiring">
+                  Browse Profiles
+                </Button>
+              </Link>
+              <Link href="/browse">
+                <Button size="lg" variant="outline" className="px-8 py-4 text-lg border-green-500 text-green-400 hover:bg-green-500 hover:text-black font-semibold" data-testid="button-start-hiring-alt">
+                  Start Hiring
+                </Button>
+              </Link>
             </div>
           </div>
 

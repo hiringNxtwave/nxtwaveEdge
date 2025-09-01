@@ -3,13 +3,15 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ShortlistProvider } from "@/contexts/shortlist-context";
 import { useAuth } from "@/hooks/useAuth";
 import NotFound from "./pages/not-found";
 import Landing from "./pages/landing";
 import Home from "./pages/home";
 import BrowseStudents from "./pages/browse-students";
 import StudentProfile from "./pages/student-profile";
-import CompanyDashboard from "./pages/company-dashboard";
+import ShortlistedCandidates from "./pages/shortlisted-candidates";
+import ComparisonView from "./pages/comparison-view";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -26,7 +28,8 @@ function Router() {
           <Route path="/" component={Home} />
           <Route path="/browse" component={BrowseStudents} />
           <Route path="/student/:id" component={StudentProfile} />
-          <Route path="/dashboard" component={CompanyDashboard} />
+          <Route path="/shortlist" component={ShortlistedCandidates} />
+          <Route path="/shortlist/compare" component={ComparisonView} />
         </>
       )}
       <Route component={NotFound} />
@@ -38,8 +41,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Router />
+        <ShortlistProvider>
+          <Toaster />
+          <Router />
+        </ShortlistProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

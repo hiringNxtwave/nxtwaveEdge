@@ -1,9 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, GraduationCap } from "lucide-react";
+import { Star, MapPin, GraduationCap, Check, Plus } from "lucide-react";
 import type { StudentWithSkills } from "@shared/schema";
 import { Link } from "wouter";
+import { useShortlist } from "@/contexts/shortlist-context";
 
 interface StudentCardProps {
   student: StudentWithSkills;
@@ -11,6 +12,8 @@ interface StudentCardProps {
 }
 
 export default function StudentCard({ student, showFullInfo = false }: StudentCardProps) {
+  const { isShortlisted, addToShortlist, removeFromShortlist } = useShortlist();
+  
   // Use student ID as seed for consistent ratings
   const seed = student.id;
   
@@ -68,7 +71,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 className="w-20 h-20 rounded-full object-cover border-3 border-white shadow-lg"
                 data-testid={`img-student-avatar-${student.id}`}
               />
-              <div className={`absolute -bottom-1 -right-1 w-6 h-6 rounded-full text-xs font-bold text-white flex items-center justify-center ${
+              <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full text-xs font-bold text-white flex items-center justify-center shadow-lg border-2 border-white ${
                 matchPercentage >= 85 ? 'bg-green-500' : matchPercentage >= 70 ? 'bg-yellow-500' : 'bg-orange-500'
               }`}>
                 {matchPercentage}%
@@ -154,10 +157,10 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               <div className="text-lg font-bold text-gray-900 dark:text-white mb-1" data-testid={`text-student-rating-${student.id}`}>
                 {overallRating}/5
               </div>
-              <div className={`text-sm font-bold ${
-                matchPercentage >= 85 ? 'text-green-600' : matchPercentage >= 70 ? 'text-yellow-600' : 'text-orange-600'
+              <div className={`text-lg font-bold px-3 py-1 rounded-full ${
+                matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
               }`}>
-                {matchPercentage}% Match
+                {matchPercentage}% JD Match
               </div>
             </div>
           </div>
@@ -175,8 +178,28 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 View Profile
               </Button>
             )}
-            <Button variant="outline" className="w-full border-green-500 text-green-600 hover:bg-green-50 font-semibold" size="sm" data-testid={`button-shortlist-${student.id}`}>
-              Shortlist
+            <Button 
+              variant="outline" 
+              className={`w-full font-semibold ${
+                isShortlisted(student.id) 
+                  ? 'border-green-500 bg-green-50 text-green-700 hover:bg-green-100' 
+                  : 'border-green-500 text-green-600 hover:bg-green-50'
+              }`} 
+              size="sm" 
+              onClick={() => isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id)}
+              data-testid={`button-shortlist-${student.id}`}
+            >
+              {isShortlisted(student.id) ? (
+                <>
+                  <Check className="w-4 h-4 mr-1" />
+                  Shortlisted
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-1" />
+                  Shortlist
+                </>
+              )}
             </Button>
             <Button variant="ghost" className="w-full text-gray-600 hover:text-gray-800" size="sm" data-testid={`button-contact-${student.id}`}>
               Message

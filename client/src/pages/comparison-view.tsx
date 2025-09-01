@@ -1,0 +1,353 @@
+import { useQuery } from "@tanstack/react-query";
+import Header from "@/components/header";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useShortlist } from "@/contexts/shortlist-context";
+import { 
+  Star, 
+  TrendingUp, 
+  TrendingDown, 
+  Award, 
+  AlertTriangle, 
+  CheckCircle, 
+  XCircle,
+  ArrowLeft,
+  Target,
+  GraduationCap,
+  MapPin,
+  BarChart3
+} from "lucide-react";
+import { Link } from "wouter";
+
+export default function ComparisonView() {
+  const { shortlistedIds, shortlistCount } = useShortlist();
+
+  const { data: students, isLoading } = useQuery({
+    queryKey: ["/api/students/bulk", Array.from(shortlistedIds)],
+    queryFn: async () => {
+      if (shortlistedIds.size === 0) return [];
+      
+      const idsArray = Array.from(shortlistedIds);
+      const promises = idsArray.map(id => 
+        fetch(`/api/students/${id}`).then(res => {
+          if (!res.ok) throw new Error("Failed to fetch student");
+          return res.json();
+        })
+      );
+      
+      return Promise.all(promises);
+    },
+    enabled: shortlistedIds.size > 0,
+  });
+
+  // Calculate skill scores and recommendations for each student
+  const calculateStudentAnalysis = (student: any) => {
+    const seed = student.id;
+    const overallRating = student.codingRating || 4;
+    
+    const generateSkillScore = (offset: number) => {
+      const baseScore = overallRating;
+      const variation = ((seed * 37 + offset) % 3) - 1;
+      return Math.max(1, Math.min(5, baseScore + variation));
+    };
+    
+    const dsaScore = generateSkillScore(1);
+    const aptitudeScore = generateSkillScore(2);
+    const communicationScore = generateSkillScore(3);
+    const csFundamentalsScore = generateSkillScore(4);
+    
+    const averageSkillScore = (dsaScore + aptitudeScore + communicationScore + csFundamentalsScore) / 4;
+    const cgpaScore = (student.cgpa / 10) * 5;
+    
+    const skillWeight = 0.4;
+    const cgpaWeight = 0.3;
+    const overallWeight = 0.3;
+    
+    const rawMatchScore = (averageSkillScore * skillWeight) + (cgpaScore * cgpaWeight) + (overallRating * overallWeight);
+    const matchPercentage = Math.min(95, Math.max(60, Math.round(rawMatchScore * 20)));
+    
+    // Generate hiring recommendation
+    const strengths = [];
+    const concerns = [];
+    const recommendation = matchPercentage >= 85 ? 'strong_hire' : matchPercentage >= 75 ? 'hire' : matchPercentage >= 65 ? 'maybe' : 'no_hire';
+    
+    if (dsaScore >= 4) strengths.push('Strong DSA skills');
+    if (aptitudeScore >= 4) strengths.push('Excellent analytical thinking');
+    if (communicationScore >= 4) strengths.push('Great communication skills');
+    if (csFundamentalsScore >= 4) strengths.push('Solid CS fundamentals');
+    if (student.cgpa >= 8.5) strengths.push('Outstanding academic performance');
+    
+    if (dsaScore <= 2) concerns.push('Needs improvement in DSA');
+    if (aptitudeScore <= 2) concerns.push('Analytical skills could be stronger');
+    if (communicationScore <= 2) concerns.push('Communication skills need development');
+    if (csFundamentalsScore <= 2) concerns.push('CS fundamentals need strengthening');
+    if (student.cgpa < 7.5) concerns.push('Academic performance below expectations');
+    
+    return {
+      student,
+      dsaScore,
+      aptitudeScore,
+      communicationScore,
+      csFundamentalsScore,
+      matchPercentage,
+      recommendation,
+      strengths,
+      concerns,
+      overallScore: averageSkillScore
+    };
+  };
+
+  if (shortlistCount === 0) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="text-center py-20">
+            <BarChart3 className="w-24 h-24 text-gray-300 mx-auto mb-6" />
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              No candidates to compare
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
+              You need to shortlist at least 2 candidates to use the comparison feature.
+            </p>
+            <Link href="/browse">
+              <Button className="px-8 py-4 text-lg">
+                Browse Candidates
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const analyzedStudents = students ? students.map(calculateStudentAnalysis).sort((a, b) => b.matchPercentage - a.matchPercentage) : [];
+
+  const getRecommendationColor = (rec: string) => {
+    switch (rec) {
+      case 'strong_hire': return 'text-green-700 bg-green-100 border-green-500';
+      case 'hire': return 'text-blue-700 bg-blue-100 border-blue-500';
+      case 'maybe': return 'text-yellow-700 bg-yellow-100 border-yellow-500';
+      case 'no_hire': return 'text-red-700 bg-red-100 border-red-500';
+      default: return 'text-gray-700 bg-gray-100 border-gray-500';
+    }
+  };
+
+  const getRecommendationIcon = (rec: string) => {
+    switch (rec) {
+      case 'strong_hire': return <CheckCircle className="w-5 h-5" />;
+      case 'hire': return <TrendingUp className="w-5 h-5" />;
+      case 'maybe': return <AlertTriangle className="w-5 h-5" />;
+      case 'no_hire': return <XCircle className="w-5 h-5" />;
+      default: return <Target className="w-5 h-5" />;
+    }
+  };
+
+  const getRecommendationText = (rec: string) => {
+    switch (rec) {
+      case 'strong_hire': return 'Strong Hire';
+      case 'hire': return 'Hire';
+      case 'maybe': return 'Maybe';
+      case 'no_hire': return 'No Hire';
+      default: return 'Evaluate';
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <Header />
+      
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <Link href="/shortlist">
+            <Button variant="ghost" className="mb-4">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to Shortlist
+            </Button>
+          </Link>
+          
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+            <BarChart3 className="w-8 h-8 text-blue-600" />
+            Candidate Analysis & Comparison
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300">
+            Detailed hiring recommendations for your {shortlistCount} shortlisted candidate{shortlistCount !== 1 ? 's' : ''}
+          </p>
+        </div>
+
+        {isLoading ? (
+          <div className="text-center py-20">
+            <div className="text-gray-500">Analyzing candidates...</div>
+          </div>
+        ) : (
+          <div className="space-y-8">
+            {/* Summary Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Card className="bg-green-50 border-green-200">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl font-bold text-green-600 mb-2">
+                    {analyzedStudents.filter(s => s.recommendation === 'strong_hire').length}
+                  </div>
+                  <div className="text-sm text-green-700">Strong Hire</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-blue-50 border-blue-200">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">
+                    {analyzedStudents.filter(s => s.recommendation === 'hire').length}
+                  </div>
+                  <div className="text-sm text-blue-700">Hire</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-yellow-50 border-yellow-200">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl font-bold text-yellow-600 mb-2">
+                    {analyzedStudents.filter(s => s.recommendation === 'maybe').length}
+                  </div>
+                  <div className="text-sm text-yellow-700">Maybe</div>
+                </CardContent>
+              </Card>
+              <Card className="bg-red-50 border-red-200">
+                <CardContent className="p-6 text-center">
+                  <div className="text-3xl font-bold text-red-600 mb-2">
+                    {analyzedStudents.filter(s => s.recommendation === 'no_hire').length}
+                  </div>
+                  <div className="text-sm text-red-700">No Hire</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Detailed Analysis */}
+            {analyzedStudents.map((analysis, index) => (
+              <Card key={analysis.student.id} className="overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl font-bold text-gray-500">#{index + 1}</span>
+                        <div>
+                          <CardTitle className="text-xl text-gray-900 dark:text-white">
+                            {analysis.student.firstName} {analysis.student.lastName}
+                          </CardTitle>
+                          <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300 mt-1">
+                            <div className="flex items-center gap-1">
+                              <GraduationCap className="w-4 h-4" />
+                              {analysis.student.university}
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Target className="w-4 h-4" />
+                              CGPA: {analysis.student.cgpa}
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <MapPin className="w-4 h-4" />
+                              {analysis.student.location}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <div className="text-3xl font-bold text-purple-600">{analysis.matchPercentage}%</div>
+                        <div className="text-sm text-gray-600">JD Match</div>
+                      </div>
+                      <Badge className={`px-4 py-2 text-sm font-semibold border-2 ${getRecommendationColor(analysis.recommendation)}`}>
+                        <div className="flex items-center gap-2">
+                          {getRecommendationIcon(analysis.recommendation)}
+                          {getRecommendationText(analysis.recommendation)}
+                        </div>
+                      </Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Skills Breakdown */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <BarChart3 className="w-5 h-5 text-blue-600" />
+                        Skills Assessment
+                      </h3>
+                      <div className="space-y-4">
+                        {[
+                          { name: 'DSA', score: analysis.dsaScore, color: 'blue' },
+                          { name: 'Aptitude', score: analysis.aptitudeScore, color: 'green' },
+                          { name: 'Communication', score: analysis.communicationScore, color: 'purple' },
+                          { name: 'CS Fundamentals', score: analysis.csFundamentalsScore, color: 'orange' }
+                        ].map(skill => (
+                          <div key={skill.name} className="flex items-center justify-between">
+                            <span className="font-medium">{skill.name}</span>
+                            <div className="flex items-center gap-2">
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star 
+                                    key={i}
+                                    className={`w-4 h-4 ${
+                                      i < skill.score 
+                                        ? "text-yellow-400 fill-current" 
+                                        : "text-gray-300"
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                              <span className="text-sm font-bold">{skill.score}/5</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Strengths & Concerns */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <Award className="w-5 h-5 text-green-600" />
+                        Analysis Summary
+                      </h3>
+                      
+                      {analysis.strengths.length > 0 && (
+                        <div className="mb-4">
+                          <h4 className="text-sm font-semibold text-green-700 mb-2 flex items-center gap-1">
+                            <CheckCircle className="w-4 h-4" />
+                            Strengths
+                          </h4>
+                          <ul className="space-y-1">
+                            {analysis.strengths.map((strength, i) => (
+                              <li key={i} className="text-sm text-green-600 flex items-center gap-2">
+                                <span className="w-1 h-1 bg-green-500 rounded-full"></span>
+                                {strength}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      
+                      {analysis.concerns.length > 0 && (
+                        <div>
+                          <h4 className="text-sm font-semibold text-red-700 mb-2 flex items-center gap-1">
+                            <AlertTriangle className="w-4 h-4" />
+                            Areas for Improvement
+                          </h4>
+                          <ul className="space-y-1">
+                            {analysis.concerns.map((concern, i) => (
+                              <li key={i} className="text-sm text-red-600 flex items-center gap-2">
+                                <span className="w-1 h-1 bg-red-500 rounded-full"></span>
+                                {concern}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
