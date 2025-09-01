@@ -24,19 +24,6 @@ export default function Header() {
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/browse" data-testid="link-browse">
-              <Button 
-                variant={location === "/browse" ? "default" : "ghost"} 
-                className={cn(
-                  "font-medium transition-colors",
-                  location === "/browse" 
-                    ? "bg-primary text-primary-foreground" 
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                )}
-              >
-                Browse Candidates
-              </Button>
-            </Link>
             {isAuthenticated && shortlistCount > 0 && (
               <Link 
                 href="/shortlist" 
@@ -109,24 +96,25 @@ export default function Header() {
         </div>
         
         {/* Mobile menu */}
-        {mobileMenuOpen && (
+        {mobileMenuOpen && isAuthenticated && shortlistCount > 0 && (
           <div className="md:hidden border-t border-border py-4">
             <nav className="flex flex-col space-y-4">
               <Link 
-                href="/browse" 
+                href="/shortlist" 
                 onClick={() => setMobileMenuOpen(false)}
-                data-testid="link-mobile-browse"
+                data-testid="link-mobile-shortlist"
               >
                 <Button 
-                  variant={location === "/browse" ? "default" : "ghost"} 
+                  variant={location === "/shortlist" ? "default" : "ghost"} 
                   className={cn(
                     "w-full justify-start font-medium transition-colors",
-                    location === "/browse" 
+                    location === "/shortlist" 
                       ? "bg-primary text-primary-foreground" 
                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
                 >
-                  Browse Candidates
+                  <Heart className="w-4 h-4 mr-2" />
+                  Shortlisted ({shortlistCount})
                 </Button>
               </Link>
             </nav>

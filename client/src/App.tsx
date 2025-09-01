@@ -21,12 +21,12 @@ function Router() {
       {isLoading || !isAuthenticated ? (
         <>
           <Route path="/" component={Landing} />
-          <Route path="/browse" component={BrowseStudents} />
+          <Route path="/browse" component={() => { window.location.href = "/"; return null; }} />
         </>
       ) : (
         <>
           <Route path="/" component={Home} />
-          <Route path="/browse" component={BrowseStudents} />
+          <Route path="/browse" component={() => { window.location.href = "/"; return null; }} />
           <Route path="/student/:id" component={StudentProfile} />
           <Route path="/shortlist" component={ShortlistedCandidates} />
           <Route path="/shortlist/compare" component={ComparisonView} />

@@ -1,19 +1,61 @@
+import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
-import { Users, Building2, MessageSquare, TrendingUp, Star, Award, Globe, Target, CheckCircle, ArrowRight, MapPin, GraduationCap } from "lucide-react";
+import { Users, Building2, MessageSquare, TrendingUp, Star, Award, Globe, Target, CheckCircle, ArrowRight, MapPin, GraduationCap, Lock, Zap } from "lucide-react";
 import { SiTata, SiInfosys, SiWipro, SiGoogle, SiAmazon, SiFlipkart } from "react-icons/si";
 import Header from "@/components/header";
+import StudentCard from "@/components/student-card";
+import StudentFilters from "@/components/student-filters";
 
 export default function Home() {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+  const [filters, setFilters] = useState({
+    skills: [] as string[],
+    location: "",
+    university: "",
+    minCgpa: undefined as number | undefined,
+    maxCgpa: undefined as number | undefined,
+    codingRating: undefined as number | undefined,
+  });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  // Show limited results for non-authenticated users
+  const studentsPerPage = isAuthenticated ? 48 : 6;
 
   const { data: stats } = useQuery({
     queryKey: ["/api/stats"],
     enabled: !!user,
+  });
+
+  const { data: studentsData, isLoading: studentsLoading } = useQuery({
+    queryKey: ["/api/students", filters, currentPage],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (filters.skills.length > 0) params.append("skills", filters.skills.join(","));
+      if (filters.location) params.append("location", filters.location);
+      if (filters.university) params.append("university", filters.university);
+      if (filters.minCgpa) params.append("minCgpa", filters.minCgpa.toString());
+      if (filters.maxCgpa) params.append("maxCgpa", filters.maxCgpa.toString());
+      if (filters.codingRating) params.append("codingRating", filters.codingRating.toString());
+      params.append("limit", studentsPerPage.toString());
+      params.append("offset", ((currentPage - 1) * studentsPerPage).toString());
+
+      const response = await fetch(`/api/students?${params}`);
+      if (!response.ok) throw new Error("Failed to fetch students");
+      return response.json();
+    },
+  });
+
+  const students = studentsData?.students || studentsData || [];
+  const totalCount = studentsData?.total || students.length;
+
+  const { data: skills } = useQuery({
+    queryKey: ["/api/skills"],
   });
 
   return (
@@ -174,269 +216,247 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Preview Talent Section - Show 5 sample profiles */}
+      {/* Browse Talent Section - Full Browse Experience */}
       <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Meet our top entry-level software engineers
+              Browse entry-level software engineers
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Preview exceptional talent from India's leading universities. Sign in to view detailed profiles and start hiring.
+              Discover talented students from India's leading universities. Use filters to find the perfect candidates for your team.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {/* Sample Profile 1 - IIT Graduate */}
-            <Card className="hover:shadow-lg transition-shadow bg-white" data-testid="preview-profile-1">
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-bold text-lg">AR</span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">Arjun Reddy</h3>
-                      <div className="flex items-center text-sm text-gray-600">
-                        <GraduationCap className="w-4 h-4 mr-1" />
-                        IIT Delhi
+          {/* Filters Section */}
+          <div className="mb-8 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Filter Candidates</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-300">Find the perfect candidates by using the filters below</p>
+            </div>
+            <StudentFilters
+              filters={{
+                skills: filters.skills.length > 0 ? filters.skills.join(",") : "all",
+                location: filters.location || "all",
+                university: filters.university || "all",
+                minCgpa: filters.minCgpa?.toString() || "all",
+                maxCgpa: filters.maxCgpa?.toString() || "all",
+                codingRating: filters.codingRating?.toString() || "all"
+              }}
+              onFiltersChange={(newFilters) => {
+                setFilters({
+                  skills: newFilters.skills && newFilters.skills !== "all" ? newFilters.skills.split(",").filter(Boolean) : [],
+                  location: newFilters.location === "all" ? "" : newFilters.location,
+                  university: newFilters.university === "all" ? "" : newFilters.university,
+                  minCgpa: newFilters.minCgpa && newFilters.minCgpa !== "all" ? parseFloat(newFilters.minCgpa) : undefined,
+                  maxCgpa: newFilters.maxCgpa && newFilters.maxCgpa !== "all" ? parseFloat(newFilters.maxCgpa) : undefined,
+                  codingRating: newFilters.codingRating && newFilters.codingRating !== "all" ? parseInt(newFilters.codingRating) : undefined
+                });
+              }}
+              onSearch={() => setCurrentPage(1)}
+              skills={(skills as any) || []}
+              resultCount={students.length}
+              totalCount={totalCount}
+            />
+          </div>
+
+          {/* Limited Access Banner for Unauthenticated Users */}
+          {!isAuthenticated && (
+            <div className="mb-8">
+              <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <Lock className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-lg text-gray-900">Preview Mode - Limited Access</CardTitle>
+                        <p className="text-sm text-gray-600 mt-1">
+                          You're viewing a limited preview. Sign in to access full profiles, contact details, and hiring tools.
+                        </p>
                       </div>
                     </div>
-                  </div>
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">Available</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Delhi, India
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline">JavaScript</Badge>
-                    <Badge variant="outline">React</Badge>
-                    <Badge variant="outline">Node.js</Badge>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="whitespace-nowrap">Coding & DSA</span>
-                      <span className="font-medium text-blue-600">92/100</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>CGPA</span>
-                      <span className="font-medium">8.7/10</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Sample Profile 2 - NIT Graduate */}
-            <Card className="hover:shadow-lg transition-shadow bg-white" data-testid="preview-profile-2">
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                      <span className="text-purple-600 font-bold text-lg">PS</span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">Priya Sharma</h3>
-                      <div className="flex items-center text-sm text-gray-600">
-                        <GraduationCap className="w-4 h-4 mr-1" />
-                        NIT Trichy
-                      </div>
-                    </div>
-                  </div>
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">Available</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Chennai, India
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline">Java</Badge>
-                    <Badge variant="outline">Spring Boot</Badge>
-                    <Badge variant="outline">MySQL</Badge>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="whitespace-nowrap">Coding & DSA</span>
-                      <span className="font-medium text-blue-600">88/100</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>CGPA</span>
-                      <span className="font-medium">8.5/10</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Sample Profile 3 - BITS Graduate */}
-            <Card className="hover:shadow-lg transition-shadow bg-white" data-testid="preview-profile-3">
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                      <span className="text-green-600 font-bold text-lg">KM</span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">Karthik Menon</h3>
-                      <div className="flex items-center text-sm text-gray-600">
-                        <GraduationCap className="w-4 h-4 mr-1" />
-                        BITS Pilani
-                      </div>
-                    </div>
-                  </div>
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">Available</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Bangalore, India
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline">Python</Badge>
-                    <Badge variant="outline">Django</Badge>
-                    <Badge variant="outline">PostgreSQL</Badge>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="whitespace-nowrap">Coding & DSA</span>
-                      <span className="font-medium text-blue-600">85/100</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>CGPA</span>
-                      <span className="font-medium">8.3/10</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Sample Profile 4 - IIT Graduate */}
-            <Card className="hover:shadow-lg transition-shadow bg-white" data-testid="preview-profile-4">
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                      <span className="text-orange-600 font-bold text-lg">ST</span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">Sneha Thakur</h3>
-                      <div className="flex items-center text-sm text-gray-600">
-                        <GraduationCap className="w-4 h-4 mr-1" />
-                        IIT Bombay
-                      </div>
-                    </div>
-                  </div>
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">Available</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Mumbai, India
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline">React</Badge>
-                    <Badge variant="outline">TypeScript</Badge>
-                    <Badge variant="outline">AWS</Badge>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="whitespace-nowrap">Coding & DSA</span>
-                      <span className="font-medium text-blue-600">94/100</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>CGPA</span>
-                      <span className="font-medium">9.1/10</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Sample Profile 5 - IIIT Graduate */}
-            <Card className="hover:shadow-lg transition-shadow bg-white" data-testid="preview-profile-5">
-              <CardHeader className="pb-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
-                      <span className="text-red-600 font-bold text-lg">RG</span>
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-gray-900">Rahul Gupta</h3>
-                      <div className="flex items-center text-sm text-gray-600">
-                        <GraduationCap className="w-4 h-4 mr-1" />
-                        IIIT Hyderabad
-                      </div>
-                    </div>
-                  </div>
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">Available</Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <MapPin className="w-4 h-4 mr-2" />
-                    Hyderabad, India
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline">C++</Badge>
-                    <Badge variant="outline">Machine Learning</Badge>
-                    <Badge variant="outline">Python</Badge>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="whitespace-nowrap">Coding & DSA</span>
-                      <span className="font-medium text-blue-600">90/100</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>CGPA</span>
-                      <span className="font-medium">8.9/10</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* More profiles behind sign-in */}
-            <Card className="hover:shadow-lg transition-shadow bg-gradient-to-br from-blue-50 to-indigo-50 border-dashed border-2 border-blue-200" data-testid="preview-more-profiles">
-              <CardContent className="flex flex-col items-center justify-center h-full py-12">
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                    <Users className="w-8 h-8 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg text-gray-900 mb-2">35+ More Profiles</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Access detailed profiles, projects, and assessment scores
-                    </p>
                     <Button 
-                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
                       onClick={() => window.location.href = "/api/login"}
-                      data-testid="button-signin-to-view-more"
+                      data-testid="button-unlock-full-access"
                     >
-                      Sign In to View All
+                      Unlock Full Access
                     </Button>
                   </div>
+                </CardHeader>
+              </Card>
+            </div>
+          )}
+
+          {/* Student Results */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {studentsLoading 
+                  ? "Loading..." 
+                  : isAuthenticated 
+                    ? `${totalCount} Students Found`
+                    : `Showing ${students.length} of 2.5M+ Students (Preview)`
+                }
+              </h3>
+              {!isAuthenticated && (
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <Users className="w-4 h-4" />
+                  <span>2.5M+ total students available</span>
                 </div>
-              </CardContent>
-            </Card>
+              )}
+            </div>
+
+            {studentsLoading ? (
+              <div className="space-y-4">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="bg-white dark:bg-gray-800 rounded-lg border p-6">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center space-x-6 flex-1">
+                        <Skeleton className="w-16 h-16 rounded-full" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-5 w-48" />
+                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-4 w-24" />
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-8 flex-1">
+                        <div className="grid grid-cols-4 gap-6 flex-1">
+                          {Array.from({ length: 4 }).map((_, j) => (
+                            <div key={j} className="text-center space-y-1">
+                              <Skeleton className="h-3 w-16 mx-auto" />
+                              <Skeleton className="h-4 w-20 mx-auto" />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-6">
+                        <div className="text-center space-y-1">
+                          <Skeleton className="h-3 w-12 mx-auto" />
+                          <Skeleton className="h-4 w-16 mx-auto" />
+                        </div>
+                        <div className="space-y-2">
+                          <Skeleton className="h-8 w-24" />
+                          <Skeleton className="h-8 w-24" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : students?.length === 0 ? (
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700" data-testid="text-no-students">
+                <p className="text-gray-500 dark:text-gray-400 text-lg">
+                  No students found matching your criteria.
+                </p>
+                <p className="text-gray-400 dark:text-gray-500 mt-2">
+                  Try adjusting your filters to see more results.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4" data-testid="list-students">
+                {students?.map((student: any) => (
+                  <StudentCard key={student.id} student={student} />
+                ))}
+              </div>
+            )}
+
+            {students && students.length > 0 && (
+              <div className="mt-8 flex justify-center" data-testid="pagination-controls">
+                <div className="flex gap-2">
+                  {currentPage > 1 && (
+                    <button
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                      className="px-4 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+                      data-testid="button-prev-page"
+                    >
+                      Previous
+                    </button>
+                  )}
+                  <span className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400" data-testid="text-page-info">
+                    Page {currentPage}
+                  </span>
+                  {students.length === studentsPerPage && (
+                    <button
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                      className="px-4 py-2 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+                      data-testid="button-next-page"
+                    >
+                      Next
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="text-center">
-            <p className="text-gray-600 text-lg">
-              Explore more profiles using the <strong>Browse Candidates</strong> option above
-            </p>
-          </div>
+          {/* Login Prompt for Non-Authenticated Users */}
+          {!isAuthenticated && students && students.length > 0 && (
+            <div className="mt-12">
+              <Card className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-blue-200 dark:border-blue-800">
+                <CardHeader className="text-center">
+                  <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center justify-center gap-2">
+                    <Lock className="w-6 h-6 text-blue-600" />
+                    See More Talent
+                  </CardTitle>
+                  <p className="text-gray-600 dark:text-gray-300 text-lg">
+                    You've seen a preview of {students.length} candidates. Sign in to access our full database of 2.5M+ verified students.
+                  </p>
+                </CardHeader>
+                <CardContent className="text-center space-y-6">
+                  <div className="grid md:grid-cols-3 gap-6 mb-8">
+                    <div className="flex flex-col items-center">
+                      <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mb-3">
+                        <Users className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <h4 className="font-semibold text-gray-900 dark:text-white mb-1">Full Access</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Browse all 2.5M+ student profiles</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mb-3">
+                        <Star className="w-6 h-6 text-green-600" />
+                      </div>
+                      <h4 className="font-semibold text-gray-900 dark:text-white mb-1">Shortlisting</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Save and compare candidates</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mb-3">
+                        <Zap className="w-6 h-6 text-purple-600" />
+                      </div>
+                      <h4 className="font-semibold text-gray-900 dark:text-white mb-1">AI Analysis</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">Get hiring recommendations</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button 
+                      size="lg" 
+                      className="px-8 py-3 text-lg"
+                      onClick={() => window.location.href = "/api/login"}
+                      data-testid="button-sign-in-to-continue"
+                    >
+                      Sign In to Continue
+                    </Button>
+                    <Button 
+                      size="lg" 
+                      variant="outline"
+                      className="px-8 py-3 text-lg"
+                      onClick={() => window.location.href = "/api/login"}
+                      data-testid="button-start-free-trial"
+                    >
+                      Start Free Trial
+                    </Button>
+                  </div>
+                  
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Join 15,000+ companies already using TalentConnect India
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </section>
 
@@ -451,243 +471,97 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="bg-white dark:bg-gray-700 hover:shadow-lg transition-shadow" data-testid="case-study-tcs">
+            <Card className="text-center hover:shadow-lg transition-shadow" data-testid="testimonial-1">
               <CardHeader>
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">TCS</div>
-                  <div>
-                    <CardTitle className="text-lg">Tata Consultancy Services</CardTitle>
-                    <p className="text-sm text-gray-500">Global IT Services</p>
-                  </div>
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-blue-600 font-bold text-xl">TCS</span>
                 </div>
+                <CardTitle className="text-lg text-gray-900">Massive Scale</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  "TalentConnect helped us hire 12,000+ engineering graduates across 200+ campuses with 40% faster processing"
+                <p className="text-gray-600 text-sm mb-4">
+                  "Recruited 2,500 entry-level engineers across India in just 3 months"
                 </p>
-                <div className="flex items-center text-orange-500">
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                </div>
+                <div className="text-xs text-gray-500 font-medium">TCS</div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white dark:bg-gray-700 hover:shadow-lg transition-shadow" data-testid="case-study-swiggy">
+            <Card className="text-center hover:shadow-lg transition-shadow" data-testid="testimonial-2">
               <CardHeader>
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center text-white font-bold">SW</div>
-                  <div>
-                    <CardTitle className="text-lg">Swiggy</CardTitle>
-                    <p className="text-sm text-gray-500">Food Delivery Unicorn</p>
-                  </div>
+                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-purple-600 font-bold text-lg">Infosys</span>
                 </div>
+                <CardTitle className="text-lg text-gray-900">Quality First</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  "Built our entire tech team of 500+ engineers from top-tier colleges with 60% improved diversity metrics"
+                <p className="text-gray-600 text-sm mb-4">
+                  "90% of hires exceeded performance expectations in their first year"
                 </p>
-                <div className="flex items-center text-orange-500">
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                </div>
+                <div className="text-xs text-gray-500 font-medium">Infosys</div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white dark:bg-gray-700 hover:shadow-lg transition-shadow" data-testid="case-study-paytm">
+            <Card className="text-center hover:shadow-lg transition-shadow" data-testid="testimonial-3">
               <CardHeader>
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-blue-800 rounded-lg flex items-center justify-center text-white font-bold">PM</div>
-                  <div>
-                    <CardTitle className="text-lg">Paytm</CardTitle>
-                    <p className="text-sm text-gray-500">FinTech Leader</p>
-                  </div>
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-green-600 font-bold text-lg">Wipro</span>
                 </div>
+                <CardTitle className="text-lg text-gray-900">Efficient Process</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  "Scaled our engineering team by 300% in 18 months with campus hires from 150+ engineering colleges"
+                <p className="text-gray-600 text-sm mb-4">
+                  "Reduced hiring time from 6 months to 6 weeks with better candidate quality"
                 </p>
-                <div className="flex items-center text-orange-500">
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                </div>
+                <div className="text-xs text-gray-500 font-medium">Wipro</div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white dark:bg-gray-700 hover:shadow-lg transition-shadow" data-testid="case-study-ola">
+            <Card className="text-center hover:shadow-lg transition-shadow" data-testid="testimonial-4">
               <CardHeader>
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center text-white font-bold">OL</div>
-                  <div>
-                    <CardTitle className="text-lg">Ola Cabs</CardTitle>
-                    <p className="text-sm text-gray-500">Mobility Platform</p>
-                  </div>
+                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-orange-600 font-bold text-lg">HCL</span>
                 </div>
+                <CardTitle className="text-lg text-gray-900">Perfect Match</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 dark:text-gray-300 mb-4">
-                  "Reduced campus hiring costs by 50% while increasing quality of hires from Tier-1 and Tier-2 colleges"
+                <p className="text-gray-600 text-sm mb-4">
+                  "Found exactly the right candidates for our specialized technology teams"
                 </p>
-                <div className="flex items-center text-orange-500">
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                  <Star className="h-4 w-4 fill-current" />
-                </div>
+                <div className="text-xs text-gray-500 font-medium">HCL Technologies</div>
               </CardContent>
             </Card>
           </div>
-
         </div>
       </section>
 
-      {/* Call to Action - Clean Design */}
-      <section className="py-20 bg-blue-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6" data-testid="text-cta-title">
-            Ready to find your next star engineer?
-          </h2>
-          <p className="text-lg mb-8 max-w-2xl mx-auto opacity-90">
-            Join thousands of companies using TalentConnect India to hire exceptional entry-level software engineers.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/shortlist">
-              <Button size="lg" className="px-8 py-4 bg-white text-blue-600 hover:bg-gray-100 font-semibold" data-testid="button-view-shortlist">
-                View Your Shortlist
+      {/* Call to Action Section */}
+      {!user && (
+        <section className="py-20 bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Ready to find your next great hire?
+            </h2>
+            <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+              Join thousands of companies who trust TalentConnect India to build their teams
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                size="lg" 
+                variant="secondary"
+                className="px-8 py-4 text-lg font-semibold bg-white text-blue-600 hover:bg-gray-100"
+                onClick={() => window.location.href = "/api/login"}
+                data-testid="button-get-started"
+              >
+                Get Started Today
               </Button>
-            </Link>
-            <Button size="lg" variant="outline" className="px-8 py-4 border-white text-white hover:bg-white hover:text-blue-600 font-semibold" data-testid="button-contact-sales">
-              Contact Sales
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Dashboard Preview for Logged In Users */}
-      {user && (
-        <section className="py-16 bg-white dark:bg-gray-900">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                Welcome back, {user?.firstName}!
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                Here's your quick overview and actions
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              <Card data-testid="card-stat-students">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Students</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold" data-testid="text-total-students">
-                    {(stats as any)?.totalStudents || "120"}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    +12% from last month
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card data-testid="card-stat-companies">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Active Companies</CardTitle>
-                  <Building2 className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold" data-testid="text-total-companies">
-                    {(stats as any)?.totalCompanies || "45"}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    +5% from last month
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card data-testid="card-stat-contacts">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Contact Requests</CardTitle>
-                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold" data-testid="text-total-contacts">
-                    {(stats as any)?.totalContacts || "89"}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    +8% from last month
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card data-testid="card-stat-placements">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Successful Placements</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold" data-testid="text-total-placements">
-                    {(stats as any)?.totalPlacements || "156"}
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    +15% from last month
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              <Card data-testid="card-quick-actions">
-                <CardHeader>
-                  <CardTitle>Quick Actions</CardTitle>
-                  <CardDescription>
-                    Get started with common tasks
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Link href="/browse">
-                    <Button className="w-full justify-start" variant="outline" data-testid="button-browse-students">
-                      <Users className="mr-2 h-4 w-4" />
-                      Browse Students
-                    </Button>
-                  </Link>
-                  <Link href="/dashboard">
-                    <Button className="w-full justify-start" variant="outline" data-testid="button-company-dashboard">
-                      <Building2 className="mr-2 h-4 w-4" />
-                      Company Dashboard
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-
-              <Card data-testid="card-recent-activity">
-                <CardHeader>
-                  <CardTitle>Recent Activity</CardTitle>
-                  <CardDescription>
-                    Latest updates in the platform
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-muted-foreground">
-                    <p className="mb-2">• New student from IIT Delhi registered</p>
-                    <p className="mb-2">• TechCorp updated their company profile</p>
-                    <p className="mb-2">• 5 new contact requests this week</p>
-                    <p>• Updated skill categories available</p>
-                  </div>
-                </CardContent>
-              </Card>
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="px-8 py-4 text-lg font-semibold border-white text-white hover:bg-white hover:text-blue-600"
+                data-testid="button-schedule-demo"
+              >
+                Schedule Demo
+              </Button>
             </div>
           </div>
         </section>
