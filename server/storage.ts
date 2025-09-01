@@ -442,8 +442,60 @@ export class DatabaseStorage implements IStorage {
       "IoT engineer specializing in embedded systems and sensor networks."
     ];
 
+    // Create high-quality targeted profiles first (these will have high JD match)
+    const highMatchProfiles = [
+      {
+        firstName: "Arjun", lastName: "Sharma", university: "IIT Delhi", degree: "B.Tech", major: "Computer Science",
+        cgpa: "9.2", codingRating: 5, location: "Delhi", graduationYear: 2024,
+        bio: "Full-stack developer with 2+ years of experience in React, Node.js, and cloud technologies. Strong problem-solving skills and passionate about building scalable applications.",
+        profileImageUrl: profileImages[0]
+      },
+      {
+        firstName: "Priya", lastName: "Patel", university: "IIT Bombay", degree: "B.Tech", major: "Computer Science",
+        cgpa: "9.0", codingRating: 5, location: "Mumbai", graduationYear: 2024,
+        bio: "Software engineer specializing in backend development, microservices, and DevOps. Experience with Java, Spring Boot, Docker, and Kubernetes.",
+        profileImageUrl: profileImages[1]
+      },
+      {
+        firstName: "Rahul", lastName: "Kumar", university: "BITS Pilani", degree: "B.Tech", major: "Computer Science",
+        cgpa: "8.8", codingRating: 5, location: "Bangalore", graduationYear: 2024,
+        bio: "Frontend specialist with expertise in React, TypeScript, and modern web technologies. Strong focus on user experience and performance optimization.",
+        profileImageUrl: profileImages[2]
+      },
+      {
+        firstName: "Sneha", lastName: "Reddy", university: "IIT Madras", degree: "B.Tech", major: "Computer Science",
+        cgpa: "9.1", codingRating: 5, location: "Chennai", graduationYear: 2024,
+        bio: "Data engineer with experience in Python, Apache Spark, and cloud platforms. Skilled in building data pipelines and machine learning systems.",
+        profileImageUrl: profileImages[3]
+      },
+      {
+        firstName: "Vikram", lastName: "Singh", university: "IIT Kanpur", degree: "B.Tech", major: "Computer Science",
+        cgpa: "8.9", codingRating: 4, location: "Pune", graduationYear: 2024,
+        bio: "Mobile app developer with expertise in React Native and Flutter. Experience in building cross-platform applications with clean architecture.",
+        profileImageUrl: profileImages[4]
+      },
+      {
+        firstName: "Ananya", lastName: "Joshi", university: "NIT Trichy", degree: "B.Tech", major: "Computer Science",
+        cgpa: "8.7", codingRating: 4, location: "Bangalore", graduationYear: 2024,
+        bio: "AI/ML enthusiast with hands-on experience in TensorFlow, PyTorch, and computer vision. Strong mathematical background and research experience.",
+        profileImageUrl: profileImages[5]
+      }
+    ];
+
     const studentData = [];
-    for (let i = 0; i < 120; i++) {
+    
+    // Add high-match profiles
+    for (let i = 0; i < highMatchProfiles.length; i++) {
+      const profile = highMatchProfiles[i];
+      studentData.push({
+        ...profile,
+        email: `${profile.firstName.toLowerCase()}.${profile.lastName.toLowerCase()}@email.com`,
+        cgpa: parseFloat(profile.cgpa),
+      });
+    }
+
+    // Generate remaining random profiles
+    for (let i = highMatchProfiles.length; i < 120; i++) {
       const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
       const university = universities[Math.floor(Math.random() * universities.length)];
@@ -454,7 +506,7 @@ export class DatabaseStorage implements IStorage {
       const bio = bioTemplates[Math.floor(Math.random() * bioTemplates.length)];
       
       // Generate CGPA between 7.0 and 9.8
-      const cgpa = (Math.random() * 2.8 + 7.0).toFixed(2);
+      const cgpa = parseFloat((Math.random() * 2.8 + 7.0).toFixed(2));
       
       // Generate coding rating (1-5 stars), with bias towards higher ratings
       const codingRating = Math.floor(Math.random() * 5) + 1;
@@ -483,17 +535,43 @@ export class DatabaseStorage implements IStorage {
 
     // Seed student skills
     const studentSkillData = [];
-    for (const student of insertedStudents) {
-      // Add random skills for each student
-      const studentSkillIds = allSkills.slice(0, Math.floor(Math.random() * 5) + 3);
-      for (const skill of studentSkillIds) {
-        studentSkillData.push({
-          studentId: student.id,
-          skillId: skill.id,
-          proficiencyLevel: Math.floor(Math.random() * 3) + 3, // 3-5
-          assessmentScore: Math.floor(Math.random() * 20) + 80, // 80-100
-          verified: true,
-        });
+    
+    // Define high-demand skills for better matching
+    const highDemandSkills = [
+      'JavaScript', 'Python', 'Java', 'React', 'Node.js', 'SQL', 'Git',
+      'TypeScript', 'Docker', 'AWS', 'Spring Boot', 'MongoDB', 'PostgreSQL'
+    ];
+    
+    for (let i = 0; i < insertedStudents.length; i++) {
+      const student = insertedStudents[i];
+      
+      if (i < highMatchProfiles.length) {
+        // For high-match profiles, assign specific high-demand skills with high proficiency
+        const targetSkills = allSkills.filter(skill => 
+          highDemandSkills.includes(skill.name)
+        ).slice(0, 8); // Give them 8 high-demand skills
+        
+        for (const skill of targetSkills) {
+          studentSkillData.push({
+            studentId: student.id,
+            skillId: skill.id,
+            proficiencyLevel: 5, // Expert level
+            assessmentScore: Math.floor(Math.random() * 10) + 90, // 90-100
+            verified: true,
+          });
+        }
+      } else {
+        // For other students, add random skills
+        const randomSkills = allSkills.slice(0, Math.floor(Math.random() * 5) + 3);
+        for (const skill of randomSkills) {
+          studentSkillData.push({
+            studentId: student.id,
+            skillId: skill.id,
+            proficiencyLevel: Math.floor(Math.random() * 3) + 3, // 3-5
+            assessmentScore: Math.floor(Math.random() * 20) + 80, // 80-100
+            verified: true,
+          });
+        }
       }
     }
 
@@ -501,14 +579,65 @@ export class DatabaseStorage implements IStorage {
 
     // Seed sample projects
     const projectData = [];
-    for (let i = 0; i < Math.min(20, insertedStudents.length); i++) {
+    
+    // High-quality projects for top candidates
+    const topProjects = [
+      {
+        title: "E-commerce Platform with Microservices",
+        description: "Built a scalable e-commerce platform using React, Node.js, and Docker. Implemented payment integration, real-time notifications, and deployed on AWS with CI/CD pipeline.",
+        technologies: JSON.stringify(["React", "Node.js", "MongoDB", "Docker", "AWS", "PayPal API"]),
+        githubUrl: "https://github.com/arjun/ecommerce-platform"
+      },
+      {
+        title: "AI-Powered Recommendation System",
+        description: "Developed a machine learning recommendation engine using Python, TensorFlow, and deployed as REST API. Achieved 94% accuracy in user preference prediction.",
+        technologies: JSON.stringify(["Python", "TensorFlow", "Flask", "PostgreSQL", "Docker"]),
+        githubUrl: "https://github.com/priya/recommendation-ai"
+      },
+      {
+        title: "Real-time Chat Application",
+        description: "Created a responsive chat app with real-time messaging, file sharing, and group chat features using React, Socket.io, and MongoDB. Supports 1000+ concurrent users.",
+        technologies: JSON.stringify(["React", "TypeScript", "Socket.io", "Node.js", "MongoDB"]),
+        githubUrl: "https://github.com/rahul/realtime-chat"
+      },
+      {
+        title: "Data Analytics Dashboard",
+        description: "Built an interactive dashboard for business analytics using React, D3.js, and Apache Spark. Processes 10M+ records with real-time visualization and insights.",
+        technologies: JSON.stringify(["React", "D3.js", "Python", "Apache Spark", "PostgreSQL"]),
+        githubUrl: "https://github.com/sneha/analytics-dashboard"
+      },
+      {
+        title: "Cross-Platform Mobile Banking App",
+        description: "Developed a secure banking application using React Native with biometric authentication, QR payments, and offline transaction support.",
+        technologies: JSON.stringify(["React Native", "TypeScript", "Firebase", "Redux", "Secure Storage"]),
+        githubUrl: "https://github.com/vikram/mobile-banking"
+      },
+      {
+        title: "Computer Vision Object Detection",
+        description: "Implemented real-time object detection system using PyTorch and OpenCV. Achieved 92% accuracy on custom dataset with 30+ object classes.",
+        technologies: JSON.stringify(["Python", "PyTorch", "OpenCV", "TensorFlow", "Flask"]),
+        githubUrl: "https://github.com/ananya/object-detection"
+      }
+    ];
+    
+    // Add projects for high-match candidates
+    for (let i = 0; i < Math.min(topProjects.length, highMatchProfiles.length); i++) {
+      projectData.push({
+        studentId: insertedStudents[i].id,
+        ...topProjects[i],
+        featured: true,
+      });
+    }
+    
+    // Add regular projects for other students
+    for (let i = highMatchProfiles.length; i < Math.min(25, insertedStudents.length); i++) {
       projectData.push({
         studentId: insertedStudents[i].id,
         title: `Project ${i + 1} - ${["AI System", "Web App", "Mobile App", "Data Pipeline", "IoT Device"][Math.floor(Math.random() * 5)]}`,
         description: `Innovative project showcasing technical skills and problem-solving abilities`,
         technologies: JSON.stringify(["JavaScript", "Python", "React", "Node.js"].slice(0, Math.floor(Math.random() * 4) + 1)),
         githubUrl: `https://github.com/student${i}/project${i}`,
-        featured: Math.random() > 0.7,
+        featured: Math.random() > 0.8,
       });
     }
 
