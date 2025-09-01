@@ -96,60 +96,60 @@ export default function ComparisonView() {
     setSelectedCandidates(newSelected);
   };
 
-  // Calculate skill scores and recommendations for each student
+  // Calculate assessment scores for entry-level software engineer position
   const calculateStudentAnalysis = (student: any) => {
     const seed = student.id;
     const overallRating = student.codingRating || 4;
     
-    const generateSkillScore = (offset: number) => {
+    const generateAssessmentScore = (offset: number) => {
       const baseScore = overallRating;
       const variation = ((seed * 37 + offset) % 3) - 1;
       return Math.max(1, Math.min(5, baseScore + variation));
     };
     
-    const dsaScore = generateSkillScore(1);
-    const aptitudeScore = generateSkillScore(2);
-    const communicationScore = generateSkillScore(3);
-    const csFundamentalsScore = generateSkillScore(4);
+    const codingDsaScore = generateAssessmentScore(1);
+    const quantitativeScore = generateAssessmentScore(2);
+    const verbalAbilityScore = generateAssessmentScore(3);
+    const englishSpeakingScore = generateAssessmentScore(4);
     
-    const averageSkillScore = (dsaScore + aptitudeScore + communicationScore + csFundamentalsScore) / 4;
+    const averageAssessmentScore = (codingDsaScore + quantitativeScore + verbalAbilityScore + englishSpeakingScore) / 4;
     const cgpaScore = (student.cgpa / 10) * 5;
     
-    const skillWeight = 0.4;
+    const assessmentWeight = 0.5;
     const cgpaWeight = 0.3;
-    const overallWeight = 0.3;
+    const overallWeight = 0.2;
     
-    const rawMatchScore = (averageSkillScore * skillWeight) + (cgpaScore * cgpaWeight) + (overallRating * overallWeight);
+    const rawMatchScore = (averageAssessmentScore * assessmentWeight) + (cgpaScore * cgpaWeight) + (overallRating * overallWeight);
     const matchPercentage = Math.min(95, Math.max(60, Math.round(rawMatchScore * 20)));
     
-    // Generate hiring recommendation
+    // Generate hiring recommendation for entry-level software engineer
     const strengths = [];
     const concerns = [];
     const recommendation = matchPercentage >= 85 ? 'strong_hire' : matchPercentage >= 75 ? 'hire' : matchPercentage >= 65 ? 'maybe' : 'no_hire';
     
-    if (dsaScore >= 4) strengths.push('Strong DSA skills');
-    if (aptitudeScore >= 4) strengths.push('Excellent analytical thinking');
-    if (communicationScore >= 4) strengths.push('Great communication skills');
-    if (csFundamentalsScore >= 4) strengths.push('Solid CS fundamentals');
+    if (codingDsaScore >= 4) strengths.push('Strong coding & DSA skills');
+    if (quantitativeScore >= 4) strengths.push('Excellent quantitative ability');
+    if (verbalAbilityScore >= 4) strengths.push('Strong verbal ability');
+    if (englishSpeakingScore >= 4) strengths.push('Excellent English communication');
     if (student.cgpa >= 8.5) strengths.push('Outstanding academic performance');
     
-    if (dsaScore <= 2) concerns.push('Needs improvement in DSA');
-    if (aptitudeScore <= 2) concerns.push('Analytical skills could be stronger');
-    if (communicationScore <= 2) concerns.push('Communication skills need development');
-    if (csFundamentalsScore <= 2) concerns.push('CS fundamentals need strengthening');
+    if (codingDsaScore <= 2) concerns.push('Coding & DSA skills need improvement');
+    if (quantitativeScore <= 2) concerns.push('Quantitative ability below expectations');
+    if (verbalAbilityScore <= 2) concerns.push('Verbal ability needs development');
+    if (englishSpeakingScore <= 2) concerns.push('English speaking skills need improvement');
     if (student.cgpa < 7.5) concerns.push('Academic performance below expectations');
     
     return {
       student,
-      dsaScore,
-      aptitudeScore,
-      communicationScore,
-      csFundamentalsScore,
+      codingDsaScore,
+      quantitativeScore,
+      verbalAbilityScore,
+      englishSpeakingScore,
       matchPercentage,
       recommendation,
       strengths,
       concerns,
-      overallScore: averageSkillScore
+      overallScore: averageAssessmentScore
     };
   };
 
@@ -224,10 +224,10 @@ export default function ComparisonView() {
           
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
             <BarChart3 className="w-8 h-8 text-blue-600" />
-            Candidate Analysis & Comparison
+            Entry-Level Software Engineer Analysis
           </h1>
           <p className="text-gray-600 dark:text-gray-300">
-            Detailed hiring recommendations for your {shortlistCount} shortlisted candidate{shortlistCount !== 1 ? 's' : ''}
+            Assessment and hiring recommendations for {shortlistCount} shortlisted candidate{shortlistCount !== 1 ? 's' : ''} for entry-level software engineer positions
           </p>
         </div>
 
@@ -335,14 +335,14 @@ export default function ComparisonView() {
                     <div>
                       <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                         <BarChart3 className="w-5 h-5 text-blue-600" />
-                        Skills Assessment
+                        Entry-Level Assessment
                       </h3>
                       <div className="space-y-4">
                         {[
-                          { name: 'DSA', score: analysis.dsaScore, color: 'blue' },
-                          { name: 'Aptitude', score: analysis.aptitudeScore, color: 'green' },
-                          { name: 'Communication', score: analysis.communicationScore, color: 'purple' },
-                          { name: 'CS Fundamentals', score: analysis.csFundamentalsScore, color: 'orange' }
+                          { name: 'Coding & DSA', score: analysis.codingDsaScore, color: 'blue' },
+                          { name: 'Quantitative Ability', score: analysis.quantitativeScore, color: 'green' },
+                          { name: 'Verbal Ability', score: analysis.verbalAbilityScore, color: 'purple' },
+                          { name: 'English Speaking/Versant', score: analysis.englishSpeakingScore, color: 'orange' }
                         ].map(skill => (
                           <div key={skill.name} className="flex items-center justify-between">
                             <span className="font-medium">{skill.name}</span>
