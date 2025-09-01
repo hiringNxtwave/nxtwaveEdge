@@ -24,7 +24,7 @@ import {
   type CompanyWithUser,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, ilike, gte, desc, asc } from "drizzle-orm";
+import { eq, and, ilike, gte, desc, asc, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations - mandatory for Replit Auth

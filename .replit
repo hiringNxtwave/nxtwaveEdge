@@ -10,9 +10,15 @@ deploymentTarget = "autoscale"
 build = ["npm", "run", "build"]
 run = ["npm", "run", "start"]
 
+[env]
+PORT = "5000"
+
+[agent]
+integrations = ["javascript_database==1.0.0"]
+
 [[ports]]
 localPort = 5000
 externalPort = 80
 
-[env]
-PORT = "5000"
+[objectStorage]
+defaultBucketID = "replit-objstore-c2d21e6f-37ab-49e0-97ee-d3763516b21a"
