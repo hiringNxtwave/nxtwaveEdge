@@ -100,19 +100,6 @@ export default function Header() {
               // Functional navigation for authenticated users
               <>
                 <Link 
-                  href="/talent-dashboard" 
-                  className={cn(
-                    "transition-colors font-medium inline-flex items-center gap-2 py-1 px-3 rounded-full",
-                    location === "/talent-dashboard" 
-                      ? "text-white bg-blue-600" 
-                      : "text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400"
-                  )}
-                  data-testid="link-talent-dashboard"
-                >
-                  <Trophy className="w-4 h-4" />
-                  Talent Dashboard
-                </Link>
-                <Link 
                   href="/student-dashboard" 
                   className={cn(
                     "transition-colors font-medium inline-flex items-center gap-2 py-1 px-3 rounded-full",
