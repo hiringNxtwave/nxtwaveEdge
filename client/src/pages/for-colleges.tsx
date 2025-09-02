@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/header";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { 
   Users, 
   TrendingUp, 
@@ -20,6 +21,8 @@ import {
 } from "lucide-react";
 
 export default function ForColleges() {
+  useScrollToTop();
+  
   const features = [
     {
       icon: <BarChart3 className="w-8 h-8 text-blue-600" />,

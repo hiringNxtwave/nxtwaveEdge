@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import Header from "@/components/header";
 import StudentCard from "@/components/student-card";
 import StudentFilters from "@/components/student-filters";
@@ -10,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Lock, Users, Star, Zap } from "lucide-react";
 
 export default function BrowseStudents() {
+  useScrollToTop();
+  
   const { isAuthenticated } = useAuth();
   const [filters, setFilters] = useState({
     skills: [] as string[],

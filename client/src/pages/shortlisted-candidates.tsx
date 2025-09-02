@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/header";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import StudentCard from "@/components/student-card";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,8 @@ import { Heart, Trash2, BarChart3 } from "lucide-react";
 import { Link } from "wouter";
 
 export default function ShortlistedCandidates() {
+  useScrollToTop();
+  
   const { shortlistedIds, clearShortlist, shortlistCount } = useShortlist();
 
   const { data: students, isLoading } = useQuery({

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { type Company, type ContactRequest } from "@shared/schema";
 import Header from "@/components/header";
 import CompanyStats from "@/components/company-stats";
@@ -11,6 +12,8 @@ import { Link } from "wouter";
 import { Users, MessageSquare, Building2, Plus, ExternalLink } from "lucide-react";
 
 export default function CompanyDashboard() {
+  useScrollToTop();
+  
   const { user } = useAuth();
 
   const { data: company, isLoading: companyLoading } = useQuery({

@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +12,8 @@ import Header from "@/components/header";
 import { useShortlist } from "@/contexts/shortlist-context";
 
 export default function Home() {
+  useScrollToTop();
+  
   const { user, isAuthenticated } = useAuth();
   const { shortlistCount } = useShortlist();
 

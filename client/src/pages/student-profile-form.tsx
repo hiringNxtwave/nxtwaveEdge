@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -51,6 +52,8 @@ const majors = [
 ];
 
 export default function StudentProfileForm() {
+  useScrollToTop();
+  
   const [step, setStep] = useState(1);
   const { toast } = useToast();
   const queryClient = useQueryClient();

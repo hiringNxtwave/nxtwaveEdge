@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Header from "@/components/header";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,8 @@ import {
 import { Link } from "wouter";
 
 export default function ComparisonView() {
+  useScrollToTop();
+  
   const { shortlistedIds, shortlistCount } = useShortlist();
   const [selectedCandidates, setSelectedCandidates] = useState<Set<number>>(new Set());
   const { toast } = useToast();

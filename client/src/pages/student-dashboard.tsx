@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -36,6 +37,8 @@ interface Assessment {
 }
 
 export default function StudentDashboard() {
+  useScrollToTop();
+  
   const { user } = useAuth();
 
   const { data: assessment, isLoading: assessmentLoading } = useQuery<Assessment>({

@@ -1,6 +1,7 @@
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import Header from "@/components/header";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, GraduationCap, Calendar, Github, ExternalLink, Mail, Phone, Star, Award, Target, TrendingUp } from "lucide-react";
 
 export default function StudentProfile() {
+  useScrollToTop();
+  
   const { id } = useParams() as { id: string };
 
   // Calculate consistent skill scores (same logic as StudentCard)

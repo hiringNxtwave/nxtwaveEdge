@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/header";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { 
   CheckCircle, 
   Users, 
@@ -18,6 +19,8 @@ import {
 } from "lucide-react";
 
 export default function ForStudents() {
+  useScrollToTop();
+  
   const benefits = [
     {
       icon: <Target className="w-6 h-6 text-blue-600" />,
