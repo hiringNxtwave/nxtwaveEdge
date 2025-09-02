@@ -20,7 +20,7 @@ export default function Header() {
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
               <Handshake className="text-primary-foreground w-5 h-5" />
             </div>
-            <span className="text-xl font-bold text-foreground">NxtWave</span>
+            <span className="text-xl font-bold text-foreground">TalentBridge</span>
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">

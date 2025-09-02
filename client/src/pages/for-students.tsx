@@ -329,7 +329,7 @@ export default function ForStudents() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Students Love TalentConnect
+              Students Love TalentBridge
             </h2>
           </div>
           
@@ -361,7 +361,7 @@ export default function ForStudents() {
             Ready to Launch Your Career?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Join thousands of students who've landed their dream jobs through TalentConnect
+            Join thousands of students who've landed their dream jobs through TalentBridge
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-4 text-lg">
