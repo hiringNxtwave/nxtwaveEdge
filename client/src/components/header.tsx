@@ -97,19 +97,31 @@ export default function Header() {
                 )}
               </>
             ) : (
-              // Company navigation for authenticated users
+              // Clean navigation for authenticated users
               <>
                 <Link 
-                  href="/talent-dashboard" 
+                  href="/" 
                   className={cn(
                     "transition-colors font-medium inline-block py-1",
-                    location === "/talent-dashboard" 
+                    location === "/" 
                       ? "text-foreground border-b-2 border-primary" 
                       : "text-muted-foreground hover:text-foreground"
                   )}
-                  data-testid="link-talent-dashboard"
+                  data-testid="link-dashboard"
                 >
-                  Talent Dashboard
+                  Dashboard
+                </Link>
+                <Link 
+                  href="/browse" 
+                  className={cn(
+                    "transition-colors font-medium inline-block py-1",
+                    location === "/browse" 
+                      ? "text-foreground border-b-2 border-primary" 
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                  data-testid="link-browse-profiles"
+                >
+                  Browse Profiles
                 </Link>
                 <Link 
                   href="/shortlist" 
@@ -119,7 +131,7 @@ export default function Header() {
                       ? "text-white bg-primary" 
                       : shortlistCount > 0 
                         ? "text-primary bg-primary/10 hover:bg-primary/20" 
-                        : "text-muted-foreground hover:text-foreground bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
+                        : "text-muted-foreground hover:text-foreground"
                   )}
                   data-testid="link-shortlist"
                 >
