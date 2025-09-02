@@ -30,19 +30,19 @@ export default function ForCompanies() {
       benefits: ["No more screening calls", "Verified technical skills", "Consistent evaluation criteria"]
     },
     {
-      icon: <Target className="w-8 h-8 text-green-600" />,
+      icon: <Target className="w-8 h-8 text-blue-600" />,
       title: "Precision Matching",
       description: "AI-powered candidate matching based on role requirements and assessment scores",
       benefits: ["95% role compatibility", "Reduced time-to-hire", "Higher retention rates"]
     },
     {
-      icon: <BarChart3 className="w-8 h-8 text-purple-600" />,
+      icon: <BarChart3 className="w-8 h-8 text-blue-600" />,
       title: "Comprehensive Analytics",
       description: "Detailed insights into candidate performance across multiple skill dimensions",
       benefits: ["Technical assessment scores", "Communication evaluation", "Problem-solving ability"]
     },
     {
-      icon: <Clock className="w-8 h-8 text-orange-600" />,
+      icon: <Clock className="w-8 h-8 text-blue-600" />,
       title: "Streamlined Hiring",
       description: "Reduce your hiring timeline from months to weeks with pre-qualified candidates",
       benefits: ["50% faster hiring", "Lower cost per hire", "Better candidate experience"]
@@ -139,7 +139,7 @@ export default function ForCompanies() {
           
           <div className="grid md:grid-cols-2 gap-8">
             {assessmentCategories.map((category, index) => (
-              <Card key={index} className="border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
+              <Card key={index} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="text-xl mb-3">{category.title}</CardTitle>
                   <p className="text-gray-600 dark:text-gray-300 mb-4">
@@ -154,7 +154,7 @@ export default function ForCompanies() {
           </div>
           
           <div className="mt-12 text-center">
-            <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+            <Card className="bg-blue-50 border border-blue-200">
               <CardContent className="p-8">
                 <Lightbulb className="w-12 h-12 text-blue-600 mx-auto mb-4" />
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">
@@ -387,7 +387,7 @@ export default function ForCompanies() {
           
           <div className="grid md:grid-cols-2 gap-8">
             {assessmentCategories.map((category, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow border-l-4 border-l-blue-500">
+              <Card key={index} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
                 <CardHeader>
                   <CardTitle className="text-xl text-blue-900 dark:text-blue-100">
                     {category.title}

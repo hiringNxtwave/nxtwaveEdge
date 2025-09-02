@@ -112,9 +112,11 @@ export default function ForStudents() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl mb-4">🧮</div>
-              <h3 className="text-lg font-semibold mb-3">Aptitude</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 text-center border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="text-xl">🧮</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-3 text-white">Aptitude</h3>
               <ul className="text-sm opacity-90 space-y-2 text-left">
                 <li>• Quantitative Analysis</li>
                 <li>• Logical Reasoning</li>
@@ -122,9 +124,11 @@ export default function ForStudents() {
                 <li>• Mathematical Concepts</li>
               </ul>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl mb-4">📝</div>
-              <h3 className="text-lg font-semibold mb-3">Verbal</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 text-center border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="text-xl">📝</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-3 text-white">Verbal</h3>
               <ul className="text-sm opacity-90 space-y-2 text-left">
                 <li>• Reading Comprehension</li>
                 <li>• Grammar & Vocabulary</li>
@@ -132,9 +136,11 @@ export default function ForStudents() {
                 <li>• Critical Reasoning</li>
               </ul>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl mb-4">💻</div>
-              <h3 className="text-lg font-semibold mb-3">DSA</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 text-center border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="text-xl">💻</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-3 text-white">DSA</h3>
               <ul className="text-sm opacity-90 space-y-2 text-left">
                 <li>• Arrays & Strings</li>
                 <li>• Trees & Graphs</li>
@@ -142,9 +148,11 @@ export default function ForStudents() {
                 <li>• System Design Basics</li>
               </ul>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl mb-4">🗣️</div>
-              <h3 className="text-lg font-semibold mb-3">English Communication</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 text-center border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="text-xl">🗣️</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-3 text-white">English Communication</h3>
               <ul className="text-sm opacity-90 space-y-2 text-left">
                 <li>• Video Interview Skills</li>
                 <li>• Professional Speaking</li>
@@ -187,10 +195,10 @@ export default function ForStudents() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="text-center border-2 border-blue-100 hover:border-blue-300 transition-colors">
+            <Card className="text-center bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
               <CardHeader>
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-8 h-8 text-blue-600" />
+                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-6 h-6 text-blue-600" />
                 </div>
                 <CardTitle className="text-xl">Take Assessment</CardTitle>
               </CardHeader>
@@ -201,10 +209,10 @@ export default function ForStudents() {
               </CardContent>
             </Card>
             
-            <Card className="text-center border-2 border-green-100 hover:border-green-300 transition-colors">
+            <Card className="text-center bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
               <CardHeader>
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp className="w-8 h-8 text-green-600" />
+                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="w-6 h-6 text-blue-600" />
                 </div>
                 <CardTitle className="text-xl">Get Certified</CardTitle>
               </CardHeader>
@@ -215,10 +223,10 @@ export default function ForStudents() {
               </CardContent>
             </Card>
             
-            <Card className="text-center border-2 border-purple-100 hover:border-purple-300 transition-colors">
+            <Card className="text-center bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
               <CardHeader>
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Briefcase className="w-8 h-8 text-purple-600" />
+                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <Briefcase className="w-6 h-6 text-blue-600" />
                 </div>
                 <CardTitle className="text-xl">Get Hired</CardTitle>
               </CardHeader>
@@ -292,7 +300,7 @@ export default function ForStudents() {
           
           <div className="grid md:grid-cols-2 gap-12">
             {benefits.map((benefit, index) => (
-              <Card key={index} className="border-l-4 border-l-blue-500 hover:shadow-xl transition-shadow">
+              <Card key={index} className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
                 <CardHeader>
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">

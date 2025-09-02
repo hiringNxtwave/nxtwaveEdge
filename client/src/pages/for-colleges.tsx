@@ -48,10 +48,10 @@ export default function ForColleges() {
   ];
 
   const stats = [
-    { number: "95%", label: "Placement Rate Improvement", color: "text-green-600" },
-    { number: "500+", label: "Partner Companies", color: "text-blue-600" },
-    { number: "2.4x", label: "Higher Package Offers", color: "text-purple-600" },
-    { number: "85%", label: "Student Satisfaction", color: "text-orange-600" }
+    { number: "95%", label: "Placement Rate Improvement", color: "text-white" },
+    { number: "500+", label: "Partner Companies", color: "text-white" },
+    { number: "2.4x", label: "Higher Package Offers", color: "text-white" },
+    { number: "85%", label: "Student Satisfaction", color: "text-white" }
   ];
 
   const partnerColleges = [
@@ -155,24 +155,32 @@ export default function ForColleges() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl mb-4">🧮</div>
-              <h3 className="text-lg font-semibold mb-3">Aptitude Assessment</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 text-center border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="text-xl">🧮</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-3 text-white">Aptitude Assessment</h3>
               <p className="text-sm opacity-90">Quantitative analysis, logical reasoning, and problem-solving evaluation</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl mb-4">📝</div>
-              <h3 className="text-lg font-semibold mb-3">Verbal Skills</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 text-center border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="text-xl">📝</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-3 text-white">Verbal Skills</h3>
               <p className="text-sm opacity-90">Reading comprehension, grammar, vocabulary, and critical reasoning</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl mb-4">💻</div>
-              <h3 className="text-lg font-semibold mb-3">DSA Evaluation</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 text-center border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="text-xl">💻</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-3 text-white">DSA Evaluation</h3>
               <p className="text-sm opacity-90">Industry-standard coding challenges and system design concepts</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <div className="text-3xl mb-4">🗣️</div>
-              <h3 className="text-lg font-semibold mb-3">English Communication</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 text-center border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <div className="text-xl">🗣️</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-3 text-white">English Communication</h3>
               <p className="text-sm opacity-90">Video-based assessment of professional communication skills</p>
             </div>
           </div>

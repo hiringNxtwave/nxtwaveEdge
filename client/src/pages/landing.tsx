@@ -176,24 +176,32 @@ export default function Landing() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-              <div className="text-2xl mb-3">🚀</div>
-              <h3 className="text-lg font-semibold mb-2">One Platform. Unlimited Talent.</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                <div className="text-xl">🚀</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-2 text-white">One Platform. Unlimited Talent.</h3>
               <p className="text-sm opacity-90">200,000+ pre-assessed students from 3,000+ colleges, refreshed every 90 days. Filter by skills, CTC, year, or traits — and hire in minutes.</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-              <div className="text-2xl mb-3">🎯</div>
-              <h3 className="text-lg font-semibold mb-2">Pre-Assessed & Job-Ready</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                <div className="text-xl">🎯</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-2 text-white">Pre-Assessed & Job-Ready</h3>
               <p className="text-sm opacity-90">Rigorous offline tests in coding, DSA, aptitude & communication. Get data-driven profiles matched to your roles.</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-              <div className="text-2xl mb-3">🔍</div>
-              <h3 className="text-lg font-semibold mb-2">Matchmaking, Not Mass Hiring</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                <div className="text-xl">🔍</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-2 text-white">Matchmaking, Not Mass Hiring</h3>
               <p className="text-sm opacity-90">AI-powered filters surface only the right-fit candidates — no noise, no wasted cycles.</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-              <div className="text-2xl mb-3">💰</div>
-              <h3 className="text-lg font-semibold mb-2">Save Time & Costs</h3>
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
+              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                <div className="text-xl">💰</div>
+              </div>
+              <h3 className="text-lg font-semibold mb-2 text-white">Save Time & Costs</h3>
               <p className="text-sm opacity-90">Skip 1,000 campus visits. One dashboard = instant shortlists. ₹50–70 lakhs saved per hiring cycle.</p>
             </div>
           </div>
@@ -252,9 +260,11 @@ export default function Landing() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-white border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
+            <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
               <CardHeader>
-                <Target className="w-12 h-12 text-blue-600 mb-4" />
+                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4">
+                  <Target className="w-6 h-6 text-blue-600" />
+                </div>
                 <CardTitle className="text-xl">Assessment Platform</CardTitle>
               </CardHeader>
               <CardContent>
@@ -262,9 +272,11 @@ export default function Landing() {
               </CardContent>
             </Card>
             
-            <Card className="bg-white border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
+            <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
               <CardHeader>
-                <Users className="w-12 h-12 text-green-600 mb-4" />
+                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4">
+                  <Users className="w-6 h-6 text-blue-600" />
+                </div>
                 <CardTitle className="text-xl">AI Mock Interviews</CardTitle>
               </CardHeader>
               <CardContent>
@@ -272,9 +284,11 @@ export default function Landing() {
               </CardContent>
             </Card>
             
-            <Card className="bg-white border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
+            <Card className="bg-white border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-300">
               <CardHeader>
-                <BarChart3 className="w-12 h-12 text-purple-600 mb-4" />
+                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4">
+                  <BarChart3 className="w-6 h-6 text-blue-600" />
+                </div>
                 <CardTitle className="text-xl">Student Insights Dashboard</CardTitle>
               </CardHeader>
               <CardContent>
