@@ -67,8 +67,28 @@ const generateAssessmentData = (type: string, score: number, studentId: string):
   }
   
   return distances[end];
+}
+
+// Priority Queue implementation
+class PriorityQueue {
+  constructor() {
+    this.items = [];
+  }
+  
+  enqueue(element, priority) {
+    this.items.push({element, priority});
+    this.items.sort((a, b) => a.priority - b.priority);
+  }
+  
+  dequeue() {
+    return this.items.shift();
+  }
+  
+  isEmpty() {
+    return this.items.length === 0;
+  }
 }`,
-        correctAnswer: "Correct implementation with proper priority queue usage",
+        correctAnswer: "Excellent implementation with proper priority queue class. Shows deep understanding of graph algorithms and optimal time complexity O((V + E) log V).",
         isCorrect: score >= 70,
         timeTaken: Math.floor(25 + rand(1) * 10), // 25-35 minutes
         difficulty: "Hard"
@@ -91,73 +111,285 @@ const generateAssessmentData = (type: string, score: number, studentId: string):
   }
   
   return result;
-}`,
-        correctAnswer: "Optimal O(n) solution using hash map",
+}
+
+// Test cases
+console.log(twoSum([2, 7, 11, 15], 9)); // [[0, 1]]
+console.log(twoSum([3, 2, 4], 6)); // [[1, 2]]
+console.log(twoSum([3, 3], 6)); // [[0, 1]]`,
+        correctAnswer: "Perfect O(n) solution using hash map approach. Student included test cases showing thorough understanding.",
         isCorrect: score >= 60,
         timeTaken: Math.floor(10 + rand(2) * 5), // 10-15 minutes
+        difficulty: "Medium"
+      },
+      {
+        id: "dsa_3",
+        question: "Implement a binary search algorithm for a sorted array. Handle edge cases.",
+        studentAnswer: `function binarySearch(arr, target) {
+  let left = 0;
+  let right = arr.length - 1;
+  
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+  
+  return -1; // Element not found
+}
+
+// Edge case handling
+function safeBinarySearch(arr, target) {
+  if (!arr || arr.length === 0) return -1;
+  if (typeof target === 'undefined') return -1;
+  
+  return binarySearch(arr, target);
+}`,
+        correctAnswer: "Clean binary search implementation with proper edge case handling. Shows attention to detail.",
+        isCorrect: score >= 75,
+        timeTaken: Math.floor(12 + rand(3) * 6), // 12-18 minutes
         difficulty: "Medium"
       }
     ],
     "Aptitude Test": [
       {
         id: "apt_1",
-        question: "If a train travels 120 km in 2 hours, and then 180 km in 3 hours, what is the average speed for the entire journey?",
-        studentAnswer: "Total distance = 120 + 180 = 300 km\nTotal time = 2 + 3 = 5 hours\nAverage speed = 300/5 = 60 km/h",
-        correctAnswer: "60 km/h",
+        question: "If a train travels 120 km in 2 hours, and then 180 km in 3 hours, what is the average speed for the entire journey?\n\nA) 55 km/h\nB) 60 km/h\nC) 65 km/h\nD) 70 km/h",
+        studentAnswer: "Selected Answer: B) 60 km/h\n\nWorking:\nTotal distance = 120 + 180 = 300 km\nTotal time = 2 + 3 = 5 hours\nAverage speed = Total distance / Total time\nAverage speed = 300/5 = 60 km/h",
+        correctAnswer: "Correct answer: B) 60 km/h. Student showed clear step-by-step calculation and proper understanding of average speed formula.",
         isCorrect: score >= 75,
         timeTaken: Math.floor(3 + rand(3) * 2), // 3-5 minutes
         difficulty: "Medium"
       },
       {
         id: "apt_2",
-        question: "A company's profit increased by 25% in the first quarter and then decreased by 20% in the second quarter. If the initial profit was $10,000, what is the profit after two quarters?",
-        studentAnswer: "First quarter: $10,000 × 1.25 = $12,500\nSecond quarter: $12,500 × 0.80 = $10,000\nFinal profit: $10,000",
-        correctAnswer: "$10,000",
+        question: "A company's profit increased by 25% in the first quarter and then decreased by 20% in the second quarter. If the initial profit was $10,000, what is the profit after two quarters?\n\nA) $9,000\nB) $10,000\nC) $11,000\nD) $12,000",
+        studentAnswer: "Selected Answer: B) $10,000\n\nCalculation:\nInitial profit: $10,000\nAfter Q1 increase (25%): $10,000 × 1.25 = $12,500\nAfter Q2 decrease (20%): $12,500 × 0.80 = $10,000\nFinal profit: $10,000",
+        correctAnswer: "Correct answer: B) $10,000. Excellent work showing compound percentage calculations step by step.",
         isCorrect: score >= 80,
         timeTaken: Math.floor(4 + rand(4) * 2), // 4-6 minutes
         difficulty: "Medium"
+      },
+      {
+        id: "apt_3",
+        question: "In a class of 40 students, 60% are boys. If 25% of the boys and 20% of the girls play cricket, how many students play cricket?\n\nA) 8 students\nB) 9 students\nC) 10 students\nD) 11 students",
+        studentAnswer: "Selected Answer: C) 10 students\n\nSolution:\nTotal students = 40\nBoys = 60% of 40 = 24 boys\nGirls = 40 - 24 = 16 girls\n\nBoys playing cricket = 25% of 24 = 6 boys\nGirls playing cricket = 20% of 16 = 3.2 ≈ 3 girls\n\nTotal cricket players = 6 + 3 = 9 students\n\nNote: I made an error in my selection. The correct answer should be B) 9 students.",
+        correctAnswer: "Correct answer: B) 9 students. Student showed good problem-solving approach but made a calculation error in final selection. Self-correction noted shows good analytical thinking.",
+        isCorrect: score >= 70,
+        timeTaken: Math.floor(5 + rand(5) * 3), // 5-8 minutes
+        difficulty: "Medium"
+      },
+      {
+        id: "apt_4",
+        question: "If the ratio of ages of A and B is 3:4, and the sum of their ages is 35 years, what will be A's age after 5 years?\n\nA) 15 years\nB) 18 years\nC) 20 years\nD) 22 years",
+        studentAnswer: "Selected Answer: D) 22 years\n\nMethod:\nLet A's current age = 3x and B's current age = 4x\nSum of ages = 3x + 4x = 7x = 35\nSo x = 35/7 = 5\n\nA's current age = 3x = 3 × 5 = 15 years\nB's current age = 4x = 4 × 5 = 20 years\n\nA's age after 5 years = 15 + 5 = 20 years\n\nWait, I think I selected wrong. Answer should be C) 20 years.",
+        correctAnswer: "Correct answer: C) 20 years. Student demonstrated excellent problem-solving using ratio method. Self-correction shows good verification skills.",
+        isCorrect: score >= 85,
+        timeTaken: Math.floor(6 + rand(6) * 2), // 6-8 minutes
+        difficulty: "Hard"
       }
     ],
     "Communication": [
       {
         id: "comm_1",
-        question: "Describe a challenging project you worked on and how you overcame the difficulties. (Spoken response recorded)",
-        studentAnswer: "I worked on developing a real-time chat application using React and Node.js. The main challenge was implementing WebSocket connections with proper error handling and reconnection logic. I overcame this by researching Socket.io documentation, breaking down the problem into smaller components, and implementing a robust retry mechanism. The project taught me the importance of proper error handling in real-time applications.",
-        correctAnswer: "Clear communication with structured response covering challenge, solution, and learning",
+        question: "Describe a challenging project you worked on and how you overcame the difficulties. (Spoken response - 3 minutes)",
+        studentAnswer: "Audio Transcript:\n\n\"So, I worked on developing a real-time chat application using React and Node.js during my internship. The main challenge I faced was implementing WebSocket connections with proper error handling and reconnection logic.\n\nInitially, I was getting frequent disconnections and the chat would just stop working. Users were losing messages and getting frustrated. I spent days trying to debug this.\n\nWhat I did was:\n1. First, I researched Socket.io documentation thoroughly\n2. I broke down the problem into smaller components\n3. I implemented a robust retry mechanism with exponential backoff\n4. I added proper error logging to understand what was happening\n5. I created a fallback system using long polling when WebSockets failed\n\nThe hardest part was testing edge cases like network drops and server restarts. I had to simulate these conditions.\n\nIn the end, the application became much more stable. The project taught me the importance of proper error handling in real-time applications and how to approach complex debugging systematically.\"\n\nDelivery Assessment:\n- Clear structure and logical flow\n- Good use of specific technical details\n- Confident speaking pace\n- Minimal filler words (um, uh)\n- Strong conclusion with key learnings",
+        correctAnswer: "Excellent communication: structured response, technical depth, clear problem-solution narrative, confident delivery. Shows good storytelling ability and reflection on learning.",
         isCorrect: score >= 70,
         timeTaken: Math.floor(8 + rand(5) * 4), // 8-12 minutes
         difficulty: "Medium"
       },
       {
         id: "comm_2",
-        question: "How would you explain a complex technical concept (like APIs) to a non-technical stakeholder?",
-        studentAnswer: "I would use an analogy - APIs are like waiters in a restaurant. When you (the application) want to order food (request data), you don't go directly to the kitchen (database). Instead, you tell the waiter (API) what you want, and they bring back your order. The waiter knows how to communicate with the kitchen and brings back exactly what you need in a format you can understand.",
-        correctAnswer: "Uses clear analogies and simple language to explain technical concepts",
+        question: "How would you explain a complex technical concept (like APIs) to a non-technical stakeholder? (Written + Verbal explanation)",
+        studentAnswer: "Written Response:\n\n\"I would use the restaurant analogy to explain APIs:\n\nAPIs are like waiters in a restaurant. When you (the application) want to order food (request data), you don't go directly to the kitchen (database or server). Instead, you tell the waiter (API) what you want from the menu (available endpoints).\n\nThe waiter takes your order, goes to the kitchen, and brings back exactly what you asked for in a nice, presentable format. The waiter knows how to communicate with the kitchen staff and translates your request into something they understand.\n\nSimilarly, APIs act as intermediaries between different software applications, allowing them to communicate and share data without knowing the internal complexities of each other.\"\n\nVerbal Explanation (Recorded):\n\"Let me give you a simple example everyone can relate to. Think about when you use a food delivery app like Zomato...\n\n[Student proceeded to explain using real-world examples, checking for understanding, and adapting language based on stakeholder feedback]\"\n\nCommunication Skills Demonstrated:\n- Clear analogies\n- Checked for understanding\n- Adapted explanation style\n- Used relatable examples",
+        correctAnswer: "Strong technical communication: effective analogies, clear written and verbal skills, stakeholder awareness. Good adaptation and verification of understanding.",
         isCorrect: score >= 65,
         timeTaken: Math.floor(5 + rand(6) * 3), // 5-8 minutes
         difficulty: "Medium"
+      },
+      {
+        id: "comm_3",
+        question: "You need to present quarterly results to senior management. The project was delayed and over budget. How do you communicate this? (Role-play scenario)",
+        studentAnswer: "Presentation Approach (Recorded):\n\n\"Good morning, team. I want to start by acknowledging that our Q3 project didn't meet our original timeline and budget targets. Let me walk you through what happened, what we've learned, and our path forward.\n\nKey Points Covered:\n\n1. **Transparent Problem Statement**\n   - Project delivered 2 weeks late\n   - 15% over budget ($45K additional)\n   - Core functionality complete, 2 features postponed\n\n2. **Root Cause Analysis**\n   - Underestimated API integration complexity\n   - Third-party service changes mid-project\n   - Required additional security compliance review\n\n3. **Actions Taken**\n   - Negotiated extended timeline with stakeholders\n   - Prioritized critical features for go-live\n   - Implemented daily standups for better tracking\n\n4. **Value Delivered**\n   - Core platform operational and generating revenue\n   - User feedback positive (4.2/5 rating)\n   - Foundation built for future enhancements\n\n5. **Lessons Learned & Future Prevention**\n   - Better vendor risk assessment\n   - 20% buffer for complex integrations\n   - Earlier stakeholder alignment on scope\n\nNext quarter, we're implementing these process improvements...\"\n\nDelivery Assessment:\n- Owned the problem immediately\n- Data-driven communication\n- Solution-focused approach\n- Professional demeanor under pressure",
+        correctAnswer: "Outstanding crisis communication: accountability, transparency, data-backed analysis, forward-looking solutions. Demonstrates leadership communication skills under pressure.",
+        isCorrect: score >= 80,
+        timeTaken: Math.floor(10 + rand(7) * 5), // 10-15 minutes
+        difficulty: "Hard"
+      },
+      {
+        id: "comm_4",
+        question: "Explain your approach to giving constructive feedback to a team member whose code quality has been inconsistent. (Situational question)",
+        studentAnswer: "My Approach:\n\n**1. Preparation & Context**\nI would first review specific examples of the inconsistent code quality, noting both good and problematic instances. I'd choose a private, comfortable setting for the conversation.\n\n**2. Opening the Conversation**\n\"Hey [Name], I wanted to have a quick chat about our recent code reviews. I've noticed some inconsistency in our coding patterns, and I'd love to understand what's happening and how we can support you better.\"\n\n**3. Specific Examples (Not Personal Attacks)**\n- \"In the user authentication module, the error handling was really well structured\"\n- \"However, in the payment processing code, I noticed some missing validations and inconsistent naming conventions\"\n- \"This creates potential security risks and makes it harder for the team to maintain\"\n\n**4. Listen & Understand**\n\"What's your perspective on this? Are there any blockers or challenges you're facing?\"\n\n**5. Collaborative Solution**\n- Pair programming sessions\n- Code review checklist\n- Share resources on best practices\n- Regular check-ins\n\n**6. Follow-up Plan**\n\"Let's check in again next week to see how things are going. I'm here to support you.\"\n\n**Communication Principles Applied:**\n- Start with empathy\n- Use specific examples, not generalizations\n- Focus on behavior/code, not personality\n- Collaborative problem-solving\n- Clear follow-up plan\n- Supportive tone throughout",
+        correctAnswer: "Excellent feedback approach: structured, empathetic, specific, solution-oriented. Shows strong interpersonal and leadership communication skills.",
+        isCorrect: score >= 75,
+        timeTaken: Math.floor(7 + rand(8) * 4), // 7-11 minutes
+        difficulty: "Hard"
       }
     ],
     "System Design": [
       {
         id: "sys_1",
         question: "Design a URL shortening service like bit.ly. Consider scalability, database design, and caching strategies.",
-        studentAnswer: `High-level design:
-1. Database: Use hash-based approach with base62 encoding
-2. Caching: Redis for frequently accessed URLs
-3. Load balancing: Multiple application servers
-4. Database sharding: Based on hash of short URL
-5. Analytics: Separate service for click tracking
-6. CDN: For global performance
+        studentAnswer: `**System Architecture Design:**
 
-Key considerations:
-- Custom aliases support
-- Expiration handling
-- Rate limiting to prevent abuse
-- Database cleanup for expired URLs`,
-        correctAnswer: "Comprehensive system design covering scalability, caching, and database strategies",
+**1. High-Level Architecture**
+```
+Client → Load Balancer → API Gateway → Microservices
+                                    ├── URL Service
+                                    ├── Analytics Service
+                                    └── User Service
+```
+
+**2. Database Design**
+```sql
+-- Main URLs table
+CREATE TABLE urls (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    short_code VARCHAR(7) UNIQUE NOT NULL,
+    original_url TEXT NOT NULL,
+    user_id BIGINT,
+    created_at TIMESTAMP,
+    expires_at TIMESTAMP,
+    is_active BOOLEAN DEFAULT TRUE
+);
+
+-- Analytics table
+CREATE TABLE url_clicks (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    short_code VARCHAR(7),
+    clicked_at TIMESTAMP,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
+    referrer TEXT
+);
+```
+
+**3. Encoding Strategy**
+- Use Base62 encoding (a-z, A-Z, 0-9)
+- Generate 7-character codes = 62^7 ≈ 3.5 trillion URLs
+- Hash function: MD5(original_url + timestamp) → take first 7 chars
+
+**4. Caching Strategy**
+```javascript
+// Redis caching layer
+const cacheKey = `short:${shortCode}`;
+const cached = await redis.get(cacheKey);
+if (cached) return cached;
+
+const url = await db.getUrl(shortCode);
+await redis.setex(cacheKey, 3600, url); // 1 hour TTL
+```
+
+**5. Scalability Solutions**
+- **Database Sharding**: Partition by short_code hash
+- **Read Replicas**: For analytics queries
+- **CDN**: Cache popular redirects globally
+- **Load Balancing**: Round-robin across API servers
+
+**6. Additional Features**
+- Custom aliases validation
+- Bulk URL shortening API
+- Real-time analytics dashboard
+- Rate limiting (100 requests/minute per user)
+- URL expiration and cleanup jobs
+
+**7. Performance Optimizations**
+- Database indexing on short_code
+- Connection pooling
+- Async processing for analytics
+- Compressed responses`,
+        correctAnswer: "Outstanding system design: comprehensive architecture, detailed database schema, proper caching strategies, scalability considerations, and code examples. Shows strong understanding of distributed systems.",
         isCorrect: score >= 75,
         timeTaken: Math.floor(30 + rand(7) * 15), // 30-45 minutes
+        difficulty: "Hard"
+      },
+      {
+        id: "sys_2",
+        question: "Design a real-time chat application that can handle 1 million concurrent users. Include message delivery, user presence, and notification systems.",
+        studentAnswer: `**Real-Time Chat System Design**
+
+**1. Architecture Overview**
+```
+Mobile/Web Clients → Load Balancer → API Gateway
+                                  → WebSocket Servers (Socket.io)
+                                  → Message Queue (Apache Kafka)
+                                  → Microservices
+                                  → Database Cluster
+```
+
+**2. Core Services**
+- **Connection Service**: Manages WebSocket connections
+- **Message Service**: Handles message routing and storage
+- **Presence Service**: Tracks user online/offline status
+- **Notification Service**: Push notifications for offline users
+- **User Service**: Authentication and user management
+
+**3. Database Schema**
+```sql
+-- Messages table (sharded by chat_room_id)
+CREATE TABLE messages (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    chat_room_id BIGINT NOT NULL,
+    sender_id BIGINT NOT NULL,
+    content TEXT NOT NULL,
+    message_type ENUM('text', 'image', 'file') DEFAULT 'text',
+    created_at TIMESTAMP,
+    INDEX idx_room_timestamp (chat_room_id, created_at)
+);
+
+-- User presence (Redis)
+SET user:123:presence "online"
+EXPIRE user:123:presence 300  -- 5 minute TTL
+```
+
+**4. Message Flow**
+```javascript
+// Message handling pipeline
+1. Client sends message via WebSocket
+2. Validate and authenticate user
+3. Store message in database
+4. Publish to Kafka topic
+5. Kafka consumers deliver to connected users
+6. Store in Redis for recent message cache
+7. Send push notification if user offline
+```
+
+**5. Scalability Solutions**
+- **WebSocket Server Scaling**: Sticky sessions with Redis
+- **Database Sharding**: By chat_room_id for even distribution
+- **Message Queuing**: Kafka partitions for parallel processing
+- **Caching**: Redis for recent messages and user sessions
+
+**6. Real-time Features Implementation**
+```javascript
+// Presence system
+io.on('connection', (socket) => {
+    // User comes online
+    redis.set(`user:${userId}:presence`, 'online', 'EX', 300);
+    socket.broadcast.emit('user_online', userId);
+    
+    // Heartbeat to maintain presence
+    setInterval(() => {
+        socket.emit('ping');
+    }, 30000);
+});
+```
+
+**7. Performance Optimizations**
+- Message pagination with cursor-based approach
+- Lazy loading of chat history
+- Image/file compression and CDN storage
+- Connection pooling and keep-alive`,
+        correctAnswer: "Exceptional system design: complete architecture for high-scale real-time system, detailed implementation strategies, proper use of technologies, and performance considerations. Demonstrates senior-level system design skills.",
+        isCorrect: score >= 85,
+        timeTaken: Math.floor(45 + rand(8) * 20), // 45-65 minutes
         difficulty: "Hard"
       }
     ]
