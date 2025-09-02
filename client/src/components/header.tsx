@@ -79,18 +79,6 @@ export default function Header() {
                 >
                   Dashboard
                 </Link>
-                <Link 
-                  href="/browse" 
-                  className={cn(
-                    "transition-colors font-medium inline-block py-1",
-                    location === "/browse" 
-                      ? "text-foreground border-b-2 border-primary" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                  data-testid="link-browse"
-                >
-                  Browse Candidates
-                </Link>
                 {shortlistCount > 0 && (
                   <Link 
                     href="/shortlist" 

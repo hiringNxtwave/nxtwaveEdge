@@ -35,36 +35,51 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-4 text-gray-900" data-testid="text-welcome">
-              Welcome to NxtWave, {user?.firstName || "there"}! 👋
+              Welcome back, {user?.firstName || "there"}! 👋
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl">
-              The Uber for Talent - Your gateway to India's top pre-assessed students.
+              Ready to discover your next great hire? Your recruitment dashboard is here.
             </p>
           </div>
 
-          {/* Quick Actions */}
-          <div className="grid md:grid-cols-3 gap-6">
+          {/* Primary Action */}
+          <div className="mb-8">
             <Link href="/browse">
-              <Card className="hover:shadow-md transition-shadow cursor-pointer bg-white border border-gray-200 hover:border-blue-300" data-testid="card-browse-candidates">
-                <CardHeader className="pb-3">
+              <Card className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all cursor-pointer text-white" data-testid="card-browse-candidates">
+                <CardContent className="p-8">
                   <div className="flex items-center justify-between">
                     <div>
-                      <CardTitle className="text-lg">Browse Candidates</CardTitle>
-                      <CardDescription>Pre-assessed talent pool</CardDescription>
+                      <h2 className="text-2xl font-bold mb-2">Find Your Next Great Hire</h2>
+                      <p className="text-blue-100 mb-4">Browse pre-assessed candidates ready to join your team</p>
+                      <div className="flex items-center space-x-6 text-sm">
+                        <div className="flex items-center space-x-2">
+                          <Target className="w-4 h-4" />
+                          <span>Top 10% talent</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <CheckCircle className="w-4 h-4" />
+                          <span>Pre-assessed</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Zap className="w-4 h-4" />
+                          <span>Immediate hire</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-                      <Users className="w-6 h-6 text-blue-600" />
+                    <div className="text-right">
+                      <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-2">
+                        <Users className="w-8 h-8" />
+                      </div>
+                      <ArrowRight className="w-6 h-6 mx-auto" />
                     </div>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold text-blue-600">200,000+</p>
-                  <p className="text-sm text-gray-600">Verified students</p>
                 </CardContent>
               </Card>
             </Link>
+          </div>
 
-
+          {/* Dashboard Cards */}
+          <div className="grid md:grid-cols-2 gap-6">
             {shortlistCount > 0 && (
               <Link href="/shortlist">
                 <Card className="hover:shadow-md transition-shadow cursor-pointer bg-white border border-gray-200 hover:border-blue-300" data-testid="card-your-shortlist">
@@ -72,7 +87,7 @@ export default function Home() {
                     <div className="flex items-center justify-between">
                       <div>
                         <CardTitle className="text-lg">Your Shortlist</CardTitle>
-                        <CardDescription>Saved candidates</CardDescription>
+                        <CardDescription>Saved candidates for review</CardDescription>
                       </div>
                       <div className="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center">
                         <Heart className="w-6 h-6 text-red-600" />
@@ -81,11 +96,41 @@ export default function Home() {
                   </CardHeader>
                   <CardContent>
                     <p className="text-2xl font-bold text-red-600">{shortlistCount}</p>
-                    <p className="text-sm text-gray-600">Candidates saved</p>
+                    <p className="text-sm text-gray-600">Ready for interview</p>
                   </CardContent>
                 </Card>
               </Link>
             )}
+
+            <Card className="bg-white border border-gray-200" data-testid="card-hiring-insights">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-lg">Hiring Insights</CardTitle>
+                    <CardDescription>Your recruitment analytics</CardDescription>
+                  </div>
+                  <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="w-6 h-6 text-purple-600" />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Profiles viewed</span>
+                    <span className="font-semibold">24 this week</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Avg. time to hire</span>
+                    <span className="font-semibold text-green-600">12 days</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Response rate</span>
+                    <span className="font-semibold text-blue-600">87%</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -99,28 +144,33 @@ export default function Home() {
             <Card className="bg-white" data-testid="card-platform-overview">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-blue-600" />
-                  Platform Overview
+                  <Award className="w-5 h-5 text-blue-600" />
+                  Why Choose NxtWave?
                 </CardTitle>
-                <CardDescription>Key metrics from NxtWave</CardDescription>
+                <CardDescription>Pre-assessed talent that saves time and money</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-blue-600 mb-1">2.5M+</div>
-                    <div className="text-sm text-gray-600">Active Students</div>
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-3 p-3 bg-blue-50 rounded-lg">
+                    <Target className="w-5 h-5 text-blue-600" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Top 10% Talent Only</p>
+                      <p className="text-sm text-gray-600">Rigorous offline assessment by Google, Microsoft, Amazon engineers</p>
+                    </div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600 mb-1">15K+</div>
-                    <div className="text-sm text-gray-600">Companies</div>
+                  <div className="flex items-center space-x-3 p-3 bg-green-50 rounded-lg">
+                    <Zap className="w-5 h-5 text-green-600" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Instant Hiring</p>
+                      <p className="text-sm text-gray-600">Skip lengthy interviews - candidates are pre-verified and ready</p>
+                    </div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-purple-600 mb-1">400+</div>
-                    <div className="text-sm text-gray-600">Universities</div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-orange-600 mb-1">95%</div>
-                    <div className="text-sm text-gray-600">Success Rate</div>
+                  <div className="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
+                    <TrendingUp className="w-5 h-5 text-purple-600" />
+                    <div>
+                      <p className="font-semibold text-gray-900">Save ₹50-70L Per Cycle</p>
+                      <p className="text-sm text-gray-600">Reduce recruitment costs and time-to-hire significantly</p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -133,29 +183,53 @@ export default function Home() {
                   <Calendar className="w-5 h-5 text-green-600" />
                   Recent Activity
                 </CardTitle>
-                <CardDescription>Your latest interactions</CardDescription>
+                <CardDescription>Your latest hiring actions</CardDescription>
               </CardHeader>
               <CardContent>
                 {recentActivity.length > 0 ? (
                   <div className="space-y-4">
                     {recentActivity.map((activity, index) => (
-                      <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+                      <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
                         <div className="flex items-center gap-3">
-                          <div className={`w-2 h-2 rounded-full ${
-                            activity.type === 'view' ? 'bg-blue-500' :
-                            activity.type === 'shortlist' ? 'bg-green-500' : 'bg-purple-500'
-                          }`}></div>
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            activity.type === 'view' ? 'bg-blue-100' :
+                            activity.type === 'shortlist' ? 'bg-green-100' : 'bg-purple-100'
+                          }`}>
+                            {activity.type === 'view' ? 
+                              <Users className="w-4 h-4 text-blue-600" /> :
+                              activity.type === 'shortlist' ? 
+                              <Heart className="w-4 h-4 text-green-600" /> :
+                              <MessageSquare className="w-4 h-4 text-purple-600" />
+                            }
+                          </div>
                           <div>
-                            <p className="font-medium text-sm">{activity.student}</p>
+                            <p className="font-medium text-sm text-gray-900">{activity.student}</p>
                             <p className="text-xs text-gray-600">{activity.university}</p>
                           </div>
                         </div>
-                        <span className="text-xs text-gray-500">{activity.time}</span>
+                        <div className="text-right">
+                          <Badge variant={activity.type === 'shortlist' ? 'default' : 'secondary'} className="text-xs">
+                            {activity.type === 'view' ? 'Viewed' : 
+                             activity.type === 'shortlist' ? 'Shortlisted' : 'Contacted'}
+                          </Badge>
+                          <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
+                        </div>
                       </div>
                     ))}
+                    <div className="pt-4">
+                      <Button variant="outline" size="sm" className="w-full">
+                        View All Activity
+                      </Button>
+                    </div>
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-center py-4">No recent activity</p>
+                  <div className="text-center py-8">
+                    <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                    <p className="text-gray-500 mb-4">No activity yet</p>
+                    <Link href="/browse">
+                      <Button size="sm">Start Browsing Candidates</Button>
+                    </Link>
+                  </div>
                 )}
               </CardContent>
             </Card>
