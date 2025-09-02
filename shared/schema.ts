@@ -113,6 +113,46 @@ export const contactRequests = pgTable("contact_requests", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Assessment tables
+export const assessments = pgTable("assessments", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  status: varchar("status").notNull().default("not_started"), // not_started, in_progress, completed
+  overallScore: integer("overall_score"), // 0-100
+  aptitudeScore: integer("aptitude_score"), // 0-100
+  verbalScore: integer("verbal_score"), // 0-100
+  dsaScore: integer("dsa_score"), // 0-100
+  communicationScore: integer("communication_score"), // 0-100
+  strengths: text("strengths"), // JSON array of strength areas
+  improvements: text("improvements"), // JSON array of improvement areas
+  reportGenerated: boolean("report_generated").default(false),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const assessmentQuestions = pgTable("assessment_questions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  category: varchar("category").notNull(), // aptitude, verbal, dsa, communication
+  question: text("question").notNull(),
+  options: text("options"), // JSON array for MCQ
+  correctAnswer: text("correct_answer"),
+  difficulty: varchar("difficulty").notNull().default("medium"), // easy, medium, hard
+  timeLimit: integer("time_limit").default(120), // seconds
+  explanation: text("explanation"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const assessmentResponses = pgTable("assessment_responses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  assessmentId: varchar("assessment_id").notNull().references(() => assessments.id),
+  questionId: varchar("question_id").notNull().references(() => assessmentQuestions.id),
+  userAnswer: text("user_answer"),
+  isCorrect: boolean("is_correct"),
+  timeTaken: integer("time_taken"), // seconds
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ one }) => ({
   company: one(companies, {
@@ -168,6 +208,30 @@ export const contactRequestsRelations = relations(contactRequests, ({ one }) => 
   }),
 }));
 
+// Relations for assessments
+export const assessmentsRelations = relations(assessments, ({ one, many }) => ({
+  user: one(users, {
+    fields: [assessments.userId],
+    references: [users.id],
+  }),
+  responses: many(assessmentResponses),
+}));
+
+export const assessmentQuestionsRelations = relations(assessmentQuestions, ({ many }) => ({
+  responses: many(assessmentResponses),
+}));
+
+export const assessmentResponsesRelations = relations(assessmentResponses, ({ one }) => ({
+  assessment: one(assessments, {
+    fields: [assessmentResponses.assessmentId],
+    references: [assessments.id],
+  }),
+  question: one(assessmentQuestions, {
+    fields: [assessmentResponses.questionId],
+    references: [assessmentQuestions.id],
+  }),
+}));
+
 // Insert schemas
 export const insertCompanySchema = createInsertSchema(companies).omit({
   id: true,
@@ -202,6 +266,22 @@ export const insertContactRequestSchema = createInsertSchema(contactRequests).om
   updatedAt: true,
 });
 
+export const insertAssessmentSchema = createInsertSchema(assessments).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAssessmentQuestionSchema = createInsertSchema(assessmentQuestions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertAssessmentResponseSchema = createInsertSchema(assessmentResponses).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
@@ -217,6 +297,12 @@ export type InsertProject = z.infer<typeof insertProjectSchema>;
 export type Project = typeof projects.$inferSelect;
 export type InsertContactRequest = z.infer<typeof insertContactRequestSchema>;
 export type ContactRequest = typeof contactRequests.$inferSelect;
+export type InsertAssessment = z.infer<typeof insertAssessmentSchema>;
+export type Assessment = typeof assessments.$inferSelect;
+export type InsertAssessmentQuestion = z.infer<typeof insertAssessmentQuestionSchema>;
+export type AssessmentQuestion = typeof assessmentQuestions.$inferSelect;
+export type InsertAssessmentResponse = z.infer<typeof insertAssessmentResponseSchema>;
+export type AssessmentResponse = typeof assessmentResponses.$inferSelect;
 
 // Extended types for joined data
 export type StudentWithSkills = Student & {
@@ -226,4 +312,10 @@ export type StudentWithSkills = Student & {
 
 export type CompanyWithUser = Company & {
   user: User;
+};
+
+export type AssessmentWithResponses = typeof assessments.$inferSelect & {
+  responses: (typeof assessmentResponses.$inferSelect & {
+    question: typeof assessmentQuestions.$inferSelect;
+  })[];
 };

@@ -6,6 +6,9 @@ import {
   studentSkills,
   projects,
   contactRequests,
+  assessments,
+  assessmentQuestions,
+  assessmentResponses,
   type User,
   type UpsertUser,
   type Company,
@@ -22,6 +25,13 @@ import {
   type InsertContactRequest,
   type StudentWithSkills,
   type CompanyWithUser,
+  type Assessment,
+  type InsertAssessment,
+  type AssessmentQuestion,
+  type InsertAssessmentQuestion,
+  type AssessmentResponse,
+  type InsertAssessmentResponse,
+  type AssessmentWithResponses,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, ilike, gte, desc, asc, sql } from "drizzle-orm";
@@ -61,6 +71,14 @@ export interface IStorage {
   createContactRequest(request: InsertContactRequest): Promise<ContactRequest>;
   getContactRequestsByCompany(companyId: string): Promise<ContactRequest[]>;
   updateContactRequestStatus(id: string, status: string): Promise<ContactRequest>;
+  
+  // Assessment operations
+  getUserAssessment(userId: string): Promise<Assessment | undefined>;
+  createAssessment(assessment: InsertAssessment): Promise<Assessment>;
+  updateAssessment(id: string, assessment: Partial<InsertAssessment>): Promise<Assessment>;
+  getAssessmentQuestions(category?: string): Promise<AssessmentQuestion[]>;
+  createAssessmentResponse(response: InsertAssessmentResponse): Promise<AssessmentResponse>;
+  getAssessmentWithResponses(id: string): Promise<AssessmentWithResponses | undefined>;
   
   // Initial data seeding
   seedInitialData(): Promise<void>;
@@ -304,6 +322,76 @@ export class DatabaseStorage implements IStorage {
       .where(eq(contactRequests.id, id))
       .returning();
     return updatedRequest;
+  }
+
+  // Assessment operations
+  async getUserAssessment(userId: string): Promise<Assessment | undefined> {
+    const [assessment] = await db
+      .select()
+      .from(assessments)
+      .where(eq(assessments.userId, userId))
+      .orderBy(desc(assessments.createdAt))
+      .limit(1);
+    return assessment;
+  }
+
+  async createAssessment(assessment: InsertAssessment): Promise<Assessment> {
+    const [newAssessment] = await db
+      .insert(assessments)
+      .values(assessment)
+      .returning();
+    return newAssessment;
+  }
+
+  async updateAssessment(id: string, assessment: Partial<InsertAssessment>): Promise<Assessment> {
+    const [updatedAssessment] = await db
+      .update(assessments)
+      .set({ ...assessment, updatedAt: new Date() })
+      .where(eq(assessments.id, id))
+      .returning();
+    return updatedAssessment;
+  }
+
+  async getAssessmentQuestions(category?: string): Promise<AssessmentQuestion[]> {
+    return category
+      ? await db.select().from(assessmentQuestions).where(eq(assessmentQuestions.category, category))
+      : await db.select().from(assessmentQuestions);
+  }
+
+  async createAssessmentResponse(response: InsertAssessmentResponse): Promise<AssessmentResponse> {
+    const [newResponse] = await db
+      .insert(assessmentResponses)
+      .values(response)
+      .returning();
+    return newResponse;
+  }
+
+  async getAssessmentWithResponses(id: string): Promise<AssessmentWithResponses | undefined> {
+    const results = await db
+      .select()
+      .from(assessments)
+      .leftJoin(assessmentResponses, eq(assessments.id, assessmentResponses.assessmentId))
+      .leftJoin(assessmentQuestions, eq(assessmentResponses.questionId, assessmentQuestions.id))
+      .where(eq(assessments.id, id));
+
+    if (results.length === 0) return undefined;
+
+    const assessment = results[0].assessments;
+    const assessmentData: AssessmentWithResponses = {
+      ...assessment,
+      responses: [],
+    };
+
+    for (const row of results) {
+      if (row.assessment_responses && row.assessment_questions) {
+        assessmentData.responses.push({
+          ...row.assessment_responses,
+          question: row.assessment_questions,
+        });
+      }
+    }
+
+    return assessmentData;
   }
 
   // Initial data seeding

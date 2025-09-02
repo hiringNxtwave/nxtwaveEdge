@@ -15,6 +15,7 @@ import ComparisonView from "./pages/comparison-view";
 import ForColleges from "./pages/for-colleges";
 import ForStudents from "./pages/for-students";
 import StudentProfileForm from "./pages/student-profile-form";
+import StudentDashboard from "./pages/student-dashboard";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -36,6 +37,7 @@ function Router() {
       ) : (
         <>
           <Route path="/" component={Home} />
+          <Route path="/student-dashboard" component={StudentDashboard} />
           <Route path="/browse" component={BrowseStudents} />
           <Route path="/student/:id" component={StudentProfile} />
           <Route path="/student-profile" component={StudentProfileForm} />

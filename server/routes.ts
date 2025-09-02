@@ -283,6 +283,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Student assessment routes
+  app.get('/api/student/assessment', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const assessment = await storage.getUserAssessment(userId);
+      res.json(assessment);
+    } catch (error) {
+      console.error("Error fetching student assessment:", error);
+      res.status(500).json({ message: "Failed to fetch assessment" });
+    }
+  });
+
+  app.post('/api/student/assessment', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const assessment = await storage.createAssessment({
+        userId,
+        status: 'in_progress'
+      });
+      res.json(assessment);
+    } catch (error) {
+      console.error("Error creating assessment:", error);
+      res.status(500).json({ message: "Failed to create assessment" });
+    }
+  });
+
+  app.patch('/api/student/assessment/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const updateData = req.body;
+      const assessment = await storage.updateAssessment(id, updateData);
+      res.json(assessment);
+    } catch (error) {
+      console.error("Error updating assessment:", error);
+      res.status(500).json({ message: "Failed to update assessment" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
