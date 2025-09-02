@@ -144,21 +144,23 @@ export class DatabaseStorage implements IStorage {
       whereConditions.push(gte(students.cgpa, filters.minCgpa.toString()));
     }
 
-    let query = db
+    const baseQuery = db
       .select()
       .from(students)
       .leftJoin(studentSkills, eq(students.id, studentSkills.studentId))
       .leftJoin(skills, eq(studentSkills.skillId, skills.id))
       .leftJoin(projects, eq(students.id, projects.studentId));
 
-    if (whereConditions.length > 0) {
-      query = query.where(and(...whereConditions));
-    }
-
-    const results = await query
-      .orderBy(desc(students.cgpa))
-      .limit(filters?.limit || 20)
-      .offset(filters?.offset || 0);
+    const results = whereConditions.length > 0
+      ? await baseQuery
+          .where(and(...whereConditions))
+          .orderBy(desc(students.cgpa))
+          .limit(filters?.limit || 20)
+          .offset(filters?.offset || 0)
+      : await baseQuery
+          .orderBy(desc(students.cgpa))
+          .limit(filters?.limit || 20)
+          .offset(filters?.offset || 0);
 
     
     // Group results by student
@@ -257,13 +259,11 @@ export class DatabaseStorage implements IStorage {
       whereConditions.push(gte(students.cgpa, filters.minCgpa.toString()));
     }
 
-    let query = db.select({ count: sql`count(*)` }).from(students);
+    const baseCountQuery = db.select({ count: sql`count(*)` }).from(students);
     
-    if (whereConditions.length > 0) {
-      query = query.where(and(...whereConditions));
-    }
-
-    const [result] = await query;
+    const [result] = whereConditions.length > 0
+      ? await baseCountQuery.where(and(...whereConditions))
+      : await baseCountQuery;
     return Number(result.count);
   }
 
