@@ -68,8 +68,8 @@ export default function AdvancedStudentsTable({
     enabled: isAuthenticated,
   });
 
-  const students = Array.isArray(studentsData) ? studentsData : (studentsData?.students || []);
-  const totalStudents = studentsData?.total || students?.length || 0;
+  const students = Array.isArray(studentsData) ? studentsData : ((studentsData as any)?.students || []);
+  const totalStudents = (studentsData as any)?.total || students?.length || 0;
 
   // Calculate assessment scores consistently
   const calculateAssessmentScores = (student: any) => {
