@@ -247,35 +247,34 @@ export default function Home() {
       </section>
 
       {/* Trusted Companies Section */}
-      <section className="py-12 bg-white">
+      <section className="py-16 bg-gradient-to-r from-gray-50 to-blue-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-gray-900" data-testid="text-trusted-by">
-              Trusted by India's leading companies
+            <h2 className="text-4xl font-bold mb-6 text-gray-900" data-testid="text-trusted-by">
+              Trusted by Industry Leaders
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Join thousands of companies that have found their perfect hires through NxtWave
-            </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-8 items-center opacity-70">
-            <div className="flex justify-center" data-testid="logo-tata">
-              <SiTata className="h-8 w-auto text-gray-600" />
-            </div>
-            <div className="flex justify-center" data-testid="logo-infosys">
-              <SiInfosys className="h-8 w-auto text-gray-600" />
-            </div>
-            <div className="flex justify-center" data-testid="logo-wipro">
-              <SiWipro className="h-8 w-auto text-gray-600" />
-            </div>
-            <div className="flex justify-center" data-testid="logo-google">
-              <SiGoogle className="h-8 w-auto text-gray-600" />
-            </div>
-            <div className="flex justify-center" data-testid="logo-amazon">
-              <SiAmazon className="h-8 w-auto text-gray-600" />
-            </div>
-            <div className="flex justify-center" data-testid="logo-flipkart">
-              <SiFlipkart className="h-8 w-auto text-gray-600" />
+          <div className="bg-white rounded-2xl p-8 shadow-lg">
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-8 items-center">
+              <div className="flex justify-center" data-testid="logo-tata">
+                <SiTata className="h-12 w-auto text-gray-700 hover:text-blue-600 transition-colors" />
+              </div>
+              <div className="flex justify-center" data-testid="logo-infosys">
+                <SiInfosys className="h-12 w-auto text-gray-700 hover:text-blue-600 transition-colors" />
+              </div>
+              <div className="flex justify-center" data-testid="logo-wipro">
+                <SiWipro className="h-12 w-auto text-gray-700 hover:text-blue-600 transition-colors" />
+              </div>
+              <div className="flex justify-center" data-testid="logo-google">
+                <SiGoogle className="h-12 w-auto text-gray-700 hover:text-blue-600 transition-colors" />
+              </div>
+              <div className="flex justify-center" data-testid="logo-amazon">
+                <SiAmazon className="h-12 w-auto text-gray-700 hover:text-blue-600 transition-colors" />
+              </div>
+              <div className="flex justify-center" data-testid="logo-flipkart">
+                <SiFlipkart className="h-12 w-auto text-gray-700 hover:text-blue-600 transition-colors" />
+              </div>
             </div>
           </div>
         </div>
@@ -325,49 +324,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Quick Start Guide */}
-      <section className="py-12 bg-white">
+      {/* CTA Section */}
+      <section className="py-20 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-gray-900">Get Started in 3 Easy Steps</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Find your next hire quickly with our streamlined process
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center" data-testid="step-search">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">1</span>
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-12 border border-white/20">
+              <h2 className="text-5xl font-bold text-white mb-6">
+                Start Hiring Excellence
+              </h2>
+              <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Access India's top pre-assessed talent pool and reduce your hiring time by 75%
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <Link href="/browse">
+                  <Button 
+                    size="lg" 
+                    className="bg-white text-blue-600 hover:bg-gray-100 px-10 py-5 text-xl font-bold shadow-xl"
+                    data-testid="button-get-started-cta"
+                  >
+                    Browse Candidates Now
+                    <ArrowRight className="w-6 h-6 ml-3" />
+                  </Button>
+                </Link>
+                <p className="text-blue-200 text-sm">
+                  Free to start • No setup fees
+                </p>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Search & Filter</h3>
-              <p className="text-gray-600">Use our advanced filters to find candidates that match your exact requirements</p>
             </div>
-
-            <div className="text-center" data-testid="step-shortlist">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-green-600">2</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Shortlist & Compare</h3>
-              <p className="text-gray-600">Save promising candidates and compare their skills side-by-side</p>
-            </div>
-
-            <div className="text-center" data-testid="step-contact">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-purple-600">3</span>
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Connect & Hire</h3>
-              <p className="text-gray-600">Reach out to your top choices and make your hiring decision</p>
-            </div>
-          </div>
-
-          <div className="text-center mt-12">
-            <Link href="/browse">
-              <Button size="lg" className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold" data-testid="button-start-browsing">
-                Start Browsing Candidates
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
