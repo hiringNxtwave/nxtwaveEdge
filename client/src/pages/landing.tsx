@@ -49,7 +49,7 @@ export default function Landing() {
             Hire India's Best <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Freshers.</span> In One Platform.
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto">
-            Your "Uber for Talent" - Choose your path to get started
+            Your "Uber for Talent" to match your hiring needs with India's Top 10% Freshers
           </p>
           
           <div className="flex justify-center mb-12">
