@@ -180,7 +180,7 @@ export default function ComparisonView() {
     );
   }
 
-  const analyzedStudents = students ? students.map(calculateStudentAnalysis).sort((a, b) => b.matchPercentage - a.matchPercentage) : [];
+  const analyzedStudents = students ? students.map(calculateStudentAnalysis).sort((a: any, b: any) => b.matchPercentage - a.matchPercentage) : [];
 
   const getRecommendationColor = (rec: string) => {
     switch (rec) {
@@ -245,7 +245,7 @@ export default function ComparisonView() {
               <Card className="bg-green-50 border-green-200">
                 <CardContent className="p-6 text-center">
                   <div className="text-3xl font-bold text-green-600 mb-2">
-                    {analyzedStudents.filter(s => s.recommendation === 'strong_hire').length}
+                    {analyzedStudents.filter((s: any) => s.recommendation === 'strong_hire').length}
                   </div>
                   <div className="text-sm text-green-700">Strong Hire</div>
                 </CardContent>
@@ -253,7 +253,7 @@ export default function ComparisonView() {
               <Card className="bg-blue-50 border-blue-200">
                 <CardContent className="p-6 text-center">
                   <div className="text-3xl font-bold text-blue-600 mb-2">
-                    {analyzedStudents.filter(s => s.recommendation === 'hire').length}
+                    {analyzedStudents.filter((s: any) => s.recommendation === 'hire').length}
                   </div>
                   <div className="text-sm text-blue-700">Hire</div>
                 </CardContent>
@@ -261,7 +261,7 @@ export default function ComparisonView() {
               <Card className="bg-yellow-50 border-yellow-200">
                 <CardContent className="p-6 text-center">
                   <div className="text-3xl font-bold text-yellow-600 mb-2">
-                    {analyzedStudents.filter(s => s.recommendation === 'maybe').length}
+                    {analyzedStudents.filter((s: any) => s.recommendation === 'maybe').length}
                   </div>
                   <div className="text-sm text-yellow-700">Maybe</div>
                 </CardContent>
@@ -269,7 +269,7 @@ export default function ComparisonView() {
               <Card className="bg-red-50 border-red-200">
                 <CardContent className="p-6 text-center">
                   <div className="text-3xl font-bold text-red-600 mb-2">
-                    {analyzedStudents.filter(s => s.recommendation === 'no_hire').length}
+                    {analyzedStudents.filter((s: any) => s.recommendation === 'no_hire').length}
                   </div>
                   <div className="text-sm text-red-700">No Hire</div>
                 </CardContent>
@@ -277,7 +277,7 @@ export default function ComparisonView() {
             </div>
 
             {/* Detailed Analysis */}
-            {analyzedStudents.map((analysis, index) => (
+            {analyzedStudents.map((analysis: any, index: number) => (
               <Card key={analysis.student.id} className="overflow-hidden">
                 <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
                   <div className="flex items-center justify-between">
@@ -383,7 +383,7 @@ export default function ComparisonView() {
                             Strengths
                           </h4>
                           <ul className="space-y-1">
-                            {analysis.strengths.map((strength, i) => (
+                            {analysis.strengths.map((strength: string, i: number) => (
                               <li key={i} className="text-sm text-green-600 flex items-center gap-2">
                                 <span className="w-1 h-1 bg-green-500 rounded-full"></span>
                                 {strength}
@@ -400,7 +400,7 @@ export default function ComparisonView() {
                             Areas for Improvement
                           </h4>
                           <ul className="space-y-1">
-                            {analysis.concerns.map((concern, i) => (
+                            {analysis.concerns.map((concern: string, i: number) => (
                               <li key={i} className="text-sm text-red-600 flex items-center gap-2">
                                 <span className="w-1 h-1 bg-red-500 rounded-full"></span>
                                 {concern}
