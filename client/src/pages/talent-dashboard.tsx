@@ -180,6 +180,11 @@ export default function TalentDashboard() {
             // For now, just show a placeholder action
             console.log(`Message ${studentName} (${studentId})`);
           }}
+          onSelectForFinalConsideration={(studentId, studentName) => {
+            // Show success message and potentially add to shortlist
+            console.log(`Selected ${studentName} for final consideration`);
+            // This could trigger adding to shortlist or sending to HR team
+          }}
         />
 
         {/* Modals */}

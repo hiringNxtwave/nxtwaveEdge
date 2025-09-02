@@ -35,13 +35,15 @@ interface AdvancedStudentsTableProps {
   onInterviewSchedule?: (studentId: string, studentName: string) => void;
   onCodeView?: (studentId: string, studentName: string) => void;
   onMessage?: (studentId: string, studentName: string) => void;
+  onSelectForFinalConsideration?: (studentId: string, studentName: string) => void;
 }
 
 export default function AdvancedStudentsTable({ 
   limit = 100, 
   onInterviewSchedule,
   onCodeView,
-  onMessage 
+  onMessage,
+  onSelectForFinalConsideration 
 }: AdvancedStudentsTableProps) {
   const { isAuthenticated } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
@@ -325,33 +327,51 @@ export default function AdvancedStudentsTable({
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-col gap-2">
+                        {/* Primary Action - Select for Final Consideration */}
                         <Button
                           size="sm"
-                          variant="outline"
-                          onClick={() => onCodeView?.(student.id, `${student.firstName} ${student.lastName}`)}
-                          data-testid={`button-view-code-${student.id}`}
+                          onClick={() => onSelectForFinalConsideration?.(student.id, `${student.firstName} ${student.lastName}`)}
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                          data-testid={`button-select-final-${student.id}`}
                         >
-                          <Code className="w-4 h-4 mr-1" />
-                          Code
+                          <Star className="w-4 h-4 mr-1" />
+                          Select for Final Consideration
                         </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => onInterviewSchedule?.(student.id, `${student.firstName} ${student.lastName}`)}
-                          data-testid={`button-schedule-interview-${student.id}`}
-                        >
-                          <Video className="w-4 h-4 mr-1" />
-                          Interview
-                        </Button>
-                        <Button
-                          size="sm"
-                          onClick={() => onMessage?.(student.id, `${student.firstName} ${student.lastName}`)}
-                          data-testid={`button-message-${student.id}`}
-                        >
-                          <MessageSquare className="w-4 h-4 mr-1" />
-                          Message
-                        </Button>
+                        
+                        {/* Secondary Actions */}
+                        <div className="flex items-center gap-1">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => onCodeView?.(student.id, `${student.firstName} ${student.lastName}`)}
+                            data-testid={`button-view-code-${student.id}`}
+                            className="flex-1"
+                          >
+                            <Code className="w-3 h-3 mr-1" />
+                            Code
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => onInterviewSchedule?.(student.id, `${student.firstName} ${student.lastName}`)}
+                            data-testid={`button-schedule-interview-${student.id}`}
+                            className="flex-1"
+                          >
+                            <Video className="w-3 h-3 mr-1" />
+                            Interview
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => onMessage?.(student.id, `${student.firstName} ${student.lastName}`)}
+                            data-testid={`button-message-${student.id}`}
+                            className="flex-1"
+                          >
+                            <MessageSquare className="w-3 h-3 mr-1" />
+                            Message
+                          </Button>
+                        </div>
                       </div>
                     </TableCell>
                   </TableRow>
