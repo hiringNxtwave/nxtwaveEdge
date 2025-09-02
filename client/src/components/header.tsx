@@ -111,21 +111,38 @@ export default function Header() {
                 >
                   Dashboard
                 </Link>
-                {shortlistCount > 0 && (
-                  <Link 
-                    href="/shortlist" 
-                    className={cn(
-                      "transition-colors font-medium inline-flex items-center gap-2 py-1",
-                      location === "/shortlist" 
-                        ? "text-foreground border-b-2 border-primary" 
+                <Link 
+                  href="/browse" 
+                  className={cn(
+                    "transition-colors font-medium inline-block py-1",
+                    location === "/browse" 
+                      ? "text-foreground border-b-2 border-primary" 
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                  data-testid="link-browse-talent"
+                >
+                  Browse Talent
+                </Link>
+                <Link 
+                  href="/shortlist" 
+                  className={cn(
+                    "transition-colors font-medium inline-flex items-center gap-2 py-1 px-3 rounded-full",
+                    location === "/shortlist" 
+                      ? "text-white bg-primary" 
+                      : shortlistCount > 0 
+                        ? "text-primary bg-primary/10 hover:bg-primary/20" 
                         : "text-muted-foreground hover:text-foreground"
-                    )}
-                    data-testid="link-shortlist"
-                  >
-                    <Heart className="w-4 h-4" />
-                    Shortlisted ({shortlistCount})
-                  </Link>
-                )}
+                  )}
+                  data-testid="link-shortlist"
+                >
+                  <Heart className={cn("w-4 h-4", shortlistCount > 0 ? "fill-current" : "")} />
+                  Shortlisted
+                  {shortlistCount > 0 && (
+                    <span className="bg-white/20 px-1.5 py-0.5 rounded-full text-xs font-semibold">
+                      {shortlistCount}
+                    </span>
+                  )}
+                </Link>
               </>
             )}
           </nav>
