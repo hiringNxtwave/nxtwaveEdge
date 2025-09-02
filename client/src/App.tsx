@@ -15,30 +15,30 @@ import ComparisonView from "./pages/comparison-view";
 import ForCompanies from "./pages/for-companies";
 import ForColleges from "./pages/for-colleges";
 import ForStudents from "./pages/for-students";
+import StudentProfileForm from "./pages/student-profile-form";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
     <Switch>
+      {/* Marketing pages - available to everyone */}
+      <Route path="/for-companies" component={ForCompanies} />
+      <Route path="/for-colleges" component={ForColleges} />
+      <Route path="/for-students" component={ForStudents} />
+      
       {isLoading || !isAuthenticated ? (
         <>
           <Route path="/" component={Landing} />
-          <Route path="/browse" component={BrowseStudents} />
-          <Route path="/for-companies" component={ForCompanies} />
-          <Route path="/for-colleges" component={ForColleges} />
-          <Route path="/for-students" component={ForStudents} />
         </>
       ) : (
         <>
-          <Route path="/" component={BrowseStudents} />
+          <Route path="/" component={Home} />
           <Route path="/browse" component={BrowseStudents} />
           <Route path="/student/:id" component={StudentProfile} />
+          <Route path="/student-profile" component={StudentProfileForm} />
           <Route path="/shortlist" component={ShortlistedCandidates} />
           <Route path="/shortlist/compare" component={ComparisonView} />
-          <Route path="/for-companies" component={ForCompanies} />
-          <Route path="/for-colleges" component={ForColleges} />
-          <Route path="/for-students" component={ForStudents} />
         </>
       )}
       <Route component={NotFound} />

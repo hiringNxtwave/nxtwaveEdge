@@ -66,7 +66,7 @@ export default function Header() {
                   href="/browse" 
                   className={cn(
                     "transition-colors font-medium inline-block py-1",
-                    location === "/browse" || location === "/" 
+                    location === "/browse" 
                       ? "text-foreground border-b-2 border-primary" 
                       : "text-muted-foreground hover:text-foreground"
                   )}

@@ -35,68 +35,76 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-4 text-gray-900" data-testid="text-welcome">
-              Welcome back, {user?.firstName || "Recruiter"}! 👋
+              Welcome to NxtWave, {user?.firstName || "there"}! 👋
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl">
-              Your recruitment dashboard for finding and managing top talent from India's best universities.
+              The Uber for Talent - Your gateway to India's top pre-assessed students.
             </p>
           </div>
 
           {/* Quick Actions */}
           <div className="grid md:grid-cols-3 gap-6">
             <Link href="/browse">
-              <Card className="hover:shadow-md transition-shadow cursor-pointer bg-white border-l-4 border-l-blue-500" data-testid="card-browse-candidates">
+              <Card className="hover:shadow-md transition-shadow cursor-pointer bg-white border border-gray-200 hover:border-blue-300" data-testid="card-browse-candidates">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
                     <div>
                       <CardTitle className="text-lg">Browse Candidates</CardTitle>
-                      <CardDescription>Discover new talent</CardDescription>
+                      <CardDescription>Pre-assessed talent pool</CardDescription>
                     </div>
-                    <Users className="w-8 h-8 text-blue-600" />
+                    <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
+                      <Users className="w-6 h-6 text-blue-600" />
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold text-blue-600">2.5M+</p>
-                  <p className="text-sm text-gray-600">Students available</p>
+                  <p className="text-2xl font-bold text-blue-600">200,000+</p>
+                  <p className="text-sm text-gray-600">Verified students</p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/student-profile">
+              <Card className="hover:shadow-md transition-shadow cursor-pointer bg-white border border-gray-200 hover:border-blue-300" data-testid="card-student-profile">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-lg">Student Profile</CardTitle>
+                      <CardDescription>Create your profile</CardDescription>
+                    </div>
+                    <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
+                      <GraduationCap className="w-6 h-6 text-green-600" />
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold text-green-600">8-18 LPA</p>
+                  <p className="text-sm text-gray-600">Assessment roles</p>
                 </CardContent>
               </Card>
             </Link>
 
             {shortlistCount > 0 && (
               <Link href="/shortlist">
-                <Card className="hover:shadow-md transition-shadow cursor-pointer bg-white border-l-4 border-l-green-500" data-testid="card-your-shortlist">
+                <Card className="hover:shadow-md transition-shadow cursor-pointer bg-white border border-gray-200 hover:border-blue-300" data-testid="card-your-shortlist">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div>
                         <CardTitle className="text-lg">Your Shortlist</CardTitle>
-                        <CardDescription>Manage saved candidates</CardDescription>
+                        <CardDescription>Saved candidates</CardDescription>
                       </div>
-                      <Heart className="w-8 h-8 text-green-600" />
+                      <div className="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center">
+                        <Heart className="w-6 h-6 text-red-600" />
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-2xl font-bold text-green-600">{shortlistCount}</p>
+                    <p className="text-2xl font-bold text-red-600">{shortlistCount}</p>
                     <p className="text-sm text-gray-600">Candidates saved</p>
                   </CardContent>
                 </Card>
               </Link>
             )}
-
-            <Card className="bg-white border-l-4 border-l-purple-500" data-testid="card-recruitment-analytics">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-lg">Recruitment Analytics</CardTitle>
-                    <CardDescription>View your hiring insights</CardDescription>
-                  </div>
-                  <TrendingUp className="w-8 h-8 text-purple-600" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-2xl font-bold text-purple-600">Coming Soon</p>
-                <p className="text-sm text-gray-600">AI-powered insights</p>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
