@@ -27,9 +27,9 @@ export default function Header() {
             <Link 
               href="/for-companies" 
               className={cn(
-                "transition-colors font-medium",
+                "transition-colors font-medium inline-block py-1",
                 location === "/for-companies" 
-                  ? "text-foreground border-b-2 border-primary pb-1" 
+                  ? "text-foreground border-b-2 border-primary" 
                   : "text-muted-foreground hover:text-foreground"
               )}
               data-testid="link-for-companies"
@@ -39,9 +39,9 @@ export default function Header() {
             <Link 
               href="/for-colleges" 
               className={cn(
-                "transition-colors font-medium",
+                "transition-colors font-medium inline-block py-1",
                 location === "/for-colleges" 
-                  ? "text-foreground border-b-2 border-primary pb-1" 
+                  ? "text-foreground border-b-2 border-primary" 
                   : "text-muted-foreground hover:text-foreground"
               )}
               data-testid="link-for-colleges"
@@ -51,9 +51,9 @@ export default function Header() {
             <Link 
               href="/for-students" 
               className={cn(
-                "transition-colors font-medium",
+                "transition-colors font-medium inline-block py-1",
                 location === "/for-students" 
-                  ? "text-foreground border-b-2 border-primary pb-1" 
+                  ? "text-foreground border-b-2 border-primary" 
                   : "text-muted-foreground hover:text-foreground"
               )}
               data-testid="link-for-students"
@@ -65,9 +65,9 @@ export default function Header() {
                 <Link 
                   href="/browse" 
                   className={cn(
-                    "transition-colors font-medium",
-                    location === "/browse" 
-                      ? "text-foreground border-b-2 border-primary pb-1" 
+                    "transition-colors font-medium inline-block py-1",
+                    location === "/browse" || location === "/" 
+                      ? "text-foreground border-b-2 border-primary" 
                       : "text-muted-foreground hover:text-foreground"
                   )}
                   data-testid="link-browse"
@@ -78,9 +78,9 @@ export default function Header() {
                   <Link 
                     href="/shortlist" 
                     className={cn(
-                      "transition-colors flex items-center gap-2 font-medium",
+                      "transition-colors font-medium inline-flex items-center gap-2 py-1",
                       location === "/shortlist" 
-                        ? "text-foreground border-b-2 border-primary pb-1" 
+                        ? "text-foreground border-b-2 border-primary" 
                         : "text-muted-foreground hover:text-foreground"
                     )}
                     data-testid="link-shortlist"
