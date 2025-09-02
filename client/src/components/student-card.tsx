@@ -64,7 +64,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
       <CardContent className="p-6">
         <div className="grid grid-cols-12 gap-6 items-center w-full">
           {/* Student Info Section - 3 columns */}
-          <div className="col-span-3 flex items-center space-x-4">
+          <Link href={`/student/${student.id}`} className="col-span-3 flex items-center space-x-4 cursor-pointer">
             <div className="relative">
               <img 
                 src={student.profileImageUrl || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face`} 
@@ -97,7 +97,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Skills Section - 5 columns */}
           <div className="col-span-5">

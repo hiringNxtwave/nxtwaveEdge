@@ -102,7 +102,7 @@ export default function Home() {
                   <Globe className="w-5 h-5 text-blue-600" />
                   Platform Overview
                 </CardTitle>
-                <CardDescription>Key metrics from TalentConnect India</CardDescription>
+                <CardDescription>Key metrics from NxtWave</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-6">
@@ -171,7 +171,7 @@ export default function Home() {
               Trusted by India's leading companies
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Join thousands of companies that have found their perfect hires through TalentConnect India
+              Join thousands of companies that have found their perfect hires through NxtWave
             </p>
           </div>
           

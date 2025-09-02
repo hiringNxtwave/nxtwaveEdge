@@ -22,39 +22,16 @@ export default function Landing() {
             Your "Uber for Talent" - Choose your path to get started
           </p>
           
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
-            <Link href="/for-companies">
-              <Card className="bg-white border-2 hover:border-blue-300 cursor-pointer transition-all hover:shadow-lg">
-                <CardContent className="p-6 text-center">
-                  <Building2 className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">For Companies</h3>
-                  <p className="text-gray-600 text-sm mb-4">Hire pre-assessed talent</p>
-                  <Button className="w-full">Get Started</Button>
-                </CardContent>
-              </Card>
-            </Link>
-            
-            <Link href="/for-students">
-              <Card className="bg-white border-2 hover:border-blue-300 cursor-pointer transition-all hover:shadow-lg">
-                <CardContent className="p-6 text-center">
-                  <GraduationCap className="w-12 h-12 text-green-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">For Students</h3>
-                  <p className="text-gray-600 text-sm mb-4">Take assessment & get hired</p>
-                  <Button className="w-full" variant="outline">Join Now</Button>
-                </CardContent>
-              </Card>
-            </Link>
-            
-            <Link href="/for-colleges">
-              <Card className="bg-white border-2 hover:border-blue-300 cursor-pointer transition-all hover:shadow-lg">
-                <CardContent className="p-6 text-center">
-                  <Users className="w-12 h-12 text-purple-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">For Colleges</h3>
-                  <p className="text-gray-600 text-sm mb-4">Partner with us</p>
-                  <Button className="w-full" variant="outline">Partner Now</Button>
-                </CardContent>
-              </Card>
-            </Link>
+          <div className="flex justify-center mb-12">
+            <Button 
+              size="lg" 
+              className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold" 
+              onClick={() => window.location.href = "/api/login"}
+              data-testid="button-explore-talent"
+            >
+              Start Hiring Now
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </div>
 
           {/* Social Proof Stats */}

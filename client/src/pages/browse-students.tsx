@@ -130,7 +130,7 @@ export default function BrowseStudents() {
               {isLoading 
                 ? "Loading..." 
                 : isAuthenticated 
-                  ? `Assessment Results`
+                  ? `Student Profiles`
                   : `Showing ${students.length} of 2.5M+ Students (Preview)`
               }
             </h2>
