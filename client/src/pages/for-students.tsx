@@ -70,11 +70,11 @@ export default function ForStudents() {
             </Badge>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-            Get Assessed. Get
-            <span className="text-blue-600"> Hired.</span>
+            One Assessment.
+            <span className="text-blue-600"> Multiple Job Offers.</span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            One Assessment. Diagnosis & Report. Access roles from 8-18 LPA and diagnose your skills for top companies.
+            Take our comprehensive skill assessment and get placed in 8-18 LPA roles at India's top companies. No more endless job applications.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button size="lg" className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700">
@@ -87,7 +87,7 @@ export default function ForStudents() {
           
           {/* Trust Indicators */}
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Students from these colleges trust us:</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">Join students from top colleges:</p>
             <div className="flex flex-wrap justify-center items-center gap-8 text-gray-500">
               <span className="font-semibold">IIT Delhi</span>
               <span className="font-semibold">BITS Pilani</span>
@@ -104,10 +104,10 @@ export default function ForStudents() {
       <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Assessment Program Syllabus</h2>
+            <h2 className="text-4xl font-bold mb-4">What You'll Be Assessed On</h2>
             <p className="text-xl opacity-90 max-w-3xl mx-auto mb-8">
-              Meticulously designed assignments created by people working at top product companies.
-              Get assessed for roles ranging from 8-18 LPA and diagnose your skills.
+              Our assessment covers all skills that top companies actually test for. 
+              Designed by engineers from Google, Microsoft, Amazon, and other leading tech companies.
             </p>
           </div>
           
@@ -164,18 +164,18 @@ export default function ForStudents() {
           
           <div className="text-center">
             <p className="text-lg mb-6 opacity-90">
-              <strong>One Assessment. Diagnosis & Report.</strong> 
+              <strong>One Assessment. Complete Skill Report.</strong> 
             </p>
             <p className="text-base opacity-80 mb-8">
-              Designed by people from companies that are product developers - People working in top companies like Google, Microsoft, Amazon, Meta, Netflix, and Uber.
+              Created by senior engineers from Google, Microsoft, Amazon, Meta, Netflix, and Uber who know exactly what companies look for.
             </p>
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 max-w-2xl mx-auto">
-              <h4 className="text-xl font-semibold mb-4">🎯 Multiple Top Tier Companies</h4>
+              <h4 className="text-xl font-semibold mb-4">🎯 Access Multiple Companies</h4>
               <p className="text-sm opacity-90 mb-4">
-                Your profile gets shared with companies continuously. Multiple companies shortlist based on your assessment performance.
+                Once you complete the assessment, your profile is automatically shared with hundreds of hiring companies. No need to apply individually.
               </p>
               <p className="text-sm opacity-90">
-                <strong>🎤 Free Mock Interviews:</strong> Practice with engineers from prominent companies before your actual interviews.
+                <strong>🎤 Free Interview Prep:</strong> Get mock interviews with engineers from top companies to prepare for the real thing.
               </p>
             </div>
           </div>
