@@ -95,18 +95,6 @@ export default function Header() {
                     </Link>
                   </>
                 )}
-                <Link 
-                  href="/" 
-                  className={cn(
-                    "transition-colors font-medium inline-block py-1",
-                    location === "/" 
-                      ? "text-foreground border-b-2 border-primary" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                  data-testid="link-for-companies"
-                >
-                  For Companies
-                </Link>
               </>
             ) : (
               // Functional navigation for authenticated users
