@@ -49,7 +49,7 @@ export default function Landing() {
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Hire India's top freshers</span> all in one place
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Hire India's Top Freshers.</span> In One Place.
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto">
             Your "Uber for Talent" to match your hiring needs with India's Top 10% Freshers
