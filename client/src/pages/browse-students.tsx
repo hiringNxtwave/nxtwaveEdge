@@ -55,45 +55,42 @@ export default function BrowseStudents() {
       <Header />
       
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2" data-testid="text-page-title">
-            Browse Candidates
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Discover talented students from India's top universities
-          </p>
-        </div>
-
-        {/* Filters at the top for better visibility */}
-        <div className="mb-8 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
-          <div className="mb-4">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Filter Candidates</h2>
-            <p className="text-sm text-gray-600 dark:text-gray-300">Find the perfect candidates by using the filters below</p>
+        {/* Compact header with filters on the right */}
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <p className="text-gray-600 dark:text-gray-300 text-lg">
+              {isLoading 
+                ? "Loading candidates..." 
+                : isAuthenticated 
+                  ? `${totalCount} candidates found`
+                  : `Showing ${students.length} of 2.5M+ candidates (Preview)`
+              }
+            </p>
           </div>
-          <StudentFilters
-            filters={{
-              skills: filters.skills.length > 0 ? filters.skills.join(",") : "all",
-              location: filters.location || "all",
-              university: filters.university || "all",
-              minCgpa: filters.minCgpa?.toString() || "all",
-              maxCgpa: filters.maxCgpa?.toString() || "all",
-              codingRating: filters.codingRating?.toString() || "all"
-            }}
-            onFiltersChange={(newFilters) => {
-              setFilters({
-                skills: newFilters.skills && newFilters.skills !== "all" ? newFilters.skills.split(",").filter(Boolean) : [],
-                location: newFilters.location === "all" ? "" : newFilters.location,
-                university: newFilters.university === "all" ? "" : newFilters.university,
-                minCgpa: newFilters.minCgpa && newFilters.minCgpa !== "all" ? parseFloat(newFilters.minCgpa) : undefined,
-                maxCgpa: newFilters.maxCgpa && newFilters.maxCgpa !== "all" ? parseFloat(newFilters.maxCgpa) : undefined,
-                codingRating: newFilters.codingRating && newFilters.codingRating !== "all" ? parseInt(newFilters.codingRating) : undefined
-              });
-            }}
-            onSearch={() => setCurrentPage(1)}
-            skills={(skills as any) || []}
-            resultCount={students.length}
-            totalCount={totalCount}
-          />
+          
+          {/* Compact Filters */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+            <StudentFilters
+              filters={{
+                university: filters.university || "all",
+                codingRating: filters.codingRating?.toString() || "all"
+              }}
+              onFiltersChange={(newFilters) => {
+                setFilters({
+                  skills: [],
+                  location: "",
+                  university: newFilters.university === "all" ? "" : newFilters.university,
+                  minCgpa: undefined,
+                  maxCgpa: undefined,
+                  codingRating: newFilters.codingRating && newFilters.codingRating !== "all" ? parseInt(newFilters.codingRating) : undefined
+                });
+              }}
+              onSearch={() => setCurrentPage(1)}
+              skills={(skills as any) || []}
+              resultCount={students.length}
+              totalCount={totalCount}
+            />
+          </div>
         </div>
 
         {/* Limited Access Banner for Unauthenticated Users */}

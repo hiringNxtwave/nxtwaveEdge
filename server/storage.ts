@@ -490,12 +490,12 @@ export class DatabaseStorage implements IStorage {
       studentData.push({
         ...profile,
         email: `${profile.firstName.toLowerCase()}.${profile.lastName.toLowerCase()}@email.com`,
-        cgpa: parseFloat(profile.cgpa),
+        cgpa: profile.cgpa,
       });
     }
 
     // Generate remaining random profiles
-    for (let i = highMatchProfiles.length; i < 120; i++) {
+    for (let i = highMatchProfiles.length; i < 520; i++) {
       const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
       const university = universities[Math.floor(Math.random() * universities.length)];
@@ -506,7 +506,7 @@ export class DatabaseStorage implements IStorage {
       const bio = bioTemplates[Math.floor(Math.random() * bioTemplates.length)];
       
       // Generate CGPA between 7.0 and 9.8
-      const cgpa = parseFloat((Math.random() * 2.8 + 7.0).toFixed(2));
+      const cgpa = (Math.random() * 2.8 + 7.0).toFixed(2);
       
       // Generate coding rating (1-5 stars), with bias towards higher ratings
       const codingRating = Math.floor(Math.random() * 5) + 1;

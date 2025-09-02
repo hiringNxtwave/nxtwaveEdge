@@ -15,7 +15,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   const { isShortlisted, addToShortlist, removeFromShortlist } = useShortlist();
   
   // Use student ID as seed for consistent ratings
-  const seed = typeof student.id === 'string' ? parseInt(student.id.slice(-8), 16) : student.id;
+  const seed = parseInt(student.id.slice(-8), 16);
   
   // Overall rating from codingRating field (this is the baseline)
   const overallRating = student.codingRating || 4;
@@ -168,32 +168,25 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
           {/* Action Section - 2 columns */}
           <div className="col-span-2 flex flex-col space-y-3">
-            {showFullInfo ? (
-              <Link href={`/student/${student.id}`}>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" size="sm" data-testid={`button-view-profile-${student.id}`}>
-                  View Profile
-                </Button>
-              </Link>
-            ) : (
-              <Button className="w-full" variant="outline" size="sm" disabled data-testid={`button-view-profile-locked-${student.id}`}>
+            <Link href={`/student/${student.id}`}>
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" size="sm" data-testid={`button-view-profile-${student.id}`}>
                 View Profile
               </Button>
-            )}
+            </Link>
             <Button 
               variant="outline" 
               className={`w-full font-semibold ${
-                isShortlisted(parseInt(student.id.slice(-8), 16)) 
+                isShortlisted(student.id) 
                   ? 'border-green-500 bg-green-50 text-green-700 hover:bg-green-100' 
                   : 'border-green-500 text-green-600 hover:bg-green-50'
               }`} 
               size="sm" 
               onClick={() => {
-                const numericId = parseInt(student.id.slice(-8), 16);
-                isShortlisted(numericId) ? removeFromShortlist(numericId) : addToShortlist(numericId);
+                isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
               }}
               data-testid={`button-shortlist-${student.id}`}
             >
-              {isShortlisted(parseInt(student.id.slice(-8), 16)) ? (
+              {isShortlisted(student.id) ? (
                 <>
                   <Check className="w-4 h-4 mr-1" />
                   Shortlisted

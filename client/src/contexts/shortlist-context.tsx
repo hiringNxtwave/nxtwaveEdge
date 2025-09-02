@@ -1,10 +1,10 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 interface ShortlistContextType {
-  shortlistedIds: Set<number>;
-  addToShortlist: (studentId: number) => void;
-  removeFromShortlist: (studentId: number) => void;
-  isShortlisted: (studentId: number) => boolean;
+  shortlistedIds: Set<string>;
+  addToShortlist: (studentId: string) => void;
+  removeFromShortlist: (studentId: string) => void;
+  isShortlisted: (studentId: string) => boolean;
   shortlistCount: number;
   clearShortlist: () => void;
 }
@@ -12,13 +12,13 @@ interface ShortlistContextType {
 const ShortlistContext = createContext<ShortlistContextType | undefined>(undefined);
 
 export function ShortlistProvider({ children }: { children: ReactNode }) {
-  const [shortlistedIds, setShortlistedIds] = useState<Set<number>>(new Set());
+  const [shortlistedIds, setShortlistedIds] = useState<Set<string>>(new Set());
 
-  const addToShortlist = (studentId: number) => {
+  const addToShortlist = (studentId: string) => {
     setShortlistedIds(prev => new Set([...Array.from(prev), studentId]));
   };
 
-  const removeFromShortlist = (studentId: number) => {
+  const removeFromShortlist = (studentId: string) => {
     setShortlistedIds(prev => {
       const newSet = new Set(prev);
       newSet.delete(studentId);
@@ -26,7 +26,7 @@ export function ShortlistProvider({ children }: { children: ReactNode }) {
     });
   };
 
-  const isShortlisted = (studentId: number) => {
+  const isShortlisted = (studentId: string) => {
     return shortlistedIds.has(studentId);
   };
 
