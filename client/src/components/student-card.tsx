@@ -1,10 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, GraduationCap, Check, Plus } from "lucide-react";
+import { Star, MapPin, GraduationCap, Check, Plus, Shield, Eye } from "lucide-react";
 import type { StudentWithSkills } from "@shared/schema";
 import { Link } from "wouter";
 import { useShortlist } from "@/contexts/shortlist-context";
+import { useState } from "react";
+import AssessmentModal from "@/components/assessment-modal";
 
 interface StudentCardProps {
   student: StudentWithSkills;
@@ -13,6 +15,7 @@ interface StudentCardProps {
 
 export default function StudentCard({ student, showFullInfo = false }: StudentCardProps) {
   const { isShortlisted, addToShortlist, removeFromShortlist } = useShortlist();
+  const [selectedAssessment, setSelectedAssessment] = useState<{type: string, score: number, level: string} | null>(null);
   
   // Use student ID as seed for consistent ratings
   const seed = parseInt(student.id.slice(-8), 16);
@@ -72,6 +75,11 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 className="w-20 h-20 rounded-full object-cover border-3 border-white shadow-lg"
                 data-testid={`img-student-avatar-${student.id}`}
               />
+              {student.verified && (
+                <div className="absolute -top-1 -left-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white" title="Verified Profile">
+                  <Shield className="w-3 h-3 text-white" />
+                </div>
+              )}
               <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full text-xs font-bold text-white flex items-center justify-center shadow-lg border-2 border-white ${
                 matchPercentage >= 85 ? 'bg-green-500' : matchPercentage >= 70 ? 'bg-yellow-500' : 'bg-orange-500'
               }`}>
@@ -103,8 +111,13 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           <div className="col-span-5">
             <div className="grid grid-cols-4 gap-4">
               {/* DSA */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">DSA Assessment</div>
+              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all duration-200 group" 
+                   onClick={() => setSelectedAssessment({type: 'DSA Assessment', score: dsaScore * 20, level: dsaScore >= 4 ? 'Advanced' : dsaScore >= 3 ? 'Intermediate' : 'Basic'})}
+                   data-testid={`assessment-dsa-${student.id}`}>
+                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
+                  DSA Assessment
+                  <Eye className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
                 <div className="text-lg font-bold text-blue-600 dark:text-blue-400 mb-1">
                   {(dsaScore * 20)}%
                 </div>
@@ -114,8 +127,13 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               </div>
 
               {/* Aptitude */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">Quantitative Test</div>
+              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all duration-200 group" 
+                   onClick={() => setSelectedAssessment({type: 'Aptitude Test', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Fair'})}
+                   data-testid={`assessment-aptitude-${student.id}`}>
+                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
+                  Quantitative Test
+                  <Eye className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
                 <div className="text-lg font-bold text-green-600 dark:text-green-400 mb-1">
                   {(aptitudeScore * 20)}%
                 </div>
@@ -125,8 +143,13 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               </div>
 
               {/* Communication */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">Communication</div>
+              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-purple-300 hover:shadow-md transition-all duration-200 group" 
+                   onClick={() => setSelectedAssessment({type: 'Communication', score: communicationScore * 20, level: communicationScore >= 4 ? 'Fluent' : communicationScore >= 3 ? 'Good' : 'Basic'})}
+                   data-testid={`assessment-communication-${student.id}`}>
+                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
+                  Communication
+                  <Eye className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
                 <div className="text-lg font-bold text-purple-600 dark:text-purple-400 mb-1">
                   {(communicationScore * 20)}%
                 </div>
@@ -136,8 +159,13 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               </div>
 
               {/* CS Fundamentals */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">System Design</div>
+              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-orange-300 hover:shadow-md transition-all duration-200 group" 
+                   onClick={() => setSelectedAssessment({type: 'System Design', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Expert' : csFundamentalsScore >= 3 ? 'Solid' : 'Learning'})}
+                   data-testid={`assessment-system-design-${student.id}`}>
+                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
+                  System Design
+                  <Eye className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
                 <div className="text-lg font-bold text-orange-600 dark:text-orange-400 mb-1">
                   {(csFundamentalsScore * 20)}%
                 </div>
@@ -204,6 +232,15 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           </div>
         </div>
       </CardContent>
+      
+      {/* Assessment Modal */}
+      {selectedAssessment && (
+        <AssessmentModal 
+          assessment={selectedAssessment} 
+          student={student}
+          onClose={() => setSelectedAssessment(null)}
+        />
+      )}
     </Card>
   );
 }
