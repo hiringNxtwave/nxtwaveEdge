@@ -77,8 +77,8 @@ export default function ForColleges() {
             <span className="text-green-600"> Placement Success</span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Partner with TalentConnect to provide your students with industry-standard assessments 
-            and direct access to 500+ hiring companies.
+            Partner with NxtWave to provide students with meticulously designed assessments by industry experts. 
+            One Assessment. Diagnosis & Report. Multiple company opportunities.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button size="lg" className="px-8 py-4 text-lg bg-green-600 hover:bg-green-700">
@@ -139,6 +139,57 @@ export default function ForColleges() {
                 </CardHeader>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Assessment Excellence Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">One Assessment. Diagnosis & Report.</h2>
+            <p className="text-xl opacity-90 max-w-3xl mx-auto mb-8">
+              Meticulously designed assignments created by people working at top product companies.
+              Your students get assessed for roles ranging from 8-18 LPA.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <div className="text-3xl mb-4">🧮</div>
+              <h3 className="text-lg font-semibold mb-3">Aptitude Assessment</h3>
+              <p className="text-sm opacity-90">Quantitative analysis, logical reasoning, and problem-solving evaluation</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <div className="text-3xl mb-4">📝</div>
+              <h3 className="text-lg font-semibold mb-3">Verbal Skills</h3>
+              <p className="text-sm opacity-90">Reading comprehension, grammar, vocabulary, and critical reasoning</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <div className="text-3xl mb-4">💻</div>
+              <h3 className="text-lg font-semibold mb-3">DSA Evaluation</h3>
+              <p className="text-sm opacity-90">Industry-standard coding challenges and system design concepts</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <div className="text-3xl mb-4">🗣️</div>
+              <h3 className="text-lg font-semibold mb-3">English Communication</h3>
+              <p className="text-sm opacity-90">Video-based assessment of professional communication skills</p>
+            </div>
+          </div>
+          
+          <div className="text-center">
+            <p className="text-base opacity-80 mb-8">
+              Designed by people from companies that are product developers - People working in top companies like Google, Microsoft, Amazon, Meta, Netflix, and Uber.
+            </p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 max-w-3xl mx-auto">
+              <h4 className="text-xl font-semibold mb-4">🎯 Multiple Top Tier Companies</h4>
+              <p className="text-sm opacity-90 mb-4">
+                Student profiles get shared with companies continuously. Multiple companies shortlist based on assessment performance.
+              </p>
+              <p className="text-sm opacity-90">
+                <strong>🎤 Free Mock Interviews:</strong> Your students practice with engineers from prominent companies before actual interviews.
+              </p>
+            </div>
           </div>
         </div>
       </section>

@@ -70,12 +70,11 @@ export default function ForStudents() {
             </Badge>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-            Get Hired at 
-            <span className="text-blue-600"> Top Companies</span>
+            Get Assessed. Get
+            <span className="text-blue-600"> Hired.</span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Take one comprehensive assessment. Get discovered by 500+ companies. 
-            No more endless applications - let opportunities find you.
+            One Assessment. Diagnosis & Report. Access roles from 8-18 LPA and diagnose your skills for top companies.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button size="lg" className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700">
@@ -101,15 +100,89 @@ export default function ForStudents() {
         </div>
       </section>
 
+      {/* Assessment Syllabus */}
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Assessment Program Syllabus</h2>
+            <p className="text-xl opacity-90 max-w-3xl mx-auto mb-8">
+              Meticulously designed assignments created by people working at top product companies.
+              Get assessed for roles ranging from 8-18 LPA and diagnose your skills.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <div className="text-3xl mb-4">🧮</div>
+              <h3 className="text-lg font-semibold mb-3">Aptitude</h3>
+              <ul className="text-sm opacity-90 space-y-2 text-left">
+                <li>• Quantitative Analysis</li>
+                <li>• Logical Reasoning</li>
+                <li>• Problem Solving</li>
+                <li>• Mathematical Concepts</li>
+              </ul>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <div className="text-3xl mb-4">📝</div>
+              <h3 className="text-lg font-semibold mb-3">Verbal</h3>
+              <ul className="text-sm opacity-90 space-y-2 text-left">
+                <li>• Reading Comprehension</li>
+                <li>• Grammar & Vocabulary</li>
+                <li>• Sentence Correction</li>
+                <li>• Critical Reasoning</li>
+              </ul>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <div className="text-3xl mb-4">💻</div>
+              <h3 className="text-lg font-semibold mb-3">DSA</h3>
+              <ul className="text-sm opacity-90 space-y-2 text-left">
+                <li>• Arrays & Strings</li>
+                <li>• Trees & Graphs</li>
+                <li>• Dynamic Programming</li>
+                <li>• System Design Basics</li>
+              </ul>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <div className="text-3xl mb-4">🗣️</div>
+              <h3 className="text-lg font-semibold mb-3">English Communication</h3>
+              <ul className="text-sm opacity-90 space-y-2 text-left">
+                <li>• Video Interview Skills</li>
+                <li>• Professional Speaking</li>
+                <li>• Presentation Abilities</li>
+                <li>• Workplace Communication</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="text-center">
+            <p className="text-lg mb-6 opacity-90">
+              <strong>One Assessment. Diagnosis & Report.</strong> 
+            </p>
+            <p className="text-base opacity-80 mb-8">
+              Designed by people from companies that are product developers - People working in top companies like Google, Microsoft, Amazon, Meta, Netflix, and Uber.
+            </p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 max-w-2xl mx-auto">
+              <h4 className="text-xl font-semibold mb-4">🎯 Multiple Top Tier Companies</h4>
+              <p className="text-sm opacity-90 mb-4">
+                Your profile gets shared with companies continuously. Multiple companies shortlist based on your assessment performance.
+              </p>
+              <p className="text-sm opacity-90">
+                <strong>🎤 Free Mock Interviews:</strong> Practice with engineers from prominent companies before your actual interviews.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="py-16 px-4 bg-white dark:bg-gray-800">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              How TalentConnect Works
+              How NxtWave Works
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300">
-              Three simple steps to unlock your career potential
+              One assessment opens doors to multiple opportunities
             </p>
           </div>
           

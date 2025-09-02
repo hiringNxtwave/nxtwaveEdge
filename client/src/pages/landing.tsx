@@ -21,7 +21,7 @@ export default function Landing() {
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto">
             Your "Uber for Talent" to match your hiring needs with India's Top 10% Freshers
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+          <div className="flex justify-center mb-12">
             <Button 
               size="lg" 
               className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold" 
@@ -31,32 +31,24 @@ export default function Landing() {
               Start Hiring Now
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="px-8 py-4 text-lg border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold"
-              onClick={() => window.location.href = "/api/login"}
-            >
-              Book Demo
-            </Button>
           </div>
 
           {/* Social Proof Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div data-testid="stat-students" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl md:text-4xl font-bold mb-2 text-blue-600">200K+</div>
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">200K+</div>
               <div className="text-gray-600 text-sm">Pre-Assessed Students</div>
             </div>
             <div data-testid="stat-universities" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl md:text-4xl font-bold mb-2 text-green-600">3000+</div>
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">3000+</div>
               <div className="text-gray-600 text-sm">Partner Colleges</div>
             </div>
             <div data-testid="stat-companies" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl md:text-4xl font-bold mb-2 text-purple-600">3000+</div>
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">3000+</div>
               <div className="text-gray-600 text-sm">Companies Trust Us</div>
             </div>
             <div data-testid="stat-partnerships" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl md:text-4xl font-bold mb-2 text-orange-600">₹50-70L</div>
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">₹50-70L</div>
               <div className="text-gray-600 text-sm">Saved Per Hiring Cycle</div>
             </div>
           </div>
