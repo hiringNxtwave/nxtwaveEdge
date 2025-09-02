@@ -61,7 +61,7 @@ export default function ForStudents() {
       <Header />
       
       {/* Hero Section */}
-      <section className="py-20 px-4">
+      <section className="pt-24 pb-20 px-4">
         <div className="max-w-6xl mx-auto text-center">
           <div className="mb-6">
             <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 text-sm px-4 py-2">
