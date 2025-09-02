@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, Building2, Target, TrendingUp, Star, Award, Globe, CheckCircle, ArrowRight, MapPin, GraduationCap, Handshake, Zap, Clock, Shield, Search } from "lucide-react";
+import { Users, Building2, Target, TrendingUp, Star, Award, Globe, CheckCircle, ArrowRight, MapPin, GraduationCap, Handshake, Zap, Clock, Shield, Search, BarChart3 } from "lucide-react";
 import { SiTata, SiInfosys, SiWipro, SiGoogle, SiAmazon, SiFlipkart, SiAccenture } from "react-icons/si";
 
 export default function Landing() {
@@ -12,15 +12,14 @@ export default function Landing() {
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <div className="inline-flex items-center bg-blue-100 border border-blue-200 rounded-full px-4 py-2 text-blue-700 text-sm font-medium mb-6">
-⚡ Rigorous assessments by industry experts from top companies
+🚀 More than 3000 companies trust NxtWave for their hiring needs
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-            Hire <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Pre-Assessed</span> Engineering Talent
+            Hire India's Best <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Freshers.</span> In One Platform.
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto">
-            Access 100K+ students who've completed rigorous assessments designed by engineers from top product companies. 
-            Skip the screening - hire confident with our industry-standard evaluation process.
+            Your "Uber for Talent" to match your hiring needs with India's Top 10% Freshers
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
@@ -29,7 +28,7 @@ export default function Landing() {
               onClick={() => window.location.href = "/api/login"}
               data-testid="button-explore-talent"
             >
-              Browse Pre-Assessed Talent
+              Start Hiring Now
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <Button 
@@ -38,27 +37,27 @@ export default function Landing() {
               className="px-8 py-4 text-lg border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold"
               onClick={() => window.location.href = "/api/login"}
             >
-              View Assessment Framework
+              Book Demo
             </Button>
           </div>
 
           {/* Social Proof Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             <div data-testid="stat-students" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl md:text-4xl font-bold mb-2 text-blue-600">2.5M+</div>
-              <div className="text-gray-600 text-sm">Verified Students</div>
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-blue-600">200K+</div>
+              <div className="text-gray-600 text-sm">Pre-Assessed Students</div>
             </div>
             <div data-testid="stat-universities" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl md:text-4xl font-bold mb-2 text-green-600">400+</div>
-              <div className="text-gray-600 text-sm">Partner Universities</div>
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-green-600">3000+</div>
+              <div className="text-gray-600 text-sm">Partner Colleges</div>
             </div>
             <div data-testid="stat-companies" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl md:text-4xl font-bold mb-2 text-purple-600">15K+</div>
-              <div className="text-gray-600 text-sm">Active Employers</div>
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-purple-600">3000+</div>
+              <div className="text-gray-600 text-sm">Companies Trust Us</div>
             </div>
             <div data-testid="stat-partnerships" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <div className="text-3xl md:text-4xl font-bold mb-2 text-orange-600">95%</div>
-              <div className="text-gray-600 text-sm">Hiring Success Rate</div>
+              <div className="text-3xl md:text-4xl font-bold mb-2 text-orange-600">₹50-70L</div>
+              <div className="text-gray-600 text-sm">Saved Per Hiring Cycle</div>
             </div>
           </div>
         </div>
@@ -181,47 +180,115 @@ export default function Landing() {
       <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">One Assessment. Diagnosis & Report.</h2>
-            <p className="text-xl opacity-90 max-w-3xl mx-auto mb-8">
-              Meticulously designed assignments created by people working at top product companies
-            </p>
+            <h2 className="text-4xl font-bold mb-4">Why NxtWave for Fresher Hiring?</h2>
           </div>
           
-          <div className="grid md:grid-cols-4 gap-8 mb-16">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <Target className="w-12 h-12 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">DSA Assessment</h3>
-              <p className="text-sm opacity-90">90-minute evaluation with industry-standard problems</p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+              <div className="text-2xl mb-3">🚀</div>
+              <h3 className="text-lg font-semibold mb-2">One Platform. Unlimited Talent.</h3>
+              <p className="text-sm opacity-90">200,000+ pre-assessed students from 3,000+ colleges, refreshed every 90 days. Filter by skills, CTC, year, or traits — and hire in minutes.</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <Shield className="w-12 h-12 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">System Design</h3>
-              <p className="text-sm opacity-90">Real scenarios used in top company interviews</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+              <div className="text-2xl mb-3">🎯</div>
+              <h3 className="text-lg font-semibold mb-2">Pre-Assessed & Job-Ready</h3>
+              <p className="text-sm opacity-90">Rigorous offline tests in coding, DSA, aptitude & communication. Get data-driven profiles matched to your roles.</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <Zap className="w-12 h-12 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Quantitative Test</h3>
-              <p className="text-sm opacity-90">Analytical thinking and problem-solving evaluation</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+              <div className="text-2xl mb-3">🔍</div>
+              <h3 className="text-lg font-semibold mb-2">Matchmaking, Not Mass Hiring</h3>
+              <p className="text-sm opacity-90">AI-powered filters surface only the right-fit candidates — no noise, no wasted cycles.</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
-              <Users className="w-12 h-12 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Communication</h3>
-              <p className="text-sm opacity-90">Video-based assessment of professional skills</p>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+              <div className="text-2xl mb-3">💰</div>
+              <h3 className="text-lg font-semibold mb-2">Save Time & Costs</h3>
+              <p className="text-sm opacity-90">Skip 1,000 campus visits. One dashboard = instant shortlists. ₹50–70 lakhs saved per hiring cycle.</p>
             </div>
           </div>
           
-          <div className="text-center">
-            <p className="text-lg mb-6 opacity-90">
-              <strong>Multiple Top Tier Companies</strong> continuously access student profiles
-            </p>
-            <div className="flex flex-wrap justify-center items-center gap-8 text-white/80">
-              <span className="font-semibold">Google</span>
-              <span className="font-semibold">Microsoft</span>
-              <span className="font-semibold">Amazon</span>
-              <span className="font-semibold">Meta</span>
-              <span className="font-semibold">Netflix</span>
-              <span className="font-semibold">Uber</span>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">How It Works</h2>
+          </div>
+          
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-blue-600">1</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Students Assessed</h3>
+              <p className="text-gray-600">Every 90 days across 3000+ colleges.</p>
             </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-green-600">2</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Data Updated</h3>
+              <p className="text-gray-600">Skills, scores, and job-fit insights refreshed continuously.</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-purple-600">3</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Dashboard Access</h3>
+              <p className="text-gray-600">Filter by package range (6–8 LPA, 8–12 LPA, 12–24 LPA+), skills, or region.</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-orange-600">4</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Match & Hire</h3>
+              <p className="text-gray-600">Shortlist, schedule interviews, and close hires seamlessly.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Free Hiring Tools Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">🎯 Free Hiring Tools, Included</h2>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="bg-white border-l-4 border-l-blue-500 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Target className="w-12 h-12 text-blue-600 mb-4" />
+                <CardTitle className="text-xl">Assessment Platform</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">Test candidates at scale with no extra effort</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white border-l-4 border-l-green-500 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Users className="w-12 h-12 text-green-600 mb-4" />
+                <CardTitle className="text-xl">AI Mock Interviews</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">Ensure students practice before facing your panel</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-white border-l-4 border-l-purple-500 hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <BarChart3 className="w-12 h-12 text-purple-600 mb-4" />
+                <CardTitle className="text-xl">Student Insights Dashboard</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">See real performance, not just résumés</p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -231,10 +298,10 @@ export default function Landing() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-              Why Companies Choose TalentConnect India
+              Trusted by Leading Companies
             </h2>
             <p className="text-gray-600 max-w-3xl mx-auto text-lg">
-              Skip screening. Access pre-assessed talent with verified skills and continuous company visibility.
+              From startups to Fortune 500 companies, organizations choose NxtWave for reliable fresher hiring.
             </p>
           </div>
 
