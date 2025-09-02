@@ -20,9 +20,6 @@ export default function Landing() {
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="/for-companies" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
-                For Companies
-              </Link>
               <Link href="/for-students" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
                 For Students
               </Link>
@@ -31,10 +28,10 @@ export default function Landing() {
               </Link>
               <Button 
                 onClick={() => window.location.href = "/api/login"}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6"
                 data-testid="button-login"
               >
-                Sign In
+                Login
               </Button>
             </div>
           </div>
