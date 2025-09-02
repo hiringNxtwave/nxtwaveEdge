@@ -8,6 +8,39 @@ import { SiTata, SiInfosys, SiWipro, SiGoogle, SiAmazon, SiFlipkart, SiAccenture
 export default function Landing() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
+      {/* Navigation Bar */}
+      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-2">
+              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                <Handshake className="text-white w-5 h-5" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">NxtWave</span>
+            </div>
+            
+            <div className="hidden md:flex items-center space-x-8">
+              <Link href="/for-companies" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+                For Companies
+              </Link>
+              <Link href="/for-students" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+                For Students
+              </Link>
+              <Link href="/for-colleges" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+                For Colleges
+              </Link>
+              <Button 
+                onClick={() => window.location.href = "/api/login"}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+                data-testid="button-login"
+              >
+                Sign In
+              </Button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
