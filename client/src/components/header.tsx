@@ -97,20 +97,19 @@ export default function Header() {
                 )}
               </>
             ) : (
-              // Functional navigation for authenticated users
+              // Company navigation for authenticated users
               <>
                 <Link 
-                  href="/student-dashboard" 
+                  href="/talent-dashboard" 
                   className={cn(
-                    "transition-colors font-medium inline-flex items-center gap-2 py-1 px-3 rounded-full",
-                    location === "/student-dashboard" 
-                      ? "text-white bg-green-600" 
-                      : "text-green-600 bg-green-50 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-400"
+                    "transition-colors font-medium inline-block py-1",
+                    location === "/talent-dashboard" 
+                      ? "text-foreground border-b-2 border-primary" 
+                      : "text-muted-foreground hover:text-foreground"
                   )}
-                  data-testid="link-student-dashboard"
+                  data-testid="link-talent-dashboard"
                 >
-                  <BookOpen className="w-4 h-4" />
-                  Student Portal
+                  Talent Dashboard
                 </Link>
                 <Link 
                   href="/shortlist" 
