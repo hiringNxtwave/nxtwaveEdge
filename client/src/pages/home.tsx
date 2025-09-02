@@ -78,9 +78,9 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Dashboard Cards */}
-          <div className="grid md:grid-cols-2 gap-6">
-            {shortlistCount > 0 && (
+          {/* Your Shortlist Card */}
+          {shortlistCount > 0 && (
+            <div className="mb-6">
               <Link href="/shortlist">
                 <Card className="hover:shadow-md transition-shadow cursor-pointer bg-white border border-gray-200 hover:border-blue-300" data-testid="card-your-shortlist">
                   <CardHeader className="pb-3">
@@ -100,38 +100,47 @@ export default function Home() {
                   </CardContent>
                 </Card>
               </Link>
-            )}
+            </div>
+          )}
 
-            <Card className="bg-white border border-gray-200" data-testid="card-hiring-insights">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-lg">Hiring Insights</CardTitle>
-                    <CardDescription>Your recruitment analytics</CardDescription>
-                  </div>
-                  <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center">
-                    <TrendingUp className="w-6 h-6 text-purple-600" />
-                  </div>
+          {/* Hiring Insights - Full Width */}
+          <Card className="bg-white border border-gray-200" data-testid="card-hiring-insights">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-xl">Hiring Insights</CardTitle>
+                  <CardDescription>Your recruitment analytics and performance metrics</CardDescription>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Profiles viewed</span>
-                    <span className="font-semibold">24 this week</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Avg. time to hire</span>
-                    <span className="font-semibold text-green-600">12 days</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">Response rate</span>
-                    <span className="font-semibold text-blue-600">87%</span>
-                  </div>
+                <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center">
+                  <TrendingUp className="w-6 h-6 text-purple-600" />
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-4 gap-6">
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600 mb-1">24</div>
+                  <div className="text-sm text-gray-600">Profiles viewed</div>
+                  <div className="text-xs text-gray-500 mt-1">This week</div>
+                </div>
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600 mb-1">12</div>
+                  <div className="text-sm text-gray-600">Avg. time to hire</div>
+                  <div className="text-xs text-gray-500 mt-1">Days</div>
+                </div>
+                <div className="text-center p-4 bg-purple-50 rounded-lg">
+                  <div className="text-2xl font-bold text-purple-600 mb-1">87%</div>
+                  <div className="text-sm text-gray-600">Response rate</div>
+                  <div className="text-xs text-gray-500 mt-1">Last 30 days</div>
+                </div>
+                <div className="text-center p-4 bg-orange-50 rounded-lg">
+                  <div className="text-2xl font-bold text-orange-600 mb-1">₹45L</div>
+                  <div className="text-sm text-gray-600">Cost saved</div>
+                  <div className="text-xs text-gray-500 mt-1">This quarter</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
