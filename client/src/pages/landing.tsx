@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, Building2, Target, TrendingUp, Star, Award, Globe, CheckCircle, ArrowRight, MapPin, GraduationCap, Handshake, Zap, Clock, Shield, Search } from "lucide-react";
-import { SiTata, SiInfosys, SiWipro, SiGoogle, SiAmazon, SiFlipkart, SiMicrosoft, SiIbm, SiAccenture } from "react-icons/si";
+import { SiTata, SiInfosys, SiWipro, SiGoogle, SiAmazon, SiFlipkart, SiAccenture } from "react-icons/si";
 
 export default function Landing() {
   return (
@@ -92,8 +92,8 @@ export default function Landing() {
             <div className="flex justify-center" data-testid="logo-amazon">
               <SiAmazon className="h-8 w-auto text-gray-600" />
             </div>
-            <div className="flex justify-center" data-testid="logo-microsoft">
-              <SiMicrosoft className="h-8 w-auto text-gray-600" />
+            <div className="flex justify-center" data-testid="logo-flipkart">
+              <SiFlipkart className="h-8 w-auto text-gray-600" />
             </div>
           </div>
 
