@@ -167,12 +167,16 @@ export const companiesRelations = relations(companies, ({ one, many }) => ({
     references: [users.id],
   }),
   contactRequests: many(contactRequests),
+  interviews: many(interviews),
 }));
 
 export const studentsRelations = relations(students, ({ many }) => ({
   skills: many(studentSkills),
   projects: many(projects),
   contactRequests: many(contactRequests),
+  codeSubmissions: many(codeSubmissions),
+  interviews: many(interviews),
+  idVerifications: many(idVerifications),
 }));
 
 export const skillsRelations = relations(skills, ({ many }) => ({
@@ -232,6 +236,7 @@ export const assessmentResponsesRelations = relations(assessmentResponses, ({ on
   }),
 }));
 
+
 // Insert schemas
 export const insertCompanySchema = createInsertSchema(companies).omit({
   id: true,
@@ -272,12 +277,139 @@ export const insertAssessmentSchema = createInsertSchema(assessments).omit({
   updatedAt: true,
 });
 
+// Code Submissions Table - stores coding solutions with timestamp tracking
+export const codeSubmissions = pgTable("code_submissions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").notNull().references(() => students.id),
+  questionId: varchar("question_id").notNull().references(() => assessmentQuestions.id),
+  code: text("code").notNull(),
+  language: varchar("language").notNull().default("javascript"),
+  executionTime: integer("execution_time"), // milliseconds
+  memoryUsed: integer("memory_used"), // KB
+  testCasesPassed: integer("test_cases_passed"),
+  totalTestCases: integer("total_test_cases"),
+  score: integer("score"), // 0-100
+  idVerified: boolean("id_verified").default(false), // ID verification status
+  webcamVerified: boolean("webcam_verified").default(false),
+  keystrokePattern: text("keystroke_pattern"), // JSON data for keystroke analysis
+  submittedAt: timestamp("submitted_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Interviews Table - manages interview scheduling and tracking
+export const interviews = pgTable("interviews", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  companyId: varchar("company_id").notNull().references(() => companies.id),
+  studentId: varchar("student_id").notNull().references(() => students.id),
+  scheduledAt: timestamp("scheduled_at").notNull(),
+  duration: integer("duration").default(60), // minutes
+  interviewType: varchar("interview_type").notNull().default("technical"), // technical, hr, final
+  status: varchar("status").default("scheduled"), // scheduled, in_progress, completed, cancelled
+  meetingLink: varchar("meeting_link"),
+  notes: text("notes"),
+  rating: integer("rating"), // 1-5 scale
+  feedback: text("feedback"),
+  nextRound: boolean("next_round").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Messages Table - handles communication between companies and students
+export const messages = pgTable("messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  senderId: varchar("sender_id").notNull().references(() => users.id),
+  receiverId: varchar("receiver_id").notNull().references(() => users.id),
+  conversationId: varchar("conversation_id").notNull(), // groups related messages
+  messageType: varchar("message_type").default("text"), // text, file, interview_invite
+  content: text("content").notNull(),
+  fileUrl: varchar("file_url"),
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ID Verification Table - tracks verification process
+export const idVerifications = pgTable("id_verifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").notNull().references(() => students.id),
+  documentType: varchar("document_type").notNull(), // aadhar, pan, driving_license
+  documentNumber: varchar("document_number").notNull(),
+  documentImageUrl: varchar("document_image_url"),
+  faceImageUrl: varchar("face_image_url"),
+  verificationStatus: varchar("verification_status").default("pending"), // pending, verified, rejected
+  verifiedBy: varchar("verified_by"), // admin user id
+  verifiedAt: timestamp("verified_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// New Relations (after table definitions)
+export const codeSubmissionsRelations = relations(codeSubmissions, ({ one }) => ({
+  student: one(students, {
+    fields: [codeSubmissions.studentId],
+    references: [students.id],
+  }),
+  question: one(assessmentQuestions, {
+    fields: [codeSubmissions.questionId],
+    references: [assessmentQuestions.id],
+  }),
+}));
+
+export const interviewsRelations = relations(interviews, ({ one }) => ({
+  company: one(companies, {
+    fields: [interviews.companyId],
+    references: [companies.id],
+  }),
+  student: one(students, {
+    fields: [interviews.studentId],
+    references: [students.id],
+  }),
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  sender: one(users, {
+    fields: [messages.senderId],
+    references: [users.id],
+  }),
+  receiver: one(users, {
+    fields: [messages.receiverId],
+    references: [users.id],
+  }),
+}));
+
+export const idVerificationsRelations = relations(idVerifications, ({ one }) => ({
+  student: one(students, {
+    fields: [idVerifications.studentId],
+    references: [students.id],
+  }),
+}));
+
 export const insertAssessmentQuestionSchema = createInsertSchema(assessmentQuestions).omit({
   id: true,
   createdAt: true,
 });
 
 export const insertAssessmentResponseSchema = createInsertSchema(assessmentResponses).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCodeSubmissionSchema = createInsertSchema(codeSubmissions).omit({
+  id: true,
+  createdAt: true,
+  submittedAt: true,
+});
+
+export const insertInterviewSchema = createInsertSchema(interviews).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertMessageSchema = createInsertSchema(messages).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertIdVerificationSchema = createInsertSchema(idVerifications).omit({
   id: true,
   createdAt: true,
 });
@@ -303,6 +435,14 @@ export type InsertAssessmentQuestion = z.infer<typeof insertAssessmentQuestionSc
 export type AssessmentQuestion = typeof assessmentQuestions.$inferSelect;
 export type InsertAssessmentResponse = z.infer<typeof insertAssessmentResponseSchema>;
 export type AssessmentResponse = typeof assessmentResponses.$inferSelect;
+export type InsertCodeSubmission = z.infer<typeof insertCodeSubmissionSchema>;
+export type CodeSubmission = typeof codeSubmissions.$inferSelect;
+export type InsertInterview = z.infer<typeof insertInterviewSchema>;
+export type Interview = typeof interviews.$inferSelect;
+export type InsertMessage = z.infer<typeof insertMessageSchema>;
+export type Message = typeof messages.$inferSelect;
+export type InsertIdVerification = z.infer<typeof insertIdVerificationSchema>;
+export type IdVerification = typeof idVerifications.$inferSelect;
 
 // Extended types for joined data
 export type StudentWithSkills = Student & {

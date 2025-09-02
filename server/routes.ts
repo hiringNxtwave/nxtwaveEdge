@@ -321,6 +321,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Interview scheduling routes
+  app.post("/api/interviews", isAuthenticated, async (req: any, res) => {
+    try {
+      const companyId = req.user.claims.sub;
+      const { studentId, scheduledAt, duration, interviewType, notes, meetingLink } = req.body;
+      
+      const interview = await storage.createInterview({
+        companyId,
+        studentId,
+        scheduledAt: new Date(scheduledAt),
+        duration,
+        interviewType,
+        notes,
+        meetingLink,
+        status: "scheduled"
+      });
+      
+      res.status(201).json(interview);
+    } catch (error) {
+      console.error("Error creating interview:", error);
+      res.status(500).json({ message: "Failed to schedule interview" });
+    }
+  });
+
+  app.get("/api/interviews", isAuthenticated, async (req: any, res) => {
+    try {
+      const companyId = req.user.claims.sub;
+      const interviews = await storage.getInterviewsByCompany(companyId);
+      res.json(interviews);
+    } catch (error) {
+      console.error("Error fetching interviews:", error);
+      res.status(500).json({ message: "Failed to fetch interviews" });
+    }
+  });
+
+  // Message routes
+  app.post("/api/messages", isAuthenticated, async (req: any, res) => {
+    try {
+      const senderId = req.user.claims.sub;
+      const { receiverId, messageType, content, conversationId } = req.body;
+      
+      const message = await storage.createMessage({
+        senderId,
+        receiverId,
+        messageType,
+        content,
+        conversationId
+      });
+      
+      res.status(201).json(message);
+    } catch (error) {
+      console.error("Error creating message:", error);
+      res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
+  app.get("/api/messages", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { conversationId } = req.query as any;
+      
+      const messages = await storage.getMessages(userId, conversationId);
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  // Code submission routes
+  app.get("/api/code-submissions", isAuthenticated, async (req, res) => {
+    try {
+      const { studentId } = req.query as any;
+      
+      if (!studentId) {
+        return res.status(400).json({ message: "Student ID is required" });
+      }
+      
+      const submissions = await storage.getCodeSubmissions(studentId);
+      res.json(submissions);
+    } catch (error) {
+      console.error("Error fetching code submissions:", error);
+      res.status(500).json({ message: "Failed to fetch code submissions" });
+    }
+  });
+
+  app.get("/api/code-submissions/:id", isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const submission = await storage.getCodeSubmission(id);
+      
+      if (!submission) {
+        return res.status(404).json({ message: "Code submission not found" });
+      }
+      
+      res.json(submission);
+    } catch (error) {
+      console.error("Error fetching code submission:", error);
+      res.status(500).json({ message: "Failed to fetch code submission" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

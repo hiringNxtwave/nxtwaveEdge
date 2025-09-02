@@ -1,7 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
-import { Handshake, Menu, Heart } from "lucide-react";
+import { Handshake, Menu, Heart, Trophy } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useShortlist } from "@/contexts/shortlist-context";
@@ -122,6 +122,21 @@ export default function Header() {
                   data-testid="link-browse-talent"
                 >
                   Browse Talent
+                </Link>
+                <Link 
+                  href="/talent-dashboard" 
+                  className={cn(
+                    "transition-colors font-medium inline-block py-1",
+                    location === "/talent-dashboard" 
+                      ? "text-foreground border-b-2 border-primary" 
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                  data-testid="link-talent-dashboard"
+                >
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium text-sm">
+                    <Trophy className="w-4 h-4" />
+                    Talent Dashboard
+                  </span>
                 </Link>
                 <Link 
                   href="/shortlist" 

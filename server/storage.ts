@@ -80,6 +80,18 @@ export interface IStorage {
   createAssessmentResponse(response: InsertAssessmentResponse): Promise<AssessmentResponse>;
   getAssessmentWithResponses(id: string): Promise<AssessmentWithResponses | undefined>;
   
+  // Interview operations
+  createInterview(data: any): Promise<any>;
+  getInterviewsByCompany(companyId: string): Promise<any[]>;
+
+  // Message operations
+  createMessage(data: any): Promise<any>;
+  getMessages(userId: string, conversationId?: string): Promise<any[]>;
+
+  // Code submission operations
+  getCodeSubmissions(studentId: string): Promise<any[]>;
+  getCodeSubmission(id: string): Promise<any>;
+
   // Initial data seeding
   seedInitialData(): Promise<void>;
 }
@@ -730,6 +742,138 @@ export class DatabaseStorage implements IStorage {
     }
 
     await db.insert(projects).values(projectData);
+  }
+
+  // Interview operations
+  async createInterview(data: any): Promise<any> {
+    // For now return a mock interview - in real implementation would use DB
+    return {
+      id: `interview_${Date.now()}`,
+      companyId: data.companyId,
+      studentId: data.studentId,
+      scheduledAt: data.scheduledAt,
+      duration: data.duration,
+      interviewType: data.interviewType,
+      notes: data.notes,
+      meetingLink: data.meetingLink,
+      status: data.status,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+  }
+
+  async getInterviewsByCompany(companyId: string): Promise<any[]> {
+    // For now return empty array - in real implementation would use DB
+    return [];
+  }
+
+  // Message operations
+  async createMessage(data: any): Promise<any> {
+    // For now return a mock message - in real implementation would use DB
+    return {
+      id: `msg_${Date.now()}`,
+      senderId: data.senderId,
+      receiverId: data.receiverId,
+      messageType: data.messageType,
+      content: data.content,
+      conversationId: data.conversationId,
+      isRead: false,
+      createdAt: new Date()
+    };
+  }
+
+  async getMessages(userId: string, conversationId?: string): Promise<any[]> {
+    // For now return empty array - in real implementation would use DB
+    return [];
+  }
+
+  // Code submission operations
+  async getCodeSubmissions(studentId: string): Promise<any[]> {
+    // Return mock code submissions for demonstration
+    const mockSubmissions = [
+      {
+        id: `code_${studentId}_1`,
+        studentId: studentId,
+        questionId: "q1",
+        code: `// Two Sum Problem Solution
+function twoSum(nums, target) {
+    const map = new Map();
+    
+    for (let i = 0; i < nums.length; i++) {
+        const complement = target - nums[i];
+        
+        if (map.has(complement)) {
+            return [map.get(complement), i];
+        }
+        
+        map.set(nums[i], i);
+    }
+    
+    return [];
+}`,
+        language: "JavaScript",
+        score: 95,
+        executionTime: 42,
+        memoryUsed: 1024,
+        testCasesPassed: 12,
+        totalTestCases: 12,
+        idVerified: true,
+        webcamVerified: true,
+        createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+        submittedAt: new Date(Date.now() - 86400000 + 1800000).toISOString(), // 30 minutes later
+        question: {
+          question: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target."
+        }
+      },
+      {
+        id: `code_${studentId}_2`,
+        studentId: studentId,
+        questionId: "q2",
+        code: `// Binary Tree Inorder Traversal
+class TreeNode {
+    constructor(val, left, right) {
+        this.val = (val === undefined ? 0 : val);
+        this.left = (left === undefined ? null : left);
+        this.right = (right === undefined ? null : right);
+    }
+}
+
+function inorderTraversal(root) {
+    const result = [];
+    
+    function inorder(node) {
+        if (!node) return;
+        
+        inorder(node.left);
+        result.push(node.val);
+        inorder(node.right);
+    }
+    
+    inorder(root);
+    return result;
+}`,
+        language: "JavaScript",
+        score: 88,
+        executionTime: 68,
+        memoryUsed: 2048,
+        testCasesPassed: 8,
+        totalTestCases: 10,
+        idVerified: true,
+        webcamVerified: false,
+        createdAt: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
+        submittedAt: new Date(Date.now() - 172800000 + 2700000).toISOString(), // 45 minutes later
+        question: {
+          question: "Given the root of a binary tree, return the inorder traversal of its nodes' values."
+        }
+      }
+    ];
+    
+    return mockSubmissions;
+  }
+
+  async getCodeSubmission(id: string): Promise<any> {
+    const submissions = await this.getCodeSubmissions("mock_student");
+    return submissions.find(s => s.id === id) || null;
   }
 }
 
