@@ -27,41 +27,85 @@ export default function Header() {
             {!isAuthenticated ? (
               // Marketing navigation for unauthenticated users
               <>
+                {/* Only show relevant navigation based on current page */}
+                {location === "/for-students" ? (
+                  <>
+                    <Link 
+                      href="/" 
+                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
+                      data-testid="link-for-companies"
+                    >
+                      For Companies
+                    </Link>
+                    <Link 
+                      href="/for-colleges" 
+                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
+                      data-testid="link-for-colleges"
+                    >
+                      For Colleges
+                    </Link>
+                    <Link 
+                      href="/for-students" 
+                      className="text-foreground border-b-2 border-primary transition-colors font-medium inline-block py-1"
+                      data-testid="link-for-students"
+                    >
+                      For Students
+                    </Link>
+                  </>
+                ) : location === "/for-colleges" ? (
+                  <>
+                    <Link 
+                      href="/" 
+                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
+                      data-testid="link-for-companies"
+                    >
+                      For Companies
+                    </Link>
+                    <Link 
+                      href="/for-colleges" 
+                      className="text-foreground border-b-2 border-primary transition-colors font-medium inline-block py-1"
+                      data-testid="link-for-colleges"
+                    >
+                      For Colleges
+                    </Link>
+                    <Link 
+                      href="/for-students" 
+                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
+                      data-testid="link-for-students"
+                    >
+                      For Students
+                    </Link>
+                  </>
+                ) : (
+                  // Default navigation for landing page
+                  <>
+                    <Link 
+                      href="/for-colleges" 
+                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
+                      data-testid="link-for-colleges"
+                    >
+                      For Colleges
+                    </Link>
+                    <Link 
+                      href="/for-students" 
+                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
+                      data-testid="link-for-students"
+                    >
+                      For Students
+                    </Link>
+                  </>
+                )}
                 <Link 
-                  href="/for-companies" 
+                  href="/" 
                   className={cn(
                     "transition-colors font-medium inline-block py-1",
-                    location === "/for-companies" 
+                    location === "/" 
                       ? "text-foreground border-b-2 border-primary" 
                       : "text-muted-foreground hover:text-foreground"
                   )}
                   data-testid="link-for-companies"
                 >
                   For Companies
-                </Link>
-                <Link 
-                  href="/for-colleges" 
-                  className={cn(
-                    "transition-colors font-medium inline-block py-1",
-                    location === "/for-colleges" 
-                      ? "text-foreground border-b-2 border-primary" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                  data-testid="link-for-colleges"
-                >
-                  For Colleges
-                </Link>
-                <Link 
-                  href="/for-students" 
-                  className={cn(
-                    "transition-colors font-medium inline-block py-1",
-                    location === "/for-students" 
-                      ? "text-foreground border-b-2 border-primary" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                  data-testid="link-for-students"
-                >
-                  For Students
                 </Link>
               </>
             ) : (
@@ -131,12 +175,14 @@ export default function Header() {
                 >
                   Sign In
                 </Button>
-                <Button 
-                  onClick={() => window.location.href = "/api/login"}
-                  data-testid="button-start-hiring"
-                >
-                  Browse Candidates
-                </Button>
+                {location === "/" && (
+                  <Button 
+                    onClick={() => window.location.href = "/api/login"}
+                    data-testid="button-start-hiring"
+                  >
+                    Browse Candidates
+                  </Button>
+                )}
               </div>
             )}
             

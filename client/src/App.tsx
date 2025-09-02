@@ -12,7 +12,6 @@ import BrowseStudents from "./pages/browse-students";
 import StudentProfile from "./pages/student-profile";
 import ShortlistedCandidates from "./pages/shortlisted-candidates";
 import ComparisonView from "./pages/comparison-view";
-import ForCompanies from "./pages/for-companies";
 import ForColleges from "./pages/for-colleges";
 import ForStudents from "./pages/for-students";
 import StudentProfileForm from "./pages/student-profile-form";
@@ -25,7 +24,12 @@ function Router() {
       {isLoading || !isAuthenticated ? (
         <>
           <Route path="/" component={Landing} />
-          <Route path="/for-companies" component={ForCompanies} />
+          <Route path="/for-companies">
+            {() => {
+              window.location.href = "/";
+              return null;
+            }}
+          </Route>
           <Route path="/for-colleges" component={ForColleges} />
           <Route path="/for-students" component={ForStudents} />
         </>
