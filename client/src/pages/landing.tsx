@@ -45,7 +45,7 @@ export default function Landing() {
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <div className="inline-flex items-center bg-blue-100 border border-blue-200 rounded-full px-4 py-2 text-blue-700 text-sm font-medium mb-6">
-🚀 More than 3000 companies trust NxtWave for their hiring needs
+            🚀 More than 3000 companies trust NxtWave for their hiring needs
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
