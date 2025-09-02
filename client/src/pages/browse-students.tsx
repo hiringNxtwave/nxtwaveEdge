@@ -60,10 +60,10 @@ export default function BrowseStudents() {
           <div>
             <p className="text-gray-600 dark:text-gray-300 text-lg">
               {isLoading 
-                ? "Loading candidates..." 
+                ? "Loading students..." 
                 : isAuthenticated 
-                  ? `${totalCount} candidates found`
-                  : `Showing ${students.length} of 2.5M+ candidates (Preview)`
+                  ? `${totalCount} students found`
+                  : `Showing ${students.length} of 2.5M+ students (Preview)`
               }
             </p>
           </div>
@@ -84,8 +84,8 @@ export default function BrowseStudents() {
                   maxCgpa: undefined,
                   codingRating: newFilters.codingRating && newFilters.codingRating !== "all" ? parseInt(newFilters.codingRating) : undefined
                 });
+                setCurrentPage(1);
               }}
-              onSearch={() => setCurrentPage(1)}
               skills={(skills as any) || []}
               resultCount={students.length}
               totalCount={totalCount}
@@ -130,7 +130,7 @@ export default function BrowseStudents() {
               {isLoading 
                 ? "Loading..." 
                 : isAuthenticated 
-                  ? `${totalCount} Students Found`
+                  ? `Assessment Results`
                   : `Showing ${students.length} of 2.5M+ Students (Preview)`
               }
             </h2>

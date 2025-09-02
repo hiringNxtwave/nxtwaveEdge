@@ -12,15 +12,15 @@ export default function Landing() {
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <div className="inline-flex items-center bg-blue-100 border border-blue-200 rounded-full px-4 py-2 text-blue-700 text-sm font-medium mb-6">
-            🚀 Trusted by 15,000+ companies across India
+⚡ Rigorous assessments by industry experts from top companies
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-            India's Premier <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Talent Marketplace</span>
+            Hire <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Pre-Assessed</span> Engineering Talent
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto">
-            Connect with 2.5M+ verified students and recent graduates from India's top universities. 
-            Streamline your hiring with AI-powered matching, comprehensive assessments, and seamless candidate management.
+            Access 100K+ students who've completed rigorous assessments designed by engineers from top product companies. 
+            Skip the screening - hire confident with our industry-standard evaluation process.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
@@ -29,7 +29,7 @@ export default function Landing() {
               onClick={() => window.location.href = "/api/login"}
               data-testid="button-explore-talent"
             >
-              Start Hiring Today
+              Browse Pre-Assessed Talent
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <Button 
@@ -38,7 +38,7 @@ export default function Landing() {
               className="px-8 py-4 text-lg border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-semibold"
               onClick={() => window.location.href = "/api/login"}
             >
-              Schedule Demo
+              View Assessment Framework
             </Button>
           </div>
 
@@ -177,6 +177,55 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Assessment Quality Section */}
+      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">One Assessment. Diagnosis & Report.</h2>
+            <p className="text-xl opacity-90 max-w-3xl mx-auto mb-8">
+              Meticulously designed assignments created by people working at top product companies
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-4 gap-8 mb-16">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <Target className="w-12 h-12 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">DSA Assessment</h3>
+              <p className="text-sm opacity-90">90-minute evaluation with industry-standard problems</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <Shield className="w-12 h-12 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">System Design</h3>
+              <p className="text-sm opacity-90">Real scenarios used in top company interviews</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <Zap className="w-12 h-12 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Quantitative Test</h3>
+              <p className="text-sm opacity-90">Analytical thinking and problem-solving evaluation</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 text-center">
+              <Users className="w-12 h-12 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Communication</h3>
+              <p className="text-sm opacity-90">Video-based assessment of professional skills</p>
+            </div>
+          </div>
+          
+          <div className="text-center">
+            <p className="text-lg mb-6 opacity-90">
+              <strong>Multiple Top Tier Companies</strong> continuously access student profiles
+            </p>
+            <div className="flex flex-wrap justify-center items-center gap-8 text-white/80">
+              <span className="font-semibold">Google</span>
+              <span className="font-semibold">Microsoft</span>
+              <span className="font-semibold">Amazon</span>
+              <span className="font-semibold">Meta</span>
+              <span className="font-semibold">Netflix</span>
+              <span className="font-semibold">Uber</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Value Proposition for Companies */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -185,7 +234,7 @@ export default function Landing() {
               Why Companies Choose TalentConnect India
             </h2>
             <p className="text-gray-600 max-w-3xl mx-auto text-lg">
-              Get access to India's largest pool of verified talent with powerful tools to streamline your entire hiring process
+              Skip screening. Access pre-assessed talent with verified skills and continuous company visibility.
             </p>
           </div>
 

@@ -12,6 +12,9 @@ import BrowseStudents from "./pages/browse-students";
 import StudentProfile from "./pages/student-profile";
 import ShortlistedCandidates from "./pages/shortlisted-candidates";
 import ComparisonView from "./pages/comparison-view";
+import ForCompanies from "./pages/for-companies";
+import ForColleges from "./pages/for-colleges";
+import ForStudents from "./pages/for-students";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -22,6 +25,9 @@ function Router() {
         <>
           <Route path="/" component={Landing} />
           <Route path="/browse" component={BrowseStudents} />
+          <Route path="/for-companies" component={ForCompanies} />
+          <Route path="/for-colleges" component={ForColleges} />
+          <Route path="/for-students" component={ForStudents} />
         </>
       ) : (
         <>
@@ -30,6 +36,9 @@ function Router() {
           <Route path="/student/:id" component={StudentProfile} />
           <Route path="/shortlist" component={ShortlistedCandidates} />
           <Route path="/shortlist/compare" component={ComparisonView} />
+          <Route path="/for-companies" component={ForCompanies} />
+          <Route path="/for-colleges" component={ForColleges} />
+          <Route path="/for-students" component={ForStudents} />
         </>
       )}
       <Route component={NotFound} />

@@ -103,65 +103,65 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           <div className="col-span-5">
             <div className="grid grid-cols-4 gap-4">
               {/* DSA */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">DSA</div>
-                <div className="flex justify-center space-x-1 mb-1">
-                  {renderStars(dsaScore)}
+              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100">
+                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">DSA Assessment</div>
+                <div className="text-lg font-bold text-blue-600 dark:text-blue-400 mb-1">
+                  {(dsaScore * 20)}%
                 </div>
-                <div className="text-xs font-semibold text-blue-600 dark:text-blue-400">
-                  {dsaScore}/5
+                <div className="text-xs text-gray-500">
+                  {dsaScore >= 4 ? 'Advanced' : dsaScore >= 3 ? 'Intermediate' : 'Basic'}
                 </div>
               </div>
 
               {/* Aptitude */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">Aptitude</div>
-                <div className="flex justify-center space-x-1 mb-1">
-                  {renderStars(aptitudeScore)}
+              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100">
+                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">Quantitative Test</div>
+                <div className="text-lg font-bold text-green-600 dark:text-green-400 mb-1">
+                  {(aptitudeScore * 20)}%
                 </div>
-                <div className="text-xs font-semibold text-green-600 dark:text-green-400">
-                  {aptitudeScore}/5
+                <div className="text-xs text-gray-500">
+                  {aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Fair'}
                 </div>
               </div>
 
               {/* Communication */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm">
+              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100">
                 <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">Communication</div>
-                <div className="flex justify-center space-x-1 mb-1">
-                  {renderStars(communicationScore)}
+                <div className="text-lg font-bold text-purple-600 dark:text-purple-400 mb-1">
+                  {(communicationScore * 20)}%
                 </div>
-                <div className="text-xs font-semibold text-purple-600 dark:text-purple-400">
-                  {communicationScore}/5
+                <div className="text-xs text-gray-500">
+                  {communicationScore >= 4 ? 'Fluent' : communicationScore >= 3 ? 'Good' : 'Basic'}
                 </div>
               </div>
 
               {/* CS Fundamentals */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm">
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">CS Fundamentals</div>
-                <div className="flex justify-center space-x-1 mb-1">
-                  {renderStars(csFundamentalsScore)}
+              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100">
+                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap">System Design</div>
+                <div className="text-lg font-bold text-orange-600 dark:text-orange-400 mb-1">
+                  {(csFundamentalsScore * 20)}%
                 </div>
-                <div className="text-xs font-semibold text-orange-600 dark:text-orange-400">
-                  {csFundamentalsScore}/5
+                <div className="text-xs text-gray-500">
+                  {csFundamentalsScore >= 4 ? 'Expert' : csFundamentalsScore >= 3 ? 'Solid' : 'Learning'}
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Overall Rating Section - 2 columns */}
+          {/* Assessment Summary - 2 columns */}
           <div className="col-span-2 text-center">
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 shadow-sm">
-              <div className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Overall Rating</div>
-              <div className="flex justify-center space-x-1 mb-2">
-                {renderStars(overallRating)}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-lg p-4 shadow-sm border border-blue-100">
+              <div className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Assessment Score</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1" data-testid={`text-student-rating-${student.id}`}>
+                {Math.round(averageSkillScore * 20)}%
               </div>
-              <div className="text-lg font-bold text-gray-900 dark:text-white mb-1" data-testid={`text-student-rating-${student.id}`}>
-                {overallRating}/5
+              <div className="text-xs text-gray-600 mb-3">
+                Industry-level Assessment
               </div>
-              <div className={`text-lg font-bold px-3 py-1 rounded-full whitespace-nowrap ${
+              <div className={`text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap ${
                 matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
               }`}>
-                {matchPercentage}% JD Match
+                {matchPercentage}% Role Match
               </div>
             </div>
           </div>

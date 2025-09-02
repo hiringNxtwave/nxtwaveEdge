@@ -24,6 +24,42 @@ export default function Header() {
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">
+            <Link 
+              href="/for-companies" 
+              className={cn(
+                "transition-colors font-medium",
+                location === "/for-companies" 
+                  ? "text-foreground border-b-2 border-primary pb-1" 
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+              data-testid="link-for-companies"
+            >
+              For Companies
+            </Link>
+            <Link 
+              href="/for-colleges" 
+              className={cn(
+                "transition-colors font-medium",
+                location === "/for-colleges" 
+                  ? "text-foreground border-b-2 border-primary pb-1" 
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+              data-testid="link-for-colleges"
+            >
+              For Colleges
+            </Link>
+            <Link 
+              href="/for-students" 
+              className={cn(
+                "transition-colors font-medium",
+                location === "/for-students" 
+                  ? "text-foreground border-b-2 border-primary pb-1" 
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+              data-testid="link-for-students"
+            >
+              For Students
+            </Link>
             {isAuthenticated && (
               <>
                 <Link 

@@ -13,7 +13,6 @@ interface FilterState {
 interface StudentFiltersProps {
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
-  onSearch: () => void;
   skills?: any[];
   resultCount?: number;
   totalCount?: number;
@@ -22,7 +21,6 @@ interface StudentFiltersProps {
 export default function StudentFilters({ 
   filters, 
   onFiltersChange, 
-  onSearch,
   skills = [],
   resultCount = 0, 
   totalCount = 0 
@@ -42,7 +40,9 @@ export default function StudentFilters({
         <Label htmlFor="university-select" className="text-xs font-medium text-gray-600 dark:text-gray-400">University</Label>
         <Select 
           value={filters.university} 
-          onValueChange={(value) => handleFilterChange('university', value)}
+          onValueChange={(value) => {
+            handleFilterChange('university', value);
+          }}
         >
           <SelectTrigger id="university-select" data-testid="select-university" className="h-9 text-sm w-40">
             <SelectValue placeholder="All Universities" />
@@ -65,7 +65,9 @@ export default function StudentFilters({
         <Label htmlFor="coding-rating-select" className="text-xs font-medium text-gray-600 dark:text-gray-400">Min Rating</Label>
         <Select 
           value={filters.codingRating} 
-          onValueChange={(value) => handleFilterChange('codingRating', value)}
+          onValueChange={(value) => {
+            handleFilterChange('codingRating', value);
+          }}
         >
           <SelectTrigger id="coding-rating-select" data-testid="select-coding-rating" className="h-9 text-sm w-32">
             <SelectValue placeholder="⭐ Any" />
@@ -81,11 +83,6 @@ export default function StudentFilters({
         </Select>
       </div>
       
-      {/* Search Button */}
-      <Button onClick={onSearch} data-testid="button-search" className="h-9 px-4 bg-blue-600 hover:bg-blue-700 mt-5">
-        <Search className="w-4 h-4 mr-1" />
-        Apply
-      </Button>
     </div>
   );
 }
