@@ -22,14 +22,12 @@ function Router() {
 
   return (
     <Switch>
-      {/* Marketing pages - available to everyone */}
-      <Route path="/for-companies" component={ForCompanies} />
-      <Route path="/for-colleges" component={ForColleges} />
-      <Route path="/for-students" component={ForStudents} />
-      
       {isLoading || !isAuthenticated ? (
         <>
           <Route path="/" component={Landing} />
+          <Route path="/for-companies" component={ForCompanies} />
+          <Route path="/for-colleges" component={ForColleges} />
+          <Route path="/for-students" component={ForStudents} />
         </>
       ) : (
         <>

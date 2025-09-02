@@ -24,44 +24,61 @@ export default function Header() {
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/for-companies" 
-              className={cn(
-                "transition-colors font-medium inline-block py-1",
-                location === "/for-companies" 
-                  ? "text-foreground border-b-2 border-primary" 
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-              data-testid="link-for-companies"
-            >
-              For Companies
-            </Link>
-            <Link 
-              href="/for-colleges" 
-              className={cn(
-                "transition-colors font-medium inline-block py-1",
-                location === "/for-colleges" 
-                  ? "text-foreground border-b-2 border-primary" 
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-              data-testid="link-for-colleges"
-            >
-              For Colleges
-            </Link>
-            <Link 
-              href="/for-students" 
-              className={cn(
-                "transition-colors font-medium inline-block py-1",
-                location === "/for-students" 
-                  ? "text-foreground border-b-2 border-primary" 
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-              data-testid="link-for-students"
-            >
-              For Students
-            </Link>
-            {isAuthenticated && (
+            {!isAuthenticated ? (
+              // Marketing navigation for unauthenticated users
               <>
+                <Link 
+                  href="/for-companies" 
+                  className={cn(
+                    "transition-colors font-medium inline-block py-1",
+                    location === "/for-companies" 
+                      ? "text-foreground border-b-2 border-primary" 
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                  data-testid="link-for-companies"
+                >
+                  For Companies
+                </Link>
+                <Link 
+                  href="/for-colleges" 
+                  className={cn(
+                    "transition-colors font-medium inline-block py-1",
+                    location === "/for-colleges" 
+                      ? "text-foreground border-b-2 border-primary" 
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                  data-testid="link-for-colleges"
+                >
+                  For Colleges
+                </Link>
+                <Link 
+                  href="/for-students" 
+                  className={cn(
+                    "transition-colors font-medium inline-block py-1",
+                    location === "/for-students" 
+                      ? "text-foreground border-b-2 border-primary" 
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                  data-testid="link-for-students"
+                >
+                  For Students
+                </Link>
+              </>
+            ) : (
+              // Functional navigation for authenticated users
+              <>
+                <Link 
+                  href="/" 
+                  className={cn(
+                    "transition-colors font-medium inline-block py-1",
+                    location === "/" 
+                      ? "text-foreground border-b-2 border-primary" 
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                  data-testid="link-dashboard"
+                >
+                  Dashboard
+                </Link>
                 <Link 
                   href="/browse" 
                   className={cn(

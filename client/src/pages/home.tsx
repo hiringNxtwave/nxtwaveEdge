@@ -64,25 +64,6 @@ export default function Home() {
               </Card>
             </Link>
 
-            <Link href="/student-profile">
-              <Card className="hover:shadow-md transition-shadow cursor-pointer bg-white border border-gray-200 hover:border-blue-300" data-testid="card-student-profile">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-lg">Student Profile</CardTitle>
-                      <CardDescription>Create your profile</CardDescription>
-                    </div>
-                    <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
-                      <GraduationCap className="w-6 h-6 text-green-600" />
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold text-green-600">8-18 LPA</p>
-                  <p className="text-sm text-gray-600">Assessment roles</p>
-                </CardContent>
-              </Card>
-            </Link>
 
             {shortlistCount > 0 && (
               <Link href="/shortlist">
