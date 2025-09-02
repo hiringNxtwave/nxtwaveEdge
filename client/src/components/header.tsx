@@ -100,58 +100,30 @@ export default function Header() {
               // Functional navigation for authenticated users
               <>
                 <Link 
-                  href="/" 
-                  className={cn(
-                    "transition-colors font-medium inline-block py-1",
-                    location === "/" 
-                      ? "text-foreground border-b-2 border-primary" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                  data-testid="link-dashboard"
-                >
-                  Dashboard
-                </Link>
-                <Link 
-                  href="/browse" 
-                  className={cn(
-                    "transition-colors font-medium inline-block py-1",
-                    location === "/browse" 
-                      ? "text-foreground border-b-2 border-primary" 
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                  data-testid="link-browse-talent"
-                >
-                  Browse Talent
-                </Link>
-                <Link 
                   href="/talent-dashboard" 
                   className={cn(
-                    "transition-colors font-medium inline-block py-1",
+                    "transition-colors font-medium inline-flex items-center gap-2 py-1 px-3 rounded-full",
                     location === "/talent-dashboard" 
-                      ? "text-foreground border-b-2 border-primary" 
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "text-white bg-blue-600" 
+                      : "text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400"
                   )}
                   data-testid="link-talent-dashboard"
                 >
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium text-sm">
-                    <Trophy className="w-4 h-4" />
-                    Talent Dashboard
-                  </span>
+                  <Trophy className="w-4 h-4" />
+                  Talent Dashboard
                 </Link>
                 <Link 
                   href="/student-dashboard" 
                   className={cn(
-                    "transition-colors font-medium inline-block py-1",
+                    "transition-colors font-medium inline-flex items-center gap-2 py-1 px-3 rounded-full",
                     location === "/student-dashboard" 
-                      ? "text-foreground border-b-2 border-primary" 
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "text-white bg-green-600" 
+                      : "text-green-600 bg-green-50 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-400"
                   )}
                   data-testid="link-student-dashboard"
                 >
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 font-medium text-sm">
-                    <BookOpen className="w-4 h-4" />
-                    Student Portal
-                  </span>
+                  <BookOpen className="w-4 h-4" />
+                  Student Portal
                 </Link>
                 <Link 
                   href="/shortlist" 
@@ -161,7 +133,7 @@ export default function Header() {
                       ? "text-white bg-primary" 
                       : shortlistCount > 0 
                         ? "text-primary bg-primary/10 hover:bg-primary/20" 
-                        : "text-muted-foreground hover:text-foreground"
+                        : "text-muted-foreground hover:text-foreground bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700"
                   )}
                   data-testid="link-shortlist"
                 >
