@@ -237,18 +237,15 @@ function safeBinarySearch(arr, target) {
       {
         id: "sys_1",
         question: "Design a URL shortening service like bit.ly. Consider scalability, database design, and caching strategies.",
-        studentAnswer: `**System Architecture Design:**
+        studentAnswer: `System Architecture Design:
 
-**1. High-Level Architecture**
-```
-Client → Load Balancer → API Gateway → Microservices
-                                    ├── URL Service
-                                    ├── Analytics Service
-                                    └── User Service
-```
+1. High-Level Architecture
+Client -> Load Balancer -> API Gateway -> Microservices
+                                      - URL Service
+                                      - Analytics Service  
+                                      - User Service
 
-**2. Database Design**
-```sql
+2. Database Design
 -- Main URLs table
 CREATE TABLE urls (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -260,7 +257,7 @@ CREATE TABLE urls (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- Analytics table
+-- Analytics table  
 CREATE TABLE url_clicks (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     short_code VARCHAR(7),
@@ -269,38 +266,35 @@ CREATE TABLE url_clicks (
     user_agent TEXT,
     referrer TEXT
 );
-```
 
-**3. Encoding Strategy**
+3. Encoding Strategy
 - Use Base62 encoding (a-z, A-Z, 0-9)
-- Generate 7-character codes = 62^7 ≈ 3.5 trillion URLs
-- Hash function: MD5(original_url + timestamp) → take first 7 chars
+- Generate 7-character codes = 62^7 = 3.5 trillion URLs
+- Hash function: MD5(original_url + timestamp) -> take first 7 chars
 
-**4. Caching Strategy**
-```javascript
+4. Caching Strategy
 // Redis caching layer
-const cacheKey = `short:${shortCode}`;
+const cacheKey = 'short:' + shortCode;
 const cached = await redis.get(cacheKey);
 if (cached) return cached;
 
 const url = await db.getUrl(shortCode);
 await redis.setex(cacheKey, 3600, url); // 1 hour TTL
-```
 
-**5. Scalability Solutions**
-- **Database Sharding**: Partition by short_code hash
-- **Read Replicas**: For analytics queries
-- **CDN**: Cache popular redirects globally
-- **Load Balancing**: Round-robin across API servers
+5. Scalability Solutions
+- Database Sharding: Partition by short_code hash
+- Read Replicas: For analytics queries
+- CDN: Cache popular redirects globally
+- Load Balancing: Round-robin across API servers
 
-**6. Additional Features**
+6. Additional Features
 - Custom aliases validation
 - Bulk URL shortening API
 - Real-time analytics dashboard
 - Rate limiting (100 requests/minute per user)
 - URL expiration and cleanup jobs
 
-**7. Performance Optimizations**
+7. Performance Optimizations
 - Database indexing on short_code
 - Connection pooling
 - Async processing for analytics
@@ -313,26 +307,23 @@ await redis.setex(cacheKey, 3600, url); // 1 hour TTL
       {
         id: "sys_2",
         question: "Design a real-time chat application that can handle 1 million concurrent users. Include message delivery, user presence, and notification systems.",
-        studentAnswer: `**Real-Time Chat System Design**
+        studentAnswer: `Real-Time Chat System Design
 
-**1. Architecture Overview**
-```
-Mobile/Web Clients → Load Balancer → API Gateway
-                                  → WebSocket Servers (Socket.io)
-                                  → Message Queue (Apache Kafka)
-                                  → Microservices
-                                  → Database Cluster
-```
+1. Architecture Overview
+Mobile/Web Clients -> Load Balancer -> API Gateway
+                                   -> WebSocket Servers (Socket.io)
+                                   -> Message Queue (Apache Kafka)
+                                   -> Microservices
+                                   -> Database Cluster
 
-**2. Core Services**
-- **Connection Service**: Manages WebSocket connections
-- **Message Service**: Handles message routing and storage
-- **Presence Service**: Tracks user online/offline status
-- **Notification Service**: Push notifications for offline users
-- **User Service**: Authentication and user management
+2. Core Services
+- Connection Service: Manages WebSocket connections
+- Message Service: Handles message routing and storage
+- Presence Service: Tracks user online/offline status
+- Notification Service: Push notifications for offline users
+- User Service: Authentication and user management
 
-**3. Database Schema**
-```sql
+3. Database Schema
 -- Messages table (sharded by chat_room_id)
 CREATE TABLE messages (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -347,10 +338,8 @@ CREATE TABLE messages (
 -- User presence (Redis)
 SET user:123:presence "online"
 EXPIRE user:123:presence 300  -- 5 minute TTL
-```
 
-**4. Message Flow**
-```javascript
+4. Message Flow
 // Message handling pipeline
 1. Client sends message via WebSocket
 2. Validate and authenticate user
@@ -359,20 +348,18 @@ EXPIRE user:123:presence 300  -- 5 minute TTL
 5. Kafka consumers deliver to connected users
 6. Store in Redis for recent message cache
 7. Send push notification if user offline
-```
 
-**5. Scalability Solutions**
-- **WebSocket Server Scaling**: Sticky sessions with Redis
-- **Database Sharding**: By chat_room_id for even distribution
-- **Message Queuing**: Kafka partitions for parallel processing
-- **Caching**: Redis for recent messages and user sessions
+5. Scalability Solutions
+- WebSocket Server Scaling: Sticky sessions with Redis
+- Database Sharding: By chat_room_id for even distribution
+- Message Queuing: Kafka partitions for parallel processing
+- Caching: Redis for recent messages and user sessions
 
-**6. Real-time Features Implementation**
-```javascript
+6. Real-time Features Implementation
 // Presence system
 io.on('connection', (socket) => {
     // User comes online
-    redis.set(`user:${userId}:presence`, 'online', 'EX', 300);
+    redis.set('user:' + userId + ':presence', 'online', 'EX', 300);
     socket.broadcast.emit('user_online', userId);
     
     // Heartbeat to maintain presence
@@ -380,9 +367,8 @@ io.on('connection', (socket) => {
         socket.emit('ping');
     }, 30000);
 });
-```
 
-**7. Performance Optimizations**
+7. Performance Optimizations
 - Message pagination with cursor-based approach
 - Lazy loading of chat history
 - Image/file compression and CDN storage
