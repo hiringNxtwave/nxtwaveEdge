@@ -33,7 +33,7 @@ const generateAssessmentData = (type: string, score: number, studentId: string):
   const rand = (offset: number) => ((seed * 37 + offset) % 100) / 100;
 
   const baseQuestions: Record<string, AssessmentQuestion[]> = {
-    "Quantitative & Aptitude": [
+    "Aptitude and QA": [
       {
         id: "quant_1",
         question: "A train traveling at 60 km/hr crosses a platform 200m long in 30 seconds. What is the length of the train?",
@@ -87,7 +87,70 @@ Answer: 35% of total employees have MBA degrees.`,
         difficulty: "Easy"
       }
     ],
-    "Verbal Ability": [
+    "Tech Fundamentals": [
+      {
+        id: "tech_1",
+        question: "Explain the differences between HTTP and HTTPS, and describe how SSL/TLS handshake works.",
+        studentAnswer: `HTTP vs HTTPS Analysis:
+
+1. **HTTP (HyperText Transfer Protocol)**
+   - Port 80 (default)
+   - Data transmitted in plain text
+   - No encryption - vulnerable to eavesdropping
+   - Faster (no encryption overhead)
+   - Stateless protocol
+
+2. **HTTPS (HTTP Secure)**
+   - Port 443 (default)
+   - HTTP over SSL/TLS
+   - End-to-end encryption
+   - Data integrity verification
+   - Server authentication
+
+3. **SSL/TLS Handshake Process**
+
+Step 1: Client Hello
+- Client sends supported cipher suites
+- Random number for session
+- Supported SSL/TLS versions
+
+Step 2: Server Hello
+- Server selects cipher suite
+- Server random number
+- Server certificate (public key)
+
+Step 3: Certificate Verification
+- Client validates certificate chain
+- Checks certificate authority (CA)
+- Verifies domain name matches
+
+Step 4: Key Exchange
+- Client generates pre-master secret
+- Encrypts with server's public key
+- Sends to server
+
+Step 5: Session Keys Generation
+- Both parties derive session keys
+- From pre-master secret + random numbers
+- Using agreed key derivation function
+
+Step 6: Finished Messages
+- Both send encrypted "finished" messages
+- Verifies handshake integrity
+- Secure communication begins
+
+4. **Security Benefits**
+   - Prevents man-in-the-middle attacks
+   - Ensures data confidentiality
+   - Verifies server authenticity
+   - Protects against data tampering`,
+        correctAnswer: "Excellent understanding of HTTP/HTTPS protocols and SSL/TLS encryption. Shows strong grasp of web security fundamentals and network communication protocols.",
+        isCorrect: score >= 75,
+        timeTaken: Math.floor(30 + rand(7) * 15), // 30-45 minutes
+        difficulty: "Hard"
+      }
+    ],
+    "System Design": [
       {
         id: "verbal_1",
         question: "Choose the word that best completes the sentence: 'The scientist's ______ approach to research yielded groundbreaking results.' (Options: meticulous, haphazard, superficial, careless)",
@@ -131,7 +194,7 @@ Additional examples:
         difficulty: "Hard"
       }
     ],
-    "Interview Performance": [
+    "Communication": [
       {
         id: "interview_1", 
         question: "Tell me about a challenging project you worked on and how you overcame the difficulties.",
@@ -214,7 +277,7 @@ I'm excited about the possibility of growing with the company while contributing
         difficulty: "Hard"
       }
     ],
-    "DSA Assessments": [
+    "DSA": [
       {
         id: "dsa_1",
         question: "Implement a function to find the shortest path between two nodes in a weighted graph using Dijkstra's algorithm.",
@@ -338,7 +401,7 @@ function safeBinarySearch(arr, target) {
         difficulty: "Medium"
       }
     ],
-    "Tech Fundamentals": [
+    "Interview Performance": [
       {
         id: "sys_1",
         question: "Explain the differences between HTTP and HTTPS, and describe how SSL/TLS handshake works.",
