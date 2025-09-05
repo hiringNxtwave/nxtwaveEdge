@@ -177,11 +177,11 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             {/* Skills Display */}
             <div>
               <div className="flex flex-wrap gap-2">
-                {student.skills?.slice(0, 6).map((skill) => (
+                {Array.isArray(student.skills) ? student.skills.slice(0, 6).map((skill) => (
                   <Badge key={skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">
                     {skill.name}
                   </Badge>
-                )) || [
+                )) : [
                   <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">JavaScript</Badge>,
                   <Badge key="react" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">React</Badge>,
                   <Badge key="node" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">Node.js</Badge>,
@@ -189,9 +189,9 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                   <Badge key="mongo" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">MongoDB</Badge>,
                   <Badge key="system" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">System Design</Badge>
                 ]}
-                {(student.skills?.length || 6) > 6 && (
+                {Array.isArray(student.skills) && student.skills.length > 6 && (
                   <Badge variant="outline" className="text-xs hover:bg-gray-50 cursor-pointer">
-                    +{(student.skills?.length || 6) - 6} more
+                    +{student.skills.length - 6} more
                   </Badge>
                 )}
               </div>
