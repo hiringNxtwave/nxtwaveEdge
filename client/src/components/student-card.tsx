@@ -75,242 +75,112 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   return (
     <Card className="hover:shadow-xl transition-all duration-300 border-l-4 border-l-blue-500 bg-gradient-to-r from-white to-blue-50 dark:from-gray-800 dark:to-gray-750" data-testid={`card-student-${student.id}`}>
       <CardContent className="p-6">
-        <div className="grid grid-cols-12 gap-6 items-center w-full">
-          {/* Student Info Section - 3 columns */}
-          <Link href={`/student/${student.id}`} className="col-span-3 flex items-center space-x-4 cursor-pointer">
+        <div className="flex items-center gap-6 w-full">
+          {/* Student Info Section */}
+          <Link href={`/student/${student.id}`} className="flex items-center space-x-4 cursor-pointer flex-shrink-0">
             <div className="relative">
-              {/* Role Match Badge - Top Center */}
-              <div 
-                className={`absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1 cursor-pointer hover:scale-105 transition-transform shadow-lg border-2 border-white ${
-                  matchPercentage >= 85 ? 'bg-green-500 hover:bg-green-600' : 
-                  matchPercentage >= 70 ? 'bg-yellow-500 hover:bg-yellow-600' : 
-                  'bg-orange-500 hover:bg-orange-600'
-                }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setShowRoleMatchRationale(true);
-                }}
-                data-testid={`button-role-match-top-${student.id}`}
-              >
-                {matchPercentage}% MATCH
-                <Target className="w-3 h-3" />
-              </div>
-              
               <img 
                 src={student.profileImageUrl || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face`} 
                 alt={`${student.firstName} ${student.lastName}`}
-                className="w-20 h-20 rounded-full object-cover border-3 border-white shadow-lg"
+                className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-lg"
                 data-testid={`img-student-avatar-${student.id}`}
               />
               {student.verified && (
-                <div className="absolute -bottom-1 -left-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white" title="Verified Profile">
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white" title="Verified Profile">
                   <Shield className="w-3 h-3 text-white" />
                 </div>
               )}
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 truncate" data-testid={`text-student-name-${student.id}`}>
+            <div className="min-w-0">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1" data-testid={`text-student-name-${student.id}`}>
                 {student.firstName} {student.lastName}
               </h3>
-              <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-1 truncate" data-testid={`text-student-university-${student.id}`}>
+              <p className="text-sm text-blue-600 dark:text-blue-400 mb-1" data-testid={`text-student-university-${student.id}`}>
                 {student.university}
               </p>
-              <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300">
+              <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-300">
                 <span className="font-medium" data-testid={`text-student-cgpa-${student.id}`}>
                   CGPA: {student.cgpa}
                 </span>
-                <div className="flex items-center space-x-1">
-                  <MapPin className="w-3 h-3" />
-                  <span data-testid={`text-student-location-${student.id}`}>
-                    {student.location}
-                  </span>
-                </div>
+                <span data-testid={`text-student-location-${student.id}`}>
+                  📍 {student.location?.split(',')[0]}
+                </span>
               </div>
             </div>
           </Link>
 
-          {/* Skills Section - 5 columns */}
-          <div className="col-span-5">
-            <div className="grid grid-cols-4 gap-4">
-              {/* DSA */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all duration-200 group" 
-                   onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Advanced' : dsaScore >= 3 ? 'Intermediate' : 'Basic'})}
-                   data-testid={`assessment-dsa-${student.id}`}>
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
-                  DSA Assessment
-                  <Eye className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                <div className="text-lg font-bold text-blue-600 dark:text-blue-400 mb-1">
-                  {(dsaScore * 20)}%
-                </div>
-                <div className="text-xs text-gray-500">
-                  {dsaScore >= 4 ? 'Advanced' : dsaScore >= 3 ? 'Intermediate' : 'Basic'}
-                </div>
-              </div>
-
-              {/* Aptitude */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all duration-200 group" 
-                   onClick={() => setSelectedAssessment({type: 'Aptitude and QA', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Fair'})}
-                   data-testid={`assessment-aptitude-${student.id}`}>
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
-                  Quantitative Test
-                  <Eye className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                <div className="text-lg font-bold text-green-600 dark:text-green-400 mb-1">
-                  {(aptitudeScore * 20)}%
-                </div>
-                <div className="text-xs text-gray-500">
-                  {aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Fair'}
-                </div>
-              </div>
-
-              {/* Communication */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-purple-300 hover:shadow-md transition-all duration-200 group" 
-                   onClick={() => setSelectedAssessment({type: 'Interview Performance', score: communicationScore * 20, level: communicationScore >= 4 ? 'Fluent' : communicationScore >= 3 ? 'Good' : 'Basic'})}
-                   data-testid={`assessment-communication-${student.id}`}>
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
-                  Communication
-                  <Eye className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                <div className="text-lg font-bold text-purple-600 dark:text-purple-400 mb-1">
-                  {(communicationScore * 20)}%
-                </div>
-                <div className="text-xs text-gray-500">
-                  {communicationScore >= 4 ? 'Fluent' : communicationScore >= 3 ? 'Good' : 'Basic'}
-                </div>
-              </div>
-
-              {/* CS Fundamentals */}
-              <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-orange-300 hover:shadow-md transition-all duration-200 group" 
-                   onClick={() => setSelectedAssessment({type: 'Tech Fundamentals', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Expert' : csFundamentalsScore >= 3 ? 'Solid' : 'Learning'})}
-                   data-testid={`assessment-cs-fundamentals-${student.id}`}>
-                <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
-                  CS Fundamentals
-                  <Eye className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-                <div className="text-lg font-bold text-orange-600 dark:text-orange-400 mb-1">
-                  {(csFundamentalsScore * 20)}%
-                </div>
-                <div className="text-xs text-gray-500">
-                  {csFundamentalsScore >= 4 ? 'Expert' : csFundamentalsScore >= 3 ? 'Solid' : 'Learning'}
-                </div>
-              </div>
+          {/* Skills & Skills Preview */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2">
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Top Skills</h4>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {student.skills?.slice(0, 4).map((skill) => (
+                <Badge key={skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs">
+                  {skill.name}
+                </Badge>
+              )) || [
+                <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">JavaScript</Badge>,
+                <Badge key="react" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">React</Badge>,
+                <Badge key="node" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">Node.js</Badge>
+              ]}
+              {(student.skills?.length || 3) > 4 && (
+                <Badge variant="outline" className="text-xs">
+                  +{(student.skills?.length || 3) - 4} more
+                </Badge>
+              )}
             </div>
           </div>
 
-          {/* Compact Assessment Summary & Actions - 2 columns */}
-          <div className="col-span-2 space-y-3">
-            {/* Top Row: Authenticity Signals + Overall Score */}
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex flex-wrap gap-1">
-                <Badge className="bg-green-100 text-green-800 text-xs px-2 py-1" data-testid={`badge-proctored-${student.id}`}>
-                  <Shield className="w-3 h-3 mr-1" />
-                  Proctored
-                </Badge>
-                <Badge className="bg-blue-100 text-blue-800 text-xs px-2 py-1" data-testid={`badge-ai-free-${student.id}`}>
-                  <CheckCircle className="w-3 h-3 mr-1" />
-                  AI-Free
-                </Badge>
-                <Badge className="bg-orange-100 text-orange-800 text-xs px-2 py-1" data-testid={`badge-fresh-${student.id}`}>
-                  <Clock className="w-3 h-3 mr-1" />
-                  Fresh
-                </Badge>
+          {/* Assessment Summary */}
+          <div className="flex items-center gap-4">
+            <div className="text-center">
+              <div className="text-xl font-bold text-blue-600 dark:text-blue-400" data-testid={`text-student-rating-${student.id}`}>
+                {Math.round(averageSkillScore * 20)}%
               </div>
-              
-              <div className="flex items-center gap-3">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-blue-600 dark:text-blue-400" data-testid={`text-student-rating-${student.id}`}>
-                    {Math.round(averageSkillScore * 20)}%
-                  </div>
-                  <div className="text-xs text-gray-600">Overall</div>
-                </div>
-                <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
-                  matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
-                }`}
-                     onClick={() => setShowRoleMatchRationale(true)}
-                     data-testid={`button-role-match-info-${student.id}`}>
-                  {matchPercentage}% JD Match
-                </div>
-              </div>
+              <div className="text-xs text-gray-600">Overall Score</div>
             </div>
-
-            {/* Middle Row: Salary & Location + Key Differentiator */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 rounded-lg p-2">
-                <div className="text-xs font-bold text-green-800 dark:text-green-200 mb-1">Salary Expectation</div>
-                <div className="text-xs text-green-600 dark:text-green-400">
-                  ₹{Math.floor(4 + (overallRating * 2) + (seed % 3))} - {Math.floor(6 + (overallRating * 2) + (seed % 3))} LPA
-                </div>
-              </div>
-              
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 rounded-lg p-2">
-                <div className="text-xs font-bold text-blue-800 dark:text-blue-200 mb-1">Location</div>
-                <div className="text-xs text-blue-600 dark:text-blue-400">Open to {student.location}</div>
-              </div>
-
-              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 rounded-lg p-2">
-                <div className="text-xs font-bold text-yellow-800 dark:text-yellow-200 mb-1">Top Achievement</div>
-                {overallRating >= 4 ? (
-                  <div className="flex items-center text-xs text-yellow-700 dark:text-yellow-300">
-                    <Award className="w-3 h-3 mr-1" />
-                    Hackathon Rank #{Math.floor(seed % 5) + 1}
-                  </div>
-                ) : dsaScore >= 4 ? (
-                  <div className="flex items-center text-xs text-yellow-700 dark:text-yellow-300">
-                    <TrendingUp className="w-3 h-3 mr-1" />
-                    Top 5% Coding
-                  </div>
-                ) : (
-                  <div className="flex items-center text-xs text-yellow-700 dark:text-yellow-300">
-                    <Users className="w-3 h-3 mr-1" />
-                    Quality Projects
-                  </div>
-                )}
-              </div>
+            <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
+              matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
+            }`}
+                 onClick={() => setShowRoleMatchRationale(true)}
+                 data-testid={`button-role-match-info-${student.id}`}>
+              {matchPercentage}% Match
             </div>
+          </div>
 
-            {/* Bottom Row: Action Buttons */}
-            <div className="flex gap-2">
-              <Link href={`/student/${student.id}`} className="flex-1">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" size="sm" data-testid={`button-view-profile-${student.id}`}>
-                  View Profile
-                </Button>
-              </Link>
-              <Button 
-                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold" 
-                size="sm" 
-                onClick={() => setShowCandidateFullReport(true)}
-                data-testid={`button-full-report-${student.id}`}
-              >
-                <Eye className="w-4 h-4 mr-1" />
-                Report
+          {/* Action Buttons */}
+          <div className="flex gap-2 flex-shrink-0">
+            <Link href={`/student/${student.id}`}>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white" size="sm" data-testid={`button-view-profile-${student.id}`}>
+                View Profile
               </Button>
-              <Button 
-                className={`flex-1 font-semibold ${
-                  isShortlisted(student.id) 
-                    ? 'bg-green-100 text-green-700 hover:bg-green-200' 
-                    : 'border border-green-500 text-green-600 hover:bg-green-50'
-                }`} 
-                size="sm" 
-                variant={isShortlisted(student.id) ? "default" : "outline"}
-                onClick={() => {
-                  isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
-                }}
-                data-testid={`button-shortlist-${student.id}`}
-              >
-                {isShortlisted(student.id) ? (
-                  <>
-                    <Check className="w-4 h-4 mr-1" />
-                    Listed
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4 mr-1" />
-                    Shortlist
-                  </>
-                )}
-              </Button>
-            </div>
+            </Link>
+            <Button 
+              className={`font-semibold ${
+                isShortlisted(student.id) 
+                  ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                  : 'border border-green-500 text-green-600 hover:bg-green-50'
+              }`} 
+              size="sm" 
+              variant={isShortlisted(student.id) ? "default" : "outline"}
+              onClick={() => {
+                isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
+              }}
+              data-testid={`button-shortlist-${student.id}`}
+            >
+              {isShortlisted(student.id) ? (
+                <>
+                  <Check className="w-4 h-4 mr-1" />
+                  Added
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-1" />
+                  Shortlist
+                </>
+              )}
+            </Button>
           </div>
         </div>
       </CardContent>
