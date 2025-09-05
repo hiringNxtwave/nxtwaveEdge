@@ -45,29 +45,50 @@ export default function RoleMatchRationale({ student, matchPercentage, onClose }
   const systemDesignScore = generateSkillScore(4);
   const cgpaValue = typeof student.cgpa === 'string' ? parseFloat(student.cgpa) : student.cgpa || 7.5;
 
-  // Generate hiring insights focused on decision-making
-  const hiringInsights: HiringInsight[] = [
+  // Calculate specific assessment scores
+  const quantitativeScore = aptitudeScore * 20;
+  const verbalScore = generateSkillScore(5) * 20;
+  const dsaAssessmentScore = dsaScore * 20;
+  const interviewScore = generateSkillScore(6) * 20;
+  const englishSpeakingScore = generateSkillScore(7) * 20;
+
+  // Assessment sections with gradient colors
+  const assessmentSections = [
     {
-      category: "Technical Skills",
-      score: dsaScore * 20,
-      strength: dsaScore >= 4 ? "Strong algorithmic thinking" : dsaScore >= 3 ? "Solid programming fundamentals" : "Basic coding ability",
-      risk: dsaScore < 3 ? "May need technical mentoring" : undefined,
-      recommendation: dsaScore >= 4 ? "Ready for complex projects" : dsaScore >= 3 ? "Good for mid-level tasks" : "Consider for junior role with support"
+      name: "Quantitative & Aptitude",
+      score: quantitativeScore,
+      description: quantitativeScore >= 80 ? "Exceptional mathematical reasoning" : quantitativeScore >= 60 ? "Good analytical skills" : "Basic problem solving"
     },
     {
-      category: "Communication",
-      score: communicationScore * 20,
-      strength: communicationScore >= 4 ? "Excellent stakeholder interaction" : communicationScore >= 3 ? "Clear technical communication" : "Basic communication skills",
-      risk: communicationScore < 3 ? "May struggle with client-facing roles" : undefined,
-      recommendation: communicationScore >= 4 ? "Suitable for leadership roles" : communicationScore >= 3 ? "Good for team collaboration" : "Better for individual contributor roles"
+      name: "Verbal Ability",
+      score: verbalScore,
+      description: verbalScore >= 80 ? "Strong written communication" : verbalScore >= 60 ? "Clear expression" : "Developing writing skills"
     },
     {
-      category: "Problem Solving",
-      score: aptitudeScore * 20,
-      strength: aptitudeScore >= 4 ? "Exceptional analytical thinking" : aptitudeScore >= 3 ? "Good logical reasoning" : "Standard problem-solving",
-      recommendation: aptitudeScore >= 4 ? "Can handle complex business logic" : aptitudeScore >= 3 ? "Suitable for structured problems" : "Works well with clear requirements"
+      name: "DSA Assessments",
+      score: dsaAssessmentScore,
+      description: dsaAssessmentScore >= 80 ? "Advanced coding proficiency" : dsaAssessmentScore >= 60 ? "Solid technical foundation" : "Learning programming concepts"
+    },
+    {
+      name: "Interview Performance",
+      score: interviewScore,
+      description: interviewScore >= 80 ? "Confident presentation" : interviewScore >= 60 ? "Good interaction skills" : "Improving interview skills"
+    },
+    {
+      name: "English Speaking",
+      score: englishSpeakingScore,
+      description: englishSpeakingScore >= 80 ? "Fluent communication" : englishSpeakingScore >= 60 ? "Clear verbal skills" : "Developing speaking ability"
     }
   ];
+
+  // Generate hiring insights focused on decision-making
+  const hiringInsights: HiringInsight[] = assessmentSections.slice(0, 3).map(section => ({
+    category: section.name,
+    score: section.score,
+    strength: section.description,
+    risk: section.score < 50 ? `Low ${section.name.toLowerCase()} performance` : undefined,
+    recommendation: section.score >= 80 ? "Strong performer" : section.score >= 60 ? "Good fit" : "Needs development"
+  }));
 
   const overallRecommendation = matchPercentage >= 85 ? "Strong Hire" : 
                                 matchPercentage >= 70 ? "Hire with Confidence" : 
@@ -75,6 +96,21 @@ export default function RoleMatchRationale({ student, matchPercentage, onClose }
   
   const riskFactors = hiringInsights.filter(insight => insight.risk).map(insight => insight.risk).filter(Boolean);
   const keyStrengths = hiringInsights.filter(insight => insight.score >= 80).map(insight => insight.strength);
+
+  // Function to get gradient color based on score
+  const getGradientClass = (score: number) => {
+    if (score >= 80) return "bg-gradient-to-r from-green-100 to-green-200 border-green-300 text-green-800";
+    if (score >= 60) return "bg-gradient-to-r from-yellow-100 to-green-100 border-yellow-300 text-yellow-800";
+    if (score >= 40) return "bg-gradient-to-r from-orange-100 to-yellow-100 border-orange-300 text-orange-800";
+    return "bg-gradient-to-r from-red-100 to-orange-100 border-red-300 text-red-800";
+  };
+
+  const getScoreLevel = (score: number) => {
+    if (score >= 80) return "Excellent";
+    if (score >= 60) return "Good";
+    if (score >= 40) return "Fair";
+    return "Needs Improvement";
+  };
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
@@ -156,25 +192,39 @@ export default function RoleMatchRationale({ student, matchPercentage, onClose }
             </Card>
           )}
 
-          {/* Specific Recommendations */}
+          {/* Assessment Sections */}
           <Card>
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <Brain className="w-4 h-4 text-blue-600" />
-                Specific Recommendations
+                Assessment Performance
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
-              <div className="space-y-3">
-                {hiringInsights.map((insight, index) => (
-                  <div key={index} className="border-l-2 border-gray-200 pl-4">
-                    <div className="flex items-center justify-between mb-1">
-                      <h4 className="font-medium text-sm">{insight.category}</h4>
-                      <Badge variant="outline" className="text-xs">
-                        {insight.score}%
-                      </Badge>
+              <div className="grid grid-cols-1 gap-3">
+                {assessmentSections.map((section, index) => (
+                  <div 
+                    key={index} 
+                    className={`p-4 rounded-lg border-2 ${getGradientClass(section.score)} transition-all hover:shadow-md`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-semibold text-sm">{section.name}</h4>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="text-xs bg-white/70 text-gray-700">
+                          {getScoreLevel(section.score)}
+                        </Badge>
+                        <span className="text-lg font-bold">
+                          {Math.round(section.score)}%
+                        </span>
+                      </div>
                     </div>
-                    <p className="text-sm text-gray-600">{insight.recommendation}</p>
+                    <div className="w-full bg-white/50 rounded-full h-2 mb-2">
+                      <div 
+                        className="h-2 rounded-full bg-gradient-to-r from-current to-current opacity-80"
+                        style={{ width: `${Math.min(section.score, 100)}%` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs opacity-90">{section.description}</p>
                   </div>
                 ))}
               </div>
