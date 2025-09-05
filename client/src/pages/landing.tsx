@@ -333,112 +333,100 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Value Proposition for Companies */}
+      {/* Recent Activity */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-              Trusted by Leading Companies
+              Recent Platform Activity
             </h2>
             <p className="text-gray-600 max-w-3xl mx-auto text-lg">
-              From startups to Fortune 500 companies, organizations choose NxtWave for reliable fresher hiring.
+              Live updates from our talent marketplace showing real hiring activity
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="bg-white border-t-4 border-t-blue-500 hover:shadow-lg transition-shadow" data-testid="card-feature-access">
-              <CardHeader>
-                <Users className="w-12 h-12 text-blue-600 mb-4" />
-                <CardTitle className="text-xl">Exclusive Access to Top Talent</CardTitle>
-                <CardDescription className="text-base">
-                  Connect with students from IITs, NITs, and 400+ top universities. Access candidates that aren't available on other platforms.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center text-sm text-blue-600 font-medium">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  95% from Tier-1 & Tier-2 institutions
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="bg-white border-l-4 border-l-green-500">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm text-gray-500">2 min ago</span>
+                  </div>
+                  <CheckCircle className="w-5 h-5 text-green-500" />
                 </div>
+                <p className="text-gray-900 font-medium">TechCorp hired 3 React developers</p>
+                <p className="text-sm text-gray-600">From IIT Delhi and NIT Trichy</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white border-t-4 border-t-green-500 hover:shadow-lg transition-shadow" data-testid="card-feature-ai">
-              <CardHeader>
-                <Zap className="w-12 h-12 text-green-600 mb-4" />
-                <CardTitle className="text-xl">AI-Powered Smart Matching</CardTitle>
-                <CardDescription className="text-base">
-                  Our advanced algorithms match candidates based on skills, experience, and cultural fit. Reduce screening time by 70%.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center text-sm text-green-600 font-medium">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  85% improvement in hire quality
+            <Card className="bg-white border-l-4 border-l-blue-500">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span className="text-sm text-gray-500">5 min ago</span>
+                  </div>
+                  <Users className="w-5 h-5 text-blue-500" />
                 </div>
+                <p className="text-gray-900 font-medium">127 new students joined today</p>
+                <p className="text-sm text-gray-600">From top engineering colleges</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white border-t-4 border-t-purple-500 hover:shadow-lg transition-shadow" data-testid="card-feature-speed">
-              <CardHeader>
-                <Clock className="w-12 h-12 text-purple-600 mb-4" />
-                <CardTitle className="text-xl">10x Faster Hiring Process</CardTitle>
-                <CardDescription className="text-base">
-                  From posting to hiring in days, not months. Streamlined workflows and automated communications accelerate your hiring.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center text-sm text-purple-600 font-medium">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Average time-to-hire: 7 days
+            <Card className="bg-white border-l-4 border-l-purple-500">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <span className="text-sm text-gray-500">8 min ago</span>
+                  </div>
+                  <Target className="w-5 h-5 text-purple-500" />
                 </div>
+                <p className="text-gray-900 font-medium">FinanceStart completed 15 assessments</p>
+                <p className="text-sm text-gray-600">For Data Science roles</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white border-t-4 border-t-orange-500 hover:shadow-lg transition-shadow" data-testid="card-feature-verified">
-              <CardHeader>
-                <Shield className="w-12 h-12 text-orange-600 mb-4" />
-                <CardTitle className="text-xl">100% Verified Profiles</CardTitle>
-                <CardDescription className="text-base">
-                  Every candidate is verified with academic records, skill assessments, and background checks. Hire with confidence.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center text-sm text-orange-600 font-medium">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Zero fake profiles guaranteed
+            <Card className="bg-white border-l-4 border-l-orange-500">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                    <span className="text-sm text-gray-500">12 min ago</span>
+                  </div>
+                  <Award className="w-5 h-5 text-orange-500" />
                 </div>
+                <p className="text-gray-900 font-medium">New hackathon results updated</p>
+                <p className="text-sm text-gray-600">Smart India Hackathon 2024</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white border-t-4 border-t-red-500 hover:shadow-lg transition-shadow" data-testid="card-feature-assessment">
-              <CardHeader>
-                <Target className="w-12 h-12 text-red-600 mb-4" />
-                <CardTitle className="text-xl">Comprehensive Skill Assessment</CardTitle>
-                <CardDescription className="text-base">
-                  Built-in coding tests, aptitude assessments, and soft skill evaluations. Make data-driven hiring decisions.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center text-sm text-red-600 font-medium">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  4 assessment categories included
+            <Card className="bg-white border-l-4 border-l-red-500">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                    <span className="text-sm text-gray-500">15 min ago</span>
+                  </div>
+                  <TrendingUp className="w-5 h-5 text-red-500" />
                 </div>
+                <p className="text-gray-900 font-medium">AI startup shortlisted 25 candidates</p>
+                <p className="text-sm text-gray-600">ML Engineering positions</p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white border-t-4 border-t-indigo-500 hover:shadow-lg transition-shadow" data-testid="card-feature-support">
-              <CardHeader>
-                <Handshake className="w-12 h-12 text-indigo-600 mb-4" />
-                <CardTitle className="text-xl">Dedicated Success Manager</CardTitle>
-                <CardDescription className="text-base">
-                  Get personalized support from our hiring experts. From strategy to execution, we're with you every step.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center text-sm text-indigo-600 font-medium">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  24/7 priority support included
+            <Card className="bg-white border-l-4 border-l-indigo-500">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                    <span className="text-sm text-gray-500">18 min ago</span>
+                  </div>
+                  <BarChart3 className="w-5 h-5 text-indigo-500" />
                 </div>
+                <p className="text-gray-900 font-medium">450+ profile views this hour</p>
+                <p className="text-sm text-gray-600">Peak hiring activity detected</p>
               </CardContent>
             </Card>
           </div>

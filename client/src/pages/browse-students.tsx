@@ -7,7 +7,6 @@ import StudentCard from "@/components/student-card";
 import StudentFilters from "@/components/student-filters";
 import FreshnessIndex from "@/components/freshness-index";
 import CandidateComparison from "@/components/candidate-comparison";
-import PredictiveInsights from "@/components/predictive-insights";
 import TalentDiscoveryFilters from "@/components/talent-discovery-filters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,7 +33,6 @@ export default function BrowseStudents() {
   // New state for enhanced features
   const [compareList, setCompareList] = useState<any[]>([]);
   const [showComparison, setShowComparison] = useState(false);
-  const [showInsights, setShowInsights] = useState(false);
   const [showSmartDiscovery, setShowSmartDiscovery] = useState(false);
   const [smartResults, setSmartResults] = useState<any[]>([]);
   const [isUsingSmartResults, setIsUsingSmartResults] = useState(false);
@@ -399,33 +397,6 @@ export default function BrowseStudents() {
         />
       )}
 
-      {showInsights && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <Card className="max-w-6xl w-full max-h-[90vh] overflow-auto">
-            <CardHeader className="pb-4">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                  <BarChart3 className="w-6 h-6 text-blue-600" />
-                  Predictive Hiring Insights
-                </CardTitle>
-                <Button variant="ghost" onClick={() => setShowInsights(false)} className="p-2">
-                  <Lock className="w-5 h-5" />
-                </Button>
-              </div>
-              <p className="text-gray-600 dark:text-gray-300">AI-powered insights to optimize your hiring process</p>
-            </CardHeader>
-            <CardContent>
-              <PredictiveInsights
-                shortlistedCount={Math.max(20, students.length)}
-                role="Software Engineer"
-                location="Bangalore"
-                salaryRange={{ min: 8, max: 15 }}
-                urgency="medium"
-              />
-            </CardContent>
-          </Card>
-        </div>
-      )}
     </div>
   );
 }
