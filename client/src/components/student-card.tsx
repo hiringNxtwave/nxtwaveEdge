@@ -12,6 +12,7 @@ import CandidateFullReport from "@/components/candidate-360-view";
 import CodeReplayModal from "@/components/code-replay-modal";
 import CommunicationSampleModal from "@/components/communication-sample-modal";
 import ExamFootageModal from "@/components/exam-footage-modal";
+import InterviewPerformanceModal from "@/components/interview-performance-modal";
 
 interface StudentCardProps {
   student: StudentWithSkills;
@@ -55,6 +56,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   const [showCodeReplay, setShowCodeReplay] = useState(false);
   const [showCommunicationSample, setShowCommunicationSample] = useState(false);
   const [showExamFootage, setShowExamFootage] = useState(false);
+  const [showInterviewPerformance, setShowInterviewPerformance] = useState(false);
   
   // Use student ID as seed for consistent ratings
   const seed = parseInt(student.id.slice(-8), 16);
@@ -238,13 +240,17 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
           </div>
 
-          {/* Overall Score & Match - Stacked Vertically */}
+          {/* Overall and Interview Performance & Match - Stacked Vertically */}
           <div className="flex flex-col items-center gap-2">
-            <div className="text-center">
+            <div 
+              className="text-center cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
+              onClick={() => setShowInterviewPerformance(true)}
+              data-testid={`performance-overall-${student.id}`}
+            >
               <div className="flex justify-center mb-1" data-testid={`text-student-rating-${student.id}`}>
                 {renderStars(Math.round(averageSkillScore))}
               </div>
-              <div className="text-xs text-gray-600">Overall Score</div>
+              <div className="text-xs text-gray-600">Overall and Interview Performance</div>
             </div>
             <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
               matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
@@ -342,6 +348,15 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           student={student}
           isOpen={showExamFootage}
           onClose={() => setShowExamFootage(false)}
+        />
+      )}
+
+      {/* Interview Performance Modal */}
+      {showInterviewPerformance && (
+        <InterviewPerformanceModal 
+          student={student}
+          isOpen={showInterviewPerformance}
+          onClose={() => setShowInterviewPerformance(false)}
         />
       )}
     </Card>
