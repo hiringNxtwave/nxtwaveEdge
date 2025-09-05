@@ -198,63 +198,144 @@ export default function StudentProfile() {
             <Card data-testid="card-skills-assessment">
               <CardHeader>
                 <CardTitle>Skills Assessment</CardTitle>
-                <CardDescription>Performance ratings across key competency areas</CardDescription>
+                <CardDescription>Detailed performance evaluation with code solutions and test responses</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* DSA */}
-                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-blue-900 dark:text-blue-200 whitespace-nowrap">Data Structures & Algorithms</h3>
-                      <span className="text-sm font-bold text-blue-600 dark:text-blue-400">{skillScores.dsaScore}/5</span>
+                <div className="space-y-8">
+                  {/* DSA Section with Code */}
+                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-200">Data Structures & Algorithms</h3>
+                      <span className="text-lg font-bold text-blue-600 dark:text-blue-400">{skillScores.dsaScore}/5</span>
                     </div>
-                    <div className="flex items-center space-x-2 mb-2">
+                    <div className="flex items-center space-x-2 mb-4">
                       {renderStars(skillScores.dsaScore)}
+                      <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">94% accuracy in coding challenges</span>
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      Problem solving, algorithmic thinking, coding challenges
-                    </p>
+                    
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border">
+                      <h4 className="font-medium text-gray-900 dark:text-white mb-2">Problem: Two Sum</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        Given an array of integers and a target sum, return indices of two numbers that add up to the target.
+                      </p>
+                      <div className="bg-gray-900 rounded-md p-4 overflow-x-auto">
+                        <pre className="text-sm text-green-400">
+{`def twoSum(nums, target):
+    hash_map = {}
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in hash_map:
+            return [hash_map[complement], i]
+        hash_map[num] = i
+    return []
+
+# Time: O(n), Space: O(n)
+# Test case: [2,7,11,15], target=9 → [0,1]`}
+                        </pre>
+                      </div>
+                      <div className="flex items-center mt-3 text-sm">
+                        <div className="flex items-center text-green-600 dark:text-green-400 mr-4">
+                          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                          Optimal Solution
+                        </div>
+                        <span className="text-gray-500">Execution time: 52ms</span>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Aptitude */}
-                  <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-green-900 dark:text-green-200">Quantitative Aptitude</h3>
-                      <span className="text-sm font-bold text-green-600 dark:text-green-400">{skillScores.aptitudeScore}/5</span>
+                  {/* Aptitude Section with MCQs */}
+                  <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-green-900 dark:text-green-200">Quantitative Aptitude</h3>
+                      <span className="text-lg font-bold text-green-600 dark:text-green-400">{skillScores.aptitudeScore}/5</span>
                     </div>
-                    <div className="flex items-center space-x-2 mb-2">
+                    <div className="flex items-center space-x-2 mb-4">
                       {renderStars(skillScores.aptitudeScore)}
+                      <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">18/20 questions correct</span>
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      Mathematical reasoning, logical thinking, analytical skills
-                    </p>
+
+                    <div className="space-y-4">
+                      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border">
+                        <h4 className="font-medium text-gray-900 dark:text-white mb-2">Question 1: Probability</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                          A bag contains 5 red balls and 3 blue balls. What is the probability of drawing 2 red balls consecutively without replacement?
+                        </p>
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-gray-400">A)</span>
+                            <span className="text-gray-600 dark:text-gray-400">25/64</span>
+                          </div>
+                          <div className="flex items-center space-x-2 bg-green-100 dark:bg-green-900/30 rounded px-2 py-1">
+                            <span className="text-green-600 dark:text-green-400 font-medium">✓ B)</span>
+                            <span className="text-green-700 dark:text-green-300 font-medium">5/14</span>
+                            <span className="text-xs text-green-600 dark:text-green-400 ml-2">(Selected)</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-gray-400">C)</span>
+                            <span className="text-gray-600 dark:text-gray-400">15/56</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-gray-400">D)</span>
+                            <span className="text-gray-600 dark:text-gray-400">3/8</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border">
+                        <h4 className="font-medium text-gray-900 dark:text-white mb-2">Question 2: Time & Work</h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                          A can complete a work in 12 days and B can complete the same work in 18 days. How many days will they take if they work together?
+                        </p>
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-gray-400">A)</span>
+                            <span className="text-gray-600 dark:text-gray-400">6 days</span>
+                          </div>
+                          <div className="flex items-center space-x-2 bg-green-100 dark:bg-green-900/30 rounded px-2 py-1">
+                            <span className="text-green-600 dark:text-green-400 font-medium">✓ B)</span>
+                            <span className="text-green-700 dark:text-green-300 font-medium">7.2 days</span>
+                            <span className="text-xs text-green-600 dark:text-green-400 ml-2">(Selected)</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-gray-400">C)</span>
+                            <span className="text-gray-600 dark:text-gray-400">8 days</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-gray-400">D)</span>
+                            <span className="text-gray-600 dark:text-gray-400">9 days</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Communication */}
-                  <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-purple-900 dark:text-purple-200 whitespace-nowrap">Communication Skills</h3>
-                      <span className="text-sm font-bold text-purple-600 dark:text-purple-400">{skillScores.communicationScore}/5</span>
+                  {/* Communication Skills */}
+                  <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-purple-900 dark:text-purple-200">Communication Skills</h3>
+                      <span className="text-lg font-bold text-purple-600 dark:text-purple-400">{skillScores.communicationScore}/5</span>
                     </div>
                     <div className="flex items-center space-x-2 mb-2">
                       {renderStars(skillScores.communicationScore)}
+                      <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">Excellent presentation skills</span>
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      Verbal communication, presentation skills, teamwork
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Verbal communication, presentation skills, teamwork, active listening
                     </p>
                   </div>
 
                   {/* CS Fundamentals */}
-                  <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-orange-900 dark:text-orange-200 whitespace-nowrap">CS Fundamentals</h3>
-                      <span className="text-sm font-bold text-orange-600 dark:text-orange-400">{skillScores.csFundamentalsScore}/5</span>
+                  <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-orange-900 dark:text-orange-200">CS Fundamentals</h3>
+                      <span className="text-lg font-bold text-orange-600 dark:text-orange-400">{skillScores.csFundamentalsScore}/5</span>
                     </div>
                     <div className="flex items-center space-x-2 mb-2">
                       {renderStars(skillScores.csFundamentalsScore)}
+                      <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">Strong system design knowledge</span>
                     </div>
-                    <p className="text-xs text-gray-600 dark:text-gray-400">
-                      Operating systems, databases, networks, system design
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Operating systems, databases, networks, system design, software architecture
                     </p>
                   </div>
                 </div>
@@ -311,6 +392,178 @@ export default function StudentProfile() {
                       Active in developer communities and technical forums.
                     </p>
                     <span className="text-xs text-gray-500">2023 - Present</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Interview Performance */}
+            <Card data-testid="card-interview-performance">
+              <CardHeader>
+                <CardTitle>Interview Performance</CardTitle>
+                <CardDescription>AI mock interview recordings and live coding solutions</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Interview Video */}
+                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Technical Interview Recording</h3>
+                      <div className="flex items-center space-x-2">
+                        <Badge variant="default" className="bg-green-600">Excellent</Badge>
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Duration: 42 min</span>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-black rounded-lg aspect-video mb-4 relative overflow-hidden">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-center text-white">
+                          <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mb-4 mx-auto">
+                            <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z"/>
+                            </svg>
+                          </div>
+                          <p className="text-sm opacity-80">Click to play interview recording</p>
+                          <p className="text-xs opacity-60 mt-1">Recorded on Dec 15, 2024</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="text-center p-3 bg-white dark:bg-gray-800 rounded-lg">
+                        <div className="text-lg font-bold text-green-600 dark:text-green-400">9.2/10</div>
+                        <div className="text-gray-600 dark:text-gray-400">Communication</div>
+                      </div>
+                      <div className="text-center p-3 bg-white dark:bg-gray-800 rounded-lg">
+                        <div className="text-lg font-bold text-blue-600 dark:text-blue-400">8.8/10</div>
+                        <div className="text-gray-600 dark:text-gray-400">Problem Solving</div>
+                      </div>
+                      <div className="text-center p-3 bg-white dark:bg-gray-800 rounded-lg">
+                        <div className="text-lg font-bold text-purple-600 dark:text-purple-400">9.0/10</div>
+                        <div className="text-gray-600 dark:text-gray-400">Code Quality</div>
+                      </div>
+                      <div className="text-center p-3 bg-white dark:bg-gray-800 rounded-lg">
+                        <div className="text-lg font-bold text-orange-600 dark:text-orange-400">8.5/10</div>
+                        <div className="text-gray-600 dark:text-gray-400">Time Management</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Live Coding Solutions */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Live Coding Solutions</h3>
+                    
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-medium text-gray-900 dark:text-white">Problem 1: Merge Intervals</h4>
+                        <Badge variant="outline" className="text-green-600 border-green-600">Solved in 12 min</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        Given an array of intervals, merge all overlapping intervals and return an array of non-overlapping intervals.
+                      </p>
+                      <div className="bg-gray-900 rounded-md p-4 overflow-x-auto">
+                        <pre className="text-sm text-green-400">
+{`def merge_intervals(intervals):
+    if not intervals:
+        return []
+    
+    intervals.sort(key=lambda x: x[0])
+    merged = [intervals[0]]
+    
+    for current in intervals[1:]:
+        last_merged = merged[-1]
+        if current[0] <= last_merged[1]:
+            merged[-1] = [last_merged[0], max(last_merged[1], current[1])]
+        else:
+            merged.append(current)
+    
+    return merged
+
+# Input: [[1,3],[2,6],[8,10],[15,18]]
+# Output: [[1,6],[8,10],[15,18]]`}
+                        </pre>
+                      </div>
+                      <div className="flex items-center justify-between mt-3 text-sm">
+                        <div className="flex items-center text-green-600 dark:text-green-400">
+                          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                          Optimal Solution - O(n log n)
+                        </div>
+                        <span className="text-gray-500">Live coded during interview</span>
+                      </div>
+                    </div>
+
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border">
+                      <div className="flex items-center justify-between mb-3">
+                        <h4 className="font-medium text-gray-900 dark:text-white">Problem 2: LRU Cache Implementation</h4>
+                        <Badge variant="outline" className="text-blue-600 border-blue-600">Solved in 18 min</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                        Design and implement a data structure for Least Recently Used (LRU) cache with O(1) time complexity for both get and put operations.
+                      </p>
+                      <div className="bg-gray-900 rounded-md p-4 overflow-x-auto">
+                        <pre className="text-sm text-green-400">
+{`class LRUCache:
+    def __init__(self, capacity: int):
+        self.capacity = capacity
+        self.cache = {}
+        # Dummy head and tail nodes
+        self.head = Node(0, 0)
+        self.tail = Node(0, 0)
+        self.head.next = self.tail
+        self.tail.prev = self.head
+    
+    def get(self, key: int) -> int:
+        if key in self.cache:
+            node = self.cache[key]
+            self._remove_node(node)
+            self._add_to_head(node)
+            return node.value
+        return -1
+    
+    def put(self, key: int, value: int) -> None:
+        if key in self.cache:
+            node = self.cache[key]
+            node.value = value
+            self._remove_node(node)
+            self._add_to_head(node)
+        else:
+            if len(self.cache) >= self.capacity:
+                # Remove least recently used
+                tail_node = self.tail.prev
+                self._remove_node(tail_node)
+                del self.cache[tail_node.key]
+            
+            new_node = Node(key, value)
+            self.cache[key] = new_node
+            self._add_to_head(new_node)`}
+                        </pre>
+                      </div>
+                      <div className="flex items-center justify-between mt-3 text-sm">
+                        <div className="flex items-center text-green-600 dark:text-green-400">
+                          <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                          Perfect Implementation - O(1) operations
+                        </div>
+                        <span className="text-gray-500">Advanced problem solved efficiently</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Interview Feedback */}
+                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                    <h4 className="font-medium text-blue-900 dark:text-blue-200 mb-2">AI Interviewer Feedback</h4>
+                    <div className="space-y-2 text-sm">
+                      <p className="text-gray-700 dark:text-gray-300">
+                        <strong>Strengths:</strong> Excellent problem-solving approach, clear communication of thought process, 
+                        optimal time complexity solutions, good edge case handling.
+                      </p>
+                      <p className="text-gray-700 dark:text-gray-300">
+                        <strong>Areas for improvement:</strong> Could benefit from discussing more test cases before implementation, 
+                        minor syntax optimization opportunities.
+                      </p>
+                      <p className="text-green-700 dark:text-green-300 font-medium">
+                        <strong>Overall:</strong> Strong candidate with excellent technical skills and clear communication. Recommended for senior developer roles.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </CardContent>
