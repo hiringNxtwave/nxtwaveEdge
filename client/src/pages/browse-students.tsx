@@ -149,15 +149,19 @@ export default function BrowseStudents() {
 
             {/* Smart Discovery & Actions */}
             {isAuthenticated && (
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={() => setShowSmartDiscovery(true)}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold"
-                  data-testid="button-smart-discovery"
-                >
-                  <Brain className="w-4 h-4 mr-2" />
-                  Smart Discovery
-                </Button>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={() => setShowSmartDiscovery(true)}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold"
+                    data-testid="button-smart-discovery"
+                    title="Get AI-curated top 50 candidates based on your job requirements - no more browsing through 1,900+ profiles!"
+                  >
+                    <Brain className="w-4 h-4 mr-2" />
+                    Get Top 50 AI-Picked Candidates
+                  </Button>
+                  <p className="text-sm text-gray-600">Instead of browsing 1,900+ profiles, describe your role and get AI-curated matches in seconds</p>
+                </div>
                 
                 {isUsingSmartResults && (
                   <Button
