@@ -80,17 +80,10 @@ export default function BrowseStudents() {
       setSmartResults(data);
       setIsUsingSmartResults(true);
       setShowSmartDiscovery(false);
-      toast({
-        title: "Smart Discovery Complete",
-        description: `Found ${data.length} curated candidates matching your requirements`,
-      });
     },
     onError: (error) => {
-      toast({
-        title: "Smart Discovery Failed",
-        description: "Unable to get smart recommendations. Please try again.",
-        variant: "destructive",
-      });
+      console.error("Smart discovery failed:", error);
+    },
   });
 
   // Get total student count for the smart discovery component
