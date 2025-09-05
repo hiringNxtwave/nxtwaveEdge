@@ -115,7 +115,7 @@ export function RecruiterOnboarding({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onComplete()}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="text-center">
           <DialogTitle className="text-2xl font-bold text-blue-900">
