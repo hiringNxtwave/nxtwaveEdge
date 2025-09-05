@@ -71,10 +71,8 @@ export default function BrowseStudents() {
   // Smart discovery mutation
   const smartDiscoveryMutation = useMutation({
     mutationFn: async (requirements: any) => {
-      return await apiRequest("/api/students/smart-discovery", {
-        method: "POST",
-        body: JSON.stringify(requirements),
-      });
+      const response = await apiRequest("POST", "/api/students/smart-discovery", requirements);
+      return await response.json();
     },
     onSuccess: (data) => {
       setSmartResults(data);
@@ -83,6 +81,11 @@ export default function BrowseStudents() {
     },
     onError: (error) => {
       console.error("Smart discovery failed:", error);
+      // Handle authentication errors gracefully
+      if (error.message.includes("Unexpected token") && error.message.includes("<!DOCTYPE")) {
+        // This indicates we got HTML instead of JSON, likely an auth redirect
+        window.location.href = "/api/login";
+      }
     },
   });
 
