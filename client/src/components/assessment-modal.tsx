@@ -40,7 +40,7 @@ const generateAssessmentData = (type: string, score: number, studentId: string):
   const isFirstStudent = studentId.includes('student-1');
 
   const baseQuestions: Record<string, AssessmentQuestion[]> = {
-    "Aptitude and QA": [
+    "Aptitude": [
       {
         id: "quant_1",
         type: "mcq",
@@ -92,6 +92,116 @@ const generateAssessmentData = (type: string, score: number, studentId: string):
         isCorrect: score >= 60,
         timeTaken: Math.floor(1 + rand(5) * 1), // 1-2 minutes
         difficulty: "Easy"
+      }
+    ],
+    "CS Fundamentals": [
+      {
+        id: "cs_1",
+        type: "mcq",
+        question: "What is the main advantage of using a hash table over an array for data storage?",
+        options: ["Faster insertion at end", "O(1) average lookup time", "Uses less memory", "Maintains sorted order"],
+        selectedOption: score >= 70 ? "O(1) average lookup time" : "Uses less memory",
+        correctOption: "O(1) average lookup time",
+        studentAnswer: score >= 70 ? "O(1) average lookup time" : "Uses less memory",
+        correctAnswer: score >= 70 ? "Correct! Hash tables provide O(1) average lookup time through direct key-to-index mapping, making them ideal for fast data retrieval." : "Incorrect. The correct answer is O(1) average lookup time. Hash tables use a hash function to map keys directly to array indices, providing constant-time lookups on average.",
+        isCorrect: score >= 70,
+        timeTaken: Math.floor(2 + rand(1) * 2),
+        difficulty: "Medium"
+      },
+      {
+        id: "cs_2", 
+        type: "mcq",
+        question: "In object-oriented programming, what is the main purpose of encapsulation?",
+        options: ["Code reusability", "Data hiding and access control", "Multiple inheritance", "Dynamic binding"],
+        selectedOption: isFirstStudent ? "Code reusability" : "Data hiding and access control",
+        correctOption: "Data hiding and access control", 
+        studentAnswer: isFirstStudent ? "Code reusability" : "Data hiding and access control",
+        correctAnswer: isFirstStudent ? "Incorrect. The main purpose of encapsulation is data hiding and access control. While code reusability is a benefit of OOP, encapsulation specifically refers to bundling data and methods together and controlling access to them." : "Correct! Encapsulation is about data hiding and access control, bundling data with methods and restricting direct access to internal object details.",
+        isCorrect: isFirstStudent ? false : score >= 65,
+        timeTaken: Math.floor(1.5 + rand(2) * 1.5),
+        difficulty: "Easy"
+      },
+      {
+        id: "cs_3",
+        type: "mcq", 
+        question: "Which of the following best describes the purpose of a database index?",
+        options: ["Stores backup data", "Speeds up query operations", "Encrypts sensitive data", "Manages user permissions"],
+        selectedOption: score >= 75 ? "Speeds up query operations" : "Stores backup data",
+        correctOption: "Speeds up query operations",
+        studentAnswer: score >= 75 ? "Speeds up query operations" : "Stores backup data", 
+        correctAnswer: score >= 75 ? "Correct! Database indexes create additional data structures that allow faster query operations by providing quick paths to locate specific rows." : "Incorrect. Database indexes are used to speed up query operations by creating efficient data structures for quick data retrieval, not for storing backup data.",
+        isCorrect: score >= 75,
+        timeTaken: Math.floor(2 + rand(3) * 1),
+        difficulty: "Medium"
+      },
+      {
+        id: "cs_4",
+        type: "mcq",
+        question: "What is the time complexity of binary search on a sorted array of n elements?",
+        options: ["O(n)", "O(log n)", "O(n log n)", "O(1)"],
+        selectedOption: "O(log n)",
+        correctOption: "O(log n)",
+        studentAnswer: "O(log n)",
+        correctAnswer: "Correct! Binary search has O(log n) time complexity because it eliminates half of the remaining elements in each iteration.",
+        isCorrect: true,
+        timeTaken: Math.floor(1 + rand(4) * 1),
+        difficulty: "Easy"
+      }
+    ],
+    "Communication": [
+      {
+        id: "comm_1",
+        type: "mcq",
+        question: "When giving a presentation to stakeholders, what is the most important factor for maintaining audience engagement?",
+        options: ["Using complex technical terminology", "Tailoring content to audience knowledge level", "Speaking as quickly as possible", "Including as many slides as possible"],
+        selectedOption: isFirstStudent ? "Using complex technical terminology" : "Tailoring content to audience knowledge level",
+        correctOption: "Tailoring content to audience knowledge level",
+        studentAnswer: isFirstStudent ? "Using complex technical terminology" : "Tailoring content to audience knowledge level",
+        correctAnswer: isFirstStudent ? "Incorrect. The correct answer is tailoring content to audience knowledge level. Using complex technical terminology can alienate non-technical stakeholders and reduce engagement." : "Correct! Tailoring content to your audience's knowledge level ensures they can follow along, stay engaged, and make informed decisions.",
+        isCorrect: isFirstStudent ? false : score >= 80,
+        timeTaken: Math.floor(2 + rand(1) * 2),
+        difficulty: "Medium"
+      },
+      {
+        id: "comm_2",
+        type: "mcq",
+        question: "In a team conflict situation, what is the most effective first step?",
+        options: ["Take sides with the person who seems right", "Ignore the conflict until it resolves itself", "Listen to all parties involved", "Escalate to management immediately"],
+        selectedOption: score >= 85 ? "Listen to all parties involved" : "Escalate to management immediately",
+        correctOption: "Listen to all parties involved",
+        studentAnswer: score >= 85 ? "Listen to all parties involved" : "Escalate to management immediately",
+        correctAnswer: score >= 85 ? "Correct! Active listening to all parties helps understand the root cause and different perspectives before taking action." : "Incorrect. The most effective first step is to listen to all parties involved. This helps you understand the situation fully before deciding on the best course of action.",
+        isCorrect: score >= 85,
+        timeTaken: Math.floor(3 + rand(2) * 2),
+        difficulty: "Medium"
+      },
+      {
+        id: "comm_3",
+        type: "mcq",
+        question: "What is the key principle of effective written communication in a professional environment?",
+        options: ["Use as many words as possible for clarity", "Be concise while maintaining completeness", "Always use formal language regardless of context", "Include personal opinions to show engagement"],
+        selectedOption: "Be concise while maintaining completeness",
+        correctOption: "Be concise while maintaining completeness",
+        studentAnswer: "Be concise while maintaining completeness", 
+        correctAnswer: "Correct! Effective professional writing balances brevity with completeness, ensuring the message is clear without unnecessary words.",
+        isCorrect: true,
+        timeTaken: Math.floor(2 + rand(3) * 1.5),
+        difficulty: "Easy"
+      },
+      {
+        id: "comm_4",
+        type: "mcq",
+        question: "When receiving constructive feedback, what is the most professional response?",
+        options: ["Defend your actions immediately", "Ask clarifying questions to understand better", "Agree with everything to avoid conflict", "Change the subject to something positive"],
+        selectedOption: rand(5) > 0.3 ? "Ask clarifying questions to understand better" : "Agree with everything to avoid conflict",
+        correctOption: "Ask clarifying questions to understand better",
+        studentAnswer: rand(5) > 0.3 ? "Ask clarifying questions to understand better" : "Agree with everything to avoid conflict",
+        correctAnswer: (rand(5) > 0.3 ? "Ask clarifying questions to understand better" : "Agree with everything to avoid conflict") === "Ask clarifying questions to understand better" ? 
+          "Correct! Asking clarifying questions shows professionalism and genuine interest in improvement." : 
+          "Incorrect. The most professional response is to ask clarifying questions to understand the feedback better, showing you're open to growth.",
+        isCorrect: (rand(5) > 0.3 ? "Ask clarifying questions to understand better" : "Agree with everything to avoid conflict") === "Ask clarifying questions to understand better",
+        timeTaken: Math.floor(2 + rand(4) * 2),
+        difficulty: "Medium"
       }
     ],
     "Tech Fundamentals": [
