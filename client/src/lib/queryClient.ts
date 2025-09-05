@@ -1,6 +1,13 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
 async function throwIfResNotOk(res: Response) {
+  // Check if response is HTML (likely a redirect to login page)
+  const contentType = res.headers.get('content-type');
+  if (contentType && contentType.includes('text/html')) {
+    console.log("Got HTML instead of JSON - likely auth redirect");
+    throw new Error("401: Unauthorized - Please log in again");
+  }
+  
   if (!res.ok) {
     const text = (await res.text()) || res.statusText;
     throw new Error(`${res.status}: ${text}`);
