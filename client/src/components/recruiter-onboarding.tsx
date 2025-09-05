@@ -62,6 +62,8 @@ export function RecruiterOnboarding({
   const form = useForm<OnboardingFormData>({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
+      collegesTier: undefined,
+      annualFresherHires: undefined,
       budgetRange: "",
     },
   });
@@ -91,28 +93,11 @@ export function RecruiterOnboarding({
   });
 
   const onSubmit = (data: OnboardingFormData) => {
+    console.log("Form data being submitted:", data);
+    console.log("Form errors:", form.formState.errors);
     onboardingMutation.mutate(data);
   };
 
-  const getCompanySizeDescription = (size: string) => {
-    const descriptions = {
-      startup: "1-50 employees",
-      small: "51-200 employees", 
-      medium: "201-1,000 employees",
-      large: "1,001-10,000 employees",
-      enterprise: "10,000+ employees"
-    };
-    return descriptions[size as keyof typeof descriptions];
-  };
-
-  const getHiringVelocityDescription = (velocity: string) => {
-    const descriptions = {
-      low: "1-5 hires per month",
-      medium: "6-20 hires per month",
-      high: "20+ hires per month"
-    };
-    return descriptions[velocity as keyof typeof descriptions];
-  };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onComplete()}>
