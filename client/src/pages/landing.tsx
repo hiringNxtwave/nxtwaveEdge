@@ -68,20 +68,20 @@ export default function Landing() {
           </div>
 
           {/* Social Proof Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            <div data-testid="stat-students" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div data-testid="stat-students" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center h-28">
               <div className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">200K+</div>
               <div className="text-gray-600 text-sm">Pre-Assessed Students</div>
             </div>
-            <div data-testid="stat-universities" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+            <div data-testid="stat-universities" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center h-28">
               <div className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">3000+</div>
               <div className="text-gray-600 text-sm">Partner Colleges</div>
             </div>
-            <div data-testid="stat-companies" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+            <div data-testid="stat-companies" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center h-28">
               <div className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">3000+</div>
               <div className="text-gray-600 text-sm">Companies Trust Us</div>
             </div>
-            <div data-testid="stat-partnerships" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+            <div data-testid="stat-partnerships" className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 text-center flex flex-col justify-center items-center h-28">
               <div className="text-3xl md:text-4xl font-bold mb-2 text-gray-900">₹50-70L</div>
               <div className="text-gray-600 text-sm">Saved Per Hiring Cycle</div>
             </div>
@@ -101,24 +101,24 @@ export default function Landing() {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 items-center opacity-70 mb-12">
-            <div className="flex justify-center" data-testid="logo-tata">
-              <SiTata className="h-8 w-auto text-gray-600" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-12">
+            <div className="flex justify-center items-center h-16" data-testid="logo-tata">
+              <SiTata className="h-8 w-auto text-gray-600 opacity-70 hover:opacity-100 transition-opacity" />
             </div>
-            <div className="flex justify-center" data-testid="logo-infosys">
-              <SiInfosys className="h-8 w-auto text-gray-600" />
+            <div className="flex justify-center items-center h-16" data-testid="logo-infosys">
+              <SiInfosys className="h-8 w-auto text-gray-600 opacity-70 hover:opacity-100 transition-opacity" />
             </div>
-            <div className="flex justify-center" data-testid="logo-wipro">
-              <SiWipro className="h-8 w-auto text-gray-600" />
+            <div className="flex justify-center items-center h-16" data-testid="logo-wipro">
+              <SiWipro className="h-8 w-auto text-gray-600 opacity-70 hover:opacity-100 transition-opacity" />
             </div>
-            <div className="flex justify-center" data-testid="logo-google">
-              <SiGoogle className="h-8 w-auto text-gray-600" />
+            <div className="flex justify-center items-center h-16" data-testid="logo-google">
+              <SiGoogle className="h-8 w-auto text-gray-600 opacity-70 hover:opacity-100 transition-opacity" />
             </div>
-            <div className="flex justify-center" data-testid="logo-amazon">
-              <SiAmazon className="h-8 w-auto text-gray-600" />
+            <div className="flex justify-center items-center h-16" data-testid="logo-amazon">
+              <SiAmazon className="h-8 w-auto text-gray-600 opacity-70 hover:opacity-100 transition-opacity" />
             </div>
-            <div className="flex justify-center" data-testid="logo-flipkart">
-              <SiFlipkart className="h-8 w-auto text-gray-600" />
+            <div className="flex justify-center items-center h-16" data-testid="logo-flipkart">
+              <SiFlipkart className="h-8 w-auto text-gray-600 opacity-70 hover:opacity-100 transition-opacity" />
             </div>
           </div>
 
@@ -458,33 +458,33 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            <div className="text-center">
+            <div className="text-center flex flex-col items-center justify-start h-40">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <TrendingUp className="w-8 h-8 text-blue-600" />
               </div>
               <div className="text-4xl font-bold text-blue-600 mb-2">70%</div>
-              <div className="text-gray-600">Reduction in Screening Time</div>
+              <div className="text-gray-600 text-center">Reduction in Screening Time</div>
             </div>
-            <div className="text-center">
+            <div className="text-center flex flex-col items-center justify-start h-40">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Clock className="w-8 h-8 text-green-600" />
               </div>
               <div className="text-4xl font-bold text-green-600 mb-2">10x</div>
-              <div className="text-gray-600">Faster Time-to-Hire</div>
+              <div className="text-gray-600 text-center">Faster Time-to-Hire</div>
             </div>
-            <div className="text-center">
+            <div className="text-center flex flex-col items-center justify-start h-40">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Award className="w-8 h-8 text-purple-600" />
               </div>
               <div className="text-4xl font-bold text-purple-600 mb-2">85%</div>
-              <div className="text-gray-600">Better Hire Quality</div>
+              <div className="text-gray-600 text-center">Better Hire Quality</div>
             </div>
-            <div className="text-center">
+            <div className="text-center flex flex-col items-center justify-start h-40">
               <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Target className="w-8 h-8 text-orange-600" />
               </div>
               <div className="text-4xl font-bold text-orange-600 mb-2">95%</div>
-              <div className="text-gray-600">Client Satisfaction</div>
+              <div className="text-gray-600 text-center">Client Satisfaction</div>
             </div>
           </div>
 

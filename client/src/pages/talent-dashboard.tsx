@@ -115,21 +115,23 @@ export default function TalentDashboard() {
           {/* Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {stats.map((stat, index) => (
-              <Card key={index} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6">
+              <Card key={index} className="hover:shadow-md transition-shadow h-36 flex flex-col">
+                <CardContent className="p-6 flex flex-col justify-between h-full">
                   <div className="flex items-center justify-between mb-4">
                     <div className={`p-2 rounded-lg ${stat.bgColor}`}>
                       <stat.icon className={`w-5 h-5 ${stat.color}`} />
                     </div>
-                    <Badge variant="outline" className="text-green-600">
+                    <Badge variant="outline" className="text-green-600 text-xs">
                       {stat.change}
                     </Badge>
                   </div>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
-                    {stat.title}
+                  <div className="flex-grow flex flex-col justify-end">
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                      {stat.value}
+                    </div>
+                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                      {stat.title}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -150,14 +152,14 @@ export default function TalentDashboard() {
                   <Button
                     key={index}
                     variant="outline"
-                    className="justify-between h-auto p-4"
+                    className="justify-between h-16 p-4 flex items-center"
                     data-testid={`filter-${filter.filter}`}
                   >
-                    <div className="text-left">
-                      <div className="font-medium">{filter.label}</div>
-                      <div className="text-sm text-gray-500">{filter.count} students</div>
+                    <div className="text-left flex-grow">
+                      <div className="font-medium text-sm">{filter.label}</div>
+                      <div className="text-xs text-gray-500">{filter.count} students</div>
                     </div>
-                    <Star className="w-4 h-4 text-yellow-500" />
+                    <Star className="w-4 h-4 text-yellow-500 flex-shrink-0 ml-2" />
                   </Button>
                 ))}
               </div>
