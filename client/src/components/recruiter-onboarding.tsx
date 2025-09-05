@@ -70,7 +70,7 @@ export function RecruiterOnboarding({
 
   const onboardingMutation = useMutation({
     mutationFn: async (data: OnboardingFormData) => {
-      return apiRequest("PUT", "/api/auth/complete-onboarding", {
+      return apiRequest("/api/auth/complete-onboarding", "PUT", {
         ...data,
         onboardingCompleted: true,
       });

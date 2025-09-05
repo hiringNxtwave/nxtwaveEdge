@@ -1188,7 +1188,7 @@ function inorderTraversal(root) {
 
     } catch (error) {
       console.error("Error in smart candidate curation:", error);
-      console.error("Error stack:", (error as Error)?.stack);
+      console.error("Error stack:", error.stack);
       // Fallback to basic student search if smart search fails
       return this.getStudents({
         minCgpa: requirements.minCGPA,

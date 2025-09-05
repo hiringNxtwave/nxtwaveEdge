@@ -91,7 +91,7 @@ export default function MCQAssessmentModal({ assessmentType, student, score, onC
           topic: 'Percentage'
         }
       ];
-    } else if (assessmentType === 'Verbal Reasoning') {
+    } else {
       return [
         {
           id: 1,
@@ -218,8 +218,6 @@ export default function MCQAssessmentModal({ assessmentType, student, score, onC
         }
       ];
     }
-    
-    return []; // Default return for unknown assessment types
   };
 
   const questions = generateMCQData();
