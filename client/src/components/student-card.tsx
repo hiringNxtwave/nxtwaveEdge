@@ -27,7 +27,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   const [showCodeReplay, setShowCodeReplay] = useState(false);
   const [showCommunicationSample, setShowCommunicationSample] = useState(false);
   const [showExamFootage, setShowExamFootage] = useState(false);
-  const [showMCQModal, setShowMCQModal] = useState<{type: 'Aptitude' | 'Verbal Reasoning', score: number} | null>(null);
+  const [showMCQModal, setShowMCQModal] = useState<{type: 'Aptitude' | 'Verbal Reasoning' | 'Tech Fundamentals', score: number} | null>(null);
   
   // Use student ID as seed for consistent ratings
   const seed = parseInt(student.id.slice(-8), 16);
@@ -219,16 +219,28 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 <div className="text-xs font-medium text-purple-700">Verbal</div>
               </div>
 
-              {/* Communication Score */}
+              {/* Interview Performance Score */}
               <div 
                 className="text-center p-2 rounded-lg bg-orange-50 hover:bg-orange-100 cursor-pointer transition-colors"
-                onClick={() => setSelectedAssessment({type: 'Communication', score: communicationScore, level: communicationScore >= 4 ? 'Advanced' : communicationScore >= 3 ? 'Intermediate' : 'Beginner'})}
-                data-testid={`button-communication-assessment-${student.id}`}
+                onClick={() => setSelectedAssessment({type: 'Interview Performance', score: communicationScore, level: communicationScore >= 4 ? 'Advanced' : communicationScore >= 3 ? 'Intermediate' : 'Beginner'})}
+                data-testid={`button-interview-performance-assessment-${student.id}`}
               >
                 <div className="flex items-center justify-center mb-1">
                   {renderStars(communicationScore)}
                 </div>
-                <div className="text-xs font-medium text-orange-700">Communication</div>
+                <div className="text-xs font-medium text-orange-700">Interview Performance</div>
+              </div>
+
+              {/* Tech Fundamentals Score */}
+              <div 
+                className="text-center p-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 cursor-pointer transition-colors"
+                onClick={() => setShowMCQModal({type: 'Tech Fundamentals', score: csFundamentalsScore})}
+                data-testid={`button-tech-fundamentals-assessment-${student.id}`}
+              >
+                <div className="flex items-center justify-center mb-1">
+                  {renderStars(csFundamentalsScore)}
+                </div>
+                <div className="text-xs font-medium text-indigo-700">Tech Fundamentals</div>
               </div>
             </div>
             

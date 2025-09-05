@@ -26,7 +26,7 @@ interface MCQQuestion {
 }
 
 interface MCQAssessmentModalProps {
-  assessmentType: 'Aptitude' | 'Verbal Reasoning';
+  assessmentType: 'Aptitude' | 'Verbal Reasoning' | 'Tech Fundamentals';
   student: StudentWithSkills;
   score: number;
   onClose: () => void;
@@ -147,6 +147,74 @@ export default function MCQAssessmentModal({ assessmentType, student, score, onC
           explanation: "Penchant means a strong inclination or liking for something, which fits the positive context.",
           difficulty: 'Hard',
           topic: 'Vocabulary'
+        }
+      ];
+    } else if (assessmentType === 'Tech Fundamentals') {
+      return [
+        {
+          id: 1,
+          question: "What is the time complexity of searching in a balanced binary search tree?",
+          options: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+          correctAnswer: 1,
+          studentAnswer: seed % 4,
+          explanation: "In a balanced BST, the height is log n, so searching takes O(log n) time in the worst case.",
+          difficulty: 'Medium',
+          topic: 'Data Structures'
+        },
+        {
+          id: 2,
+          question: "Which sorting algorithm has the best average-case time complexity?",
+          options: ["Bubble Sort", "Selection Sort", "Merge Sort", "Quick Sort"],
+          correctAnswer: 2,
+          studentAnswer: (seed + 1) % 4,
+          explanation: "Merge Sort has guaranteed O(n log n) time complexity in all cases, making it optimal for average-case scenarios.",
+          difficulty: 'Easy',
+          topic: 'Algorithms'
+        },
+        {
+          id: 3,
+          question: "In object-oriented programming, what does 'encapsulation' refer to?",
+          options: [
+            "Inheriting properties from a parent class",
+            "Hiding internal implementation details", 
+            "Creating multiple methods with the same name",
+            "Converting one data type to another"
+          ],
+          correctAnswer: 1,
+          studentAnswer: (seed + 2) % 4,
+          explanation: "Encapsulation is the bundling of data and methods that operate on that data, while hiding internal implementation details from the outside.",
+          difficulty: 'Easy',
+          topic: 'OOP Concepts'
+        },
+        {
+          id: 4,
+          question: "What is the primary purpose of the 'volatile' keyword in Java?",
+          options: [
+            "To prevent method overriding",
+            "To ensure thread-safe access to variables",
+            "To make variables immutable",
+            "To optimize memory usage"
+          ],
+          correctAnswer: 1,
+          studentAnswer: (seed + 3) % 4,
+          explanation: "The 'volatile' keyword ensures that changes to a variable are immediately visible to all threads, preventing caching issues in multi-threaded environments.",
+          difficulty: 'Hard',
+          topic: 'Concurrency'
+        },
+        {
+          id: 5,
+          question: "Which of the following is NOT a characteristic of RESTful APIs?",
+          options: [
+            "Stateless communication",
+            "Uniform interface",
+            "Maintaining client session state",
+            "Cacheable responses"
+          ],
+          correctAnswer: 2,
+          studentAnswer: (seed + 4) % 4,
+          explanation: "RESTful APIs are stateless, meaning they don't maintain client session state between requests. Each request must contain all necessary information.",
+          difficulty: 'Medium',
+          topic: 'Web Technologies'
         }
       ];
     }
