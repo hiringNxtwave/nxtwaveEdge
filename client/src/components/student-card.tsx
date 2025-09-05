@@ -173,11 +173,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
           {/* Skills & Ratings Section */}
           <div className="flex-1 min-w-0 space-y-3">
-            {/* Top Skills Display */}
+            {/* Skills Display */}
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Top Skills</h4>
-              </div>
               <div className="flex flex-wrap gap-2">
                 {student.skills?.slice(0, 6).map((skill) => (
                   <Badge key={skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">
@@ -244,8 +241,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           {/* Overall Score & Match - Stacked Vertically */}
           <div className="flex flex-col items-center gap-2">
             <div className="text-center">
-              <div className="text-xl font-bold text-blue-600 dark:text-blue-400" data-testid={`text-student-rating-${student.id}`}>
-                {Math.round(averageSkillScore * 20)}%
+              <div className="flex justify-center mb-1" data-testid={`text-student-rating-${student.id}`}>
+                {renderStars(Math.round(averageSkillScore))}
               </div>
               <div className="text-xs text-gray-600">Overall Score</div>
             </div>
