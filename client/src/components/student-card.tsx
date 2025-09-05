@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, GraduationCap, Check, Plus, Shield, Eye, Info } from "lucide-react";
+import { Star, MapPin, GraduationCap, Check, Plus, Shield, Eye, Info, Target } from "lucide-react";
 import type { StudentWithSkills } from "@shared/schema";
 import { Link } from "wouter";
 import { useShortlist } from "@/contexts/shortlist-context";
@@ -71,6 +71,23 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           {/* Student Info Section - 3 columns */}
           <Link href={`/student/${student.id}`} className="col-span-3 flex items-center space-x-4 cursor-pointer">
             <div className="relative">
+              {/* Role Match Badge - Top Center */}
+              <div 
+                className={`absolute -top-3 left-1/2 transform -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1 cursor-pointer hover:scale-105 transition-transform shadow-lg border-2 border-white ${
+                  matchPercentage >= 85 ? 'bg-green-500 hover:bg-green-600' : 
+                  matchPercentage >= 70 ? 'bg-yellow-500 hover:bg-yellow-600' : 
+                  'bg-orange-500 hover:bg-orange-600'
+                }`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowRoleMatchRationale(true);
+                }}
+                data-testid={`button-role-match-top-${student.id}`}
+              >
+                {matchPercentage}% MATCH
+                <Target className="w-3 h-3" />
+              </div>
+              
               <img 
                 src={student.profileImageUrl || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face`} 
                 alt={`${student.firstName} ${student.lastName}`}
@@ -78,15 +95,10 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 data-testid={`img-student-avatar-${student.id}`}
               />
               {student.verified && (
-                <div className="absolute -top-1 -left-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white" title="Verified Profile">
+                <div className="absolute -bottom-1 -left-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white" title="Verified Profile">
                   <Shield className="w-3 h-3 text-white" />
                 </div>
               )}
-              <div className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full text-xs font-bold text-white flex items-center justify-center shadow-lg border-2 border-white ${
-                matchPercentage >= 85 ? 'bg-green-500' : matchPercentage >= 70 ? 'bg-yellow-500' : 'bg-orange-500'
-              }`}>
-                {matchPercentage}%
-              </div>
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1 truncate" data-testid={`text-student-name-${student.id}`}>

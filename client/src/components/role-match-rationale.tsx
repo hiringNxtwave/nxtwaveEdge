@@ -12,9 +12,14 @@ import {
   ThumbsUp,
   ThumbsDown,
   Clock,
-  Zap
+  Zap,
+  DollarSign,
+  MapPin,
+  Briefcase
 } from "lucide-react";
 import type { StudentWithSkills } from "@shared/schema";
+import { useQuery } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 interface RoleMatchRationaleProps {
   student: StudentWithSkills;
@@ -31,6 +36,31 @@ interface HiringInsight {
 }
 
 export default function RoleMatchRationale({ student, matchPercentage, onClose }: RoleMatchRationaleProps) {
+  // Fetch role match data from backend
+  const { data: roleMatchData, isLoading } = useQuery({
+    queryKey: ['/api/role-match', student.id],
+    queryFn: async () => {
+      const response = await fetch(`/api/role-match/${student.id}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          skills: ["JavaScript", "React", "Node.js"],
+          salaryRange: { min: 600, max: 1200 },
+          location: "Bangalore",
+          role: "Software Engineer"
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch role match data');
+      }
+      
+      return response.json();
+    },
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  });
   // Calculate individual assessment scores (same logic as student card)
   const seed = parseInt(student.id.slice(-8), 16);
   const generateSkillScore = (offset: number) => {
@@ -230,6 +260,128 @@ export default function RoleMatchRationale({ student, matchPercentage, onClose }
               </div>
             </CardContent>
           </Card>
+
+          {/* Salary Recommendation */}
+          {roleMatchData && !isLoading && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <DollarSign className="w-4 h-4 text-green-600" />
+                  Salary Recommendation Engine
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border-2 border-green-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-semibold text-green-800">Market-Based Salary Range</h4>
+                    <Badge className="bg-green-600 text-white">
+                      Assessment Based
+                    </Badge>
+                  </div>
+                  <div className="text-2xl font-bold text-green-700 mb-2">
+                    ₹{(roleMatchData.salaryRecommendation.min / 100).toFixed(1)} - ₹{(roleMatchData.salaryRecommendation.max / 100).toFixed(1)} LPA
+                  </div>
+                  <p className="text-sm text-green-700">
+                    Based on assessment scores, CGPA, and market standards for similar profiles
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Preference Matching */}
+          {roleMatchData && !isLoading && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Target className="w-4 h-4 text-purple-600" />
+                  Preference Alignment
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="grid grid-cols-1 gap-3">
+                  <div className={`flex items-center justify-between p-3 rounded-lg border-2 ${
+                    roleMatchData.preferenceMatches.salary 
+                      ? 'bg-green-50 border-green-200' 
+                      : 'bg-orange-50 border-orange-200'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <DollarSign className={`w-4 h-4 ${
+                        roleMatchData.preferenceMatches.salary 
+                          ? 'text-green-600' 
+                          : 'text-orange-600'
+                      }`} />
+                      <span className="text-sm font-medium">Salary Expectations</span>
+                    </div>
+                    {roleMatchData.preferenceMatches.salary ? (
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 text-orange-600" />
+                    )}
+                  </div>
+                  
+                  <div className={`flex items-center justify-between p-3 rounded-lg border-2 ${
+                    roleMatchData.preferenceMatches.location 
+                      ? 'bg-green-50 border-green-200' 
+                      : 'bg-orange-50 border-orange-200'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <MapPin className={`w-4 h-4 ${
+                        roleMatchData.preferenceMatches.location 
+                          ? 'text-green-600' 
+                          : 'text-orange-600'
+                      }`} />
+                      <span className="text-sm font-medium">Location Preference</span>
+                    </div>
+                    {roleMatchData.preferenceMatches.location ? (
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 text-orange-600" />
+                    )}
+                  </div>
+                  
+                  <div className={`flex items-center justify-between p-3 rounded-lg border-2 ${
+                    roleMatchData.preferenceMatches.role 
+                      ? 'bg-green-50 border-green-200' 
+                      : 'bg-orange-50 border-orange-200'
+                  }`}>
+                    <div className="flex items-center gap-2">
+                      <Briefcase className={`w-4 h-4 ${
+                        roleMatchData.preferenceMatches.role 
+                          ? 'text-green-600' 
+                          : 'text-orange-600'
+                      }`} />
+                      <span className="text-sm font-medium">Role Match</span>
+                    </div>
+                    {roleMatchData.preferenceMatches.role ? (
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 text-orange-600" />
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Enhanced Explanation */}
+          {roleMatchData && !isLoading && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Brain className="w-4 h-4 text-blue-600" />
+                  AI-Generated Insight
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="bg-blue-50 p-4 rounded-lg border-2 border-blue-200">
+                  <p className="text-sm text-blue-800 leading-relaxed">
+                    {roleMatchData.explanation}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Quick Stats */}
           <div className="grid grid-cols-3 gap-4 text-center">

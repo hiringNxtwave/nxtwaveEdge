@@ -224,6 +224,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Role matching route
+  app.post('/api/role-match/:studentId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const company = await storage.getCompanyByUserId(userId);
+      
+      if (!company) {
+        return res.status(400).json({ message: "Company profile required" });
+      }
+
+      const { studentId } = req.params;
+      const jobRequirements = req.body; // Optional: { skills, salaryRange, location, role }
+
+      const roleMatch = await storage.calculateRoleMatch(company.id, studentId, jobRequirements);
+      res.json(roleMatch);
+    } catch (error) {
+      console.error("Error calculating role match:", error);
+      res.status(500).json({ message: "Failed to calculate role match" });
+    }
+  });
+
   // Email sending route for shortlist notifications
   app.post('/api/send-shortlist-email', isAuthenticated, async (req: any, res) => {
     try {

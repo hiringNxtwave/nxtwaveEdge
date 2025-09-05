@@ -92,6 +92,23 @@ export interface IStorage {
   getCodeSubmissions(studentId: string): Promise<any[]>;
   getCodeSubmission(id: string): Promise<any>;
 
+  // Role matching operations
+  calculateRoleMatch(companyId: string, studentId: string, jobRequirements?: {
+    skills: string[];
+    salaryRange?: { min: number; max: number };
+    location?: string;
+    role?: string;
+  }): Promise<{
+    matchPercentage: number;
+    salaryRecommendation: { min: number; max: number };
+    preferenceMatches: {
+      salary: boolean;
+      location: boolean;
+      role: boolean;
+    };
+    explanation: string;
+  }>;
+
   // Initial data seeding
   seedInitialData(): Promise<void>;
 }
@@ -874,6 +891,212 @@ function inorderTraversal(root) {
   async getCodeSubmission(id: string): Promise<any> {
     const submissions = await this.getCodeSubmissions("mock_student");
     return submissions.find(s => s.id === id) || null;
+  }
+
+  // Role matching algorithm with salary recommendation engine
+  async calculateRoleMatch(companyId: string, studentId: string, jobRequirements?: {
+    skills: string[];
+    salaryRange?: { min: number; max: number };
+    location?: string;
+    role?: string;
+  }): Promise<{
+    matchPercentage: number;
+    salaryRecommendation: { min: number; max: number };
+    preferenceMatches: {
+      salary: boolean;
+      location: boolean;
+      role: boolean;
+    };
+    explanation: string;
+  }> {
+    // Get student data with skills and assessment scores
+    const student = await this.getStudentById(studentId);
+    if (!student) {
+      throw new Error("Student not found");
+    }
+
+    // Get assessment data for salary recommendation
+    const assessment = await this.getUserAssessment(student.email); // Using email as userId
+
+    // Calculate assessment-based salary recommendation
+    const salaryRecommendation = this.calculateSalaryRecommendation(assessment, student);
+
+    // Default job requirements if not provided
+    const requirements = jobRequirements || {
+      skills: ["JavaScript", "React", "Node.js"],
+      salaryRange: { min: 600, max: 1200 },
+      location: "Bangalore",
+      role: "Software Engineer"
+    };
+
+    // Calculate skills match (40% weight)
+    const skillsMatchScore = this.calculateSkillsMatch(student.skills, requirements.skills);
+
+    // Calculate preference matches
+    const preferenceMatches = {
+      salary: this.checkSalaryMatch(student, salaryRecommendation, requirements.salaryRange),
+      location: this.checkLocationMatch(student, requirements.location),
+      role: this.checkRoleMatch(student, requirements.role)
+    };
+
+    // Calculate overall match percentage
+    let matchPercentage = 0;
+
+    // Skills match (40% weight)
+    matchPercentage += skillsMatchScore * 0.4;
+
+    // CGPA score (20% weight)
+    const cgpaScore = Math.min(100, (parseFloat(student.cgpa?.toString() || "7") / 10) * 100);
+    matchPercentage += cgpaScore * 0.2;
+
+    // Assessment scores (30% weight)  
+    const assessmentScore = assessment ? this.calculateOverallAssessmentScore(assessment) : 75;
+    matchPercentage += assessmentScore * 0.3;
+
+    // Preference alignment bonus (10% weight)
+    const preferenceBonus = (
+      (preferenceMatches.salary ? 1 : 0) +
+      (preferenceMatches.location ? 1 : 0) + 
+      (preferenceMatches.role ? 1 : 0)
+    ) * (100 / 3) * 0.1;
+    matchPercentage += preferenceBonus;
+
+    // Cap at 95% max, minimum 60%
+    matchPercentage = Math.min(95, Math.max(60, Math.round(matchPercentage)));
+
+    // Generate explanation
+    const explanation = this.generateMatchExplanation(
+      matchPercentage, 
+      skillsMatchScore, 
+      preferenceMatches, 
+      salaryRecommendation,
+      requirements
+    );
+
+    return {
+      matchPercentage,
+      salaryRecommendation,
+      preferenceMatches,
+      explanation
+    };
+  }
+
+  private calculateSalaryRecommendation(assessment: Assessment | undefined, student: Student): { min: number; max: number } {
+    if (!assessment) {
+      // Base salary recommendation without assessment
+      const baseSalary = 600; // 6 LPA base
+      return { min: baseSalary, max: baseSalary + 400 };
+    }
+
+    // Calculate weighted assessment score
+    const assessmentScore = this.calculateOverallAssessmentScore(assessment);
+    
+    // Base salary tiers based on assessment performance
+    let baseSalary = 500; // 5 LPA minimum
+    let maxSalary = 700;   // 7 LPA for average performance
+
+    if (assessmentScore >= 90) {
+      baseSalary = 1000; // 10 LPA for excellent
+      maxSalary = 1500;  // 15 LPA upper range
+    } else if (assessmentScore >= 80) {
+      baseSalary = 800;  // 8 LPA for good
+      maxSalary = 1200;  // 12 LPA upper range
+    } else if (assessmentScore >= 70) {
+      baseSalary = 650;  // 6.5 LPA for decent
+      maxSalary = 900;   // 9 LPA upper range
+    } else if (assessmentScore >= 60) {
+      baseSalary = 550;  // 5.5 LPA for fair
+      maxSalary = 750;   // 7.5 LPA upper range
+    }
+
+    // CGPA bonus (up to 10% increase)
+    const cgpa = parseFloat(student.cgpa?.toString() || "7");
+    const cgpaBonus = Math.max(0, (cgpa - 7) / 3) * 0.1; // 10% max bonus for 10 CGPA
+    
+    baseSalary = Math.round(baseSalary * (1 + cgpaBonus));
+    maxSalary = Math.round(maxSalary * (1 + cgpaBonus));
+
+    return { min: baseSalary, max: maxSalary };
+  }
+
+  private calculateOverallAssessmentScore(assessment: Assessment): number {
+    const aptitude = assessment.aptitudeScore || 0;
+    const verbal = assessment.verbalScore || 0;
+    const dsa = assessment.dsaScore || 0;
+    const communication = assessment.communicationScore || 0;
+    
+    // Weighted average: DSA 40%, Aptitude 25%, Communication 25%, Verbal 10%
+    return Math.round((dsa * 0.4) + (aptitude * 0.25) + (communication * 0.25) + (verbal * 0.1));
+  }
+
+  private calculateSkillsMatch(studentSkills: any[], requiredSkills: string[]): number {
+    if (!requiredSkills.length) return 80; // Default good match if no specific skills required
+    
+    const matchedSkills = studentSkills.filter(ss => 
+      requiredSkills.some(rs => ss.skill.name.toLowerCase().includes(rs.toLowerCase()))
+    );
+
+    const matchRatio = matchedSkills.length / requiredSkills.length;
+    return Math.round(Math.min(100, matchRatio * 100 + 20)); // Add 20 base points
+  }
+
+  private checkSalaryMatch(student: Student, recommendation: { min: number; max: number }, offerRange?: { min: number; max: number }): boolean {
+    if (!student.expectedSalaryMin || !student.expectedSalaryMax || !offerRange) return true;
+    
+    // Check if there's overlap between expected and offered salary ranges
+    return !(student.expectedSalaryMax < offerRange.min || student.expectedSalaryMin > offerRange.max);
+  }
+
+  private checkLocationMatch(student: Student, jobLocation?: string): boolean {
+    if (!jobLocation || !student.preferredLocations) return true;
+    
+    try {
+      const preferredLocations = JSON.parse(student.preferredLocations);
+      return preferredLocations.some((loc: string) => 
+        loc.toLowerCase().includes(jobLocation.toLowerCase()) ||
+        jobLocation.toLowerCase().includes(loc.toLowerCase())
+      );
+    } catch {
+      return student.location.toLowerCase().includes(jobLocation.toLowerCase());
+    }
+  }
+
+  private checkRoleMatch(student: Student, jobRole?: string): boolean {
+    if (!jobRole || !student.preferredRoles) return true;
+    
+    try {
+      const preferredRoles = JSON.parse(student.preferredRoles);
+      return preferredRoles.some((role: string) => 
+        role.toLowerCase().includes(jobRole.toLowerCase()) ||
+        jobRole.toLowerCase().includes(role.toLowerCase())
+      );
+    } catch {
+      return true; // Default to match if no preferences set
+    }
+  }
+
+  private generateMatchExplanation(
+    matchPercentage: number,
+    skillsScore: number,
+    preferenceMatches: { salary: boolean; location: boolean; role: boolean },
+    salaryRec: { min: number; max: number },
+    requirements: any
+  ): string {
+    const level = matchPercentage >= 85 ? "Strong Hire" : matchPercentage >= 70 ? "Hire with Confidence" : "Consider with Support";
+    
+    const strengths = [];
+    const considerations = [];
+
+    if (skillsScore >= 80) strengths.push("strong technical skills match");
+    if (preferenceMatches.salary) strengths.push("salary expectations aligned");
+    if (preferenceMatches.location) strengths.push("location preference match");
+    if (preferenceMatches.role) strengths.push("role preference alignment");
+
+    if (skillsScore < 70) considerations.push("skill gap analysis recommended");
+    if (!preferenceMatches.salary) considerations.push("salary negotiation may be needed");
+    if (!preferenceMatches.location) considerations.push("location flexibility to discuss");
+
+    return `${level}: ${strengths.length > 0 ? strengths.join(', ') + '. ' : ''}${considerations.length > 0 ? 'Consider: ' + considerations.join(', ') + '. ' : ''}Recommended salary: ${salaryRec.min / 100}-${salaryRec.max / 100} LPA.`;
   }
 }
 

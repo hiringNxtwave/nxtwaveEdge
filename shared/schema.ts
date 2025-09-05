@@ -70,6 +70,15 @@ export const students = pgTable("students", {
   linkedinUrl: varchar("linkedin_url"),
   githubUrl: varchar("github_url"),
   verified: boolean("verified").default(true),
+  // Student preferences and salary expectations
+  expectedSalaryMin: integer("expected_salary_min"), // in thousands (e.g., 800 for 8LPA)
+  expectedSalaryMax: integer("expected_salary_max"), // in thousands (e.g., 1200 for 12LPA)
+  preferredRoles: text("preferred_roles"), // JSON array of preferred roles
+  preferredLocations: text("preferred_locations"), // JSON array of preferred locations
+  preferredCompanySize: varchar("preferred_company_size"), // startup, mid-size, large, enterprise
+  workMode: varchar("work_mode").default("hybrid"), // remote, hybrid, onsite
+  noticePeriod: integer("notice_period").default(0), // in days
+  availableFrom: timestamp("available_from"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
