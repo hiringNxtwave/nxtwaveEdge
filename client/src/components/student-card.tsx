@@ -198,156 +198,119 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
           </div>
 
-          {/* Assessment Summary & Authenticity Signals - 2 columns */}
-          <div className="col-span-2">
-            {/* Authenticity Signals */}
-            <div className="flex flex-wrap gap-1 mb-3">
-              <Badge className="bg-green-100 text-green-800 text-xs px-2 py-1 border border-green-200 hover:bg-green-200 transition-colors" data-testid={`badge-proctored-${student.id}`}>
-                <Shield className="w-3 h-3 mr-1" />
-                Offline Proctored
-              </Badge>
-              <Badge className="bg-blue-100 text-blue-800 text-xs px-2 py-1 border border-blue-200 hover:bg-blue-200 transition-colors" data-testid={`badge-ai-free-${student.id}`}>
-                <CheckCircle className="w-3 h-3 mr-1" />
-                AI-Free Verified
-              </Badge>
-              <Badge className="bg-orange-100 text-orange-800 text-xs px-2 py-1 border border-orange-200 hover:bg-orange-200 transition-colors" data-testid={`badge-fresh-${student.id}`}>
-                <Clock className="w-3 h-3 mr-1" />
-                Fresh ({Math.floor(Math.random() * 7) + 1}d ago)
-              </Badge>
-            </div>
-            
-            {/* Assessment Summary */}
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-lg p-3 shadow-sm border border-blue-100 text-center">
-              <div className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Overall Score</div>
-              <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1" data-testid={`text-student-rating-${student.id}`}>
-                {Math.round(averageSkillScore * 20)}%
-              </div>
-              <div className="text-xs text-gray-600 mb-2">
-                Industry Assessment
+          {/* Compact Assessment Summary & Actions - 2 columns */}
+          <div className="col-span-2 space-y-3">
+            {/* Top Row: Authenticity Signals + Overall Score */}
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-wrap gap-1">
+                <Badge className="bg-green-100 text-green-800 text-xs px-2 py-1" data-testid={`badge-proctored-${student.id}`}>
+                  <Shield className="w-3 h-3 mr-1" />
+                  Proctored
+                </Badge>
+                <Badge className="bg-blue-100 text-blue-800 text-xs px-2 py-1" data-testid={`badge-ai-free-${student.id}`}>
+                  <CheckCircle className="w-3 h-3 mr-1" />
+                  AI-Free
+                </Badge>
+                <Badge className="bg-orange-100 text-orange-800 text-xs px-2 py-1" data-testid={`badge-fresh-${student.id}`}>
+                  <Clock className="w-3 h-3 mr-1" />
+                  Fresh
+                </Badge>
               </div>
               
-              {/* Skills Radar Mini */}
-              <div className="flex justify-center space-x-1 mb-2">
-                <div className={`w-2 h-6 rounded-sm ${dsaScore >= 4 ? 'bg-blue-500' : dsaScore >= 3 ? 'bg-blue-300' : 'bg-gray-300'}`} title="DSA"></div>
-                <div className={`w-2 h-6 rounded-sm ${aptitudeScore >= 4 ? 'bg-green-500' : aptitudeScore >= 3 ? 'bg-green-300' : 'bg-gray-300'}`} title="Quantitative"></div>
-                <div className={`w-2 h-6 rounded-sm ${communicationScore >= 4 ? 'bg-purple-500' : communicationScore >= 3 ? 'bg-purple-300' : 'bg-gray-300'}`} title="Communication"></div>
-                <div className={`w-2 h-6 rounded-sm ${csFundamentalsScore >= 4 ? 'bg-orange-500' : csFundamentalsScore >= 3 ? 'bg-orange-300' : 'bg-gray-300'}`} title="CS Fundamentals"></div>
-              </div>
-              
-              <div className={`text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap flex items-center justify-center gap-1 cursor-pointer hover:shadow-md transition-all duration-200 ${
-                matchPercentage >= 85 ? 'text-green-800 bg-green-100 hover:bg-green-200' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100 hover:bg-yellow-200' : 'text-orange-800 bg-orange-100 hover:bg-orange-200'
-              }`}
-                   onClick={() => setShowRoleMatchRationale(true)}
-                   data-testid={`button-role-match-info-${student.id}`}>
-                {matchPercentage}% JD Match
-                <Info className="w-3 h-3 opacity-60 hover:opacity-100" />
+              <div className="flex items-center gap-3">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-blue-600 dark:text-blue-400" data-testid={`text-student-rating-${student.id}`}>
+                    {Math.round(averageSkillScore * 20)}%
+                  </div>
+                  <div className="text-xs text-gray-600">Overall</div>
+                </div>
+                <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
+                  matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
+                }`}
+                     onClick={() => setShowRoleMatchRationale(true)}
+                     data-testid={`button-role-match-info-${student.id}`}>
+                  {matchPercentage}% JD Match
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Expectations & Differentiators - 2 columns */}
-          <div className="col-span-2 flex flex-col space-y-3">
-            {/* Key Differentiators */}
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 rounded-lg p-2">
-              <div className="text-xs font-bold text-yellow-800 dark:text-yellow-200 mb-1">Key Differentiators</div>
-              <div className="flex flex-col gap-1">
-                {overallRating >= 4 && (
+            {/* Middle Row: Salary & Location + Key Differentiator */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 rounded-lg p-2">
+                <div className="text-xs font-bold text-green-800 dark:text-green-200 mb-1">Salary Expectation</div>
+                <div className="text-xs text-green-600 dark:text-green-400">
+                  ₹{Math.floor(4 + (overallRating * 2) + (seed % 3))} - {Math.floor(6 + (overallRating * 2) + (seed % 3))} LPA
+                </div>
+              </div>
+              
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 rounded-lg p-2">
+                <div className="text-xs font-bold text-blue-800 dark:text-blue-200 mb-1">Location</div>
+                <div className="text-xs text-blue-600 dark:text-blue-400">Open to {student.location}</div>
+              </div>
+
+              <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 rounded-lg p-2">
+                <div className="text-xs font-bold text-yellow-800 dark:text-yellow-200 mb-1">Top Achievement</div>
+                {overallRating >= 4 ? (
                   <div className="flex items-center text-xs text-yellow-700 dark:text-yellow-300">
                     <Award className="w-3 h-3 mr-1" />
-                    Hackathon Rank #{Math.floor(seed % 5) + 1} at {["IIT Delhi", "IIT Bombay", "IIIT Hyderabad"][seed % 3]}
+                    Hackathon Rank #{Math.floor(seed % 5) + 1}
                   </div>
-                )}
-                {dsaScore >= 4 && (
+                ) : dsaScore >= 4 ? (
                   <div className="flex items-center text-xs text-yellow-700 dark:text-yellow-300">
                     <TrendingUp className="w-3 h-3 mr-1" />
-                    Top 5% in Coding Contests
+                    Top 5% Coding
+                  </div>
+                ) : (
+                  <div className="flex items-center text-xs text-yellow-700 dark:text-yellow-300">
+                    <Users className="w-3 h-3 mr-1" />
+                    Quality Projects
                   </div>
                 )}
-                <div className="flex items-center text-xs text-yellow-700 dark:text-yellow-300">
-                  <Users className="w-3 h-3 mr-1" />
-                  {overallRating >= 4 ? "High Quality" : "Good Quality"} Project Portfolio
-                </div>
-              </div>
-            </div>
-            
-            {/* Expectation Fit */}
-            <div className="grid grid-cols-2 gap-2">
-              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 rounded-lg p-2">
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-bold text-green-800 dark:text-green-200">Salary Fit</div>
-                  <div className="text-xs font-bold text-green-600 dark:text-green-400">
-                    {matchPercentage >= 80 ? '95%' : matchPercentage >= 70 ? '80%' : '65%'}
-                  </div>
-                </div>
-                <div className="text-xs text-green-600 dark:text-green-400">
-                  Expects ₹{Math.floor(4 + (overallRating * 2) + (seed % 3))} - {Math.floor(6 + (overallRating * 2) + (seed % 3))} LPA
-                </div>
-              </div>
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 rounded-lg p-2">
-                <div className="flex items-center justify-between">
-                  <div className="text-xs font-bold text-blue-800 dark:text-blue-200">Location</div>
-                  <div className="text-xs font-bold text-blue-600 dark:text-blue-400">✓ Match</div>
-                </div>
-                <div className="text-xs text-blue-600 dark:text-blue-400 truncate">
-                  Open to {student.location}
-                </div>
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-2">
-              <Link href={`/student/${student.id}`}>
+            {/* Bottom Row: Action Buttons */}
+            <div className="flex gap-2">
+              <Link href={`/student/${student.id}`} className="flex-1">
                 <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" size="sm" data-testid={`button-view-profile-${student.id}`}>
                   View Profile
                 </Button>
               </Link>
               <Button 
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold" 
+                className="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-semibold" 
                 size="sm" 
                 onClick={() => setShowCandidateFullReport(true)}
                 data-testid={`button-full-report-${student.id}`}
               >
                 <Eye className="w-4 h-4 mr-1" />
-                Full Report
+                Report
+              </Button>
+              <Button 
+                className={`flex-1 font-semibold ${
+                  isShortlisted(student.id) 
+                    ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                    : 'border border-green-500 text-green-600 hover:bg-green-50'
+                }`} 
+                size="sm" 
+                variant={isShortlisted(student.id) ? "default" : "outline"}
+                onClick={() => {
+                  isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
+                }}
+                data-testid={`button-shortlist-${student.id}`}
+              >
+                {isShortlisted(student.id) ? (
+                  <>
+                    <Check className="w-4 h-4 mr-1" />
+                    Listed
+                  </>
+                ) : (
+                  <>
+                    <Plus className="w-4 h-4 mr-1" />
+                    Shortlist
+                  </>
+                )}
               </Button>
             </div>
-            <Button 
-              variant="outline" 
-              className={`w-full font-semibold ${
-                isShortlisted(student.id) 
-                  ? 'border-green-500 bg-green-50 text-green-700 hover:bg-green-100' 
-                  : 'border-green-500 text-green-600 hover:bg-green-50'
-              }`} 
-              size="sm" 
-              onClick={() => {
-                isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
-              }}
-              data-testid={`button-shortlist-${student.id}`}
-            >
-              {isShortlisted(student.id) ? (
-                <>
-                  <Check className="w-4 h-4 mr-1" />
-                  Shortlisted
-                </>
-              ) : (
-                <>
-                  <Plus className="w-4 h-4 mr-1" />
-                  Shortlist
-                </>
-              )}
-            </Button>
-            <Button variant="ghost" className="w-full text-gray-600 hover:text-gray-800" size="sm" data-testid={`button-contact-${student.id}`}>
-              Message
-            </Button>
-            <Button 
-              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold" 
-              size="sm" 
-              onClick={() => setShowExamFootage(true)}
-              data-testid={`button-seek-${student.id}`}
-            >
-              <Video className="w-4 h-4 mr-1" />
-              Evidence & Code Replay
-            </Button>
           </div>
         </div>
       </CardContent>
