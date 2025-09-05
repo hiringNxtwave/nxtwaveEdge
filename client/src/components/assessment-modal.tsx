@@ -362,6 +362,263 @@ function safeBinarySearch(arr, target) {
         isCorrect: score >= 75,
         timeTaken: Math.floor(12 + rand(3) * 6), // 12-18 minutes
         difficulty: "Medium"
+      },
+      {
+        id: "dsa_4",
+        question: "Implement a function to reverse a linked list iteratively and recursively. Compare both approaches.",
+        studentAnswer: `// Node class for linked list
+class ListNode {
+  constructor(val, next = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
+
+// Iterative approach
+function reverseListIterative(head) {
+  let prev = null;
+  let curr = head;
+  
+  while (curr !== null) {
+    let nextTemp = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = nextTemp;
+  }
+  
+  return prev;
+}
+
+// Recursive approach
+function reverseListRecursive(head) {
+  // Base case
+  if (head === null || head.next === null) {
+    return head;
+  }
+  
+  // Recursively reverse the rest of the list
+  let reversedHead = reverseListRecursive(head.next);
+  
+  // Reverse the current link
+  head.next.next = head;
+  head.next = null;
+  
+  return reversedHead;
+}
+
+// Test function
+function printList(head) {
+  let result = [];
+  let curr = head;
+  while (curr) {
+    result.push(curr.val);
+    curr = curr.next;
+  }
+  return result.join(' -> ');
+}
+
+// Example usage
+let list = new ListNode(1, new ListNode(2, new ListNode(3, new ListNode(4))));
+console.log("Original:", printList(list));
+
+let reversed = reverseListIterative(list);
+console.log("Reversed:", printList(reversed));
+
+/**
+ * Comparison:
+ * Iterative: O(n) time, O(1) space - more memory efficient
+ * Recursive: O(n) time, O(n) space - cleaner code but uses call stack
+ */`,
+        correctAnswer: "Excellent implementation of both approaches with clear comparison. Shows deep understanding of linked list manipulation and trade-offs between iteration and recursion.",
+        isCorrect: score >= 80,
+        timeTaken: Math.floor(20 + rand(4) * 8), // 20-28 minutes
+        difficulty: "Medium"
+      },
+      {
+        id: "dsa_5",
+        question: "Implement a function to find the lowest common ancestor (LCA) of two nodes in a binary tree.",
+        studentAnswer: `// TreeNode class definition
+class TreeNode {
+  constructor(val, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
+}
+
+function lowestCommonAncestor(root, p, q) {
+  // Base case: if root is null or root is one of the target nodes
+  if (!root || root === p || root === q) {
+    return root;
+  }
+  
+  // Search in left and right subtrees
+  let leftLCA = lowestCommonAncestor(root.left, p, q);
+  let rightLCA = lowestCommonAncestor(root.right, p, q);
+  
+  // If both left and right return non-null, current node is LCA
+  if (leftLCA && rightLCA) {
+    return root;
+  }
+  
+  // Otherwise, return whichever side found the LCA
+  return leftLCA || rightLCA;
+}
+
+// Alternative approach using parent pointers (if available)
+function findLCAWithParents(p, q) {
+  let visitedAncestors = new Set();
+  
+  // Traverse from p to root, marking all ancestors
+  let curr = p;
+  while (curr) {
+    visitedAncestors.add(curr);
+    curr = curr.parent;
+  }
+  
+  // Traverse from q to root, return first common ancestor
+  curr = q;
+  while (curr) {
+    if (visitedAncestors.has(curr)) {
+      return curr;
+    }
+    curr = curr.parent;
+  }
+  
+  return null;
+}
+
+// Test case construction
+//       3
+//      / \\
+//     5   1
+//    / \\ / \\
+//   6  2 0  8
+//     / \\
+//    7   4
+
+let root = new TreeNode(3);
+root.left = new TreeNode(5);
+root.right = new TreeNode(1);
+root.left.left = new TreeNode(6);
+root.left.right = new TreeNode(2);
+root.left.right.left = new TreeNode(7);
+root.left.right.right = new TreeNode(4);
+root.right.left = new TreeNode(0);
+root.right.right = new TreeNode(8);
+
+// Test: LCA of 5 and 1 should be 3
+console.log(lowestCommonAncestor(root, root.left, root.right).val); // 3
+// Test: LCA of 5 and 4 should be 5
+console.log(lowestCommonAncestor(root, root.left, root.left.right.right).val); // 5`,
+        correctAnswer: "Outstanding solution with recursive approach and alternative method using parent pointers. Includes comprehensive test cases and shows mastery of tree algorithms.",
+        isCorrect: score >= 85,
+        timeTaken: Math.floor(30 + rand(5) * 10), // 30-40 minutes
+        difficulty: "Hard"
+      },
+      {
+        id: "dsa_6",
+        question: "Design and implement a LRU (Least Recently Used) Cache with O(1) operations.",
+        studentAnswer: `class LRUCache {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.cache = new Map(); // For O(1) lookup
+    
+    // Create dummy head and tail nodes for doubly linked list
+    this.head = new Node(0, 0);
+    this.tail = new Node(0, 0);
+    this.head.next = this.tail;
+    this.tail.prev = this.head;
+  }
+  
+  get(key) {
+    if (this.cache.has(key)) {
+      let node = this.cache.get(key);
+      
+      // Move accessed node to head (most recently used)
+      this.removeNode(node);
+      this.addToHead(node);
+      
+      return node.value;
+    }
+    return -1;
+  }
+  
+  put(key, value) {
+    if (this.cache.has(key)) {
+      // Update existing key
+      let node = this.cache.get(key);
+      node.value = value;
+      
+      // Move to head
+      this.removeNode(node);
+      this.addToHead(node);
+    } else {
+      // Add new key-value pair
+      let newNode = new Node(key, value);
+      
+      if (this.cache.size >= this.capacity) {
+        // Remove LRU item (tail.prev)
+        let lru = this.tail.prev;
+        this.removeNode(lru);
+        this.cache.delete(lru.key);
+      }
+      
+      // Add new node to head and cache
+      this.addToHead(newNode);
+      this.cache.set(key, newNode);
+    }
+  }
+  
+  // Helper methods for doubly linked list operations
+  addToHead(node) {
+    node.prev = this.head;
+    node.next = this.head.next;
+    this.head.next.prev = node;
+    this.head.next = node;
+  }
+  
+  removeNode(node) {
+    node.prev.next = node.next;
+    node.next.prev = node.prev;
+  }
+}
+
+// Node class for doubly linked list
+class Node {
+  constructor(key, value) {
+    this.key = key;
+    this.value = value;
+    this.prev = null;
+    this.next = null;
+  }
+}
+
+// Test the LRU Cache
+let lru = new LRUCache(2);
+
+lru.put(1, 1);
+lru.put(2, 2);
+console.log(lru.get(1)); // 1 (moves 1 to head)
+lru.put(3, 3);           // evicts key 2
+console.log(lru.get(2)); // -1 (not found)
+console.log(lru.get(3)); // 3
+console.log(lru.get(1)); // 1
+lru.put(4, 4);           // evicts key 3
+console.log(lru.get(1)); // 1
+console.log(lru.get(3)); // -1 (not found)
+console.log(lru.get(4)); // 4
+
+/**
+ * Time Complexity: O(1) for both get and put operations
+ * Space Complexity: O(capacity)
+ * 
+ * Key insight: HashMap for O(1) lookup + Doubly linked list for O(1) insertion/deletion
+ */`,
+        correctAnswer: "Exceptional implementation of LRU Cache using HashMap + Doubly Linked List combination. Perfect understanding of data structure design principles and O(1) operations.",
+        isCorrect: score >= 90,
+        timeTaken: Math.floor(35 + rand(6) * 15), // 35-50 minutes
+        difficulty: "Hard"
       }
     ],
     "Interview Performance": [
