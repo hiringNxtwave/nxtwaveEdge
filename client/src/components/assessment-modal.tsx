@@ -385,7 +385,7 @@ io.on('connection', (socket) => {
 };
 
 export default function AssessmentModal({ assessment, student, onClose }: AssessmentModalProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'details'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'details'>('details');
   
   const assessmentData = generateAssessmentData(assessment.type, assessment.score, student.id);
   const correctAnswers = assessmentData.filter((q: AssessmentQuestion) => q.isCorrect).length;
