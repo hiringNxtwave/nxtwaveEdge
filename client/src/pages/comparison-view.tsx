@@ -137,13 +137,13 @@ export default function ComparisonView() {
     if (quantitativeScore >= 4) strengths.push('Excellent quantitative ability');
     if (verbalAbilityScore >= 4) strengths.push('Strong verbal ability');
     if (englishSpeakingScore >= 4) strengths.push('Excellent English communication');
-    if (student.cgpa >= 8.5) strengths.push('Outstanding academic performance');
+    if ((typeof student.cgpa === 'string' ? parseFloat(student.cgpa) : student.cgpa) >= 8.5) strengths.push('Outstanding academic performance');
     
     if (codingDsaScore <= 2) concerns.push('Coding & DSA skills need improvement');
     if (quantitativeScore <= 2) concerns.push('Quantitative ability below expectations');
     if (verbalAbilityScore <= 2) concerns.push('Verbal ability needs development');
     if (englishSpeakingScore <= 2) concerns.push('English speaking skills need improvement');
-    if (student.cgpa < 7.5) concerns.push('Academic performance below expectations');
+    if ((typeof student.cgpa === 'string' ? parseFloat(student.cgpa) : student.cgpa || 7.5) < 7.5) concerns.push('Academic performance below expectations');
     
     return {
       student,
@@ -309,7 +309,7 @@ export default function ComparisonView() {
                             </div>
                             <div className="flex items-center gap-1">
                               <Target className="w-4 h-4" />
-                              CGPA: {analysis.student.cgpa}
+                              CGPA: {typeof analysis.student.cgpa === 'string' ? parseFloat(analysis.student.cgpa).toFixed(2) : (analysis.student.cgpa || 7.5).toFixed(2)}
                             </div>
                             <div className="flex items-center gap-1">
                               <MapPin className="w-4 h-4" />
