@@ -14,10 +14,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import { Lock, Users, Star, Zap, GitCompare, BarChart3, CheckSquare, Brain, Sparkles, Filter } from "lucide-react";
 
 export default function BrowseStudents() {
   useScrollToTop();
+  const { toast } = useToast();
   
   const { isAuthenticated } = useAuth();
   const [filters, setFilters] = useState({
@@ -80,9 +82,22 @@ export default function BrowseStudents() {
       setSmartResults(data);
       setIsUsingSmartResults(true);
       setShowSmartDiscovery(false);
+      // Show success message
+      toast({
+        title: "✨ AI Discovery Complete!",
+        description: `Found ${data.length} top candidates from 1,900+ profiles based on your requirements`,
+        duration: 4000,
+      });
     },
     onError: (error) => {
       console.error("Smart discovery failed:", error);
+      // Show error message
+      toast({
+        title: "Smart Discovery Failed",
+        description: "Please try again or contact support if the issue persists",
+        variant: "destructive",
+        duration: 4000,
+      });
     },
   });
 
@@ -106,16 +121,23 @@ export default function BrowseStudents() {
         {/* Clean Header with Filters on Right */}
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-              {isUsingSmartResults ? "🧠 AI-Curated Matches" : "Talent Database"}
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
+              {isUsingSmartResults ? (
+                <>
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                    <Brain className="w-4 h-4 text-white" />
+                  </div>
+                  AI-Curated Top Matches
+                </>
+              ) : "Talent Database"}
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
               {isLoading 
                 ? "Loading students..." 
                 : isAuthenticated 
                   ? isUsingSmartResults
-                    ? `${students.length} top matches for your requirements`
-                    : `Browse verified talent pool`
+                    ? `${students.length} candidates selected by AI from 1,900+ profiles based on your requirements`
+                    : `Browse verified talent pool of ${totalStudentCount.toLocaleString()}+ students`
                   : `Preview of ${students.length} from 1,900+ students`
               }
             </p>
@@ -168,14 +190,15 @@ export default function BrowseStudents() {
                     onClick={() => {
                       setIsUsingSmartResults(false);
                       setSmartResults([]);
+                      setCurrentPage(1);
                       queryClient.invalidateQueries({ queryKey: ["/api/students"] });
                     }}
                     variant="outline"
-                    className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                    className="border-orange-500 text-orange-600 hover:bg-orange-50 font-medium"
                     data-testid="button-clear-smart-results"
                   >
-                    <Filter className="w-4 h-4 mr-2" />
-                    Clear
+                    <Users className="w-4 h-4 mr-2" />
+                    Back to All {totalStudentCount.toLocaleString()} Students
                   </Button>
                 )}
                 
@@ -388,6 +411,7 @@ export default function BrowseStudents() {
           }}
           totalStudents={totalStudentCount}
           onClose={() => setShowSmartDiscovery(false)}
+          isLoading={smartDiscoveryMutation.isPending}
         />
       )}
 

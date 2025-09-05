@@ -27,13 +27,15 @@ interface TalentDiscoveryFiltersProps {
   onAutoSuggest: (requirement: TalentRequirement) => void;
   totalStudents: number;
   onClose?: () => void;
+  isLoading?: boolean;
 }
 
 export function TalentDiscoveryFilters({ 
   onApplyFilters, 
   onAutoSuggest, 
   totalStudents,
-  onClose
+  onClose,
+  isLoading = false
 }: TalentDiscoveryFiltersProps) {
   const [requirement, setRequirement] = useState<TalentRequirement>({
     role: "",
@@ -380,7 +382,8 @@ export function TalentDiscoveryFilters({
             <div className="grid grid-cols-2 gap-3">
               <Button
                 onClick={() => onApplyFilters(requirement)}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                disabled={isLoading}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold disabled:opacity-50"
                 data-testid="button-apply-filters"
               >
                 <Filter className="w-4 h-4 mr-2" />
@@ -389,11 +392,22 @@ export function TalentDiscoveryFilters({
               
               <Button
                 onClick={() => onAutoSuggest(requirement)}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold"
+                disabled={isLoading || !requirement.role.trim()}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 data-testid="button-auto-suggest"
+                title={!requirement.role.trim() ? "Please enter a role first" : "Get AI-curated top 50 candidates"}
               >
-                <Sparkles className="w-4 h-4 mr-2" />
-                Smart Suggest Top 50
+                {isLoading ? (
+                  <>
+                    <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+                    AI Matching...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Smart Suggest Top 50
+                  </>
+                )}
               </Button>
             </div>
             
