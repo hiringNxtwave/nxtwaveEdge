@@ -35,6 +35,9 @@ const generateAssessmentData = (type: string, score: number, studentId: string):
   // Use student ID for consistent mock data
   const seed = parseInt(studentId.slice(-8), 16);
   const rand = (offset: number) => ((seed * 37 + offset) % 100) / 100;
+  
+  // Make first student (Rahul Sharma) have some incorrect answers for realism
+  const isFirstStudent = studentId.includes('student-1');
 
   const baseQuestions: Record<string, AssessmentQuestion[]> = {
     "Aptitude and QA": [
@@ -43,11 +46,11 @@ const generateAssessmentData = (type: string, score: number, studentId: string):
         type: "mcq",
         question: "A train traveling at 60 km/hr crosses a platform 200m long in 30 seconds. What is the length of the train?",
         options: ["200 meters", "250 meters", "300 meters", "350 meters"],
-        selectedOption: "300 meters",
+        selectedOption: isFirstStudent ? "250 meters" : "300 meters",
         correctOption: "300 meters",
-        studentAnswer: "300 meters",
-        correctAnswer: "Correct! The train length is 300 meters. Using Distance = Speed × Time: Total distance = (60 × 5/18) × 30 = 500m. Train length = 500m - 200m = 300m.",
-        isCorrect: score >= 70,
+        studentAnswer: isFirstStudent ? "250 meters" : "300 meters",
+        correctAnswer: isFirstStudent ? "Incorrect. The correct answer is 300 meters. Using Distance = Speed × Time: Total distance = (60 × 5/18) × 30 = 500m. Train length = 500m - 200m = 300m." : "Correct! The train length is 300 meters. Using Distance = Speed × Time: Total distance = (60 × 5/18) × 30 = 500m. Train length = 500m - 200m = 300m.",
+        isCorrect: isFirstStudent ? false : score >= 70,
         timeTaken: Math.floor(2 + rand(1) * 2), // 2-4 minutes
         difficulty: "Medium"
       },
@@ -56,11 +59,11 @@ const generateAssessmentData = (type: string, score: number, studentId: string):
         type: "mcq", 
         question: "In a company, 60% of employees are men and 40% are women. If 25% of men and 50% of women have MBA degrees, what percentage of total employees have MBA degrees?",
         options: ["30%", "35%", "40%", "45%"],
-        selectedOption: "35%",
+        selectedOption: isFirstStudent ? "40%" : "35%",
         correctOption: "35%",
-        studentAnswer: "35%",
-        correctAnswer: "Correct! 35% of total employees have MBA degrees. Men with MBA: 60% × 25% = 15%. Women with MBA: 40% × 50% = 20%. Total: 15% + 20% = 35%.",
-        isCorrect: score >= 70,
+        studentAnswer: isFirstStudent ? "40%" : "35%",
+        correctAnswer: isFirstStudent ? "Incorrect. The correct answer is 35%. Men with MBA: 60% × 25% = 15%. Women with MBA: 40% × 50% = 20%. Total: 15% + 20% = 35%." : "Correct! 35% of total employees have MBA degrees. Men with MBA: 60% × 25% = 15%. Women with MBA: 40% × 50% = 20%. Total: 15% + 20% = 35%.",
+        isCorrect: isFirstStudent ? false : score >= 70,
         timeTaken: Math.floor(2 + rand(2) * 2), // 2-4 minutes
         difficulty: "Easy"
       },
