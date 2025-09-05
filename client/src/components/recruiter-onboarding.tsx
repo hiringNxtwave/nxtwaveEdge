@@ -84,6 +84,7 @@ export function RecruiterOnboarding({
       onComplete();
     },
     onError: (error) => {
+      console.error("Onboarding error:", error);
       toast({
         title: "Setup Failed",
         description: "There was an error setting up your profile. Please try again.",
@@ -93,8 +94,6 @@ export function RecruiterOnboarding({
   });
 
   const onSubmit = (data: OnboardingFormData) => {
-    console.log("Form data being submitted:", data);
-    console.log("Form errors:", form.formState.errors);
     onboardingMutation.mutate(data);
   };
 
