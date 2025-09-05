@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, GraduationCap, Check, Plus, Shield, Eye, Info, Target } from "lucide-react";
+import { Star, MapPin, GraduationCap, Check, Plus, Shield, Eye, Info, Target, Video } from "lucide-react";
 import type { StudentWithSkills } from "@shared/schema";
 import { Link } from "wouter";
 import { useShortlist } from "@/contexts/shortlist-context";
@@ -11,6 +11,7 @@ import RoleMatchRationale from "@/components/role-match-rationale";
 import Candidate360View from "@/components/candidate-360-view";
 import CodeReplayModal from "@/components/code-replay-modal";
 import CommunicationSampleModal from "@/components/communication-sample-modal";
+import ExamFootageModal from "@/components/exam-footage-modal";
 
 interface StudentCardProps {
   student: StudentWithSkills;
@@ -24,6 +25,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   const [showCandidate360, setShowCandidate360] = useState(false);
   const [showCodeReplay, setShowCodeReplay] = useState(false);
   const [showCommunicationSample, setShowCommunicationSample] = useState(false);
+  const [showExamFootage, setShowExamFootage] = useState(false);
   
   // Use student ID as seed for consistent ratings
   const seed = parseInt(student.id.slice(-8), 16);
@@ -263,6 +265,15 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             <Button variant="ghost" className="w-full text-gray-600 hover:text-gray-800" size="sm" data-testid={`button-contact-${student.id}`}>
               Message
             </Button>
+            <Button 
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold mt-2" 
+              size="sm" 
+              onClick={() => setShowExamFootage(true)}
+              data-testid={`button-seek-${student.id}`}
+            >
+              <Video className="w-4 h-4 mr-1" />
+              Seek - View Exam
+            </Button>
           </div>
         </div>
       </CardContent>
@@ -308,6 +319,15 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           student={student}
           isOpen={showCommunicationSample}
           onClose={() => setShowCommunicationSample(false)}
+        />
+      )}
+
+      {/* Exam Footage Modal */}
+      {showExamFootage && (
+        <ExamFootageModal 
+          student={student}
+          isOpen={showExamFootage}
+          onClose={() => setShowExamFootage(false)}
         />
       )}
     </Card>
