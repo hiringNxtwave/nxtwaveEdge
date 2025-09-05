@@ -75,7 +75,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   return (
     <Card className="hover:shadow-xl transition-all duration-300 border-l-4 border-l-blue-500 bg-gradient-to-r from-white to-blue-50 dark:from-gray-800 dark:to-gray-750" data-testid={`card-student-${student.id}`}>
       <CardContent className="p-6">
-        <div className="flex items-center gap-6 w-full">
+        <div className="flex items-start gap-6 w-full">
           {/* Student Info Section */}
           <Link href={`/student/${student.id}`} className="flex items-center space-x-4 cursor-pointer flex-shrink-0">
             <div className="relative">
@@ -119,30 +119,77 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
           </Link>
 
-          {/* Skills & Skills Preview */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2">
-              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Top Skills</h4>
+          {/* Skills & Ratings Section */}
+          <div className="flex-1 min-w-0 space-y-3">
+            {/* Top Skills Display */}
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Top Skills</h4>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {student.skills?.slice(0, 6).map((skill) => (
+                  <Badge key={skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">
+                    {skill.name}
+                  </Badge>
+                )) || [
+                  <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">JavaScript</Badge>,
+                  <Badge key="react" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">React</Badge>,
+                  <Badge key="node" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">Node.js</Badge>,
+                  <Badge key="python" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">Python</Badge>,
+                  <Badge key="mongo" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">MongoDB</Badge>,
+                  <Badge key="system" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">System Design</Badge>
+                ]}
+                {(student.skills?.length || 6) > 6 && (
+                  <Badge variant="outline" className="text-xs hover:bg-gray-50 cursor-pointer">
+                    +{(student.skills?.length || 6) - 6} more
+                  </Badge>
+                )}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {student.skills?.slice(0, 4).map((skill) => (
-                <Badge key={skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs">
-                  {skill.name}
-                </Badge>
-              )) || [
-                <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">JavaScript</Badge>,
-                <Badge key="react" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">React</Badge>,
-                <Badge key="node" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">Node.js</Badge>
-              ]}
-              {(student.skills?.length || 3) > 4 && (
-                <Badge variant="outline" className="text-xs">
-                  +{(student.skills?.length || 3) - 4} more
-                </Badge>
-              )}
+
+            {/* Assessment Ratings with Clickable Stars */}
+            <div>
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div 
+                  className="flex items-center gap-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 cursor-pointer transition-colors"
+                  onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Excellent' : dsaScore >= 3 ? 'Good' : 'Average'})}
+                  data-testid={`button-dsa-assessment-${student.id}`}
+                >
+                  <span className="font-medium text-blue-800 dark:text-blue-200 min-w-[30px]">DSA</span>
+                  <div className="flex">{renderStars(dsaScore)}</div>
+                </div>
+                
+                <div 
+                  className="flex items-center gap-2 p-2 rounded-lg bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 cursor-pointer transition-colors"
+                  onClick={() => setSelectedAssessment({type: 'Aptitude', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Average'})}
+                  data-testid={`button-aptitude-assessment-${student.id}`}
+                >
+                  <span className="font-medium text-green-800 dark:text-green-200 min-w-[30px]">APT</span>
+                  <div className="flex">{renderStars(aptitudeScore)}</div>
+                </div>
+                
+                <div 
+                  className="flex items-center gap-2 p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 cursor-pointer transition-colors"
+                  onClick={() => setSelectedAssessment({type: 'Communication', score: communicationScore * 20, level: communicationScore >= 4 ? 'Excellent' : communicationScore >= 3 ? 'Good' : 'Average'})}
+                  data-testid={`button-communication-assessment-${student.id}`}
+                >
+                  <span className="font-medium text-purple-800 dark:text-purple-200 min-w-[30px]">COM</span>
+                  <div className="flex">{renderStars(communicationScore)}</div>
+                </div>
+                
+                <div 
+                  className="flex items-center gap-2 p-2 rounded-lg bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 cursor-pointer transition-colors"
+                  onClick={() => setSelectedAssessment({type: 'CS Fundamentals', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Excellent' : csFundamentalsScore >= 3 ? 'Good' : 'Average'})}
+                  data-testid={`button-cs-fundamentals-assessment-${student.id}`}
+                >
+                  <span className="font-medium text-orange-800 dark:text-orange-200 min-w-[30px]">CS</span>
+                  <div className="flex">{renderStars(csFundamentalsScore)}</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Assessment Summary */}
+          {/* Overall Score & Match */}
           <div className="flex items-center gap-4">
             <div className="text-center">
               <div className="text-xl font-bold text-blue-600 dark:text-blue-400" data-testid={`text-student-rating-${student.id}`}>
