@@ -114,7 +114,7 @@ export default function CandidateFullReport({ student, isOpen, onClose }: Candid
   // Mock data for comprehensive candidate view
   const assessmentData: AssessmentData[] = [
     {
-      category: "DSA Assessment",
+      category: "DSA",
       score: 92,
       completedAt: "2024-12-01",
       verificationStatus: "verified",
@@ -122,7 +122,7 @@ export default function CandidateFullReport({ student, isOpen, onClose }: Candid
       accuracy: 89
     },
     {
-      category: "System Design",
+      category: "Tech Fundamentals",
       score: 85,
       completedAt: "2024-11-28",
       verificationStatus: "verified",
@@ -130,7 +130,7 @@ export default function CandidateFullReport({ student, isOpen, onClose }: Candid
       accuracy: 82
     },
     {
-      category: "Communication Skills",
+      category: "Interview Performance",
       score: 88,
       completedAt: "2024-11-25",
       verificationStatus: "verified",

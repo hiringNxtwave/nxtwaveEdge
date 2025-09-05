@@ -134,7 +134,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             <div className="grid grid-cols-4 gap-4">
               {/* DSA */}
               <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-blue-300 hover:shadow-md transition-all duration-200 group" 
-                   onClick={() => setSelectedAssessment({type: 'DSA Assessment', score: dsaScore * 20, level: dsaScore >= 4 ? 'Advanced' : dsaScore >= 3 ? 'Intermediate' : 'Basic'})}
+                   onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Advanced' : dsaScore >= 3 ? 'Intermediate' : 'Basic'})}
                    data-testid={`assessment-dsa-${student.id}`}>
                 <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
                   DSA Assessment
@@ -150,7 +150,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
               {/* Aptitude */}
               <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-green-300 hover:shadow-md transition-all duration-200 group" 
-                   onClick={() => setSelectedAssessment({type: 'Aptitude Test', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Fair'})}
+                   onClick={() => setSelectedAssessment({type: 'Aptitude and QA', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Fair'})}
                    data-testid={`assessment-aptitude-${student.id}`}>
                 <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
                   Quantitative Test
@@ -166,7 +166,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
               {/* Communication */}
               <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-purple-300 hover:shadow-md transition-all duration-200 group" 
-                   onClick={() => setSelectedAssessment({type: 'Communication', score: communicationScore * 20, level: communicationScore >= 4 ? 'Fluent' : communicationScore >= 3 ? 'Good' : 'Basic'})}
+                   onClick={() => setSelectedAssessment({type: 'Interview Performance', score: communicationScore * 20, level: communicationScore >= 4 ? 'Fluent' : communicationScore >= 3 ? 'Good' : 'Basic'})}
                    data-testid={`assessment-communication-${student.id}`}>
                 <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
                   Communication
@@ -182,7 +182,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
               {/* CS Fundamentals */}
               <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-orange-300 hover:shadow-md transition-all duration-200 group" 
-                   onClick={() => setSelectedAssessment({type: 'System Design', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Expert' : csFundamentalsScore >= 3 ? 'Solid' : 'Learning'})}
+                   onClick={() => setSelectedAssessment({type: 'Tech Fundamentals', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Expert' : csFundamentalsScore >= 3 ? 'Solid' : 'Learning'})}
                    data-testid={`assessment-system-design-${student.id}`}>
                 <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
                   System Design

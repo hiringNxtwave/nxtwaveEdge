@@ -342,7 +342,7 @@ export default function AdvancedStudentsTable({
                         <Badge 
                           className={cn("font-mono cursor-pointer hover:shadow-md transition-shadow", getScoreColor(student.dsaScore))}
                           onClick={() => setSelectedAssessment({
-                            type: 'DSA Assessment',
+                            type: 'DSA',
                             score: student.dsaScore,
                             level: student.dsaScore >= 90 ? 'Expert' : student.dsaScore >= 80 ? 'Advanced' : student.dsaScore >= 70 ? 'Intermediate' : 'Basic',
                             student: student as StudentWithSkills
@@ -358,7 +358,7 @@ export default function AdvancedStudentsTable({
                       <Badge 
                         className={cn("font-mono cursor-pointer hover:shadow-md transition-shadow", getScoreColor(student.aptitudeScore))}
                         onClick={() => setSelectedAssessment({
-                          type: 'Quantitative Test',
+                          type: 'Aptitude and QA',
                           score: student.aptitudeScore,
                           level: student.aptitudeScore >= 90 ? 'Excellent' : student.aptitudeScore >= 80 ? 'Very Good' : student.aptitudeScore >= 70 ? 'Good' : 'Fair',
                           student: student as StudentWithSkills
@@ -373,7 +373,7 @@ export default function AdvancedStudentsTable({
                       <Badge 
                         className={cn("font-mono cursor-pointer hover:shadow-md transition-shadow", getScoreColor(student.communicationScore))}
                         onClick={() => setSelectedAssessment({
-                          type: 'Communication',
+                          type: 'Interview Performance',
                           score: student.communicationScore,
                           level: student.communicationScore >= 90 ? 'Excellent' : student.communicationScore >= 80 ? 'Very Good' : student.communicationScore >= 70 ? 'Good' : 'Basic',
                           student: student as StudentWithSkills
