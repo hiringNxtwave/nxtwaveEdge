@@ -176,20 +176,68 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
           </div>
 
-          {/* Assessment Summary */}
-          <div className="flex items-center gap-4">
-            <div className="text-center">
-              <div className="text-xl font-bold text-blue-600 dark:text-blue-400" data-testid={`text-student-rating-${student.id}`}>
-                {Math.round(averageSkillScore * 20)}%
+          {/* 4-Section Performance Display */}
+          <div className="border-l border-gray-200 pl-4">
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Performance Breakdown</h4>
+            <div className="grid grid-cols-2 gap-3">
+              {/* DSA Score */}
+              <div 
+                className="text-center p-2 rounded-lg bg-blue-50 hover:bg-blue-100 cursor-pointer transition-colors"
+                onClick={() => setSelectedAssessment({type: 'Data Structures & Algorithms', score: dsaScore, level: dsaScore >= 4 ? 'Advanced' : dsaScore >= 3 ? 'Intermediate' : 'Beginner'})}
+                data-testid={`button-dsa-assessment-${student.id}`}
+              >
+                <div className="flex items-center justify-center mb-1">
+                  {renderStars(dsaScore)}
+                </div>
+                <div className="text-xs font-medium text-blue-700">DSA</div>
               </div>
-              <div className="text-xs text-gray-600">Overall Score</div>
+
+              {/* Aptitude Score */}
+              <div 
+                className="text-center p-2 rounded-lg bg-green-50 hover:bg-green-100 cursor-pointer transition-colors"
+                onClick={() => setSelectedAssessment({type: 'Aptitude', score: aptitudeScore, level: aptitudeScore >= 4 ? 'Advanced' : aptitudeScore >= 3 ? 'Intermediate' : 'Beginner'})}
+                data-testid={`button-aptitude-assessment-${student.id}`}
+              >
+                <div className="flex items-center justify-center mb-1">
+                  {renderStars(aptitudeScore)}
+                </div>
+                <div className="text-xs font-medium text-green-700">Aptitude</div>
+              </div>
+
+              {/* Verbal Score */}
+              <div 
+                className="text-center p-2 rounded-lg bg-purple-50 hover:bg-purple-100 cursor-pointer transition-colors"
+                onClick={() => setSelectedAssessment({type: 'Verbal Reasoning', score: verbalScore, level: verbalScore >= 4 ? 'Advanced' : verbalScore >= 3 ? 'Intermediate' : 'Beginner'})}
+                data-testid={`button-verbal-assessment-${student.id}`}
+              >
+                <div className="flex items-center justify-center mb-1">
+                  {renderStars(verbalScore)}
+                </div>
+                <div className="text-xs font-medium text-purple-700">Verbal</div>
+              </div>
+
+              {/* Communication Score */}
+              <div 
+                className="text-center p-2 rounded-lg bg-orange-50 hover:bg-orange-100 cursor-pointer transition-colors"
+                onClick={() => setSelectedAssessment({type: 'Communication', score: communicationScore, level: communicationScore >= 4 ? 'Advanced' : communicationScore >= 3 ? 'Intermediate' : 'Beginner'})}
+                data-testid={`button-communication-assessment-${student.id}`}
+              >
+                <div className="flex items-center justify-center mb-1">
+                  {renderStars(communicationScore)}
+                </div>
+                <div className="text-xs font-medium text-orange-700">Communication</div>
+              </div>
             </div>
-            <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
-              matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
-            }`}
-                 onClick={() => setShowRoleMatchRationale(true)}
-                 data-testid={`button-role-match-info-${student.id}`}>
-              {matchPercentage}% Match
+            
+            {/* Overall Match Score */}
+            <div className="mt-3 text-center">
+              <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
+                matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
+              }`}
+                   onClick={() => setShowRoleMatchRationale(true)}
+                   data-testid={`button-role-match-info-${student.id}`}>
+                {matchPercentage}% JD Match
+              </div>
             </div>
           </div>
 
