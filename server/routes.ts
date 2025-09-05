@@ -34,14 +34,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const updateData = {
-        jobTitle: req.body.jobTitle,
-        companyName: req.body.companyName,
-        companySize: req.body.companySize,
-        industry: req.body.industry,
         hiringVelocity: req.body.hiringVelocity,
-        typicalRoles: req.body.typicalRoles,
         budgetRange: req.body.budgetRange,
-        preferredExperience: req.body.preferredExperience,
         onboardingCompleted: true,
       };
       

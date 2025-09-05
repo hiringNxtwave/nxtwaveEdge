@@ -593,6 +593,16 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
           </button>
           <button
             className={`px-4 py-2 font-semibold transition-colors ${
+              activeTab === 'ai-interview' 
+                ? 'border-b-2 border-blue-600 text-blue-600' 
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+            onClick={() => setActiveTab('ai-interview')}
+          >
+            AI Interview Recording
+          </button>
+          <button
+            className={`px-4 py-2 font-semibold transition-colors ${
               activeTab === 'details' 
                 ? 'border-b-2 border-blue-600 text-blue-600' 
                 : 'text-gray-600 hover:text-gray-800'
@@ -686,6 +696,151 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
                           Continue practicing advanced concepts
                         </li>
                       </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {activeTab === 'ai-interview' && (
+            <div className="space-y-6">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">AI Mock Interview Recording</h3>
+                      <p className="text-gray-600">30-minute behavioral and technical interview session</p>
+                    </div>
+                  </div>
+
+                  {/* Mock Video Player */}
+                  <div className="relative bg-gray-900 rounded-lg overflow-hidden mb-6">
+                    <div className="aspect-video flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="p-4 bg-black/20 rounded-full mb-4 inline-block">
+                          <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                        <p className="text-white text-lg">AI Interview Recording - 28:45</p>
+                        <p className="text-gray-300">Click to play interview session</p>
+                      </div>
+                    </div>
+                    {/* Video Controls */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                      <div className="flex items-center gap-4">
+                        <button className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors">
+                          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </button>
+                        <div className="flex-1 bg-white/20 rounded-full h-2">
+                          <div className="bg-blue-500 h-2 rounded-full" style={{ width: '35%' }}></div>
+                        </div>
+                        <span className="text-white text-sm">10:02 / 28:45</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Interview Performance Metrics */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <Card className="bg-green-50">
+                      <CardContent className="p-4 text-center">
+                        <div className="text-2xl font-bold text-green-600">8.2/10</div>
+                        <div className="text-sm text-gray-600">Communication</div>
+                        <Badge variant="secondary" className="mt-1">Excellent</Badge>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-blue-50">
+                      <CardContent className="p-4 text-center">
+                        <div className="text-2xl font-bold text-blue-600">7.8/10</div>
+                        <div className="text-sm text-gray-600">Problem Solving</div>
+                        <Badge variant="secondary" className="mt-1">Good</Badge>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-purple-50">
+                      <CardContent className="p-4 text-center">
+                        <div className="text-2xl font-bold text-purple-600">8.5/10</div>
+                        <div className="text-sm text-gray-600">Cultural Fit</div>
+                        <Badge variant="secondary" className="mt-1">Excellent</Badge>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Key Moments / Timestamps */}
+                  <div>
+                    <h4 className="font-semibold text-lg mb-3">Key Interview Moments</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-medium text-green-800">02:15</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Excellent explanation of React concepts</p>
+                          <p className="text-xs text-gray-600">Demonstrated strong understanding of component lifecycle and state management</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-1a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Seek
+                        </Button>
+                      </div>
+                      <div className="flex items-center gap-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-5 h-5 text-blue-600" />
+                          <span className="font-medium text-blue-800">08:30</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Problem-solving approach discussion</p>
+                          <p className="text-xs text-gray-600">Walked through systematic debugging methodology with clear reasoning</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-1a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Seek
+                        </Button>
+                      </div>
+                      <div className="flex items-center gap-4 p-3 bg-orange-50 rounded-lg border border-orange-200">
+                        <div className="flex items-center gap-2">
+                          <XCircle className="w-5 h-5 text-orange-600" />
+                          <span className="font-medium text-orange-800">15:45</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Hesitation on advanced algorithms</p>
+                          <p className="text-xs text-gray-600">Could benefit from more practice with dynamic programming concepts</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-1a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Seek
+                        </Button>
+                      </div>
+                      <div className="flex items-center gap-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-600" />
+                          <span className="font-medium text-green-800">22:10</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Great cultural fit responses</p>
+                          <p className="text-xs text-gray-600">Showed enthusiasm for learning and team collaboration values</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-1a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Seek
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
