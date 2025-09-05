@@ -66,6 +66,8 @@ export default function ShortlistingDashboard({ students, onBulkAction }: Shortl
         return Math.min(90, Math.max(65, baseScore * 17 + ((seed * 7) % 10) - 3));
       case 'offer-join':
         return Math.min(85, Math.max(60, baseScore * 16 + ((seed * 11) % 10) - 4));
+      case 'hire-join':
+        return Math.min(88, Math.max(65, baseScore * 17 + ((seed * 17) % 10) - 3));
       case 'ramp-risk':
         return Math.min(25, Math.max(5, 30 - (baseScore * 4) + ((seed * 13) % 8) - 4));
       default:
@@ -324,7 +326,7 @@ export default function ShortlistingDashboard({ students, onBulkAction }: Shortl
                     </Badge>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                     {/* JD Match Score */}
                     <div className="text-center">
                       <div className="flex items-center justify-center mb-2">
@@ -377,6 +379,24 @@ export default function ShortlistingDashboard({ students, onBulkAction }: Shortl
                         className="h-2"
                       />
                       <p className="text-xs text-gray-500 mt-1">Likelihood to accept</p>
+                    </div>
+
+                    {/* Hire-to-Join Probability */}
+                    <div className="text-center">
+                      <div className="flex items-center justify-center mb-2">
+                        <Star className="w-5 h-5 text-yellow-600 mr-2" />
+                        <span className="font-medium">Hire-to-Join</span>
+                      </div>
+                      <div className="mb-2">
+                        <div className="text-2xl font-bold text-yellow-600">
+                          {generatePredictiveScore(student, 'hire-join')}%
+                        </div>
+                      </div>
+                      <Progress 
+                        value={generatePredictiveScore(student, 'hire-join')} 
+                        className="h-2"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Conversion to hire</p>
                     </div>
 
                     {/* Ramp-Up Risk */}

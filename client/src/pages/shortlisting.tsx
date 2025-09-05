@@ -70,6 +70,8 @@ export default function ShortlistingPage() {
         return Math.min(90, Math.max(65, baseScore * 17 + ((seed * 7) % 10) - 3));
       case 'offer-join':
         return Math.min(85, Math.max(60, baseScore * 16 + ((seed * 11) % 10) - 4));
+      case 'hire-join':
+        return Math.min(88, Math.max(65, baseScore * 17 + ((seed * 17) % 10) - 3));
       case 'ramp-risk':
         return Math.min(25, Math.max(5, 30 - (baseScore * 4) + ((seed * 13) % 8) - 4));
       default:
@@ -229,24 +231,30 @@ export default function ShortlistingPage() {
                         </div>
 
                         {/* Predictive Scores */}
-                        <div className="lg:col-span-4 grid grid-cols-2 gap-3">
+                        <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-3 gap-3">
                           <div className="text-center p-3 bg-purple-50 rounded-lg">
                             <div className="text-lg font-bold text-purple-600">
                               {generatePredictiveScore(student, 'jd-match')}%
                             </div>
                             <div className="text-xs text-purple-700">JD Match</div>
                           </div>
-                          <div className="text-center p-3 bg-blue-50 rounded-lg">
-                            <div className="text-lg font-bold text-blue-600">
-                              {generatePredictiveScore(student, 'lookalike')}%
-                            </div>
-                            <div className="text-xs text-blue-700">Look-Alike</div>
-                          </div>
                           <div className="text-center p-3 bg-green-50 rounded-lg">
                             <div className="text-lg font-bold text-green-600">
                               {generatePredictiveScore(student, 'offer-join')}%
                             </div>
                             <div className="text-xs text-green-700">Offer-Join</div>
+                          </div>
+                          <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                            <div className="text-lg font-bold text-yellow-600">
+                              {generatePredictiveScore(student, 'hire-join')}%
+                            </div>
+                            <div className="text-xs text-yellow-700">Hire-Join</div>
+                          </div>
+                          <div className="text-center p-3 bg-blue-50 rounded-lg">
+                            <div className="text-lg font-bold text-blue-600">
+                              {generatePredictiveScore(student, 'lookalike')}%
+                            </div>
+                            <div className="text-xs text-blue-700">Look-Alike</div>
                           </div>
                           <div className="text-center p-3 bg-orange-50 rounded-lg">
                             <div className="text-lg font-bold text-orange-600">
