@@ -32,8 +32,9 @@ import {
 } from "lucide-react";
 import type { StudentWithSkills } from "@shared/schema";
 
-interface Candidate360ViewProps {
+interface CandidateFullReportProps {
   student: StudentWithSkills;
+  isOpen: boolean;
   onClose: () => void;
 }
 
@@ -81,7 +82,31 @@ interface InterviewTranscript {
   };
 }
 
-export default function Candidate360View({ student, onClose }: Candidate360ViewProps) {
+interface HackathonRanking {
+  id: string;
+  name: string;
+  organizer: string;
+  date: string;
+  rank: number;
+  totalParticipants: number;
+  category: string;
+  projectTitle: string;
+  techStack: string[];
+  score: number;
+  achievements: string[];
+}
+
+interface EngagementSignal {
+  type: 'practice' | 'contest' | 'project' | 'learning';
+  title: string;
+  streak: number;
+  lastActive: string;
+  totalCount: number;
+  level: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  badgeEarned?: string;
+}
+
+export default function CandidateFullReport({ student, isOpen, onClose }: CandidateFullReportProps) {
   const [activePlayback, setActivePlayback] = useState<string | null>(null);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
   const [currentLine, setCurrentLine] = useState(0);
@@ -187,6 +212,73 @@ export default function Candidate360View({ student, onClose }: Candidate360ViewP
     }
   ];
 
+  const hackathonRankings: HackathonRanking[] = [
+    {
+      id: "hackathon-1",
+      name: "TechFest 2024 Hackathon",
+      organizer: "IIT Bombay",
+      date: "2024-03-15",
+      rank: 3,
+      totalParticipants: 250,
+      category: "AI/ML",
+      projectTitle: "EcoTrack - Smart Waste Management System",
+      techStack: ["React", "Python", "TensorFlow", "Firebase"],
+      score: 92,
+      achievements: ["Best Innovation Award", "People's Choice Award"]
+    },
+    {
+      id: "hackathon-2", 
+      name: "CodeStorm 2024",
+      organizer: "Google Developer Student Clubs",
+      date: "2024-02-20",
+      rank: 1,
+      totalParticipants: 180,
+      category: "Full Stack Development",
+      projectTitle: "StudyBuddy - Collaborative Learning Platform",
+      techStack: ["Next.js", "Node.js", "MongoDB", "Socket.io"],
+      score: 98,
+      achievements: ["First Place Winner", "Best Technical Implementation"]
+    }
+  ];
+
+  const engagementSignals: EngagementSignal[] = [
+    {
+      type: "practice",
+      title: "Daily Coding Practice",
+      streak: 45,
+      lastActive: "2 hours ago",
+      totalCount: 287,
+      level: "expert",
+      badgeEarned: "Coding Ninja"
+    },
+    {
+      type: "contest",
+      title: "Weekly Programming Contests",
+      streak: 12,
+      lastActive: "3 days ago", 
+      totalCount: 52,
+      level: "advanced",
+      badgeEarned: "Contest Master"
+    },
+    {
+      type: "project",
+      title: "GitHub Contributions",
+      streak: 89,
+      lastActive: "1 day ago",
+      totalCount: 156,
+      level: "expert"
+    },
+    {
+      type: "learning",
+      title: "Course Completions",
+      streak: 6,
+      lastActive: "1 week ago",
+      totalCount: 14,
+      level: "intermediate",
+      badgeEarned: "Learning Champion"
+    }
+  ];
+
   const getVerificationBadge = (status: string, daysOld: number) => {
     if (status === 'verified' && daysOld <= 90) {
       return <Badge className="bg-green-100 text-green-800"><Shield className="w-3 h-3 mr-1" />Fresh & Verified</Badge>;
@@ -204,7 +296,7 @@ export default function Candidate360View({ student, onClose }: Candidate360ViewP
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[95vh] overflow-hidden p-0">
         <div className="flex h-full">
           {/* Sidebar - Student Summary */}
@@ -281,11 +373,13 @@ export default function Candidate360View({ student, onClose }: Candidate360ViewP
 
             <div className="p-6">
               <Tabs defaultValue="assessments" className="w-full">
-                <TabsList className="grid w-full grid-cols-5">
+                <TabsList className="grid w-full grid-cols-7">
                   <TabsTrigger value="assessments" className="text-xs">Verified Assessments</TabsTrigger>
-                  <TabsTrigger value="code-playback" className="text-xs">Code Playback</TabsTrigger>
+                  <TabsTrigger value="code-playback" className="text-xs">Code Replay</TabsTrigger>
                   <TabsTrigger value="interviews" className="text-xs">AI Interviews</TabsTrigger>
-                  <TabsTrigger value="written" className="text-xs">Written Answers</TabsTrigger>
+                  <TabsTrigger value="written" className="text-xs">Written Responses</TabsTrigger>
+                  <TabsTrigger value="hackathons" className="text-xs">Hackathons</TabsTrigger>
+                  <TabsTrigger value="engagement" className="text-xs">Engagement</TabsTrigger>
                   <TabsTrigger value="fit-check" className="text-xs">Fit Check</TabsTrigger>
                 </TabsList>
 
@@ -569,6 +663,131 @@ export default function Candidate360View({ student, onClose }: Candidate360ViewP
                         </div>
                       </CardContent>
                     </Card>
+                  </div>
+                </TabsContent>
+
+                {/* Hackathon Rankings */}
+                <TabsContent value="hackathons" className="mt-6">
+                  <div className="grid gap-4">
+                    {hackathonRankings.map((hackathon) => (
+                      <Card key={hackathon.id} className="border-l-4 border-l-purple-500">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-base">{hackathon.name}</CardTitle>
+                            <div className="flex items-center gap-2">
+                              <Badge className={`${
+                                hackathon.rank === 1 ? 'bg-yellow-100 text-yellow-800' :
+                                hackathon.rank <= 3 ? 'bg-orange-100 text-orange-800' :
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                #{hackathon.rank} / {hackathon.totalParticipants}
+                              </Badge>
+                            </div>
+                          </div>
+                          <p className="text-sm text-gray-600">
+                            {hackathon.organizer} • {hackathon.date} • {hackathon.category}
+                          </p>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="mb-4">
+                            <h4 className="font-semibold text-gray-900 mb-2">{hackathon.projectTitle}</h4>
+                            <div className="flex flex-wrap gap-1 mb-3">
+                              {hackathon.techStack.map((tech, index) => (
+                                <Badge key={index} variant="outline" className="text-xs">
+                                  {tech}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div>
+                              <div className="text-2xl font-bold text-purple-600">{hackathon.score}/100</div>
+                              <div className="text-xs text-gray-500">Final Score</div>
+                            </div>
+                            <div>
+                              <div className="text-lg font-semibold text-gray-900">Rank {hackathon.rank}</div>
+                              <div className="text-xs text-gray-500">Final Position</div>
+                            </div>
+                          </div>
+
+                          {hackathon.achievements.length > 0 && (
+                            <div className="bg-purple-50 p-3 rounded-lg">
+                              <h5 className="text-sm font-semibold text-purple-800 mb-2">Achievements</h5>
+                              <div className="space-y-1">
+                                {hackathon.achievements.map((achievement, index) => (
+                                  <div key={index} className="flex items-center gap-2">
+                                    <Award className="w-3 h-3 text-purple-600" />
+                                    <span className="text-sm text-purple-800">{achievement}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+
+                {/* Engagement Signals */}
+                <TabsContent value="engagement" className="mt-6">
+                  <div className="grid gap-4">
+                    {engagementSignals.map((signal, index) => (
+                      <Card key={index} className={`border-l-4 ${
+                        signal.type === 'practice' ? 'border-l-green-500' :
+                        signal.type === 'contest' ? 'border-l-blue-500' :
+                        signal.type === 'project' ? 'border-l-purple-500' :
+                        'border-l-orange-500'
+                      }`}>
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-base">{signal.title}</CardTitle>
+                            <Badge className={`${
+                              signal.level === 'expert' ? 'bg-red-100 text-red-800' :
+                              signal.level === 'advanced' ? 'bg-purple-100 text-purple-800' :
+                              signal.level === 'intermediate' ? 'bg-blue-100 text-blue-800' :
+                              'bg-green-100 text-green-800'
+                            }`}>
+                              {signal.level.toUpperCase()}
+                            </Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-3 gap-4 mb-4">
+                            <div>
+                              <div className="text-2xl font-bold text-blue-600">{signal.streak}</div>
+                              <div className="text-xs text-gray-500">Day Streak</div>
+                            </div>
+                            <div>
+                              <div className="text-lg font-semibold text-gray-900">{signal.totalCount}</div>
+                              <div className="text-xs text-gray-500">Total Count</div>
+                            </div>
+                            <div>
+                              <div className="text-sm font-semibold text-green-600">{signal.lastActive}</div>
+                              <div className="text-xs text-gray-500">Last Active</div>
+                            </div>
+                          </div>
+
+                          {signal.badgeEarned && (
+                            <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+                              <div className="flex items-center gap-2">
+                                <Award className="w-4 h-4 text-yellow-600" />
+                                <span className="text-sm font-semibold text-yellow-800">Badge Earned</span>
+                              </div>
+                              <p className="text-sm text-yellow-700 mt-1">{signal.badgeEarned}</p>
+                            </div>
+                          )}
+
+                          <div className="mt-3">
+                            <Progress value={Math.min(100, (signal.streak / 100) * 100)} className="h-2" />
+                            <div className="text-xs text-gray-500 mt-1">
+                              Consistency Score: {Math.min(100, Math.round((signal.streak / 100) * 100))}%
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
                 </TabsContent>
               </Tabs>

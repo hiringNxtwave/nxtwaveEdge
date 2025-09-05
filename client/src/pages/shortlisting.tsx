@@ -9,6 +9,10 @@ import CodeReplayModal from "@/components/code-replay-modal";
 import CommunicationSampleModal from "@/components/communication-sample-modal";
 import ATSIntegration from "@/components/ats-integration";
 import SidePanelLayout from "@/components/side-panel-layout";
+import TalentBaskets from "@/components/talent-baskets";
+import ZeptoCandidateCard from "@/components/zepto-candidate-card";
+import AnalyticsDashboard from "@/components/analytics-dashboard";
+import CandidateFullReport from "@/components/candidate-360-view";
 import { useShortlist } from "@/contexts/shortlist-context";
 import { 
   Users, 
@@ -34,6 +38,9 @@ export default function ShortlistingPage() {
   const [showATSIntegration, setShowATSIntegration] = useState(false);
   const [selectedCandidatesForATS, setSelectedCandidatesForATS] = useState<StudentWithSkills[]>([]);
   const [showSidePanel, setShowSidePanel] = useState(false);
+  const [showFullReport, setShowFullReport] = useState(false);
+  const [selectedBasket, setSelectedBasket] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState("baskets");
 
   // Fetch students data
   const { data: students = [], isLoading } = useQuery<StudentWithSkills[]>({
@@ -119,13 +126,13 @@ export default function ShortlistingPage() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Shortlisting & Validation</h1>
-                <p className="text-sm text-gray-600">Evidence-based candidate evaluation and selection</p>
+                <h1 className="text-2xl font-bold text-gray-900">NxtWave Talent Platform</h1>
+                <p className="text-sm text-gray-600">Auto-curated talent baskets and evidence-based hiring</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <Badge variant="secondary" className="bg-blue-100 text-blue-700">
-                {shortlistedIds.length} Candidates
+                {shortlistedIds.length} Shortlisted
               </Badge>
               <Badge variant="secondary" className="bg-purple-100 text-purple-700">
                 Avg Match: {avgJdMatch}%
@@ -146,192 +153,110 @@ export default function ShortlistingPage() {
         </div>
       </div>
 
-      {/* Main Content - Side Panel Layout */}
-      <div className="flex-1 flex overflow-hidden">
-        <SidePanelLayout 
-          shortlistedStudents={shortlistedStudents}
-          selectedStudent={selectedStudent}
-          showSidePanel={showSidePanel}
-          onSelectStudent={openSidePanel}
-          onCloseSidePanel={closeSidePanel}
-          onRemoveFromShortlist={removeFromShortlist}
-          onOpenCodeReplay={() => setShowCodeReplay(true)}
-          onOpenCommunicationSample={() => setShowCommunicationSample(true)}
-          generatePredictiveScore={generatePredictiveScore}
-        />
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="validation">Validation Dashboard</TabsTrigger>
-              <TabsTrigger value="bulk-actions">Bulk Actions</TabsTrigger>
+      {/* Main Content */}
+      <div className="flex-1 overflow-hidden">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
+          <div className="bg-white border-b px-6 py-3">
+            <TabsList className="grid w-full grid-cols-4 max-w-2xl">
+              <TabsTrigger value="baskets">Talent Baskets</TabsTrigger>
+              <TabsTrigger value="candidates">Candidate Cards</TabsTrigger>
+              <TabsTrigger value="validation">Validation</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
             </TabsList>
+          </div>
 
-            <TabsContent value="validation" className="space-y-6">
-              {/* Key Metrics */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-2">
-                      <Users className="h-5 w-5 text-blue-600" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Total Candidates</p>
-                        <p className="text-2xl font-bold text-blue-600">{shortlistedStudents.length}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-2">
-                      <Target className="h-5 w-5 text-green-600" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">High Potential</p>
-                        <p className="text-2xl font-bold text-green-600">{highPotentialCount}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-2">
-                      <TrendingUp className="h-5 w-5 text-purple-600" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Avg JD Match</p>
-                        <p className="text-2xl font-bold text-purple-600">{avgJdMatch}%</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle className="h-5 w-5 text-orange-600" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Ready to Interview</p>
-                        <p className="text-2xl font-bold text-orange-600">
-                          {shortlistedStudents.filter(s => generatePredictiveScore(s, 'offer-join') > 75).length}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Candidate Validation Cards */}
-              <div className="space-y-4">
-                {shortlistedStudents.map((student) => (
-                  <Card key={student.id} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-                        {/* Student Info */}
-                        <div className="lg:col-span-3">
-                          <h3 className="text-lg font-semibold mb-2">{student.fullName}</h3>
-                          <div className="space-y-1 text-sm text-gray-600">
-                            <div className="flex items-center">
-                              <span>{student.skills?.slice(0, 2).join(', ')}</span>
-                            </div>
-                            <div className="flex items-center">
-                              <span>Expected: ₹{student.expectedSalaryMin || '6'}-{student.expectedSalaryMax || '8'} LPA</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Predictive Scores */}
-                        <div className="lg:col-span-4 grid grid-cols-2 lg:grid-cols-3 gap-3">
-                          <div className="text-center p-3 bg-purple-50 rounded-lg">
-                            <div className="text-lg font-bold text-purple-600">
-                              {generatePredictiveScore(student, 'jd-match')}%
-                            </div>
-                            <div className="text-xs text-purple-700">JD Match</div>
-                          </div>
-                          <div className="text-center p-3 bg-green-50 rounded-lg">
-                            <div className="text-lg font-bold text-green-600">
-                              {generatePredictiveScore(student, 'offer-join')}%
-                            </div>
-                            <div className="text-xs text-green-700">Offer-Join</div>
-                          </div>
-                          <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                            <div className="text-lg font-bold text-yellow-600">
-                              {generatePredictiveScore(student, 'hire-join')}%
-                            </div>
-                            <div className="text-xs text-yellow-700">Hire-Join</div>
-                          </div>
-                          <div className="text-center p-3 bg-blue-50 rounded-lg">
-                            <div className="text-lg font-bold text-blue-600">
-                              {generatePredictiveScore(student, 'lookalike')}%
-                            </div>
-                            <div className="text-xs text-blue-700">Look-Alike</div>
-                          </div>
-                          <div className="text-center p-3 bg-orange-50 rounded-lg">
-                            <div className="text-lg font-bold text-orange-600">
-                              {generatePredictiveScore(student, 'ramp-risk')}%
-                            </div>
-                            <div className="text-xs text-orange-700">Ramp Risk</div>
-                          </div>
-                        </div>
-
-                        {/* Quick Actions */}
-                        <div className="lg:col-span-3 space-y-2">
-                          <Button 
-                            variant="outline" 
-                            className="w-full text-sm"
-                            onClick={() => openCodeReplay(student)}
-                            data-testid={`button-code-replay-${student.id}`}
-                          >
-                            <Play className="w-4 h-4 mr-2" />
-                            2-min Code Replay
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            className="w-full text-sm"
-                            onClick={() => openCommunicationSample(student)}
-                            data-testid={`button-communication-sample-${student.id}`}
-                          >
-                            <MessageSquare className="w-4 h-4 mr-2" />
-                            Communication Sample
-                          </Button>
-                        </div>
-
-                        {/* Expectation Match */}
-                        <div className="lg:col-span-2 space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm">Salary</span>
-                            <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
-                              ✓ Match
-                            </Badge>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm">Location</span>
-                            <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">
-                              ✓ Match
-                            </Badge>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm">Start Date</span>
-                            <Badge variant="secondary" className="bg-yellow-100 text-yellow-700 text-xs">
-                              Flexible
-                            </Badge>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="bulk-actions">
-              <ShortlistingDashboard 
-                students={students}
-                onBulkAction={handleBulkAction}
+          <div className="flex-1 overflow-auto">
+            <TabsContent value="baskets" className="p-6 h-full">
+              <TalentBaskets 
+                onSelectBasket={(basket) => {
+                  setSelectedBasket(basket);
+                  setActiveTab("candidates");
+                }}
               />
             </TabsContent>
-          </Tabs>
-        )}
+
+            <TabsContent value="candidates" className="p-6 h-full">
+              <div className="space-y-6">
+                {selectedBasket && (
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-xl font-bold text-blue-900">{selectedBasket.title}</h2>
+                        <p className="text-blue-700">{selectedBasket.candidateCount} candidates • {selectedBasket.avgJdMatch}% avg match</p>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setSelectedBasket(null)}
+                        data-testid="button-clear-basket"
+                      >
+                        View All Candidates
+                      </Button>
+                    </div>
+                  </div>
+                )}
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {(selectedBasket ? students.slice(0, selectedBasket.candidateCount) : students).map((student) => (
+                    <ZeptoCandidateCard
+                      key={student.id}
+                      student={student}
+                      jdMatch={generatePredictiveScore(student, 'jd-match')}
+                      ojrProbability={generatePredictiveScore(student, 'offer-join')}
+                      salaryFit={Math.min(95, Math.max(60, 80 + (parseInt(student.id.slice(-2), 16) % 30) - 15))}
+                      locationFit={Math.min(98, Math.max(70, 85 + (parseInt(student.id.slice(-3, -1), 16) % 25) - 12))}
+                      onViewProfile={() => {
+                        setSelectedStudent(student);
+                        setShowFullReport(true);
+                      }}
+                      onShortlist={() => {
+                        if (shortlistedIds.includes(student.id)) {
+                          removeFromShortlist(student.id);
+                        } else {
+                          addToShortlist(student.id);
+                        }
+                      }}
+                      isShortlisted={shortlistedIds.includes(student.id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="validation" className="space-y-6 p-6 h-full">
+              <SidePanelLayout 
+                shortlistedStudents={shortlistedStudents}
+                selectedStudent={selectedStudent}
+                showSidePanel={showSidePanel}
+                onSelectStudent={openSidePanel}
+                onCloseSidePanel={closeSidePanel}
+                onRemoveFromShortlist={removeFromShortlist}
+                onOpenCodeReplay={() => setShowCodeReplay(true)}
+                onOpenCommunicationSample={() => setShowCommunicationSample(true)}
+                generatePredictiveScore={generatePredictiveScore}
+              />
+            </TabsContent>
+
+            <TabsContent value="analytics" className="p-6 h-full">
+              <AnalyticsDashboard />
+            </TabsContent>
+          </div>
+        </Tabs>
       </div>
 
       {/* Modals */}
+      {selectedStudent && (
+        <>
+          <CandidateFullReport
+            student={selectedStudent}
+            isOpen={showFullReport}
+            onClose={() => {
+              setShowFullReport(false);
+              setSelectedStudent(null);
+            }}
+          />
+        </>
+      )}
+
       {selectedStudent && showCodeReplay && (
         <CodeReplayModal 
           student={selectedStudent}
