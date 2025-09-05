@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AssessmentModal from "@/components/assessment-modal";
+import RoleMatchRationale from "@/components/role-match-rationale";
 import type { StudentWithSkills } from "@shared/schema";
 
 interface AdvancedStudentsTableProps {
@@ -60,6 +61,10 @@ export default function AdvancedStudentsTable({
     score: number; 
     level: string; 
     student: StudentWithSkills;
+  } | null>(null);
+  const [roleMatchRationaleStudent, setRoleMatchRationaleStudent] = useState<{
+    student: StudentWithSkills;
+    matchPercentage: number;
   } | null>(null);
 
   const { data: studentsData, isLoading } = useQuery({
@@ -98,10 +103,29 @@ export default function AdvancedStudentsTable({
     };
   };
 
-  const sortedStudents = students.map((student: any) => ({
-    ...student,
-    ...calculateAssessmentScores(student)
-  })).sort((a: any, b: any) => {
+  // Calculate role match percentage
+  const calculateRoleMatch = (student: any, scores: any) => {
+    const cgpaValue = typeof student.cgpa === 'string' ? parseFloat(student.cgpa) : student.cgpa || 7.5;
+    const averageAssessmentScore = (scores.dsaScore + scores.aptitudeScore + scores.communicationScore) / 3;
+    
+    // Weighted calculation
+    const skillWeight = 0.4;
+    const cgpaWeight = 0.3;
+    const overallWeight = 0.3;
+    
+    const rawScore = (averageAssessmentScore * skillWeight) + ((cgpaValue/10)*100 * cgpaWeight) + (scores.overallScore * overallWeight);
+    return Math.min(95, Math.max(60, Math.round(rawScore) || 75));
+  };
+
+  const sortedStudents = students.map((student: any) => {
+    const scores = calculateAssessmentScores(student);
+    const roleMatch = calculateRoleMatch(student, scores);
+    return {
+      ...student,
+      ...scores,
+      roleMatch
+    };
+  }).sort((a: any, b: any) => {
     const aValue = a[sortField] || 0;
     const bValue = b[sortField] || 0;
     return sortOrder === "desc" ? bValue - aValue : aValue - bValue;
@@ -239,6 +263,17 @@ export default function AdvancedStudentsTable({
                     )}
                   </div>
                 </TableHead>
+                <TableHead 
+                  className="cursor-pointer hover:bg-gray-50 px-4 py-2"
+                  onClick={() => handleSort('roleMatch')}
+                >
+                  <div className="flex items-center gap-1">
+                    Role Match
+                    {sortField === 'roleMatch' && (
+                      sortOrder === 'desc' ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />
+                    )}
+                  </div>
+                </TableHead>
                 <TableHead>Verification</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -247,7 +282,7 @@ export default function AdvancedStudentsTable({
               {isLoading ? (
                 Array.from({ length: 10 }).map((_, i) => (
                   <TableRow key={i}>
-                    <TableCell colSpan={8}>
+                    <TableCell colSpan={9}>
                       <div className="flex items-center space-x-4">
                         <div className="skeleton h-10 w-10 rounded-full"></div>
                         <div className="space-y-2">
@@ -260,7 +295,7 @@ export default function AdvancedStudentsTable({
                 ))
               ) : sortedStudents.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-8">
+                  <TableCell colSpan={9} className="text-center py-8">
                     <div className="text-gray-500">
                       <Trophy className="w-12 h-12 mx-auto mb-4 opacity-20" />
                       <p>No students found matching your criteria.</p>
@@ -352,6 +387,23 @@ export default function AdvancedStudentsTable({
                     <TableCell>
                       <Badge variant="outline" className="font-mono">
                         {student.cgpa?.toFixed(2) || "N/A"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge 
+                        className={cn("font-mono cursor-pointer hover:shadow-md transition-shadow flex items-center gap-1", 
+                          student.roleMatch >= 85 ? 'text-green-800 bg-green-50' : 
+                          student.roleMatch >= 70 ? 'text-yellow-800 bg-yellow-50' : 
+                          'text-orange-800 bg-orange-50'
+                        )}
+                        onClick={() => setRoleMatchRationaleStudent({
+                          student: student as StudentWithSkills,
+                          matchPercentage: student.roleMatch
+                        })}
+                        data-testid={`role-match-${student.id}`}
+                      >
+                        {student.roleMatch}%
+                        <Target className="w-3 h-3" />
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -477,6 +529,15 @@ export default function AdvancedStudentsTable({
           }}
           student={selectedAssessment.student}
           onClose={() => setSelectedAssessment(null)}
+        />
+      )}
+      
+      {/* Role Match Rationale Modal */}
+      {roleMatchRationaleStudent && (
+        <RoleMatchRationale 
+          student={roleMatchRationaleStudent.student}
+          matchPercentage={roleMatchRationaleStudent.matchPercentage}
+          onClose={() => setRoleMatchRationaleStudent(null)}
         />
       )}
     </Card>

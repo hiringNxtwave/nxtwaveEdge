@@ -1,12 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, GraduationCap, Check, Plus, Shield, Eye } from "lucide-react";
+import { Star, MapPin, GraduationCap, Check, Plus, Shield, Eye, Info } from "lucide-react";
 import type { StudentWithSkills } from "@shared/schema";
 import { Link } from "wouter";
 import { useShortlist } from "@/contexts/shortlist-context";
 import { useState } from "react";
 import AssessmentModal from "@/components/assessment-modal";
+import RoleMatchRationale from "@/components/role-match-rationale";
 
 interface StudentCardProps {
   student: StudentWithSkills;
@@ -16,6 +17,7 @@ interface StudentCardProps {
 export default function StudentCard({ student, showFullInfo = false }: StudentCardProps) {
   const { isShortlisted, addToShortlist, removeFromShortlist } = useShortlist();
   const [selectedAssessment, setSelectedAssessment] = useState<{type: string, score: number, level: string} | null>(null);
+  const [showRoleMatchRationale, setShowRoleMatchRationale] = useState(false);
   
   // Use student ID as seed for consistent ratings
   const seed = parseInt(student.id.slice(-8), 16);
@@ -186,10 +188,13 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               <div className="text-xs text-gray-600 mb-3">
                 Industry-level Assessment
               </div>
-              <div className={`text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap ${
-                matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
-              }`}>
+              <div className={`text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap flex items-center gap-2 cursor-pointer hover:shadow-md transition-all duration-200 ${
+                matchPercentage >= 85 ? 'text-green-800 bg-green-100 hover:bg-green-200' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100 hover:bg-yellow-200' : 'text-orange-800 bg-orange-100 hover:bg-orange-200'
+              }`}
+                   onClick={() => setShowRoleMatchRationale(true)}
+                   data-testid={`button-role-match-info-${student.id}`}>
                 {matchPercentage}% Role Match
+                <Info className="w-3 h-3 opacity-60 hover:opacity-100" />
               </div>
             </div>
           </div>
@@ -239,6 +244,15 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           assessment={selectedAssessment} 
           student={student}
           onClose={() => setSelectedAssessment(null)}
+        />
+      )}
+      
+      {/* Role Match Rationale Modal */}
+      {showRoleMatchRationale && (
+        <RoleMatchRationale 
+          student={student}
+          matchPercentage={matchPercentage}
+          onClose={() => setShowRoleMatchRationale(false)}
         />
       )}
     </Card>
