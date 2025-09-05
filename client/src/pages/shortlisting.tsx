@@ -106,7 +106,7 @@ export default function ShortlistingPage() {
     );
   }
 
-  const shortlistedStudents = students.filter(student => shortlistedIds.includes(student.id));
+  const shortlistedStudents = students.filter(student => shortlistedIds.has(student.id));
   const highPotentialCount = shortlistedStudents.filter(s => generatePredictiveScore(s, 'jd-match') > 85).length;
   const avgJdMatch = shortlistedStudents.length > 0 
     ? Math.round(shortlistedStudents.reduce((acc, s) => acc + generatePredictiveScore(s, 'jd-match'), 0) / shortlistedStudents.length)
@@ -132,7 +132,7 @@ export default function ShortlistingPage() {
             </div>
             <div className="flex items-center space-x-4">
               <Badge variant="secondary" className="bg-blue-100 text-blue-700">
-                {shortlistedIds.length} Shortlisted
+                {shortlistedIds.size} Shortlisted
               </Badge>
               <Badge variant="secondary" className="bg-purple-100 text-purple-700">
                 Avg Match: {avgJdMatch}%
@@ -209,13 +209,13 @@ export default function ShortlistingPage() {
                         setShowFullReport(true);
                       }}
                       onShortlist={() => {
-                        if (shortlistedIds.includes(student.id)) {
+                        if (shortlistedIds.has(student.id)) {
                           removeFromShortlist(student.id);
                         } else {
                           addToShortlist(student.id);
                         }
                       }}
-                      isShortlisted={shortlistedIds.includes(student.id)}
+                      isShortlisted={shortlistedIds.has(student.id)}
                     />
                   ))}
                 </div>

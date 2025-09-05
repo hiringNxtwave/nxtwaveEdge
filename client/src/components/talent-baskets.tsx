@@ -153,8 +153,8 @@ export default function TalentBaskets({ onSelectBasket }: TalentBasketsProps) {
     }
   };
 
-  const uniqueLocations = [...new Set(talentBaskets.map(b => b.location))];
-  const uniqueRoles = [...new Set(talentBaskets.flatMap(b => b.roles))];
+  const uniqueLocations = Array.from(new Set(talentBaskets.map(b => b.location)));
+  const uniqueRoles = Array.from(new Set(talentBaskets.flatMap(b => b.roles)));
 
   return (
     <div className="space-y-6">

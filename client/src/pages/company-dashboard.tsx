@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
-import { type Company, type ContactRequest } from "@shared/schema";
+import { type Company, type ContactRequest, type CompanyWithUser } from "@shared/schema";
 import Header from "@/components/header";
 import CompanyStats from "@/components/company-stats";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,17 +16,22 @@ export default function CompanyDashboard() {
   
   const { user } = useAuth();
 
-  const { data: company, isLoading: companyLoading } = useQuery({
+  const { data: company, isLoading: companyLoading } = useQuery<CompanyWithUser>({
     queryKey: ["/api/company"],
     enabled: !!user,
   });
 
-  const { data: contactRequests, isLoading: requestsLoading } = useQuery({
+  const { data: contactRequests, isLoading: requestsLoading } = useQuery<ContactRequest[]>({
     queryKey: ["/api/contact-requests"],
     enabled: !!company,
   });
 
-  const { data: stats } = useQuery({
+  const { data: stats } = useQuery<{
+    totalViews: number;
+    contactsSent: number;
+    responseRate: number;
+    activeSearches: number;
+  }>({
     queryKey: ["/api/company/stats"],
     enabled: !!company,
   });
@@ -78,7 +83,7 @@ export default function CompanyDashboard() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2" data-testid="text-company-name">
-            {company.name} Dashboard
+            {company?.name || 'Company'} Dashboard
           </h1>
           <p className="text-gray-600 dark:text-gray-300">
             Manage your talent recruitment and company profile
@@ -86,7 +91,7 @@ export default function CompanyDashboard() {
         </div>
 
         {/* Stats Overview */}
-        <CompanyStats stats={stats || { totalViews: 0, contactsSent: 0, responseRate: 0, activeSearches: 0 }} />
+        <CompanyStats stats={stats ?? { totalViews: 0, contactsSent: 0, responseRate: 0, activeSearches: 0 }} />
 
         <div className="grid lg:grid-cols-3 gap-6 mt-8">
           {/* Recent Contact Requests */}
@@ -121,7 +126,7 @@ export default function CompanyDashboard() {
                       </div>
                     ))}
                   </div>
-                ) : !contactRequests || contactRequests.length === 0 ? (
+                ) : !contactRequests || contactRequests?.length === 0 ? (
                   <div className="text-center py-8" data-testid="text-no-requests">
                     <MessageSquare className="mx-auto h-8 w-8 text-gray-400 mb-2" />
                     <p className="text-gray-500 dark:text-gray-400">
@@ -133,12 +138,12 @@ export default function CompanyDashboard() {
                   </div>
                 ) : (
                   <div className="space-y-4" data-testid="list-contact-requests">
-                    {contactRequests?.slice(0, 5).map((request: ContactRequest & { studentName: string }) => (
+                    {contactRequests?.slice(0, 5).map((request) => (
                       <div key={request.id} className="flex items-center gap-4 p-3 border border-gray-200 dark:border-gray-700 rounded-lg" data-testid={`request-${request.id}`}>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <h4 className="font-medium text-gray-900 dark:text-white" data-testid={`text-request-student-${request.id}`}>
-                              {request.studentName}
+                              {(request as any).studentName || 'Student'}
                             </h4>
                             <Badge 
                               variant={
@@ -151,10 +156,10 @@ export default function CompanyDashboard() {
                             </Badge>
                           </div>
                           <p className="text-sm text-gray-600 dark:text-gray-300" data-testid={`text-request-message-${request.id}`}>
-                            {request.message.substring(0, 100)}...
+                            {request.message?.substring(0, 100) || 'No message'}...
                           </p>
                           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1" data-testid={`text-request-date-${request.id}`}>
-                            {new Date(request.createdAt).toLocaleDateString()}
+                            {request.createdAt ? new Date(request.createdAt).toLocaleDateString() : 'N/A'}
                           </p>
                         </div>
                         <Button variant="ghost" size="sm" data-testid={`button-view-request-${request.id}`}>

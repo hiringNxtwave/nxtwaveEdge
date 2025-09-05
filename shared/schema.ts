@@ -457,6 +457,9 @@ export type IdVerification = typeof idVerifications.$inferSelect;
 export type StudentWithSkills = Student & {
   skills: (StudentSkill & { skill: Skill })[];
   projects: Project[];
+  fullName: string;
+  institution: string;
+  course: string;
 };
 
 export type CompanyWithUser = Company & {

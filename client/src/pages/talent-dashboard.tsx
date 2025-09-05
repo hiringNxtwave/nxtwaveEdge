@@ -172,9 +172,9 @@ export default function TalentDashboard() {
                     >
                       <CheckCircle className="w-4 h-4" />
                       Shortlisting & Validation
-                      {shortlistedIds.length > 0 && (
+                      {shortlistedIds.size > 0 && (
                         <Badge variant="secondary" className="ml-1 bg-white text-purple-600">
-                          {shortlistedIds.length}
+                          {shortlistedIds.size}
                         </Badge>
                       )}
                     </Button>

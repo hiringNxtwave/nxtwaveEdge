@@ -220,6 +220,9 @@ export class DatabaseStorage implements IStorage {
           ...student,
           skills: [],
           projects: [],
+          fullName: `${student.firstName} ${student.lastName}`,
+          institution: student.university,
+          course: `${student.degree} in ${student.major}`,
         });
       }
       
@@ -262,6 +265,9 @@ export class DatabaseStorage implements IStorage {
       ...student,
       skills: [],
       projects: [],
+      fullName: `${student.firstName} ${student.lastName}`,
+      institution: student.university,
+      course: `${student.degree} in ${student.major}`,
     };
 
     for (const row of results) {

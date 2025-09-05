@@ -230,7 +230,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               <Button 
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold" 
                 size="sm" 
-                onClick={() => setShowCandidateFullReport(true))
+                onClick={() => setShowCandidateFullReport(true)}
                 data-testid={`button-full-report-${student.id}`}
               >
                 <Eye className="w-4 h-4 mr-1" />
@@ -300,6 +300,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
       {showCandidateFullReport && (
         <CandidateFullReport 
           student={student}
+          isOpen={showCandidateFullReport}
           onClose={() => setShowCandidateFullReport(false)}
         />
       )}

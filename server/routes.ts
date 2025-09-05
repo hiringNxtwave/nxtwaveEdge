@@ -30,6 +30,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Company routes
+  app.get('/api/company', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const company = await storage.getCompanyByUserId(userId);
+      res.json(company);
+    } catch (error) {
+      console.error("Error fetching company:", error);
+      res.status(500).json({ message: "Failed to fetch company" });
+    }
+  });
+
   app.get('/api/company/profile', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
@@ -221,6 +232,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching contact requests:", error);
       res.status(500).json({ message: "Failed to fetch contact requests" });
+    }
+  });
+
+  app.get('/api/company/stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const company = await storage.getCompanyByUserId(userId);
+      
+      if (!company) {
+        return res.status(400).json({ message: "Company profile required" });
+      }
+
+      // Return mock stats for now
+      const stats = {
+        totalViews: 142,
+        contactsSent: 28,
+        responseRate: 67,
+        activeSearches: 5
+      };
+      
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching company stats:", error);
+      res.status(500).json({ message: "Failed to fetch company stats" });
     }
   });
 

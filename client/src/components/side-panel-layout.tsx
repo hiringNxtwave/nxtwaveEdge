@@ -195,9 +195,9 @@ export default function SidePanelLayout({
               <div>
                 <h3 className="text-lg font-semibold mb-3">Skills & Expertise</h3>
                 <div className="flex flex-wrap gap-2">
-                  {selectedStudent.skills?.map((skill, index) => (
+                  {selectedStudent.skills?.map((skillWithData, index) => (
                     <Badge key={index} variant="secondary" className="text-sm">
-                      {skill}
+                      {skillWithData.skill.name}
                     </Badge>
                   ))}
                 </div>

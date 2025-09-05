@@ -165,9 +165,9 @@ export default function ZeptoCandidateCard({
             </div>
           ) : (
             <div className="flex flex-wrap gap-1">
-              {student.skills?.slice(0, 4).map((skill, index) => (
+              {student.skills?.slice(0, 4).map((skillWithData, index) => (
                 <Badge key={index} variant="outline" className="text-xs px-2 py-1">
-                  {skill}
+                  {skillWithData.skill.name}
                 </Badge>
               ))}
               {student.skills && student.skills.length > 4 && (
