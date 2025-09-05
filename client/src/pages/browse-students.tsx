@@ -71,50 +71,18 @@ export default function BrowseStudents() {
   // Smart discovery mutation
   const smartDiscoveryMutation = useMutation({
     mutationFn: async (requirements: any) => {
-      console.log("Smart Discovery: Sending requirements:", requirements);
-      try {
-        const response = await apiRequest("POST", "/api/students/smart-discovery", requirements);
-        console.log("Smart Discovery: Response received", response.status);
-        const data = await response.json();
-        console.log("Smart Discovery: Data received:", data);
-        return data;
-      } catch (error) {
-        console.error("Smart Discovery: API request failed:", error);
-        throw error;
-      }
+      return await apiRequest("/api/students/smart-discovery", {
+        method: "POST",
+        body: JSON.stringify(requirements),
+      });
     },
     onSuccess: (data) => {
-      console.log("Smart Discovery: Success with", data.length, "results");
       setSmartResults(data);
       setIsUsingSmartResults(true);
       setShowSmartDiscovery(false);
     },
     onError: (error) => {
       console.error("Smart discovery failed:", error);
-      
-      // More specific error handling
-      if (error.message.includes("401")) {
-        console.log("Authentication required - redirecting to login");
-        window.location.href = "/api/login";
-        return;
-      }
-      
-      if (error.message.includes("Unauthorized")) {
-        console.log("User not authorized - redirecting to login");
-        window.location.href = "/api/login";
-        return;
-      }
-      
-      // Handle authentication errors gracefully
-      if (error.message.includes("Unexpected token") && error.message.includes("<!DOCTYPE")) {
-        // This indicates we got HTML instead of JSON, likely an auth redirect
-        console.log("Got HTML instead of JSON - likely auth redirect");
-        window.location.href = "/api/login";
-        return;
-      }
-      
-      // Show user-friendly error
-      alert(`Smart Discovery failed: ${error.message}. Please try again or contact support.`);
     },
   });
 
@@ -183,16 +151,7 @@ export default function BrowseStudents() {
             {isAuthenticated && (
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => {
-                    console.log("Smart Discovery button clicked");
-                    console.log("Is authenticated:", isAuthenticated);
-                    if (!isAuthenticated) {
-                      console.log("User not authenticated, redirecting to login");
-                      window.location.href = "/api/login";
-                      return;
-                    }
-                    setShowSmartDiscovery(true);
-                  }}
+                  onClick={() => setShowSmartDiscovery(true)}
                   className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold"
                   data-testid="button-smart-discovery"
                 >

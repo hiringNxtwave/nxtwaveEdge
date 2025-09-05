@@ -1147,104 +1147,103 @@ function inorderTraversal(root) {
     workMode: string;
     maxResults: number;
   }): Promise<StudentWithSkills[]> {
-    console.log("Smart Discovery Storage: Starting candidate curation");
-    console.log("Smart Discovery Storage: Requirements:", requirements);
-    
     try {
-      // Start with a simple query first
-      console.log("Smart Discovery Storage: Building initial query");
+      // Build dynamic query based on requirements
+      let query = db
+        .select({
+          student: students,
+          skills: sql<string>`STRING_AGG(DISTINCT ${skills.name}, ', ') AS skills`,
+          skillsArray: sql<any>`JSON_AGG(DISTINCT jsonb_build_object(
+            'id', ${skills.id},
+            'name', ${skills.name},
+            'category', ${skills.category},
+            'proficiencyLevel', ${studentSkills.proficiencyLevel},
+            'assessmentScore', ${studentSkills.assessmentScore}
+          )) AS skillsArray`
+        })
+        .from(students)
+        .leftJoin(studentSkills, eq(students.id, studentSkills.studentId))
+        .leftJoin(skills, eq(studentSkills.skillId, skills.id))
+        .groupBy(students.id);
+
+      // Apply filters based on requirements
+      const conditions = [];
       
-      // Simple approach: get all students and calculate scores later
-      const allStudents = await this.getStudents({
-        limit: Math.min(requirements.maxResults * 5, 1000) // Get more students to rank
-      });
-      
-      console.log("Smart Discovery Storage: Retrieved", allStudents.length, "students for ranking");
-      
-      if (allStudents.length === 0) {
-        console.log("Smart Discovery Storage: No students found, returning empty array");
-        return [];
+      // CGPA filter
+      if (requirements.minCGPA > 6.0) {
+        conditions.push(gte(students.cgpa, requirements.minCGPA.toString()));
       }
       
-      // Calculate fit scores and sort
-      const studentsWithScores = allStudents.map(student => {
-        const fitScore = this.calculateSimpleFitScore(student, requirements);
-        return {
-          ...student,
-          fitScore
-        };
-      });
+      // College tier preference filter
+      if (requirements.collegePreference !== "any") {
+        switch (requirements.collegePreference) {
+          case "iit-only":
+            conditions.push(ilike(students.university, "%IIT%"));
+            break;
+          case "iit-nit-only":
+            conditions.push(sql`(${students.university} ILIKE '%IIT%' OR ${students.university} ILIKE '%NIT%')`);
+            break;
+          case "tier1-plus":
+            conditions.push(sql`(${students.university} ILIKE '%IIT%' OR ${students.university} ILIKE '%NIT%' OR ${students.university} ILIKE '%IIIT%' OR ${students.university} ILIKE '%BITS%' OR ${students.university} ILIKE '%VIT%' OR ${students.university} ILIKE '%SRM%' OR ${students.university} ILIKE '%DTU%' OR ${students.university} ILIKE '%Manipal%')`);
+            break;
+        }
+      }
       
-      console.log("Smart Discovery Storage: Calculated fit scores for all students");
-      
-      // Sort by fit score and take top results
+      // Location preference filter (if locations specified)
+      if (requirements.locations.length > 0) {
+        const locationConditions = requirements.locations.map(loc => 
+          sql`(${students.location} ILIKE ${'%' + loc + '%'} OR ${students.preferredLocations} ILIKE ${'%' + loc + '%'})`
+        );
+        conditions.push(sql`(${sql.join(locationConditions, sql` OR `)})`);
+      }
+
+      // Apply all conditions
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions)) as any;
+      }
+
+      // Execute query with limit
+      const rawResults = await query.limit(Math.min(requirements.maxResults * 3, 1000)); // Get more to rank
+
+      // Transform and calculate fit scores
+      const studentsWithScores = rawResults
+        .filter(result => result.student) // Ensure student exists
+        .map(result => {
+          const student = result.student;
+          const studentSkillsArray = result.skillsArray || [];
+          
+          // Calculate comprehensive fit score
+          const fitScore = this.calculateSmartFitScore(student, studentSkillsArray, requirements);
+          
+          return {
+            ...student,
+            skills: result.skills || "",
+            skillsArray: studentSkillsArray,
+            fitScore,
+            projects: [] // Will be populated separately if needed
+          };
+        });
+
+      // Sort by fit score (highest first) and take top results
       const sortedResults = studentsWithScores
         .sort((a, b) => b.fitScore - a.fitScore)
         .slice(0, requirements.maxResults);
-        
-      console.log("Smart Discovery Storage: Returning top", sortedResults.length, "candidates");
-      
-      return sortedResults as StudentWithSkills[];
+
+      // Format the results to match StudentWithSkills interface
+      return sortedResults.map(student => ({
+        ...student,
+        projects: [], // Can be populated later if needed
+        cgpa: student.cgpa?.toString() || "7.0"
+      })) as StudentWithSkills[];
 
     } catch (error) {
       console.error("Error in smart candidate curation:", error);
-      console.error("Error stack:", error.stack);
       // Fallback to basic student search if smart search fails
       return this.getStudents({
         minCgpa: requirements.minCGPA,
         limit: requirements.maxResults
       });
     }
-  }
-
-  private calculateSimpleFitScore(
-    student: any,
-    requirements: {
-      role: string;
-      skills: string[];
-      minCGPA: number;
-      salaryRange: [number, number];
-      locations: string[];
-      collegePreference: string;
-      urgency: string;
-      workMode: string;
-    }
-  ): number {
-    let score = 0;
-    
-    // 1. CGPA Score (40% weight) - Most important for quick ranking
-    const cgpa = parseFloat(student.cgpa?.toString() || "7");
-    const cgpaScore = Math.min(100, (cgpa / 10) * 100);
-    score += cgpaScore * 0.40;
-    
-    // 2. Skills Match (30% weight) - Basic keyword matching
-    if (requirements.skills && requirements.skills.length > 0 && student.skills) {
-      const studentSkillsLower = student.skills.toLowerCase();
-      const matchedSkills = requirements.skills.filter(skill => 
-        studentSkillsLower.includes(skill.toLowerCase())
-      );
-      const skillsMatchPercent = (matchedSkills.length / requirements.skills.length) * 100;
-      score += skillsMatchPercent * 0.30;
-    } else {
-      score += 60 * 0.30; // Default score if no skills specified
-    }
-    
-    // 3. College Reputation (20% weight)
-    const collegeScore = this.calculateCollegeScore(student.university);
-    score += collegeScore * 0.20;
-    
-    // 4. Location Match (10% weight)
-    let locationScore = 50; // Default score
-    if (requirements.locations && requirements.locations.length > 0) {
-      const hasLocationMatch = requirements.locations.some(loc =>
-        student.location?.toLowerCase().includes(loc.toLowerCase()) ||
-        student.preferredLocations?.toLowerCase().includes(loc.toLowerCase())
-      );
-      locationScore = hasLocationMatch ? 100 : 20;
-    }
-    score += locationScore * 0.10;
-    
-    return Math.min(100, Math.max(0, score));
   }
 
   private calculateSmartFitScore(

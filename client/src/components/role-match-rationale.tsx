@@ -37,7 +37,7 @@ interface HiringInsight {
 
 export default function RoleMatchRationale({ student, matchPercentage, onClose }: RoleMatchRationaleProps) {
   // Fetch role match data from backend
-  const { data: roleMatchData, isLoading, error } = useQuery({
+  const { data: roleMatchData, isLoading } = useQuery({
     queryKey: ['/api/role-match', student.id],
     queryFn: async () => {
       const response = await fetch(`/api/role-match/${student.id}`, {
@@ -51,23 +51,16 @@ export default function RoleMatchRationale({ student, matchPercentage, onClose }
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Include credentials for authentication
       });
       
       if (!response.ok) {
-        throw new Error(`Failed to fetch role match data: ${response.status} ${response.statusText}`);
+        throw new Error('Failed to fetch role match data');
       }
       
       return response.json();
     },
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    retry: false, // Don't retry on error to see the actual issue
   });
-
-  // Log any errors for debugging
-  if (error) {
-    console.error('Role match error:', error);
-  }
   // Calculate individual assessment scores (same logic as student card)
   const seed = parseInt(student.id.slice(-8), 16);
   const generateSkillScore = (offset: number) => {

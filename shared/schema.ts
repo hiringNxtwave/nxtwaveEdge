@@ -79,7 +79,6 @@ export const students = pgTable("students", {
   // Student preferences and salary expectations
   expectedSalaryMin: integer("expected_salary_min"), // in thousands (e.g., 800 for 8LPA)
   expectedSalaryMax: integer("expected_salary_max"), // in thousands (e.g., 1200 for 12LPA)
-  marketEligibleSalary: integer("market_eligible_salary"), // AI-calculated market rate based on skills/performance
   preferredRoles: text("preferred_roles"), // JSON array of preferred roles
   preferredLocations: text("preferred_locations"), // JSON array of preferred locations
   preferredCompanySize: varchar("preferred_company_size"), // startup, mid-size, large, enterprise

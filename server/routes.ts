@@ -151,9 +151,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Smart talent discovery endpoint
   app.post('/api/students/smart-discovery', isAuthenticated, async (req, res) => {
     try {
-      console.log("Smart Discovery: Request received");
-      console.log("Smart Discovery: Request body:", req.body);
-      
       const {
         role,
         experience,
@@ -167,32 +164,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         workMode
       } = req.body;
 
-      console.log("Smart Discovery: Calling storage.getSmartCuratedCandidates");
-      
       const curatedCandidates = await storage.getSmartCuratedCandidates({
         role,
         experience,
-        skills: skills || [],
-        minCGPA: minCGPA || 7.0,
-        salaryRange: salaryRange || [6, 15],
-        locations: locations || [],
-        collegePreference: collegePreference || "any",
-        urgency: urgency || "normal",
-        teamSize: teamSize || 5,
-        workMode: workMode || "hybrid",
+        skills,
+        minCGPA,
+        salaryRange,
+        locations,
+        collegePreference,
+        urgency,
+        teamSize,
+        workMode,
         maxResults: 50
       });
 
-      console.log("Smart Discovery: Found", curatedCandidates.length, "candidates");
       res.json(curatedCandidates);
     } catch (error) {
       console.error("Error in smart discovery:", error);
-      console.error("Error stack:", error.stack);
-      res.status(500).json({ 
-        message: "Failed to get smart discovery results", 
-        error: error.message,
-        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
-      });
+      res.status(500).json({ message: "Failed to get smart discovery results" });
     }
   });
 

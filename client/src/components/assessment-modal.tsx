@@ -28,23 +28,6 @@ interface AssessmentQuestion {
   options?: string[];
   selectedOption?: string;
   correctOption?: string;
-  interviewRecording?: {
-    videoUrl: string;
-    duration: string;
-    sentimentAnalysis: {
-      confidence: number;
-      enthusiasm: number;
-      clarity: number;
-      nervousness: number;
-      overallScore: number;
-      keyInsights: string[];
-      emotionalJourney: Array<{
-        timestamp: string;
-        emotion: string;
-        intensity: number;
-      }>;
-    };
-  };
 }
 
 // Sample assessment data based on assessment type
@@ -174,7 +157,7 @@ Step 6: Finished Messages
         difficulty: "Hard"
       }
     ],
-    "Interview Performance": [
+    "Communication": [
       {
         id: "interview_1", 
         question: "Tell me about a challenging project you worked on and how you overcame the difficulties.",
@@ -216,33 +199,7 @@ Our team of 4 had to build a full-stack e-commerce mobile app in 4 months. Midwa
         correctAnswer: "Excellent response: Specific example, clear challenge description, detailed solution approach, quantified results, and meaningful lessons learned. Shows leadership, problem-solving, and technical skills.",
         isCorrect: score >= 85,
         timeTaken: Math.floor(8 + rand(5) * 4), // 8-12 minutes
-        difficulty: "Medium",
-        interviewRecording: {
-          duration: "12:34",
-          audioUrl: "/api/recordings/interview_1_student.mp3",
-          sentimentAnalysis: {
-            overallScore: 8.2,
-            confidence: 0.87,
-            enthusiasm: 0.92,
-            clarity: 0.84,
-            nervousness: 0.23,
-            sentiment: "Positive",
-            keyInsights: [
-              "High confidence when discussing technical solutions",
-              "Shows genuine enthusiasm about problem-solving",
-              "Clear articulation of complex concepts",
-              "Minimal nervousness indicators",
-              "Strong storytelling structure"
-            ],
-            emotionalJourney: [
-              { timestamp: "0:30", emotion: "Confident", intensity: 0.8 },
-              { timestamp: "2:15", emotion: "Enthusiastic", intensity: 0.9 },
-              { timestamp: "5:20", emotion: "Reflective", intensity: 0.7 },
-              { timestamp: "8:45", emotion: "Proud", intensity: 0.85 },
-              { timestamp: "11:20", emotion: "Optimistic", intensity: 0.9 }
-            ]
-          }
-        }
+        difficulty: "Medium"
       },
       {
         id: "interview_2",
@@ -280,33 +237,7 @@ I'm excited about the possibility of growing with the company while contributing
         correctAnswer: "Outstanding response: Well-researched company knowledge, clear personal motivations, specific ways to contribute, and genuine enthusiasm. Shows preparation and strong cultural fit.",
         isCorrect: score >= 90,
         timeTaken: Math.floor(10 + rand(6) * 5), // 10-15 minutes
-        difficulty: "Hard",
-        interviewRecording: {
-          duration: "14:52",
-          audioUrl: "/api/recordings/interview_2_student.mp3",
-          sentimentAnalysis: {
-            overallScore: 9.1,
-            confidence: 0.94,
-            enthusiasm: 0.96,
-            clarity: 0.89,
-            nervousness: 0.15,
-            sentiment: "Very Positive",
-            keyInsights: [
-              "Exceptional preparation and research evident",
-              "Genuine passion for company mission",
-              "Very clear communication style",
-              "High emotional intelligence",
-              "Strong alignment with company values"
-            ],
-            emotionalJourney: [
-              { timestamp: "0:45", emotion: "Excited", intensity: 0.85 },
-              { timestamp: "3:20", emotion: "Passionate", intensity: 0.95 },
-              { timestamp: "7:10", emotion: "Confident", intensity: 0.9 },
-              { timestamp: "10:30", emotion: "Enthusiastic", intensity: 0.92 },
-              { timestamp: "13:45", emotion: "Optimistic", intensity: 0.94 }
-            ]
-          }
-        }
+        difficulty: "Hard"
       }
     ],
     "DSA": [
@@ -431,263 +362,6 @@ function safeBinarySearch(arr, target) {
         isCorrect: score >= 75,
         timeTaken: Math.floor(12 + rand(3) * 6), // 12-18 minutes
         difficulty: "Medium"
-      },
-      {
-        id: "dsa_4",
-        question: "Implement a function to reverse a linked list iteratively and recursively. Compare both approaches.",
-        studentAnswer: `// Node class for linked list
-class ListNode {
-  constructor(val, next = null) {
-    this.val = val;
-    this.next = next;
-  }
-}
-
-// Iterative approach
-function reverseListIterative(head) {
-  let prev = null;
-  let curr = head;
-  
-  while (curr !== null) {
-    let nextTemp = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = nextTemp;
-  }
-  
-  return prev;
-}
-
-// Recursive approach
-function reverseListRecursive(head) {
-  // Base case
-  if (head === null || head.next === null) {
-    return head;
-  }
-  
-  // Recursively reverse the rest of the list
-  let reversedHead = reverseListRecursive(head.next);
-  
-  // Reverse the current link
-  head.next.next = head;
-  head.next = null;
-  
-  return reversedHead;
-}
-
-// Test function
-function printList(head) {
-  let result = [];
-  let curr = head;
-  while (curr) {
-    result.push(curr.val);
-    curr = curr.next;
-  }
-  return result.join(' -> ');
-}
-
-// Example usage
-let list = new ListNode(1, new ListNode(2, new ListNode(3, new ListNode(4))));
-console.log("Original:", printList(list));
-
-let reversed = reverseListIterative(list);
-console.log("Reversed:", printList(reversed));
-
-/**
- * Comparison:
- * Iterative: O(n) time, O(1) space - more memory efficient
- * Recursive: O(n) time, O(n) space - cleaner code but uses call stack
- */`,
-        correctAnswer: "Excellent implementation of both approaches with clear comparison. Shows deep understanding of linked list manipulation and trade-offs between iteration and recursion.",
-        isCorrect: score >= 80,
-        timeTaken: Math.floor(20 + rand(4) * 8), // 20-28 minutes
-        difficulty: "Medium"
-      },
-      {
-        id: "dsa_5",
-        question: "Implement a function to find the lowest common ancestor (LCA) of two nodes in a binary tree.",
-        studentAnswer: `// TreeNode class definition
-class TreeNode {
-  constructor(val, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
-
-function lowestCommonAncestor(root, p, q) {
-  // Base case: if root is null or root is one of the target nodes
-  if (!root || root === p || root === q) {
-    return root;
-  }
-  
-  // Search in left and right subtrees
-  let leftLCA = lowestCommonAncestor(root.left, p, q);
-  let rightLCA = lowestCommonAncestor(root.right, p, q);
-  
-  // If both left and right return non-null, current node is LCA
-  if (leftLCA && rightLCA) {
-    return root;
-  }
-  
-  // Otherwise, return whichever side found the LCA
-  return leftLCA || rightLCA;
-}
-
-// Alternative approach using parent pointers (if available)
-function findLCAWithParents(p, q) {
-  let visitedAncestors = new Set();
-  
-  // Traverse from p to root, marking all ancestors
-  let curr = p;
-  while (curr) {
-    visitedAncestors.add(curr);
-    curr = curr.parent;
-  }
-  
-  // Traverse from q to root, return first common ancestor
-  curr = q;
-  while (curr) {
-    if (visitedAncestors.has(curr)) {
-      return curr;
-    }
-    curr = curr.parent;
-  }
-  
-  return null;
-}
-
-// Test case construction
-//       3
-//      / \\
-//     5   1
-//    / \\ / \\
-//   6  2 0  8
-//     / \\
-//    7   4
-
-let root = new TreeNode(3);
-root.left = new TreeNode(5);
-root.right = new TreeNode(1);
-root.left.left = new TreeNode(6);
-root.left.right = new TreeNode(2);
-root.left.right.left = new TreeNode(7);
-root.left.right.right = new TreeNode(4);
-root.right.left = new TreeNode(0);
-root.right.right = new TreeNode(8);
-
-// Test: LCA of 5 and 1 should be 3
-console.log(lowestCommonAncestor(root, root.left, root.right).val); // 3
-// Test: LCA of 5 and 4 should be 5
-console.log(lowestCommonAncestor(root, root.left, root.left.right.right).val); // 5`,
-        correctAnswer: "Outstanding solution with recursive approach and alternative method using parent pointers. Includes comprehensive test cases and shows mastery of tree algorithms.",
-        isCorrect: score >= 85,
-        timeTaken: Math.floor(30 + rand(5) * 10), // 30-40 minutes
-        difficulty: "Hard"
-      },
-      {
-        id: "dsa_6",
-        question: "Design and implement a LRU (Least Recently Used) Cache with O(1) operations.",
-        studentAnswer: `class LRUCache {
-  constructor(capacity) {
-    this.capacity = capacity;
-    this.cache = new Map(); // For O(1) lookup
-    
-    // Create dummy head and tail nodes for doubly linked list
-    this.head = new Node(0, 0);
-    this.tail = new Node(0, 0);
-    this.head.next = this.tail;
-    this.tail.prev = this.head;
-  }
-  
-  get(key) {
-    if (this.cache.has(key)) {
-      let node = this.cache.get(key);
-      
-      // Move accessed node to head (most recently used)
-      this.removeNode(node);
-      this.addToHead(node);
-      
-      return node.value;
-    }
-    return -1;
-  }
-  
-  put(key, value) {
-    if (this.cache.has(key)) {
-      // Update existing key
-      let node = this.cache.get(key);
-      node.value = value;
-      
-      // Move to head
-      this.removeNode(node);
-      this.addToHead(node);
-    } else {
-      // Add new key-value pair
-      let newNode = new Node(key, value);
-      
-      if (this.cache.size >= this.capacity) {
-        // Remove LRU item (tail.prev)
-        let lru = this.tail.prev;
-        this.removeNode(lru);
-        this.cache.delete(lru.key);
-      }
-      
-      // Add new node to head and cache
-      this.addToHead(newNode);
-      this.cache.set(key, newNode);
-    }
-  }
-  
-  // Helper methods for doubly linked list operations
-  addToHead(node) {
-    node.prev = this.head;
-    node.next = this.head.next;
-    this.head.next.prev = node;
-    this.head.next = node;
-  }
-  
-  removeNode(node) {
-    node.prev.next = node.next;
-    node.next.prev = node.prev;
-  }
-}
-
-// Node class for doubly linked list
-class Node {
-  constructor(key, value) {
-    this.key = key;
-    this.value = value;
-    this.prev = null;
-    this.next = null;
-  }
-}
-
-// Test the LRU Cache
-let lru = new LRUCache(2);
-
-lru.put(1, 1);
-lru.put(2, 2);
-console.log(lru.get(1)); // 1 (moves 1 to head)
-lru.put(3, 3);           // evicts key 2
-console.log(lru.get(2)); // -1 (not found)
-console.log(lru.get(3)); // 3
-console.log(lru.get(1)); // 1
-lru.put(4, 4);           // evicts key 3
-console.log(lru.get(1)); // 1
-console.log(lru.get(3)); // -1 (not found)
-console.log(lru.get(4)); // 4
-
-/**
- * Time Complexity: O(1) for both get and put operations
- * Space Complexity: O(capacity)
- * 
- * Key insight: HashMap for O(1) lookup + Doubly linked list for O(1) insertion/deletion
- */`,
-        correctAnswer: "Exceptional implementation of LRU Cache using HashMap + Doubly Linked List combination. Perfect understanding of data structure design principles and O(1) operations.",
-        isCorrect: score >= 90,
-        timeTaken: Math.floor(35 + rand(6) * 15), // 35-50 minutes
-        difficulty: "Hard"
       }
     ],
     "Interview Performance": [
@@ -976,182 +650,49 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
                 </CardContent>
               </Card>
 
-              {/* Interview Recording and Sentiment Analysis - Only for Interview Performance */}
-              {assessment.type === "Interview Performance" && (
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-purple-100 rounded-lg">
-                        <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 002 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold">Interview Recording & Analysis</h3>
-                        <p className="text-gray-600">Comprehensive behavioral and technical interview with AI sentiment analysis</p>
+              {/* AI Interview Recording */}
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-purple-100 rounded-lg">
+                      <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">AI Mock Interview Recording</h3>
+                      <p className="text-gray-600">30-minute behavioral and technical interview session</p>
+                    </div>
+                  </div>
+
+                  {/* Mock Video Player */}
+                  <div className="relative bg-gray-900 rounded-lg overflow-hidden mb-6">
+                    <div className="aspect-video flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="p-4 bg-black/20 rounded-full mb-4 inline-block">
+                          <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </div>
+                        <p className="text-white text-lg">AI Interview Recording - 28:45</p>
+                        <p className="text-gray-300">Click to play interview session</p>
                       </div>
                     </div>
-
-                    {/* Interview Video Player */}
-                    <div className="relative bg-gray-900 rounded-lg overflow-hidden mb-6">
-                      <div className="aspect-video flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="p-4 bg-black/20 rounded-full mb-4 inline-block">
-                            <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z"/>
-                            </svg>
-                          </div>
-                          <p className="text-white text-lg">Interview Recording - {assessmentData[0]?.interviewRecording?.duration || "28:45"}</p>
-                          <p className="text-gray-300">Click to play interview session</p>
+                    {/* Video Controls */}
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                      <div className="flex items-center gap-4">
+                        <button className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors">
+                          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"/>
+                          </svg>
+                        </button>
+                        <div className="flex-1 bg-white/20 rounded-full h-2">
+                          <div className="bg-blue-500 h-2 rounded-full" style={{ width: '35%' }}></div>
                         </div>
-                      </div>
-                      {/* Video Controls */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <div className="flex items-center gap-4">
-                          <button className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors">
-                            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z"/>
-                            </svg>
-                          </button>
-                          <div className="flex-1 bg-white/20 rounded-full h-2">
-                            <div className="bg-blue-500 h-2 rounded-full" style={{ width: '35%' }}></div>
-                          </div>
-                          <span className="text-white text-sm">10:02 / {assessmentData[0]?.interviewRecording?.duration || "28:45"}</span>
-                        </div>
+                        <span className="text-white text-sm">10:02 / 28:45</span>
                       </div>
                     </div>
-
-                    {/* Sentiment Analysis Section */}
-                    {assessmentData[0]?.interviewRecording?.sentimentAnalysis && (
-                      <div className="space-y-6">
-                        <h4 className="font-bold text-lg mb-4">AI Sentiment Analysis Report</h4>
-                        
-                        {/* Overall Sentiment Metrics */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                          <Card className="bg-green-50">
-                            <CardContent className="p-4 text-center">
-                              <div className="text-2xl font-bold text-green-600">
-                                {(assessmentData[0].interviewRecording.sentimentAnalysis.overallScore * 10).toFixed(1)}/10
-                              </div>
-                              <div className="text-sm text-gray-600">Overall Score</div>
-                            </CardContent>
-                          </Card>
-                          <Card className="bg-blue-50">
-                            <CardContent className="p-4 text-center">
-                              <div className="text-2xl font-bold text-blue-600">
-                                {(assessmentData[0].interviewRecording.sentimentAnalysis.confidence * 100).toFixed(0)}%
-                              </div>
-                              <div className="text-sm text-gray-600">Confidence</div>
-                            </CardContent>
-                          </Card>
-                          <Card className="bg-purple-50">
-                            <CardContent className="p-4 text-center">
-                              <div className="text-2xl font-bold text-purple-600">
-                                {(assessmentData[0].interviewRecording.sentimentAnalysis.enthusiasm * 100).toFixed(0)}%
-                              </div>
-                              <div className="text-sm text-gray-600">Enthusiasm</div>
-                            </CardContent>
-                          </Card>
-                          <Card className="bg-orange-50">
-                            <CardContent className="p-4 text-center">
-                              <div className="text-2xl font-bold text-orange-600">
-                                {(assessmentData[0].interviewRecording.sentimentAnalysis.clarity * 100).toFixed(0)}%
-                              </div>
-                              <div className="text-sm text-gray-600">Clarity</div>
-                            </CardContent>
-                          </Card>
-                        </div>
-
-                        {/* Key Insights */}
-                        <div>
-                          <h5 className="font-semibold text-gray-700 mb-3">Key Insights:</h5>
-                          <div className="space-y-2">
-                            {assessmentData[0].interviewRecording.sentimentAnalysis.keyInsights.map((insight: any, index: any) => (
-                              <div key={index} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
-                                <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                                <span className="text-sm text-gray-700">{insight}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Emotional Journey Timeline */}
-                        <div>
-                          <h5 className="font-semibold text-gray-700 mb-3">Emotional Journey:</h5>
-                          <div className="space-y-3">
-                            {assessmentData[0].interviewRecording.sentimentAnalysis.emotionalJourney.map((moment: any, index: any) => (
-                              <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                                <div className="flex items-center gap-2">
-                                  <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <span className="text-sm font-medium text-blue-600">{moment.timestamp}</span>
-                                  </div>
-                                </div>
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-3">
-                                    <span className="font-medium text-gray-800">{moment.emotion}</span>
-                                    <div className="flex-1 bg-gray-200 rounded-full h-2">
-                                      <div 
-                                        className="bg-blue-500 h-2 rounded-full" 
-                                        style={{ width: `${moment.intensity * 100}%` }}
-                                      ></div>
-                                    </div>
-                                    <span className="text-sm text-gray-600">{(moment.intensity * 100).toFixed(0)}%</span>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              )}
-
-              {/* AI Interview Recording - For non-Interview Performance assessments */}
-              {assessment.type !== "Interview Performance" && (
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="p-2 bg-purple-100 rounded-lg">
-                        <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 002 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h3 className="text-xl font-bold">AI Mock Interview Recording</h3>
-                        <p className="text-gray-600">30-minute behavioral and technical interview session</p>
-                      </div>
-                    </div>
-
-                    {/* Mock Video Player */}
-                    <div className="relative bg-gray-900 rounded-lg overflow-hidden mb-6">
-                      <div className="aspect-video flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="p-4 bg-black/20 rounded-full mb-4 inline-block">
-                            <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z"/>
-                            </svg>
-                          </div>
-                          <p className="text-white text-lg">AI Interview Recording - 28:45</p>
-                          <p className="text-gray-300">Click to play interview session</p>
-                        </div>
-                      </div>
-                      {/* Video Controls */}
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                        <div className="flex items-center gap-4">
-                          <button className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors">
-                            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z"/>
-                            </svg>
-                          </button>
-                          <div className="flex-1 bg-white/20 rounded-full h-2">
-                            <div className="bg-blue-500 h-2 rounded-full" style={{ width: '35%' }}></div>
-                          </div>
-                          <span className="text-white text-sm">10:02 / 28:45</span>
-                        </div>
-                      </div>
-                    </div>
+                  </div>
 
                   {/* Interview Performance Metrics */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
