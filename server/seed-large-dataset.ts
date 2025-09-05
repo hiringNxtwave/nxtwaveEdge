@@ -262,6 +262,35 @@ function generateSalaryExpectation(cgpa: number, codingRating: number, college: 
   return { min: finalMin, max: finalMax };
 }
 
+function calculateMarketEligibleSalary(cgpa: number, codingRating: number, college: string, skillCount: number): number {
+  // Base market rate calculation (more conservative than expectations)
+  let baseMarket = 450; // 4.5 LPA base market rate
+  
+  // College tier multiplier (market is more standardized than expectations)
+  if (college.includes("IIT")) {
+    baseMarket = 1400; // Premium for IITs
+  } else if (college.includes("NIT") || college.includes("IIIT")) {
+    baseMarket = 900;
+  } else if (college.includes("BITS") || college.includes("VIT") || college.includes("SRM") || college.includes("Manipal")) {
+    baseMarket = 650;
+  } else if (college.includes("DTU") || college.includes("NSUT") || college.includes("Delhi") || college.includes("Anna University")) {
+    baseMarket = 550;
+  }
+  
+  // CGPA impact (market values consistency)
+  const cgpaMultiplier = Math.max(0.75, cgpa / 10);
+  
+  // Coding skills impact (market heavily values this)
+  const codingMultiplier = 1 + (codingRating - 1) * 0.15; // 15% boost per rating level above 1
+  
+  // Skill diversity bonus (more skills = higher market value)
+  const skillBonus = 1 + Math.min(0.2, skillCount * 0.03); // Up to 20% bonus for skills
+  
+  const marketRate = Math.round(baseMarket * cgpaMultiplier * codingMultiplier * skillBonus);
+  
+  return marketRate;
+}
+
 function generateEmail(firstName: string, lastName: string, college: string): string {
   const collegeDomains = {
     "IIT": "iitd.ac.in",
@@ -347,6 +376,7 @@ export async function seedLargeDataset() {
           bio: `${major} student at ${college} with strong analytical and problem-solving skills. Passionate about technology and innovation.`,
           expectedSalaryMin: salaryRange.min,
           expectedSalaryMax: salaryRange.max,
+          marketEligibleSalary: calculateMarketEligibleSalary(cgpa, codingRating, college, 4), // Assume 4 skills for market calculation
           preferredRoles: JSON.stringify([
             major.includes("Computer") || major.includes("IT") || major.includes("Software") ? 
               getRandomElements(["Software Engineer", "Full Stack Developer", "Backend Developer", "Frontend Developer", "DevOps Engineer"], 2) :

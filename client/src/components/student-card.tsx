@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, GraduationCap, Check, Plus, Shield, Eye, Info, Target, Video, Clock, Award, Zap, TrendingUp, Users, DollarSign, CheckCircle } from "lucide-react";
+import { Star, MapPin, GraduationCap, Check, Plus, Shield, Eye, Info, Target, Video, Clock, Award, Zap, TrendingUp, Users, DollarSign, CheckCircle, IndianRupee } from "lucide-react";
 import type { StudentWithSkills } from "@shared/schema";
 import { Link } from "wouter";
 import { useShortlist } from "@/contexts/shortlist-context";
@@ -139,6 +139,40 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                   +{(student.skills?.length || 3) - 4} more
                 </Badge>
               )}
+            </div>
+          </div>
+
+          {/* Salary Information */}
+          <div className="border-l border-gray-200 pl-4">
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Salary Range</h4>
+            <div className="space-y-2">
+              {/* Student's Expectation */}
+              <div className="flex items-center gap-1">
+                <IndianRupee className="w-3 h-3 text-blue-600" />
+                <span className="text-sm font-medium text-gray-900 dark:text-white" data-testid={`text-student-expected-salary-${student.id}`}>
+                  {student.expectedSalaryMin && student.expectedSalaryMax ? 
+                    `${(student.expectedSalaryMin / 100).toFixed(0)}-${(student.expectedSalaryMax / 100).toFixed(0)} LPA` :
+                    "6-8 LPA"
+                  }
+                </span>
+                <Badge variant="outline" className="text-xs text-blue-600 border-blue-200">
+                  Expected
+                </Badge>
+              </div>
+              
+              {/* Market Eligible */}
+              <div className="flex items-center gap-1">
+                <Target className="w-3 h-3 text-green-600" />
+                <span className="text-sm font-medium text-gray-900 dark:text-white" data-testid={`text-student-market-salary-${student.id}`}>
+                  {student.marketEligibleSalary ? 
+                    `${(student.marketEligibleSalary / 100).toFixed(0)} LPA` :
+                    "7 LPA"
+                  }
+                </span>
+                <Badge variant="outline" className="text-xs text-green-600 border-green-200">
+                  Market Rate
+                </Badge>
+              </div>
             </div>
           </div>
 
