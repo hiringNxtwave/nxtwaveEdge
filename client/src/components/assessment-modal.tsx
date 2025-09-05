@@ -756,7 +756,7 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
                     <Card className="bg-green-50">
                       <CardContent className="p-4 text-center">
                         <div className="text-2xl font-bold text-green-600">8.2/10</div>
-                        <div className="text-sm text-gray-600">Communication</div>
+                        <div className="text-sm text-gray-600">Verbal Ability</div>
                         <Badge variant="secondary" className="mt-1">Excellent</Badge>
                       </CardContent>
                     </Card>
