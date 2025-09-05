@@ -74,8 +74,8 @@ function Router() {
       <RecruiterOnboarding
         isOpen={showOnboarding}
         onComplete={handleOnboardingComplete}
-        userEmail={user?.email}
-        userName={user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email}
+        userEmail={user?.email || undefined}
+        userName={user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email || undefined}
       />
     </>
   );
