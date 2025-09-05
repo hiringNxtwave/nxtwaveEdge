@@ -92,9 +92,19 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               )}
             </div>
             <div className="min-w-0">
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1" data-testid={`text-student-name-${student.id}`}>
-                {student.firstName} {student.lastName}
-              </h3>
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white" data-testid={`text-student-name-${student.id}`}>
+                  {student.firstName} {student.lastName}
+                </h3>
+                {/* Individual Freshness Indicator */}
+                <div className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                  seed % 3 === 0 ? 'bg-green-100 text-green-700' :
+                  seed % 3 === 1 ? 'bg-yellow-100 text-yellow-700' :
+                  'bg-gray-100 text-gray-700'
+                }`}>
+                  {seed % 3 === 0 ? '🟢 Fresh' : seed % 3 === 1 ? '🟡 Recent' : '⚪ Active'}
+                </div>
+              </div>
               <p className="text-sm text-blue-600 dark:text-blue-400 mb-1" data-testid={`text-student-university-${student.id}`}>
                 {student.university}
               </p>

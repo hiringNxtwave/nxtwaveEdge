@@ -104,26 +104,54 @@ export default function BrowseStudents() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
       
-      <div className="container mx-auto px-4 py-8">
-        {/* Enhanced Header with Action Buttons */}
-        <div className="mb-8 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <div>
-              <p className="text-gray-600 dark:text-gray-300 text-lg">
-                {isLoading 
-                  ? "Loading students..." 
-                  : isAuthenticated 
-                    ? isUsingSmartResults
-                      ? `Showing ${students.length} AI-curated matches`
-                      : `Browse our talent database`
-                    : `Showing ${students.length} of 1,900+ students (Preview)`
-                }
-              </p>
+      <div className="container mx-auto px-4 py-4">
+        {/* Clean Header with Filters on Right */}
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+              {isUsingSmartResults ? "🧠 AI-Curated Matches" : "Talent Database"}
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
+              {isLoading 
+                ? "Loading students..." 
+                : isAuthenticated 
+                  ? isUsingSmartResults
+                    ? `${students.length} top matches for your requirements`
+                    : `Browse verified talent pool`
+                  : `Preview of ${students.length} from 1,900+ students`
+              }
+            </p>
+          </div>
+          
+          {/* Top Right: Filters & Actions */}
+          <div className="flex items-center gap-4">
+            {/* Compact Filters */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 shadow-sm">
+              <StudentFilters
+                filters={{
+                  university: filters.university || "all",
+                  codingRating: filters.codingRating?.toString() || "all"
+                }}
+                onFiltersChange={(newFilters) => {
+                  setFilters({
+                    skills: [],
+                    location: "",
+                    university: newFilters.university === "all" ? "" : newFilters.university,
+                    minCgpa: undefined,
+                    maxCgpa: undefined,
+                    codingRating: newFilters.codingRating && newFilters.codingRating !== "all" ? parseInt(newFilters.codingRating) : undefined
+                  });
+                  setCurrentPage(1);
+                }}
+                skills={(skills as any) || []}
+                resultCount={students.length}
+                totalCount={totalCount}
+              />
             </div>
-            
-            {/* Enhanced Action Buttons */}
+
+            {/* Smart Discovery & Actions */}
             {isAuthenticated && (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Button
                   onClick={() => setShowSmartDiscovery(true)}
                   className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold"
@@ -145,7 +173,7 @@ export default function BrowseStudents() {
                     data-testid="button-clear-smart-results"
                   >
                     <Filter className="w-4 h-4 mr-2" />
-                    Clear Smart Results
+                    Clear
                   </Button>
                 )}
                 
@@ -159,41 +187,8 @@ export default function BrowseStudents() {
                     Compare ({compareList.length})
                   </Button>
                 )}
-                <Button
-                  onClick={() => setShowInsights(true)}
-                  variant="outline"
-                  className="border-blue-500 text-blue-600 hover:bg-blue-50"
-                  data-testid="button-predictive-insights"
-                >
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Hiring Insights
-                </Button>
               </div>
             )}
-          </div>
-          
-          {/* Compact Filters */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
-            <StudentFilters
-              filters={{
-                university: filters.university || "all",
-                codingRating: filters.codingRating?.toString() || "all"
-              }}
-              onFiltersChange={(newFilters) => {
-                setFilters({
-                  skills: [],
-                  location: "",
-                  university: newFilters.university === "all" ? "" : newFilters.university,
-                  minCgpa: undefined,
-                  maxCgpa: undefined,
-                  codingRating: newFilters.codingRating && newFilters.codingRating !== "all" ? parseInt(newFilters.codingRating) : undefined
-                });
-                setCurrentPage(1);
-              }}
-              skills={(skills as any) || []}
-              resultCount={students.length}
-              totalCount={totalCount}
-            />
           </div>
         </div>
 
@@ -227,47 +222,8 @@ export default function BrowseStudents() {
           </div>
         )}
 
-        {/* Freshness Index for Authenticated Users */}
-        {isAuthenticated && !isLoading && students.length > 0 && (
-          <div className="mb-8">
-            <FreshnessIndex totalCandidates={totalCount} />
-          </div>
-        )}
-
-        {/* Student Results */}
+        {/* Student Profiles - Clean List */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                {isLoading 
-                  ? "Loading..." 
-                  : isUsingSmartResults
-                    ? `🧠 Smart Discovery Results`
-                  : isAuthenticated 
-                    ? `Student Profiles`
-                    : `Showing ${students.length} of 1,900+ Students (Preview)`
-                }
-              </h2>
-              {isUsingSmartResults && (
-                <Badge className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-3 py-1 border border-purple-200">
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  Top {students.length} AI-Curated Matches
-                </Badge>
-              )}
-              {isAuthenticated && !isLoading && (
-                <Badge className="bg-blue-100 text-blue-800 px-3 py-1">
-                  <CheckSquare className="w-3 h-3 mr-1" />
-                  {students.length} Candidates Ready to Compare
-                </Badge>
-              )}
-            </div>
-            {!isAuthenticated && (
-              <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <Users className="w-4 h-4" />
-                <span>1,900+ total students available</span>
-              </div>
-            )}
-          </div>
 
           {isLoading ? (
             <div className="space-y-4">
