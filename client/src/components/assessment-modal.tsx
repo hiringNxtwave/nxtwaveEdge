@@ -1049,7 +1049,7 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
                         <div>
                           <h5 className="font-semibold text-gray-700 mb-3">Key Insights:</h5>
                           <div className="space-y-2">
-                            {assessmentData[0].interviewRecording.sentimentAnalysis.keyInsights.map((insight, index) => (
+                            {(assessmentData[0]?.interviewRecording?.sentimentAnalysis?.keyInsights || []).map((insight, index) => (
                               <div key={index} className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
                                 <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
                                 <span className="text-sm text-gray-700">{insight}</span>
@@ -1062,7 +1062,7 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
                         <div>
                           <h5 className="font-semibold text-gray-700 mb-3">Emotional Journey:</h5>
                           <div className="space-y-3">
-                            {assessmentData[0].interviewRecording.sentimentAnalysis.emotionalJourney.map((moment, index) => (
+                            {(assessmentData[0]?.interviewRecording?.sentimentAnalysis?.emotionalJourney || []).map((moment, index) => (
                               <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
                                 <div className="flex items-center gap-2">
                                   <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
