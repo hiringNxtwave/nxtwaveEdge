@@ -339,8 +339,8 @@ export async function seedLargeDataset() {
     console.log(`✅ Seeded ${validSkills.length} skills`);
 
     // Generate and insert students in batches
-    const BATCH_SIZE = 1000;
-    const TOTAL_STUDENTS = 12000;
+    const BATCH_SIZE = 20;
+    const TOTAL_STUDENTS = 20;
     const TOTAL_BATCHES = Math.ceil(TOTAL_STUDENTS / BATCH_SIZE);
     
     console.log(`👥 Generating ${TOTAL_STUDENTS} students across ${indianColleges.length} colleges...`);
