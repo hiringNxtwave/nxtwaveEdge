@@ -35,7 +35,7 @@ export default function ExamFootageModal({ student, isOpen, onClose }: ExamFoota
   const [currentTime, setCurrentTime] = useState(0);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-  // Mock exam footage data
+  // Mock exam footage data including AI mock interviews
   const examFootage = [
     {
       id: "1",
@@ -43,6 +43,7 @@ export default function ExamFootageModal({ student, isOpen, onClose }: ExamFoota
       duration: "45:32",
       date: "2024-01-15",
       thumbnail: "📹",
+      type: "coding",
       verified: true,
       description: "Complete footage of student solving array manipulation problems",
       keyMoments: [
@@ -58,6 +59,7 @@ export default function ExamFootageModal({ student, isOpen, onClose }: ExamFoota
       duration: "60:00",
       date: "2024-01-18",
       thumbnail: "🎥",
+      type: "system-design",
       verified: true,
       description: "Student designing scalable chat application architecture",
       keyMoments: [
@@ -65,6 +67,40 @@ export default function ExamFootageModal({ student, isOpen, onClose }: ExamFoota
         { time: 720, description: "High-level architecture" },
         { time: 1800, description: "Database design" },
         { time: 2400, description: "Scaling considerations" }
+      ]
+    },
+    {
+      id: "3",
+      title: "AI Mock Interview - Technical Round",
+      duration: "25:15",
+      date: "2024-01-20",
+      thumbnail: "🤖",
+      type: "mock-interview",
+      verified: true,
+      description: "AI-powered mock interview covering technical questions and problem-solving",
+      keyMoments: [
+        { time: 60, description: "Self introduction" },
+        { time: 300, description: "Technical question discussion" },
+        { time: 720, description: "Code walkthrough explanation" },
+        { time: 1200, description: "Behavioral questions" },
+        { time: 1450, description: "Questions for interviewer" }
+      ]
+    },
+    {
+      id: "4",
+      title: "AI Mock Interview - Behavioral Round",
+      duration: "18:45",
+      date: "2024-01-22",
+      thumbnail: "💬",
+      type: "mock-interview",
+      verified: true,
+      description: "AI mock interview focusing on behavioral questions and soft skills assessment",
+      keyMoments: [
+        { time: 90, description: "Tell me about yourself" },
+        { time: 420, description: "Challenging project discussion" },
+        { time: 680, description: "Leadership experience" },
+        { time: 940, description: "Career goals and aspirations" },
+        { time: 1080, description: "Company culture fit questions" }
       ]
     }
   ];
@@ -150,6 +186,17 @@ export default function ExamFootageModal({ student, isOpen, onClose }: ExamFoota
             </TabsList>
 
             <TabsContent value="footage" className="space-y-4 max-h-[60vh] overflow-y-auto">
+              <div className="flex flex-wrap gap-2 mb-4">
+                <Badge variant="outline" className="bg-blue-50 text-blue-700">
+                  {examFootage.filter(f => f.type === 'coding').length} Coding Assessments
+                </Badge>
+                <Badge variant="outline" className="bg-purple-50 text-purple-700">
+                  {examFootage.filter(f => f.type === 'system-design').length} System Design
+                </Badge>
+                <Badge variant="outline" className="bg-green-50 text-green-700">
+                  {examFootage.filter(f => f.type === 'mock-interview').length} AI Mock Interviews
+                </Badge>
+              </div>
               {examFootage.map((footage) => (
                 <Card key={footage.id} className="hover:shadow-md transition-shadow">
                   <CardHeader>

@@ -8,6 +8,7 @@ import ShortlistingDashboard from "@/components/shortlisting-dashboard";
 import CodeReplayModal from "@/components/code-replay-modal";
 import CommunicationSampleModal from "@/components/communication-sample-modal";
 import ATSIntegration from "@/components/ats-integration";
+import SidePanelLayout from "@/components/side-panel-layout";
 import { useShortlist } from "@/contexts/shortlist-context";
 import { 
   Users, 
@@ -32,6 +33,7 @@ export default function ShortlistingPage() {
   const [showCommunicationSample, setShowCommunicationSample] = useState(false);
   const [showATSIntegration, setShowATSIntegration] = useState(false);
   const [selectedCandidatesForATS, setSelectedCandidatesForATS] = useState<StudentWithSkills[]>([]);
+  const [showSidePanel, setShowSidePanel] = useState(false);
 
   // Fetch students data
   const { data: students = [], isLoading } = useQuery<StudentWithSkills[]>({
@@ -57,6 +59,16 @@ export default function ShortlistingPage() {
   const openCommunicationSample = (student: StudentWithSkills) => {
     setSelectedStudent(student);
     setShowCommunicationSample(true);
+  };
+
+  const openSidePanel = (student: StudentWithSkills) => {
+    setSelectedStudent(student);
+    setShowSidePanel(true);
+  };
+
+  const closeSidePanel = () => {
+    setShowSidePanel(false);
+    setSelectedStudent(null);
   };
 
   const generatePredictiveScore = (student: StudentWithSkills, type: string) => {
@@ -94,9 +106,9 @@ export default function ShortlistingPage() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b">
+      <div className="bg-white border-b flex-shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
@@ -134,24 +146,19 @@ export default function ShortlistingPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {shortlistedStudents.length === 0 ? (
-          <Card className="text-center py-12">
-            <CardContent>
-              <Users className="w-16 h-16 mx-auto mb-6 text-gray-300" />
-              <h2 className="text-xl font-semibold text-gray-700 mb-4">No Candidates Shortlisted</h2>
-              <p className="text-gray-600 mb-6">
-                Start by shortlisting candidates from the talent discovery dashboard to begin the validation process.
-              </p>
-              <Link href="/talent">
-                <Button className="bg-blue-600 hover:bg-blue-700" data-testid="button-go-to-talent">
-                  Go to Talent Discovery
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        ) : (
-          <Tabs defaultValue="validation" className="space-y-6">
+      {/* Main Content - Side Panel Layout */}
+      <div className="flex-1 flex overflow-hidden">
+        <SidePanelLayout 
+          shortlistedStudents={shortlistedStudents}
+          selectedStudent={selectedStudent}
+          showSidePanel={showSidePanel}
+          onSelectStudent={openSidePanel}
+          onCloseSidePanel={closeSidePanel}
+          onRemoveFromShortlist={removeFromShortlist}
+          onOpenCodeReplay={() => setShowCodeReplay(true)}
+          onOpenCommunicationSample={() => setShowCommunicationSample(true)}
+          generatePredictiveScore={generatePredictiveScore}
+        />
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="validation">Validation Dashboard</TabsTrigger>
               <TabsTrigger value="bulk-actions">Bulk Actions</TabsTrigger>
