@@ -24,6 +24,10 @@ interface AssessmentQuestion {
   isCorrect: boolean;
   timeTaken: number;
   difficulty: string;
+  type?: 'mcq' | 'text';
+  options?: string[];
+  selectedOption?: string;
+  correctOption?: string;
 }
 
 // Sample assessment data based on assessment type
@@ -36,54 +40,54 @@ const generateAssessmentData = (type: string, score: number, studentId: string):
     "Aptitude and QA": [
       {
         id: "quant_1",
+        type: "mcq",
         question: "A train traveling at 60 km/hr crosses a platform 200m long in 30 seconds. What is the length of the train?",
-        studentAnswer: `Solution:
-
-Let the length of train = L meters
-
-Speed of train = 60 km/hr = 60 × (5/18) m/s = 50/3 m/s
-
-Total distance covered = Length of train + Length of platform
-Total distance = L + 200 meters
-
-Time taken = 30 seconds
-
-Using: Distance = Speed × Time
-L + 200 = (50/3) × 30
-L + 200 = 500
-L = 300 meters
-
-Therefore, the length of the train is 300 meters.
-
-Verification: 
-Total distance = 300 + 200 = 500m
-Speed = 500m ÷ 30s = 16.67 m/s = 60 km/hr ✓`,
-        correctAnswer: "Correct answer: 300 meters. Student showed proper conversion of units, clear step-by-step solution, and verification of the answer.",
+        options: ["200 meters", "250 meters", "300 meters", "350 meters"],
+        selectedOption: "300 meters",
+        correctOption: "300 meters",
+        studentAnswer: "300 meters",
+        correctAnswer: "Correct! The train length is 300 meters. Using Distance = Speed × Time: Total distance = (60 × 5/18) × 30 = 500m. Train length = 500m - 200m = 300m.",
         isCorrect: score >= 70,
-        timeTaken: Math.floor(3 + rand(1) * 2), // 3-5 minutes
+        timeTaken: Math.floor(2 + rand(1) * 2), // 2-4 minutes
         difficulty: "Medium"
       },
       {
-        id: "quant_2", 
+        id: "quant_2",
+        type: "mcq", 
         question: "In a company, 60% of employees are men and 40% are women. If 25% of men and 50% of women have MBA degrees, what percentage of total employees have MBA degrees?",
-        studentAnswer: `Solution:
-
-Let total employees = 100 (for easy calculation)
-
-Men = 60% of 100 = 60
-Women = 40% of 100 = 40
-
-Men with MBA = 25% of 60 = 15
-Women with MBA = 50% of 40 = 20
-
-Total employees with MBA = 15 + 20 = 35
-
-Percentage of employees with MBA = (35/100) × 100 = 35%
-
-Answer: 35% of total employees have MBA degrees.`,
-        correctAnswer: "Correct answer: 35%. Student demonstrated clear understanding of percentage calculations and systematic problem-solving approach.",
-        isCorrect: score >= 80,
-        timeTaken: Math.floor(4 + rand(2) * 3), // 4-7 minutes
+        options: ["30%", "35%", "40%", "45%"],
+        selectedOption: "35%",
+        correctOption: "35%",
+        studentAnswer: "35%",
+        correctAnswer: "Correct! 35% of total employees have MBA degrees. Men with MBA: 60% × 25% = 15%. Women with MBA: 40% × 50% = 20%. Total: 15% + 20% = 35%.",
+        isCorrect: score >= 70,
+        timeTaken: Math.floor(2 + rand(2) * 2), // 2-4 minutes
+        difficulty: "Easy"
+      },
+      {
+        id: "quant_3",
+        type: "mcq",
+        question: "If the ratio of boys to girls in a class is 3:2 and there are 15 boys, how many girls are there?",
+        options: ["8", "10", "12", "15"],
+        selectedOption: rand(3) > 0.7 ? "12" : "10",
+        correctOption: "10",
+        studentAnswer: rand(3) > 0.7 ? "12" : "10",
+        correctAnswer: "Correct! There are 10 girls. If boys:girls = 3:2 and boys = 15, then 3x = 15, so x = 5. Therefore girls = 2x = 2×5 = 10.",
+        isCorrect: (rand(3) > 0.7 ? "12" : "10") === "10",
+        timeTaken: Math.floor(1 + rand(4) * 2), // 1-3 minutes
+        difficulty: "Easy"
+      },
+      {
+        id: "quant_4",
+        type: "mcq",
+        question: "What is 15% of 80?",
+        options: ["10", "12", "15", "20"],
+        selectedOption: score >= 60 ? "12" : "15",
+        correctOption: "12",
+        studentAnswer: score >= 60 ? "12" : "15",
+        correctAnswer: "Correct! 15% of 80 = (15/100) × 80 = 0.15 × 80 = 12.",
+        isCorrect: score >= 60,
+        timeTaken: Math.floor(1 + rand(5) * 1), // 1-2 minutes
         difficulty: "Easy"
       }
     ],
@@ -718,17 +722,77 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
                     </div>
 
                     <div className="space-y-4">
-                      <div>
-                        <h5 className="font-semibold text-gray-700 mb-2">Student's Answer:</h5>
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                          <pre className="whitespace-pre-wrap text-sm font-mono text-gray-800">{question.studentAnswer}</pre>
+                      {question.type === 'mcq' && question.options ? (
+                        <div>
+                          <h5 className="font-semibold text-gray-700 mb-3">Answer Options:</h5>
+                          <div className="space-y-2">
+                            {question.options.map((option: string, optionIndex: number) => {
+                              const isSelected = option === question.selectedOption;
+                              const isCorrect = option === question.correctOption;
+                              const isSelectedAndWrong = isSelected && !isCorrect;
+                              
+                              return (
+                                <div 
+                                  key={optionIndex}
+                                  className={`p-3 rounded-lg border-2 flex items-center justify-between ${
+                                    isCorrect 
+                                      ? 'border-green-500 bg-green-50' 
+                                      : isSelectedAndWrong 
+                                        ? 'border-red-500 bg-red-50' 
+                                        : 'border-gray-200 bg-gray-50'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold ${
+                                      isCorrect 
+                                        ? 'bg-green-500 text-white' 
+                                        : isSelectedAndWrong 
+                                          ? 'bg-red-500 text-white' 
+                                          : 'bg-gray-300 text-gray-600'
+                                    }`}>
+                                      {String.fromCharCode(65 + optionIndex)}
+                                    </div>
+                                    <span className={`text-sm font-medium ${
+                                      isCorrect 
+                                        ? 'text-green-800' 
+                                        : isSelectedAndWrong 
+                                          ? 'text-red-800' 
+                                          : 'text-gray-700'
+                                    }`}>
+                                      {option}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    {isSelected && (
+                                      <Badge variant="outline" className="text-xs">
+                                        Selected
+                                      </Badge>
+                                    )}
+                                    {isCorrect && (
+                                      <CheckCircle className="w-5 h-5 text-green-600" />
+                                    )}
+                                    {isSelectedAndWrong && (
+                                      <XCircle className="w-5 h-5 text-red-600" />
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
+                      ) : (
+                        <div>
+                          <h5 className="font-semibold text-gray-700 mb-2">Student's Answer:</h5>
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <pre className="whitespace-pre-wrap text-sm font-mono text-gray-800">{question.studentAnswer}</pre>
+                          </div>
+                        </div>
+                      )}
                       
                       <div>
                         <h5 className="font-semibold text-gray-700 mb-2">Assessment Notes:</h5>
-                        <div className={`p-4 rounded-lg ${question.isCorrect ? 'bg-green-50' : 'bg-orange-50'}`}>
-                          <p className={`text-sm ${question.isCorrect ? 'text-green-800' : 'text-orange-800'}`}>
+                        <div className={`p-4 rounded-lg ${question.isCorrect ? 'bg-green-50' : 'bg-red-50'}`}>
+                          <p className={`text-sm ${question.isCorrect ? 'text-green-800' : 'text-red-800'}`}>
                             {question.correctAnswer}
                           </p>
                         </div>
