@@ -17,6 +17,7 @@ import ForStudents from "./pages/for-students";
 import StudentProfileForm from "./pages/student-profile-form";
 import StudentDashboard from "./pages/student-dashboard";
 import TalentDashboard from "./pages/talent-dashboard";
+import ShortlistingPage from "./pages/shortlisting";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -45,6 +46,8 @@ function Router() {
           <Route path="/shortlist" component={ShortlistedCandidates} />
           <Route path="/shortlist/compare" component={ComparisonView} />
           <Route path="/talent-dashboard" component={TalentDashboard} />
+          <Route path="/talent" component={TalentDashboard} />
+          <Route path="/shortlisting" component={ShortlistingPage} />
         </>
       )}
       <Route component={NotFound} />

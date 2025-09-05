@@ -22,14 +22,18 @@ import {
   Zap,
   Search,
   Filter,
-  Eye
+  Eye,
+  CheckCircle
 } from "lucide-react";
+import { Link } from "wouter";
+import { useShortlist } from "@/contexts/shortlist-context";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export default function TalentDashboard() {
   useScrollToTop();
   
   const { user, isAuthenticated } = useAuth();
+  const { shortlistedIds } = useShortlist();
   const [selectedStudent, setSelectedStudent] = useState<{id: string, name: string} | null>(null);
   const [activeModal, setActiveModal] = useState<'interview' | 'code' | null>(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -160,19 +164,35 @@ export default function TalentDashboard() {
                   <Search className="w-5 h-5 text-blue-600" />
                   Talent Discovery
                 </div>
-                <Button 
-                  onClick={() => setShowAdvancedFilters(true)}
-                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
-                  data-testid="button-open-advanced-filters"
-                >
-                  <Filter className="w-4 h-4" />
-                  Advanced Filters
-                  {Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : (typeof f === 'object' ? f.min > 0 || f.max < 50 : f !== 90)) && (
-                    <Badge variant="secondary" className="ml-1 bg-white text-blue-600">
-                      Active
-                    </Badge>
-                  )}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Link href="/shortlisting">
+                    <Button 
+                      className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700"
+                      data-testid="button-go-to-shortlisting"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                      Shortlisting & Validation
+                      {shortlistedIds.length > 0 && (
+                        <Badge variant="secondary" className="ml-1 bg-white text-purple-600">
+                          {shortlistedIds.length}
+                        </Badge>
+                      )}
+                    </Button>
+                  </Link>
+                  <Button 
+                    onClick={() => setShowAdvancedFilters(true)}
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                    data-testid="button-open-advanced-filters"
+                  >
+                    <Filter className="w-4 h-4" />
+                    Advanced Filters
+                    {Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : (typeof f === 'object' ? f.min > 0 || f.max < 50 : f !== 90)) && (
+                      <Badge variant="secondary" className="ml-1 bg-white text-blue-600">
+                        Active
+                      </Badge>
+                    )}
+                  </Button>
+                </div>
               </CardTitle>
             </CardHeader>
             <CardContent>

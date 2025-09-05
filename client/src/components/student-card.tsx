@@ -9,6 +9,8 @@ import { useState } from "react";
 import AssessmentModal from "@/components/assessment-modal";
 import RoleMatchRationale from "@/components/role-match-rationale";
 import Candidate360View from "@/components/candidate-360-view";
+import CodeReplayModal from "@/components/code-replay-modal";
+import CommunicationSampleModal from "@/components/communication-sample-modal";
 
 interface StudentCardProps {
   student: StudentWithSkills;
@@ -20,6 +22,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   const [selectedAssessment, setSelectedAssessment] = useState<{type: string, score: number, level: string} | null>(null);
   const [showRoleMatchRationale, setShowRoleMatchRationale] = useState(false);
   const [showCandidate360, setShowCandidate360] = useState(false);
+  const [showCodeReplay, setShowCodeReplay] = useState(false);
+  const [showCommunicationSample, setShowCommunicationSample] = useState(false);
   
   // Use student ID as seed for consistent ratings
   const seed = parseInt(student.id.slice(-8), 16);
@@ -286,6 +290,24 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
         <Candidate360View 
           student={student}
           onClose={() => setShowCandidate360(false)}
+        />
+      )}
+
+      {/* Code Replay Modal */}
+      {showCodeReplay && (
+        <CodeReplayModal 
+          student={student}
+          isOpen={showCodeReplay}
+          onClose={() => setShowCodeReplay(false)}
+        />
+      )}
+
+      {/* Communication Sample Modal */}
+      {showCommunicationSample && (
+        <CommunicationSampleModal 
+          student={student}
+          isOpen={showCommunicationSample}
+          onClose={() => setShowCommunicationSample(false)}
         />
       )}
     </Card>
