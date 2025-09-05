@@ -148,6 +148,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Smart talent discovery endpoint
+  app.post('/api/students/smart-discovery', isAuthenticated, async (req, res) => {
+    try {
+      const {
+        role,
+        experience,
+        skills,
+        minCGPA,
+        salaryRange,
+        locations,
+        collegePreference,
+        urgency,
+        teamSize,
+        workMode
+      } = req.body;
+
+      const curatedCandidates = await storage.getSmartCuratedCandidates({
+        role,
+        experience,
+        skills,
+        minCGPA,
+        salaryRange,
+        locations,
+        collegePreference,
+        urgency,
+        teamSize,
+        workMode,
+        maxResults: 50
+      });
+
+      res.json(curatedCandidates);
+    } catch (error) {
+      console.error("Error in smart discovery:", error);
+      res.status(500).json({ message: "Failed to get smart discovery results" });
+    }
+  });
+
+  // Seed large dataset endpoint (development only)
+  app.post('/api/admin/seed-large-dataset', isAuthenticated, async (req, res) => {
+    try {
+      // Only allow in development environment
+      if (process.env.NODE_ENV === 'production') {
+        return res.status(403).json({ message: "Not allowed in production" });
+      }
+
+      // Import and run the seeding function
+      const { seedLargeDataset } = await import('./seed-large-dataset');
+      await seedLargeDataset();
+
+      res.json({ message: "Large dataset seeded successfully", count: 12000 });
+    } catch (error) {
+      console.error("Error seeding large dataset:", error);
+      res.status(500).json({ message: "Failed to seed large dataset" });
+    }
+  });
+
   app.get('/api/students/:id', isAuthenticated, async (req, res) => {
     try {
       const { id } = req.params;

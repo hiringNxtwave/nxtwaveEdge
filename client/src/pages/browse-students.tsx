@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import Header from "@/components/header";
@@ -8,11 +8,13 @@ import StudentFilters from "@/components/student-filters";
 import FreshnessIndex from "@/components/freshness-index";
 import CandidateComparison from "@/components/candidate-comparison";
 import PredictiveInsights from "@/components/predictive-insights";
+import TalentDiscoveryFilters from "@/components/talent-discovery-filters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Lock, Users, Star, Zap, GitCompare, BarChart3, CheckSquare } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
+import { Lock, Users, Star, Zap, GitCompare, BarChart3, CheckSquare, Brain, Sparkles, Filter } from "lucide-react";
 
 export default function BrowseStudents() {
   useScrollToTop();
@@ -33,6 +35,11 @@ export default function BrowseStudents() {
   const [compareList, setCompareList] = useState<any[]>([]);
   const [showComparison, setShowComparison] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
+  const [showSmartDiscovery, setShowSmartDiscovery] = useState(false);
+  const [smartResults, setSmartResults] = useState<any[]>([]);
+  const [isUsingSmartResults, setIsUsingSmartResults] = useState(false);
+  
+  const queryClient = useQueryClient();
   // Show limited results for non-authenticated users
   const studentsPerPage = isAuthenticated ? 48 : 6;
 
@@ -55,12 +62,43 @@ export default function BrowseStudents() {
     },
   });
 
-  const students = studentsData?.students || studentsData || [];
-  const totalCount = studentsData?.total || students.length;
+  // Use smart results if available, otherwise use regular students data
+  const students = isUsingSmartResults ? smartResults : (studentsData?.students || studentsData || []);
+  const totalCount = isUsingSmartResults ? smartResults.length : (studentsData?.total || students.length);
 
   const { data: skills } = useQuery({
     queryKey: ["/api/skills"],
   });
+
+  // Smart discovery mutation
+  const smartDiscoveryMutation = useMutation({
+    mutationFn: async (requirements: any) => {
+      return await apiRequest("/api/students/smart-discovery", {
+        method: "POST",
+        body: JSON.stringify(requirements),
+      });
+    },
+    onSuccess: (data) => {
+      setSmartResults(data);
+      setIsUsingSmartResults(true);
+      setShowSmartDiscovery(false);
+    },
+    onError: (error) => {
+      console.error("Smart discovery failed:", error);
+    },
+  });
+
+  // Get total student count for the smart discovery component
+  const { data: totalCountData } = useQuery({
+    queryKey: ["/api/students/count"],
+    queryFn: async () => {
+      const response = await fetch("/api/students/count");
+      if (!response.ok) throw new Error("Failed to fetch count");
+      return response.json();
+    },
+  });
+
+  const totalStudentCount = totalCountData?.count || 12000;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -84,6 +122,31 @@ export default function BrowseStudents() {
             {/* Enhanced Action Buttons */}
             {isAuthenticated && (
               <div className="flex items-center gap-3">
+                <Button
+                  onClick={() => setShowSmartDiscovery(true)}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold"
+                  data-testid="button-smart-discovery"
+                >
+                  <Brain className="w-4 h-4 mr-2" />
+                  Smart Discovery
+                </Button>
+                
+                {isUsingSmartResults && (
+                  <Button
+                    onClick={() => {
+                      setIsUsingSmartResults(false);
+                      setSmartResults([]);
+                      queryClient.invalidateQueries({ queryKey: ["/api/students"] });
+                    }}
+                    variant="outline"
+                    className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                    data-testid="button-clear-smart-results"
+                  >
+                    <Filter className="w-4 h-4 mr-2" />
+                    Clear Smart Results
+                  </Button>
+                )}
+                
                 {compareList.length > 0 && (
                   <Button
                     onClick={() => setShowComparison(true)}
@@ -176,11 +239,19 @@ export default function BrowseStudents() {
               <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 {isLoading 
                   ? "Loading..." 
+                  : isUsingSmartResults
+                    ? `🧠 Smart Discovery Results`
                   : isAuthenticated 
                     ? `Student Profiles`
                     : `Showing ${students.length} of 2.5M+ Students (Preview)`
                 }
               </h2>
+              {isUsingSmartResults && (
+                <Badge className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-3 py-1 border border-purple-200">
+                  <Sparkles className="w-3 h-3 mr-1" />
+                  Top {students.length} AI-Curated Matches
+                </Badge>
+              )}
               {isAuthenticated && !isLoading && (
                 <Badge className="bg-blue-100 text-blue-800 px-3 py-1">
                   <CheckSquare className="w-3 h-3 mr-1" />
@@ -347,6 +418,19 @@ export default function BrowseStudents() {
       </div>
 
       {/* Enhanced Feature Modals */}
+      {showSmartDiscovery && (
+        <TalentDiscoveryFilters
+          onApplyFilters={(requirements) => {
+            smartDiscoveryMutation.mutate(requirements);
+          }}
+          onAutoSuggest={(requirements) => {
+            smartDiscoveryMutation.mutate(requirements);
+          }}
+          totalStudents={totalStudentCount}
+          onClose={() => setShowSmartDiscovery(false)}
+        />
+      )}
+
       {showComparison && (
         <CandidateComparison
           candidates={compareList}

@@ -110,6 +110,21 @@ export interface IStorage {
     explanation: string;
   }>;
 
+  // Smart talent discovery operations
+  getSmartCuratedCandidates(requirements: {
+    role: string;
+    experience: string;
+    skills: string[];
+    minCGPA: number;
+    salaryRange: [number, number];
+    locations: string[];
+    collegePreference: string;
+    urgency: string;
+    teamSize: number;
+    workMode: string;
+    maxResults: number;
+  }): Promise<StudentWithSkills[]>;
+
   // Initial data seeding
   seedInitialData(): Promise<void>;
 }
@@ -1116,6 +1131,264 @@ function inorderTraversal(root) {
     if (!preferenceMatches.location) considerations.push("location flexibility to discuss");
 
     return `${level}: ${strengths.length > 0 ? strengths.join(', ') + '. ' : ''}${considerations.length > 0 ? 'Consider: ' + considerations.join(', ') + '. ' : ''}Recommended salary: ${salaryRec.min / 100}-${salaryRec.max / 100} LPA.`;
+  }
+
+  // Smart talent discovery implementation
+  async getSmartCuratedCandidates(requirements: {
+    role: string;
+    experience: string;
+    skills: string[];
+    minCGPA: number;
+    salaryRange: [number, number];
+    locations: string[];
+    collegePreference: string;
+    urgency: string;
+    teamSize: number;
+    workMode: string;
+    maxResults: number;
+  }): Promise<StudentWithSkills[]> {
+    try {
+      // Build dynamic query based on requirements
+      let query = db
+        .select({
+          student: students,
+          skills: sql<string>`STRING_AGG(DISTINCT ${skills.name}, ', ') AS skills`,
+          skillsArray: sql<any>`JSON_AGG(DISTINCT jsonb_build_object(
+            'id', ${skills.id},
+            'name', ${skills.name},
+            'category', ${skills.category},
+            'proficiencyLevel', ${studentSkills.proficiencyLevel},
+            'assessmentScore', ${studentSkills.assessmentScore}
+          )) AS skillsArray`
+        })
+        .from(students)
+        .leftJoin(studentSkills, eq(students.id, studentSkills.studentId))
+        .leftJoin(skills, eq(studentSkills.skillId, skills.id))
+        .groupBy(students.id);
+
+      // Apply filters based on requirements
+      const conditions = [];
+      
+      // CGPA filter
+      if (requirements.minCGPA > 6.0) {
+        conditions.push(gte(students.cgpa, requirements.minCGPA.toString()));
+      }
+      
+      // College tier preference filter
+      if (requirements.collegePreference !== "any") {
+        switch (requirements.collegePreference) {
+          case "iit-only":
+            conditions.push(ilike(students.university, "%IIT%"));
+            break;
+          case "iit-nit-only":
+            conditions.push(sql`(${students.university} ILIKE '%IIT%' OR ${students.university} ILIKE '%NIT%')`);
+            break;
+          case "tier1-plus":
+            conditions.push(sql`(${students.university} ILIKE '%IIT%' OR ${students.university} ILIKE '%NIT%' OR ${students.university} ILIKE '%IIIT%' OR ${students.university} ILIKE '%BITS%' OR ${students.university} ILIKE '%VIT%' OR ${students.university} ILIKE '%SRM%' OR ${students.university} ILIKE '%DTU%' OR ${students.university} ILIKE '%Manipal%')`);
+            break;
+        }
+      }
+      
+      // Location preference filter (if locations specified)
+      if (requirements.locations.length > 0) {
+        const locationConditions = requirements.locations.map(loc => 
+          sql`(${students.location} ILIKE ${'%' + loc + '%'} OR ${students.preferredLocations} ILIKE ${'%' + loc + '%'})`
+        );
+        conditions.push(sql`(${sql.join(locationConditions, sql` OR `)})`);
+      }
+
+      // Apply all conditions
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions)) as any;
+      }
+
+      // Execute query with limit
+      const rawResults = await query.limit(Math.min(requirements.maxResults * 3, 1000)); // Get more to rank
+
+      // Transform and calculate fit scores
+      const studentsWithScores = rawResults
+        .filter(result => result.student) // Ensure student exists
+        .map(result => {
+          const student = result.student;
+          const studentSkillsArray = result.skillsArray || [];
+          
+          // Calculate comprehensive fit score
+          const fitScore = this.calculateSmartFitScore(student, studentSkillsArray, requirements);
+          
+          return {
+            ...student,
+            skills: result.skills || "",
+            skillsArray: studentSkillsArray,
+            fitScore,
+            projects: [] // Will be populated separately if needed
+          };
+        });
+
+      // Sort by fit score (highest first) and take top results
+      const sortedResults = studentsWithScores
+        .sort((a, b) => b.fitScore - a.fitScore)
+        .slice(0, requirements.maxResults);
+
+      // Format the results to match StudentWithSkills interface
+      return sortedResults.map(student => ({
+        ...student,
+        projects: [], // Can be populated later if needed
+        cgpa: student.cgpa?.toString() || "7.0"
+      })) as StudentWithSkills[];
+
+    } catch (error) {
+      console.error("Error in smart candidate curation:", error);
+      // Fallback to basic student search if smart search fails
+      return this.getStudents({
+        minCgpa: requirements.minCGPA,
+        limit: requirements.maxResults
+      });
+    }
+  }
+
+  private calculateSmartFitScore(
+    student: any, 
+    studentSkills: any[], 
+    requirements: {
+      role: string;
+      skills: string[];
+      minCGPA: number;
+      salaryRange: [number, number];
+      locations: string[];
+      collegePreference: string;
+      urgency: string;
+      workMode: string;
+    }
+  ): number {
+    let score = 0;
+    
+    // 1. CGPA Score (25% weight)
+    const cgpa = parseFloat(student.cgpa?.toString() || "7");
+    const cgpaScore = Math.min(100, (cgpa / 10) * 100);
+    score += cgpaScore * 0.25;
+    
+    // 2. Skills Match (35% weight) 
+    const skillsMatchScore = this.calculateSkillsMatchAdvanced(studentSkills, requirements.skills);
+    score += skillsMatchScore * 0.35;
+    
+    // 3. College Reputation (15% weight)
+    const collegeScore = this.calculateCollegeScore(student.university);
+    score += collegeScore * 0.15;
+    
+    // 4. Salary Alignment (10% weight)
+    const salaryScore = this.calculateSalaryAlignment(student, requirements.salaryRange);
+    score += salaryScore * 0.10;
+    
+    // 5. Location Preference (10% weight)
+    const locationScore = this.calculateLocationAlignment(student, requirements.locations);
+    score += locationScore * 0.10;
+    
+    // 6. Work Mode Match (5% weight)
+    const workModeScore = this.calculateWorkModeAlignment(student, requirements.workMode);
+    score += workModeScore * 0.05;
+    
+    // Urgency bonus: if urgent, prefer freshers with higher availability
+    if (requirements.urgency === "urgent" || requirements.urgency === "high") {
+      if (student.noticePeriod <= 7) {
+        score += 5; // Immediate availability bonus
+      }
+    }
+    
+    return Math.min(100, Math.max(0, score));
+  }
+
+  private calculateSkillsMatchAdvanced(studentSkills: any[], requiredSkills: string[]): number {
+    if (!requiredSkills.length) return 85;
+    
+    const exactMatches = studentSkills.filter(ss => 
+      requiredSkills.some(rs => 
+        ss.name && ss.name.toLowerCase() === rs.toLowerCase()
+      )
+    ).length;
+    
+    const partialMatches = studentSkills.filter(ss => 
+      requiredSkills.some(rs => 
+        ss.name && (ss.name.toLowerCase().includes(rs.toLowerCase()) || rs.toLowerCase().includes(ss.name.toLowerCase()))
+      )
+    ).length - exactMatches;
+    
+    const matchScore = (exactMatches * 100 + partialMatches * 60) / requiredSkills.length;
+    return Math.min(100, matchScore);
+  }
+
+  private calculateCollegeScore(university: string): number {
+    if (!university) return 70;
+    
+    const uni = university.toLowerCase();
+    
+    if (uni.includes("iit")) return 100;
+    if (uni.includes("nit") || uni.includes("iiit")) return 95;
+    if (uni.includes("bits") || uni.includes("vit") || uni.includes("srm") || uni.includes("manipal")) return 90;
+    if (uni.includes("dtu") || uni.includes("nsut") || uni.includes("anna") || uni.includes("delhi")) return 85;
+    if (uni.includes("university") || uni.includes("institute") || uni.includes("college")) return 75;
+    
+    return 70; // Default for other colleges
+  }
+
+  private calculateSalaryAlignment(student: any, salaryRange: [number, number]): number {
+    const studentMin = (student.expectedSalaryMin || 400) / 100; // Convert to LPA
+    const studentMax = (student.expectedSalaryMax || 800) / 100;
+    const companyMin = salaryRange[0];
+    const companyMax = salaryRange[1];
+    
+    // Check for overlap
+    if (studentMax < companyMin) {
+      // Student expects less - great for company
+      return 100;
+    } else if (studentMin > companyMax) {
+      // Student expects more - poor match
+      return 30;
+    } else {
+      // There's overlap - good match
+      const overlapSize = Math.min(studentMax, companyMax) - Math.max(studentMin, companyMin);
+      const totalRange = Math.max(studentMax, companyMax) - Math.min(studentMin, companyMin);
+      return 60 + (overlapSize / totalRange) * 40;
+    }
+  }
+
+  private calculateLocationAlignment(student: any, preferredLocations: string[]): number {
+    if (!preferredLocations.length) return 85;
+    
+    // Check student's current location
+    const currentLocation = student.location?.toLowerCase() || "";
+    const hasCurrentMatch = preferredLocations.some(loc => 
+      currentLocation.includes(loc.toLowerCase()) || loc.toLowerCase().includes(currentLocation)
+    );
+    
+    if (hasCurrentMatch) return 100;
+    
+    // Check student's preferred locations
+    try {
+      const studentPreferences = JSON.parse(student.preferredLocations || "[]");
+      const hasPreferenceMatch = studentPreferences.some((loc: string) =>
+        preferredLocations.some(pref => 
+          loc.toLowerCase().includes(pref.toLowerCase()) || pref.toLowerCase().includes(loc.toLowerCase())
+        )
+      );
+      
+      if (hasPreferenceMatch) return 90;
+    } catch {
+      // Ignore JSON parse errors
+    }
+    
+    return 60; // Neutral if no clear match
+  }
+
+  private calculateWorkModeAlignment(student: any, preferredWorkMode: string): number {
+    const studentWorkMode = student.workMode?.toLowerCase() || "hybrid";
+    const companyWorkMode = preferredWorkMode.toLowerCase();
+    
+    if (studentWorkMode === companyWorkMode) return 100;
+    if (studentWorkMode === "hybrid" || companyWorkMode === "hybrid") return 90;
+    if ((studentWorkMode === "remote" && companyWorkMode === "onsite") || 
+        (studentWorkMode === "onsite" && companyWorkMode === "remote")) return 60;
+    
+    return 80; // Default moderate match
   }
 }
 
