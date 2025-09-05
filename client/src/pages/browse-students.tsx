@@ -41,7 +41,7 @@ export default function BrowseStudents() {
   
   const queryClient = useQueryClient();
   // Show limited results for non-authenticated users
-  const studentsPerPage = isAuthenticated ? 48 : 6;
+  const studentsPerPage = isAuthenticated ? 48 : 12;
 
   const { data: studentsData, isLoading } = useQuery({
     queryKey: ["/api/students", filters, currentPage],
@@ -98,7 +98,7 @@ export default function BrowseStudents() {
     },
   });
 
-  const totalStudentCount = totalCountData?.count || 12000;
+  const totalStudentCount = totalCountData?.count || 1920;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -114,7 +114,7 @@ export default function BrowseStudents() {
                   ? "Loading students..." 
                   : isAuthenticated 
                     ? `${totalCount} students found`
-                    : `Showing ${students.length} of 2.5M+ students (Preview)`
+                    : `Showing ${students.length} of 1,900+ students (Preview)`
                 }
               </p>
             </div>
@@ -243,7 +243,7 @@ export default function BrowseStudents() {
                     ? `🧠 Smart Discovery Results`
                   : isAuthenticated 
                     ? `Student Profiles`
-                    : `Showing ${students.length} of 2.5M+ Students (Preview)`
+                    : `Showing ${students.length} of 1,900+ Students (Preview)`
                 }
               </h2>
               {isUsingSmartResults && (
@@ -262,7 +262,7 @@ export default function BrowseStudents() {
             {!isAuthenticated && (
               <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <Users className="w-4 h-4" />
-                <span>2.5M+ total students available</span>
+                <span>1,900+ total students available</span>
               </div>
             )}
           </div>
@@ -360,7 +360,7 @@ export default function BrowseStudents() {
                   See More Talent
                 </CardTitle>
                 <p className="text-gray-600 dark:text-gray-300 text-lg">
-                  You've seen a preview of {students.length} candidates. Sign in to access our full database of 2.5M+ verified students.
+                  You've seen a preview of {students.length} candidates. Sign in to access our full database of 1,900+ verified students.
                 </p>
               </CardHeader>
               <CardContent className="text-center space-y-6">
@@ -370,7 +370,7 @@ export default function BrowseStudents() {
                       <Users className="w-6 h-6 text-blue-600" />
                     </div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Full Access</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">Browse all 2.5M+ student profiles</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Browse all 1,900+ student profiles</p>
                   </div>
                   <div className="flex flex-col items-center">
                     <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mb-3">
