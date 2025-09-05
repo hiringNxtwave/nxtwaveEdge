@@ -218,6 +218,8 @@ export default function MCQAssessmentModal({ assessmentType, student, score, onC
         }
       ];
     }
+    
+    return [];
   };
 
   const questions = generateMCQData();
