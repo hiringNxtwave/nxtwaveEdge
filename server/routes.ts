@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import OpenAI from 'openai';
 import { 
   insertCompanySchema,
   insertContactRequestSchema,
@@ -551,6 +552,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching code submission:", error);
       res.status(500).json({ message: "Failed to fetch code submission" });
+    }
+  });
+
+  // Initialize OpenAI client
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  // Chatbot endpoint
+  app.post('/api/chatbot', isAuthenticated, async (req: any, res) => {
+    try {
+      const { message, context } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      // Build system prompt with platform context
+      const systemPrompt = `You are NxtWave Assistant, an AI helper for India's premier talent marketplace connecting companies with top 10% freshers.
+
+Platform Overview:
+- 1,900+ verified student profiles with comprehensive assessments
+- Skills: DSA, Aptitude, Verbal Ability, CS Fundamentals (rated 1-5 stars)
+- Smart Discovery: AI-powered talent curation and matching
+- Assessment Details: MCQ breakdowns, coding solutions, interview footage
+- Role Matching: Percentage-based compatibility analysis
+
+Your Role:
+- Help recruiters navigate talent profiles and assessments
+- Explain assessment scores and performance metrics
+- Guide users through Smart Discovery features
+- Provide recruitment insights and candidate selection advice
+- Answer questions about platform features
+
+Key Features to Help With:
+1. Smart Discovery - AI talent curation based on job requirements
+2. Assessment Analysis - DSA, Aptitude, Verbal, CS Fundamentals scores
+3. Interview Performance - Video analysis and key checkpoints
+4. Role Match Analysis - Why candidates are X% match for roles
+5. Candidate Comparison - Side-by-side profile analysis
+
+Context: ${context ? JSON.stringify(context) : 'General platform assistance'}
+
+Be helpful, professional, and focus on recruitment and talent discovery assistance.`;
+
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: message }
+        ],
+        max_tokens: 500,
+        temperature: 0.7,
+      });
+
+      const reply = completion.choices[0]?.message?.content || "I'm sorry, I couldn't process that request.";
+
+      res.json({ 
+        reply,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error) {
+      console.error("Chatbot error:", error);
+      res.status(500).json({ 
+        error: "Sorry, I'm having trouble right now. Please try again in a moment." 
+      });
+    }
+  });
+
+  // Chatbot suggestions endpoint
+  app.get('/api/chatbot/suggestions', isAuthenticated, async (req, res) => {
+    try {
+      const suggestions = [
+        "How do I use Smart Discovery to find Java developers?",
+        "What does a 72% role match mean?",
+        "Explain DSA assessment scores",
+        "Show me candidates with 8+ CGPA",
+        "How to interpret interview performance?",
+        "What makes a strong hire candidate?",
+        "Find React developers in Bangalore",
+        "Explain Verbal Ability assessment"
+      ];
+
+      res.json({ suggestions });
+    } catch (error) {
+      console.error("Error fetching chatbot suggestions:", error);
+      res.status(500).json({ error: "Failed to load suggestions" });
     }
   });
 

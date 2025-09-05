@@ -8,6 +8,7 @@ import StudentFilters from "@/components/student-filters";
 import FreshnessIndex from "@/components/freshness-index";
 import CandidateComparison from "@/components/candidate-comparison";
 import TalentDiscoveryFilters from "@/components/talent-discovery-filters";
+import { Chatbot } from "@/components/chatbot";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,7 @@ export default function BrowseStudents() {
   const [showSmartDiscovery, setShowSmartDiscovery] = useState(false);
   const [smartResults, setSmartResults] = useState<any[]>([]);
   const [isUsingSmartResults, setIsUsingSmartResults] = useState(false);
+  const [showChatbot, setShowChatbot] = useState(false);
   
   const queryClient = useQueryClient();
   // Show limited results for non-authenticated users
@@ -71,12 +73,10 @@ export default function BrowseStudents() {
   // Smart discovery mutation
   const smartDiscoveryMutation = useMutation({
     mutationFn: async (requirements: any) => {
-      return await apiRequest("/api/students/smart-discovery", {
-        method: "POST",
-        body: JSON.stringify(requirements),
-      });
+      const response = await apiRequest("POST", "/api/students/smart-discovery", requirements);
+      return await response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any[]) => {
       setSmartResults(data);
       setIsUsingSmartResults(true);
       setShowSmartDiscovery(false);
@@ -394,6 +394,21 @@ export default function BrowseStudents() {
             setCompareList(compareList.filter(c => c.id !== candidateId));
           }}
           onClose={() => setShowComparison(false)}
+        />
+      )}
+
+      {/* AI Chatbot */}
+      {isAuthenticated && (
+        <Chatbot
+          isOpen={showChatbot}
+          onToggle={() => setShowChatbot(!showChatbot)}
+          context={{
+            currentPage: 'browse-students',
+            totalStudents: totalStudentCount,
+            filtersApplied: filters,
+            isUsingSmartResults,
+            compareList: compareList.map(c => ({ id: c.id, name: c.firstName + ' ' + c.lastName }))
+          }}
         />
       )}
 
