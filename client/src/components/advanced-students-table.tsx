@@ -29,6 +29,8 @@ import {
   Zap
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import AssessmentModal from "@/components/assessment-modal";
+import type { StudentWithSkills } from "@shared/schema";
 
 interface AdvancedStudentsTableProps {
   limit?: number;
@@ -53,6 +55,12 @@ export default function AdvancedStudentsTable({
   const [verificationFilter, setVerificationFilter] = useState("");
   const [skillFilter, setSkillFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedAssessment, setSelectedAssessment] = useState<{
+    type: string; 
+    score: number; 
+    level: string; 
+    student: StudentWithSkills;
+  } | null>(null);
 
   const { data: studentsData, isLoading } = useQuery({
     queryKey: ["/api/students/advanced", {
@@ -296,19 +304,49 @@ export default function AdvancedStudentsTable({
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {getRankIcon(student.dsaScore)}
-                        <Badge className={cn("font-mono", getScoreColor(student.dsaScore))}>
+                        <Badge 
+                          className={cn("font-mono cursor-pointer hover:shadow-md transition-shadow", getScoreColor(student.dsaScore))}
+                          onClick={() => setSelectedAssessment({
+                            type: 'DSA Assessment',
+                            score: student.dsaScore,
+                            level: student.dsaScore >= 90 ? 'Expert' : student.dsaScore >= 80 ? 'Advanced' : student.dsaScore >= 70 ? 'Intermediate' : 'Basic',
+                            student: student as StudentWithSkills
+                          })}
+                          data-testid={`assessment-dsa-${student.id}`}
+                        >
                           {student.dsaScore}
+                          <Eye className="w-3 h-3 ml-1" />
                         </Badge>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className={cn("font-mono", getScoreColor(student.aptitudeScore))}>
+                      <Badge 
+                        className={cn("font-mono cursor-pointer hover:shadow-md transition-shadow", getScoreColor(student.aptitudeScore))}
+                        onClick={() => setSelectedAssessment({
+                          type: 'Quantitative Test',
+                          score: student.aptitudeScore,
+                          level: student.aptitudeScore >= 90 ? 'Excellent' : student.aptitudeScore >= 80 ? 'Very Good' : student.aptitudeScore >= 70 ? 'Good' : 'Fair',
+                          student: student as StudentWithSkills
+                        })}
+                        data-testid={`assessment-quantitative-${student.id}`}
+                      >
                         {student.aptitudeScore}
+                        <Eye className="w-3 h-3 ml-1" />
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Badge className={cn("font-mono", getScoreColor(student.communicationScore))}>
+                      <Badge 
+                        className={cn("font-mono cursor-pointer hover:shadow-md transition-shadow", getScoreColor(student.communicationScore))}
+                        onClick={() => setSelectedAssessment({
+                          type: 'Communication',
+                          score: student.communicationScore,
+                          level: student.communicationScore >= 90 ? 'Excellent' : student.communicationScore >= 80 ? 'Very Good' : student.communicationScore >= 70 ? 'Good' : 'Basic',
+                          student: student as StudentWithSkills
+                        })}
+                        data-testid={`assessment-communication-${student.id}`}
+                      >
                         {student.communicationScore}
+                        <Eye className="w-3 h-3 ml-1" />
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -338,6 +376,25 @@ export default function AdvancedStudentsTable({
                           <Star className="w-4 h-4 mr-1" />
                           Select for Final Consideration
                         </Button>
+                        
+                        {/* Assessment Actions */}
+                        <div className="flex items-center gap-1 mb-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setSelectedAssessment({
+                              type: 'System Design',
+                              score: Math.floor(75 + (parseInt(student.id.slice(-4), 16) % 25)),
+                              level: 'Advanced',
+                              student: student as StudentWithSkills
+                            })}
+                            data-testid={`assessment-system-design-${student.id}`}
+                            className="flex-1 text-xs"
+                          >
+                            <Target className="w-3 h-3 mr-1" />
+                            System Design
+                          </Button>
+                        </div>
                         
                         {/* Secondary Actions */}
                         <div className="flex items-center gap-1">
@@ -409,6 +466,19 @@ export default function AdvancedStudentsTable({
           </div>
         </div>
       </CardContent>
+      
+      {/* Assessment Modal */}
+      {selectedAssessment && (
+        <AssessmentModal 
+          assessment={{
+            type: selectedAssessment.type,
+            score: selectedAssessment.score,
+            level: selectedAssessment.level
+          }}
+          student={selectedAssessment.student}
+          onClose={() => setSelectedAssessment(null)}
+        />
+      )}
     </Card>
   );
 }
