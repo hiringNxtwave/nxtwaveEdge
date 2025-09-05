@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShortlistingDashboard from "@/components/shortlisting-dashboard";
 import CodeReplayModal from "@/components/code-replay-modal";
 import CommunicationSampleModal from "@/components/communication-sample-modal";
+import ATSIntegration from "@/components/ats-integration";
 import { useShortlist } from "@/contexts/shortlist-context";
 import { 
   Users, 
@@ -17,7 +18,9 @@ import {
   MessageSquare,
   Brain,
   Zap,
-  ArrowLeft
+  ArrowLeft,
+  Settings,
+  Download
 } from "lucide-react";
 import type { StudentWithSkills } from "@shared/schema";
 import { Link } from "wouter";
@@ -27,6 +30,8 @@ export default function ShortlistingPage() {
   const [selectedStudent, setSelectedStudent] = useState<StudentWithSkills | null>(null);
   const [showCodeReplay, setShowCodeReplay] = useState(false);
   const [showCommunicationSample, setShowCommunicationSample] = useState(false);
+  const [showATSIntegration, setShowATSIntegration] = useState(false);
+  const [selectedCandidatesForATS, setSelectedCandidatesForATS] = useState<StudentWithSkills[]>([]);
 
   // Fetch students data
   const { data: students = [], isLoading } = useQuery<StudentWithSkills[]>({
@@ -111,6 +116,17 @@ export default function ShortlistingPage() {
               <Badge variant="secondary" className="bg-purple-100 text-purple-700">
                 Avg Match: {avgJdMatch}%
               </Badge>
+              <Button 
+                className="bg-purple-600 hover:bg-purple-700"
+                onClick={() => {
+                  setSelectedCandidatesForATS(shortlistedStudents);
+                  setShowATSIntegration(true);
+                }}
+                data-testid="button-ats-integration-header"
+              >
+                <Settings className="w-4 h-4 mr-2" />
+                ATS Integration
+              </Button>
             </div>
           </div>
         </div>
@@ -320,6 +336,15 @@ export default function ShortlistingPage() {
             setShowCommunicationSample(false);
             setSelectedStudent(null);
           }}
+        />
+      )}
+
+      {/* ATS Integration Modal */}
+      {showATSIntegration && (
+        <ATSIntegration 
+          isOpen={showATSIntegration}
+          onClose={() => setShowATSIntegration(false)}
+          selectedCandidates={selectedCandidatesForATS}
         />
       )}
     </div>

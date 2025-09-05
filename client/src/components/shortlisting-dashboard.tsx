@@ -17,10 +17,13 @@ import {
   FileText,
   DollarSign,
   MapPin,
-  Star
+  Star,
+  Settings,
+  Download
 } from "lucide-react";
 import type { StudentWithSkills } from "@shared/schema";
 import { useShortlist } from "@/contexts/shortlist-context";
+import ATSIntegration from "@/components/ats-integration";
 
 interface ShortlistingDashboardProps {
   students: StudentWithSkills[];
@@ -31,6 +34,7 @@ export default function ShortlistingDashboard({ students, onBulkAction }: Shortl
   const { shortlistedIds, isShortlisted } = useShortlist();
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState("bulk-actions");
+  const [showATSIntegration, setShowATSIntegration] = useState(false);
 
   // Filter shortlisted students
   const shortlistedStudents = students.filter(student => isShortlisted(student.id));
@@ -413,6 +417,15 @@ export default function ShortlistingDashboard({ students, onBulkAction }: Shortl
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* ATS Integration Modal */}
+      {showATSIntegration && (
+        <ATSIntegration 
+          isOpen={showATSIntegration}
+          onClose={() => setShowATSIntegration(false)}
+          selectedCandidates={shortlistedStudents.filter(s => selectedStudents.includes(s.id))}
+        />
+      )}
     </div>
   );
 }
