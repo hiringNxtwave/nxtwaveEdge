@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import AdvancedStudentsTable from "@/components/advanced-students-table";
 import InterviewScheduler from "@/components/interview-scheduler";
 import CodeSubmissionViewer from "@/components/code-submission-viewer";
+import TalentDiscoveryFilters from "@/components/talent-discovery-filters";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +19,10 @@ import {
   TrendingUp,
   Award,
   Shield,
-  Zap
+  Zap,
+  Search,
+  Filter,
+  Eye
 } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
@@ -28,6 +32,16 @@ export default function TalentDashboard() {
   const { user, isAuthenticated } = useAuth();
   const [selectedStudent, setSelectedStudent] = useState<{id: string, name: string} | null>(null);
   const [activeModal, setActiveModal] = useState<'interview' | 'code' | null>(null);
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    salaryRange: { min: 0, max: 50 }, // in LPA
+    locations: [] as string[],
+    graduationYears: [] as number[],
+    softTraits: [] as string[],
+    assessmentAge: 90, // days
+    skills: [] as string[],
+    universities: [] as string[]
+  });
 
   // Mock stats for the dashboard
   const stats = [
@@ -138,21 +152,37 @@ export default function TalentDashboard() {
             ))}
           </div>
 
-          {/* Quick Filters */}
+          {/* Search and Filters Bar */}
           <Card className="mb-8">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="w-5 h-5 text-blue-600" />
-                Quick Filters
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Search className="w-5 h-5 text-blue-600" />
+                  Talent Discovery
+                </div>
+                <Button 
+                  onClick={() => setShowAdvancedFilters(true)}
+                  className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                  data-testid="button-open-advanced-filters"
+                >
+                  <Filter className="w-4 h-4" />
+                  Advanced Filters
+                  {Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : (typeof f === 'object' ? f.min > 0 || f.max < 50 : f !== 90)) && (
+                    <Badge variant="secondary" className="ml-1 bg-white text-blue-600">
+                      Active
+                    </Badge>
+                  )}
+                </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Quick Access Filters */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 {quickFilters.map((filter, index) => (
                   <Button
                     key={index}
                     variant="outline"
-                    className="justify-between h-16 p-4 flex items-center"
+                    className="justify-between h-16 p-4 flex items-center hover:border-blue-300"
                     data-testid={`filter-${filter.filter}`}
                   >
                     <div className="text-left flex-grow">
@@ -163,6 +193,38 @@ export default function TalentDashboard() {
                   </Button>
                 ))}
               </div>
+
+              {/* Active Filters Display */}
+              {Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : (typeof f === 'object' ? f.min > 0 || f.max < 50 : f !== 90)) && (
+                <div className="flex flex-wrap gap-2 p-4 bg-blue-50 rounded-lg">
+                  <span className="text-sm font-medium text-blue-900">Active Filters:</span>
+                  {filters.salaryRange.min > 0 || filters.salaryRange.max < 50 ? (
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                      Salary: ₹{filters.salaryRange.min}-{filters.salaryRange.max} LPA
+                    </Badge>
+                  ) : null}
+                  {filters.locations.map(location => (
+                    <Badge key={location} variant="secondary" className="bg-blue-100 text-blue-800">
+                      {location}
+                    </Badge>
+                  ))}
+                  {filters.graduationYears.map(year => (
+                    <Badge key={year} variant="secondary" className="bg-blue-100 text-blue-800">
+                      Class of {year}
+                    </Badge>
+                  ))}
+                  {filters.softTraits.slice(0, 3).map(trait => (
+                    <Badge key={trait} variant="secondary" className="bg-blue-100 text-blue-800">
+                      {trait}
+                    </Badge>
+                  ))}
+                  {filters.softTraits.length > 3 && (
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                      +{filters.softTraits.length - 3} more traits
+                    </Badge>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -228,6 +290,15 @@ export default function TalentDashboard() {
               />
             </DialogContent>
           </Dialog>
+        )}
+
+        {/* Advanced Filters Panel */}
+        {showAdvancedFilters && (
+          <TalentDiscoveryFilters
+            filters={filters}
+            onFiltersChange={setFilters}
+            onClose={() => setShowAdvancedFilters(false)}
+          />
         )}
       </div>
     </div>

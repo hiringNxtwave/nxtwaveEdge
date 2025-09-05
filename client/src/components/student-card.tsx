@@ -8,6 +8,7 @@ import { useShortlist } from "@/contexts/shortlist-context";
 import { useState } from "react";
 import AssessmentModal from "@/components/assessment-modal";
 import RoleMatchRationale from "@/components/role-match-rationale";
+import Candidate360View from "@/components/candidate-360-view";
 
 interface StudentCardProps {
   student: StudentWithSkills;
@@ -18,6 +19,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   const { isShortlisted, addToShortlist, removeFromShortlist } = useShortlist();
   const [selectedAssessment, setSelectedAssessment] = useState<{type: string, score: number, level: string} | null>(null);
   const [showRoleMatchRationale, setShowRoleMatchRationale] = useState(false);
+  const [showCandidate360, setShowCandidate360] = useState(false);
   
   // Use student ID as seed for consistent ratings
   const seed = parseInt(student.id.slice(-8), 16);
@@ -213,11 +215,22 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
           {/* Action Section - 2 columns */}
           <div className="col-span-2 flex flex-col space-y-3">
-            <Link href={`/student/${student.id}`}>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" size="sm" data-testid={`button-view-profile-${student.id}`}>
-                View Profile
+            <div className="grid grid-cols-2 gap-2">
+              <Link href={`/student/${student.id}`}>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold" size="sm" data-testid={`button-view-profile-${student.id}`}>
+                  View Profile
+                </Button>
+              </Link>
+              <Button 
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold" 
+                size="sm" 
+                onClick={() => setShowCandidate360(true)}
+                data-testid={`button-360-view-${student.id}`}
+              >
+                <Eye className="w-4 h-4 mr-1" />
+                360° View
               </Button>
-            </Link>
+            </div>
             <Button 
               variant="outline" 
               className={`w-full font-semibold ${
@@ -265,6 +278,14 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           student={student}
           matchPercentage={matchPercentage}
           onClose={() => setShowRoleMatchRationale(false)}
+        />
+      )}
+
+      {/* Candidate 360 View Modal */}
+      {showCandidate360 && (
+        <Candidate360View 
+          student={student}
+          onClose={() => setShowCandidate360(false)}
         />
       )}
     </Card>
