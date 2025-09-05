@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import Header from "@/components/header";
 import AdvancedStudentsTable from "@/components/advanced-students-table";
 import InterviewScheduler from "@/components/interview-scheduler";
 import CodeSubmissionViewer from "@/components/code-submission-viewer";
-import TalentDiscoveryFilters from "@/components/talent-discovery-filters";
+// import TalentDiscoveryFilters from "@/components/talent-discovery-filters";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -314,11 +314,15 @@ export default function TalentDashboard() {
 
         {/* Advanced Filters Panel */}
         {showAdvancedFilters && (
-          <TalentDiscoveryFilters
-            filters={filters}
-            onFiltersChange={setFilters}
-            onClose={() => setShowAdvancedFilters(false)}
-          />
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-6">
+                <h2 className="text-2xl font-bold mb-4">Advanced Filters</h2>
+                <p className="text-gray-600 mb-4">Filters functionality will be available soon.</p>
+                <Button onClick={() => setShowAdvancedFilters(false)}>Close</Button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>
