@@ -113,7 +113,9 @@ export default function BrowseStudents() {
                 {isLoading 
                   ? "Loading students..." 
                   : isAuthenticated 
-                    ? `${totalCount} students found`
+                    ? isUsingSmartResults
+                      ? `Showing ${students.length} AI-curated matches`
+                      : `Browse our talent database`
                     : `Showing ${students.length} of 1,900+ students (Preview)`
                 }
               </p>
