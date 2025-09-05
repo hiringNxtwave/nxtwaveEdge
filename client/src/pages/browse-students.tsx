@@ -5,10 +5,14 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 import Header from "@/components/header";
 import StudentCard from "@/components/student-card";
 import StudentFilters from "@/components/student-filters";
+import FreshnessIndex from "@/components/freshness-index";
+import CandidateComparison from "@/components/candidate-comparison";
+import PredictiveInsights from "@/components/predictive-insights";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Lock, Users, Star, Zap } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Lock, Users, Star, Zap, GitCompare, BarChart3, CheckSquare } from "lucide-react";
 
 export default function BrowseStudents() {
   useScrollToTop();
@@ -24,6 +28,11 @@ export default function BrowseStudents() {
   });
 
   const [currentPage, setCurrentPage] = useState(1);
+  
+  // New state for enhanced features
+  const [compareList, setCompareList] = useState<any[]>([]);
+  const [showComparison, setShowComparison] = useState(false);
+  const [showInsights, setShowInsights] = useState(false);
   // Show limited results for non-authenticated users
   const studentsPerPage = isAuthenticated ? 48 : 6;
 
@@ -58,17 +67,44 @@ export default function BrowseStudents() {
       <Header />
       
       <div className="container mx-auto px-4 py-8">
-        {/* Compact header with filters on the right */}
+        {/* Enhanced Header with Action Buttons */}
         <div className="mb-8 flex items-center justify-between">
-          <div>
-            <p className="text-gray-600 dark:text-gray-300 text-lg">
-              {isLoading 
-                ? "Loading students..." 
-                : isAuthenticated 
-                  ? `${totalCount} students found`
-                  : `Showing ${students.length} of 2.5M+ students (Preview)`
-              }
-            </p>
+          <div className="flex items-center gap-6">
+            <div>
+              <p className="text-gray-600 dark:text-gray-300 text-lg">
+                {isLoading 
+                  ? "Loading students..." 
+                  : isAuthenticated 
+                    ? `${totalCount} students found`
+                    : `Showing ${students.length} of 2.5M+ students (Preview)`
+                }
+              </p>
+            </div>
+            
+            {/* Enhanced Action Buttons */}
+            {isAuthenticated && (
+              <div className="flex items-center gap-3">
+                {compareList.length > 0 && (
+                  <Button
+                    onClick={() => setShowComparison(true)}
+                    className="bg-purple-600 hover:bg-purple-700 text-white font-semibold"
+                    data-testid="button-compare-candidates"
+                  >
+                    <GitCompare className="w-4 h-4 mr-2" />
+                    Compare ({compareList.length})
+                  </Button>
+                )}
+                <Button
+                  onClick={() => setShowInsights(true)}
+                  variant="outline"
+                  className="border-blue-500 text-blue-600 hover:bg-blue-50"
+                  data-testid="button-predictive-insights"
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  Hiring Insights
+                </Button>
+              </div>
+            )}
           </div>
           
           {/* Compact Filters */}
@@ -126,17 +162,32 @@ export default function BrowseStudents() {
           </div>
         )}
 
+        {/* Freshness Index for Authenticated Users */}
+        {isAuthenticated && !isLoading && students.length > 0 && (
+          <div className="mb-8">
+            <FreshnessIndex totalCandidates={totalCount} />
+          </div>
+        )}
+
         {/* Student Results */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              {isLoading 
-                ? "Loading..." 
-                : isAuthenticated 
-                  ? `Student Profiles`
-                  : `Showing ${students.length} of 2.5M+ Students (Preview)`
-              }
-            </h2>
+            <div className="flex items-center gap-4">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                {isLoading 
+                  ? "Loading..." 
+                  : isAuthenticated 
+                    ? `Student Profiles`
+                    : `Showing ${students.length} of 2.5M+ Students (Preview)`
+                }
+              </h2>
+              {isAuthenticated && !isLoading && (
+                <Badge className="bg-blue-100 text-blue-800 px-3 py-1">
+                  <CheckSquare className="w-3 h-3 mr-1" />
+                  {students.length} Candidates Ready to Compare
+                </Badge>
+              )}
+            </div>
             {!isAuthenticated && (
               <div className="flex items-center space-x-2 text-sm text-gray-600">
                 <Users className="w-4 h-4" />
@@ -294,6 +345,45 @@ export default function BrowseStudents() {
           </div>
         )}
       </div>
+
+      {/* Enhanced Feature Modals */}
+      {showComparison && (
+        <CandidateComparison
+          candidates={compareList}
+          onRemove={(candidateId) => {
+            setCompareList(compareList.filter(c => c.id !== candidateId));
+          }}
+          onClose={() => setShowComparison(false)}
+        />
+      )}
+
+      {showInsights && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <Card className="max-w-6xl w-full max-h-[90vh] overflow-auto">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-2xl font-bold flex items-center gap-2">
+                  <BarChart3 className="w-6 h-6 text-blue-600" />
+                  Predictive Hiring Insights
+                </CardTitle>
+                <Button variant="ghost" onClick={() => setShowInsights(false)} className="p-2">
+                  <Lock className="w-5 h-5" />
+                </Button>
+              </div>
+              <p className="text-gray-600 dark:text-gray-300">AI-powered insights to optimize your hiring process</p>
+            </CardHeader>
+            <CardContent>
+              <PredictiveInsights
+                shortlistedCount={Math.max(20, students.length)}
+                role="Software Engineer"
+                location="Bangalore"
+                salaryRange={{ min: 8, max: 15 }}
+                urgency="medium"
+              />
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
