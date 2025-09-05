@@ -429,24 +429,6 @@ export default function AdvancedStudentsTable({
                           Select for Final Consideration
                         </Button>
                         
-                        {/* Assessment Actions */}
-                        <div className="flex items-center gap-1 mb-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => setSelectedAssessment({
-                              type: 'System Design',
-                              score: Math.floor(75 + (parseInt(student.id.slice(-4), 16) % 25)),
-                              level: 'Advanced',
-                              student: student as StudentWithSkills
-                            })}
-                            data-testid={`assessment-system-design-${student.id}`}
-                            className="flex-1 text-xs"
-                          >
-                            <Target className="w-3 h-3 mr-1" />
-                            System Design
-                          </Button>
-                        </div>
                         
                         {/* Secondary Actions */}
                         <div className="flex items-center gap-1">

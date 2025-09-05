@@ -49,13 +49,13 @@ The final solution is efficient and handles all edge cases including empty array
     },
     {
       title: "Project Explanation: E-commerce React App",
-      content: `This project demonstrates my full-stack development skills using React and Node.js.
+      content: `This project demonstrates my full-stack development skills using modern web technologies.
 
 Technical Implementation:
-- Frontend: React with Redux for state management, Material-UI for components
-- Backend: Express.js with PostgreSQL database
-- Authentication: JWT tokens with secure refresh mechanism
-- Payment: Stripe integration for secure transactions
+- Frontend: Component-based architecture with state management and UI components
+- Backend: RESTful API with database integration
+- Authentication: Secure token-based authentication system
+- Payment: Third-party payment gateway integration for secure transactions
 
 Challenges Overcome:
 - Implemented optimistic updates for better UX

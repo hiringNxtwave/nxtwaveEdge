@@ -183,9 +183,9 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               {/* CS Fundamentals */}
               <div className="bg-white dark:bg-gray-700 rounded-lg p-3 text-center shadow-sm border border-gray-100 cursor-pointer hover:border-orange-300 hover:shadow-md transition-all duration-200 group" 
                    onClick={() => setSelectedAssessment({type: 'Tech Fundamentals', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Expert' : csFundamentalsScore >= 3 ? 'Solid' : 'Learning'})}
-                   data-testid={`assessment-system-design-${student.id}`}>
+                   data-testid={`assessment-cs-fundamentals-${student.id}`}>
                 <div className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-2 whitespace-nowrap flex items-center justify-center">
-                  System Design
+                  CS Fundamentals
                   <Eye className="w-3 h-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 <div className="text-lg font-bold text-orange-600 dark:text-orange-400 mb-1">

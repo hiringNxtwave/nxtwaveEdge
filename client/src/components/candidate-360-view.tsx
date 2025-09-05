@@ -222,7 +222,7 @@ export default function CandidateFullReport({ student, isOpen, onClose }: Candid
       totalParticipants: 250,
       category: "AI/ML",
       projectTitle: "EcoTrack - Smart Waste Management System",
-      techStack: ["React", "Python", "TensorFlow", "Firebase"],
+      techStack: ["Frontend Development", "Data Analysis", "Machine Learning", "Cloud Systems"],
       score: 92,
       achievements: ["Best Innovation Award", "People's Choice Award"]
     },
@@ -235,7 +235,7 @@ export default function CandidateFullReport({ student, isOpen, onClose }: Candid
       totalParticipants: 180,
       category: "Full Stack Development",
       projectTitle: "StudyBuddy - Collaborative Learning Platform",
-      techStack: ["Next.js", "Node.js", "MongoDB", "Socket.io"],
+      techStack: ["Web Development", "Backend Architecture", "Database Design", "Real-time Systems"],
       score: 98,
       achievements: ["First Place Winner", "Best Technical Implementation"]
     }

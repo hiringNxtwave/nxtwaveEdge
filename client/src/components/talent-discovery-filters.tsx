@@ -50,9 +50,9 @@ export default function TalentDiscoveryFilters({ filters, onFiltersChange, onClo
   ];
 
   const skills = [
-    "JavaScript", "Python", "Java", "React", "Node.js", "Angular",
-    "Vue.js", "SQL", "MongoDB", "AWS", "Docker", "Kubernetes",
-    "Machine Learning", "Data Science", "DevOps", "System Design"
+    "Problem Solving", "Data Structures", "Algorithms", "Database Management",
+    "Machine Learning", "Data Science", "Communication", "Leadership",
+    "Team Management", "Project Planning", "Quality Assurance", "Testing"
   ];
 
   const universities = [

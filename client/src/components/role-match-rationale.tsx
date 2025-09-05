@@ -43,7 +43,7 @@ export default function RoleMatchRationale({ student, matchPercentage, onClose }
       const response = await fetch(`/api/role-match/${student.id}`, {
         method: 'POST',
         body: JSON.stringify({
-          skills: ["JavaScript", "React", "Node.js"],
+          skills: ["Problem Solving", "Communication", "Leadership"],
           salaryRange: { min: 600, max: 1200 },
           location: "Bangalore",
           role: "Software Engineer"

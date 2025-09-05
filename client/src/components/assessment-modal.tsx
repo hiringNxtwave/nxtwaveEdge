@@ -157,50 +157,6 @@ Step 6: Finished Messages
         difficulty: "Hard"
       }
     ],
-    "System Design": [
-      {
-        id: "verbal_1",
-        question: "Choose the word that best completes the sentence: 'The scientist's ______ approach to research yielded groundbreaking results.' (Options: meticulous, haphazard, superficial, careless)",
-        studentAnswer: `Selected Answer: meticulous
-
-Reasoning:
-The sentence structure indicates a positive outcome ("yielded groundbreaking results"), so we need a positive adjective to describe the scientist's approach.
-
-- Meticulous: Showing great attention to detail; very careful and precise
-- Haphazard: Lacking any obvious principle of organization; random
-- Superficial: Existing or occurring at or on the surface; shallow
-- Careless: Not giving sufficient attention or thought
-
-Since groundbreaking results typically come from careful, detailed, and systematic research, "meticulous" is the most appropriate choice. The other options (haphazard, superficial, careless) would contradict the positive outcome mentioned in the sentence.`,
-        correctAnswer: "Correct answer: meticulous. Student showed excellent reasoning and understanding of context clues.",
-        isCorrect: score >= 85,
-        timeTaken: Math.floor(2 + rand(3) * 2), // 2-4 minutes  
-        difficulty: "Medium"
-      },
-      {
-        id: "verbal_2",
-        question: "Identify the error in this sentence: 'Neither the manager nor the employees was aware of the policy changes.' Explain the correction.",
-        studentAnswer: `Error Identified: Subject-verb disagreement
-
-The error is with the verb "was" which should be "were".
-
-Rule: When using "neither...nor" construction, the verb agrees with the subject closest to it.
-
-In this sentence:
-- "Neither the manager nor the employees" - the subject closest to the verb is "employees" (plural)
-- Therefore, the verb should be plural: "were"
-
-Corrected sentence: "Neither the manager nor the employees were aware of the policy changes."
-
-Additional examples:
-- "Neither the students nor the teacher was ready." (singular - agrees with "teacher")  
-- "Neither the teacher nor the students were ready." (plural - agrees with "students")`,
-        correctAnswer: "Correct identification: Subject-verb disagreement. The verb should be 'were' to agree with the plural subject 'employees' which is closer to the verb in the neither...nor construction.",
-        isCorrect: score >= 90,
-        timeTaken: Math.floor(3 + rand(4) * 2), // 3-5 minutes
-        difficulty: "Hard"
-      }
-    ],
     "Communication": [
       {
         id: "interview_1", 
@@ -209,7 +165,7 @@ Additional examples:
 
 **Challenge:** 
 Our team of 4 had to build a full-stack e-commerce mobile app in 4 months. Midway through, we faced major issues:
-- Integration problems between React Native frontend and Node.js backend
+- Integration problems between mobile frontend and backend services
 - Database performance issues with complex queries
 - Team member dropped out due to personal reasons
 
@@ -262,7 +218,7 @@ From my research and conversations with employees on LinkedIn, I appreciate the 
 **How I Can Contribute:**
 
 1. **Technical Skills:**
-- Strong foundation in full-stack development (React, Node.js, Python)
+- Strong foundation in full-stack development and modern programming
 - Experience with cloud platforms (AWS) and DevOps practices
 - Problem-solving approach that I've demonstrated through hackathons and projects
 
