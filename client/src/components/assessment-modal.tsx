@@ -33,6 +33,187 @@ const generateAssessmentData = (type: string, score: number, studentId: string):
   const rand = (offset: number) => ((seed * 37 + offset) % 100) / 100;
 
   const baseQuestions: Record<string, AssessmentQuestion[]> = {
+    "Quantitative & Aptitude": [
+      {
+        id: "quant_1",
+        question: "A train traveling at 60 km/hr crosses a platform 200m long in 30 seconds. What is the length of the train?",
+        studentAnswer: `Solution:
+
+Let the length of train = L meters
+
+Speed of train = 60 km/hr = 60 × (5/18) m/s = 50/3 m/s
+
+Total distance covered = Length of train + Length of platform
+Total distance = L + 200 meters
+
+Time taken = 30 seconds
+
+Using: Distance = Speed × Time
+L + 200 = (50/3) × 30
+L + 200 = 500
+L = 300 meters
+
+Therefore, the length of the train is 300 meters.
+
+Verification: 
+Total distance = 300 + 200 = 500m
+Speed = 500m ÷ 30s = 16.67 m/s = 60 km/hr ✓`,
+        correctAnswer: "Correct answer: 300 meters. Student showed proper conversion of units, clear step-by-step solution, and verification of the answer.",
+        isCorrect: score >= 70,
+        timeTaken: Math.floor(3 + rand(1) * 2), // 3-5 minutes
+        difficulty: "Medium"
+      },
+      {
+        id: "quant_2", 
+        question: "In a company, 60% of employees are men and 40% are women. If 25% of men and 50% of women have MBA degrees, what percentage of total employees have MBA degrees?",
+        studentAnswer: `Solution:
+
+Let total employees = 100 (for easy calculation)
+
+Men = 60% of 100 = 60
+Women = 40% of 100 = 40
+
+Men with MBA = 25% of 60 = 15
+Women with MBA = 50% of 40 = 20
+
+Total employees with MBA = 15 + 20 = 35
+
+Percentage of employees with MBA = (35/100) × 100 = 35%
+
+Answer: 35% of total employees have MBA degrees.`,
+        correctAnswer: "Correct answer: 35%. Student demonstrated clear understanding of percentage calculations and systematic problem-solving approach.",
+        isCorrect: score >= 80,
+        timeTaken: Math.floor(4 + rand(2) * 3), // 4-7 minutes
+        difficulty: "Easy"
+      }
+    ],
+    "Verbal Ability": [
+      {
+        id: "verbal_1",
+        question: "Choose the word that best completes the sentence: 'The scientist's ______ approach to research yielded groundbreaking results.' (Options: meticulous, haphazard, superficial, careless)",
+        studentAnswer: `Selected Answer: meticulous
+
+Reasoning:
+The sentence structure indicates a positive outcome ("yielded groundbreaking results"), so we need a positive adjective to describe the scientist's approach.
+
+- Meticulous: Showing great attention to detail; very careful and precise
+- Haphazard: Lacking any obvious principle of organization; random
+- Superficial: Existing or occurring at or on the surface; shallow
+- Careless: Not giving sufficient attention or thought
+
+Since groundbreaking results typically come from careful, detailed, and systematic research, "meticulous" is the most appropriate choice. The other options (haphazard, superficial, careless) would contradict the positive outcome mentioned in the sentence.`,
+        correctAnswer: "Correct answer: meticulous. Student showed excellent reasoning and understanding of context clues.",
+        isCorrect: score >= 85,
+        timeTaken: Math.floor(2 + rand(3) * 2), // 2-4 minutes  
+        difficulty: "Medium"
+      },
+      {
+        id: "verbal_2",
+        question: "Identify the error in this sentence: 'Neither the manager nor the employees was aware of the policy changes.' Explain the correction.",
+        studentAnswer: `Error Identified: Subject-verb disagreement
+
+The error is with the verb "was" which should be "were".
+
+Rule: When using "neither...nor" construction, the verb agrees with the subject closest to it.
+
+In this sentence:
+- "Neither the manager nor the employees" - the subject closest to the verb is "employees" (plural)
+- Therefore, the verb should be plural: "were"
+
+Corrected sentence: "Neither the manager nor the employees were aware of the policy changes."
+
+Additional examples:
+- "Neither the students nor the teacher was ready." (singular - agrees with "teacher")  
+- "Neither the teacher nor the students were ready." (plural - agrees with "students")`,
+        correctAnswer: "Correct identification: Subject-verb disagreement. The verb should be 'were' to agree with the plural subject 'employees' which is closer to the verb in the neither...nor construction.",
+        isCorrect: score >= 90,
+        timeTaken: Math.floor(3 + rand(4) * 2), // 3-5 minutes
+        difficulty: "Hard"
+      }
+    ],
+    "Interview Performance": [
+      {
+        id: "interview_1", 
+        question: "Tell me about a challenging project you worked on and how you overcame the difficulties.",
+        studentAnswer: `Project: E-commerce Mobile App Development (Final Year Project)
+
+**Challenge:** 
+Our team of 4 had to build a full-stack e-commerce mobile app in 4 months. Midway through, we faced major issues:
+- Integration problems between React Native frontend and Node.js backend
+- Database performance issues with complex queries
+- Team member dropped out due to personal reasons
+
+**My Approach:**
+1. **Technical Problem-Solving:**
+   - Redesigned API structure to be more efficient
+   - Optimized database queries and added proper indexing
+   - Implemented caching layer with Redis
+
+2. **Team Management:**
+   - Redistributed work among remaining 3 members
+   - Set up daily standups to track progress
+   - Created detailed documentation for smoother collaboration
+
+3. **Time Management:**
+   - Prioritized core features over nice-to-have features
+   - Created realistic timeline with buffer for testing
+   - Worked extra hours during critical phases
+
+**Results:**
+- Successfully delivered the app on time
+- Achieved 95% functionality of original scope
+- Received 'Best Project' award in our department
+- App handled 1000+ concurrent users during demo
+
+**What I Learned:**
+- Importance of thorough planning and risk assessment
+- Value of clear communication in team projects
+- How to make tough decisions under pressure
+- Technical skills in performance optimization`,
+        correctAnswer: "Excellent response: Specific example, clear challenge description, detailed solution approach, quantified results, and meaningful lessons learned. Shows leadership, problem-solving, and technical skills.",
+        isCorrect: score >= 85,
+        timeTaken: Math.floor(8 + rand(5) * 4), // 8-12 minutes
+        difficulty: "Medium"
+      },
+      {
+        id: "interview_2",
+        question: "Why do you want to work at our company, and how do you see yourself contributing to our team?",
+        studentAnswer: `**Why I Want to Work Here:**
+
+1. **Company Mission Alignment:**
+Your company's focus on using technology to solve real-world problems resonates with my values. I'm particularly excited about your recent healthcare AI initiatives, which align with my passion for using tech to make a meaningful impact.
+
+2. **Growth Opportunities:**
+The company's rapid expansion and investment in R&D shows commitment to innovation. I see opportunities to learn from experienced professionals and work on cutting-edge projects.
+
+3. **Company Culture:**
+From my research and conversations with employees on LinkedIn, I appreciate the collaborative culture and emphasis on continuous learning. The flexible work environment and focus on work-life balance are important to me.
+
+**How I Can Contribute:**
+
+1. **Technical Skills:**
+- Strong foundation in full-stack development (React, Node.js, Python)
+- Experience with cloud platforms (AWS) and DevOps practices
+- Problem-solving approach that I've demonstrated through hackathons and projects
+
+2. **Fresh Perspective:**
+As a recent graduate, I bring current knowledge of latest technologies and different approaches to problem-solving that could complement the team's experience.
+
+3. **Enthusiasm & Adaptability:**
+- Eager to learn and take on challenging tasks
+- Quick to adapt to new technologies and methodologies
+- Strong work ethic and commitment to quality
+
+4. **Specific Value-Add:**
+Based on your job description, I noticed you're expanding the mobile development team. My experience building React Native apps and understanding of mobile-first design principles would be directly applicable.
+
+I'm excited about the possibility of growing with the company while contributing to projects that have real impact.`,
+        correctAnswer: "Outstanding response: Well-researched company knowledge, clear personal motivations, specific ways to contribute, and genuine enthusiasm. Shows preparation and strong cultural fit.",
+        isCorrect: score >= 90,
+        timeTaken: Math.floor(10 + rand(6) * 5), // 10-15 minutes
+        difficulty: "Hard"
+      }
+    ],
     "DSA Assessment": [
       {
         id: "dsa_1",
@@ -233,73 +414,65 @@ function safeBinarySearch(arr, target) {
         difficulty: "Hard"
       }
     ],
-    "System Design": [
+    "Tech Fundamentals": [
       {
         id: "sys_1",
-        question: "Design a URL shortening service like bit.ly. Consider scalability, database design, and caching strategies.",
-        studentAnswer: `System Architecture Design:
+        question: "Explain the differences between HTTP and HTTPS, and describe how SSL/TLS handshake works.",
+        studentAnswer: `HTTP vs HTTPS Analysis:
 
-1. High-Level Architecture
-Client -> Load Balancer -> API Gateway -> Microservices
-                                      - URL Service
-                                      - Analytics Service  
-                                      - User Service
+1. **HTTP (HyperText Transfer Protocol)**
+   - Port 80 (default)
+   - Data transmitted in plain text
+   - No encryption - vulnerable to eavesdropping
+   - Faster (no encryption overhead)
+   - Stateless protocol
 
-2. Database Design
--- Main URLs table
-CREATE TABLE urls (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    short_code VARCHAR(7) UNIQUE NOT NULL,
-    original_url TEXT NOT NULL,
-    user_id BIGINT,
-    created_at TIMESTAMP,
-    expires_at TIMESTAMP,
-    is_active BOOLEAN DEFAULT TRUE
-);
+2. **HTTPS (HTTP Secure)**
+   - Port 443 (default)
+   - HTTP over SSL/TLS
+   - End-to-end encryption
+   - Data integrity verification
+   - Server authentication
 
--- Analytics table  
-CREATE TABLE url_clicks (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    short_code VARCHAR(7),
-    clicked_at TIMESTAMP,
-    ip_address VARCHAR(45),
-    user_agent TEXT,
-    referrer TEXT
-);
+3. **SSL/TLS Handshake Process**
 
-3. Encoding Strategy
-- Use Base62 encoding (a-z, A-Z, 0-9)
-- Generate 7-character codes = 62^7 = 3.5 trillion URLs
-- Hash function: MD5(original_url + timestamp) -> take first 7 chars
+Step 1: Client Hello
+- Client sends supported cipher suites
+- Random number for session
+- Supported SSL/TLS versions
 
-4. Caching Strategy
-// Redis caching layer
-const cacheKey = 'short:' + shortCode;
-const cached = await redis.get(cacheKey);
-if (cached) return cached;
+Step 2: Server Hello
+- Server selects cipher suite
+- Server random number
+- Server certificate (public key)
 
-const url = await db.getUrl(shortCode);
-await redis.setex(cacheKey, 3600, url); // 1 hour TTL
+Step 3: Certificate Verification
+- Client validates certificate chain
+- Checks certificate authority (CA)
+- Verifies domain name matches
 
-5. Scalability Solutions
-- Database Sharding: Partition by short_code hash
-- Read Replicas: For analytics queries
-- CDN: Cache popular redirects globally
-- Load Balancing: Round-robin across API servers
+Step 4: Key Exchange
+- Client generates pre-master secret
+- Encrypts with server's public key
+- Sends to server
 
-6. Additional Features
-- Custom aliases validation
-- Bulk URL shortening API
-- Real-time analytics dashboard
-- Rate limiting (100 requests/minute per user)
-- URL expiration and cleanup jobs
+Step 5: Session Keys Generation
+- Both parties derive session keys
+- From pre-master secret + random numbers
+- Using agreed key derivation function
 
-7. Performance Optimizations
-- Database indexing on short_code
-- Connection pooling
-- Async processing for analytics
-- Compressed responses`,
-        correctAnswer: "Outstanding system design: comprehensive architecture, detailed database schema, proper caching strategies, scalability considerations, and code examples. Shows strong understanding of distributed systems.",
+Step 6: Finished Messages
+- Both send encrypted "finished" messages
+- Verifies handshake integrity
+- Secure communication begins
+
+4. **Security Benefits**
+   - Prevents man-in-the-middle attacks
+   - Ensures data confidentiality
+   - Verifies server authenticity
+   - Protects against data tampering
+`,
+        correctAnswer: "Excellent understanding of HTTP/HTTPS protocols and SSL/TLS encryption. Shows strong grasp of web security fundamentals and network communication protocols.",
         isCorrect: score >= 75,
         timeTaken: Math.floor(30 + rand(7) * 15), // 30-45 minutes
         difficulty: "Hard"

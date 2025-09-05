@@ -8,7 +8,7 @@ import { useShortlist } from "@/contexts/shortlist-context";
 import { useState } from "react";
 import AssessmentModal from "@/components/assessment-modal";
 import RoleMatchRationale from "@/components/role-match-rationale";
-import Candidate360View from "@/components/candidate-360-view";
+import CandidateFullReport from "@/components/candidate-360-view";
 import CodeReplayModal from "@/components/code-replay-modal";
 import CommunicationSampleModal from "@/components/communication-sample-modal";
 import ExamFootageModal from "@/components/exam-footage-modal";
@@ -22,7 +22,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   const { isShortlisted, addToShortlist, removeFromShortlist } = useShortlist();
   const [selectedAssessment, setSelectedAssessment] = useState<{type: string, score: number, level: string} | null>(null);
   const [showRoleMatchRationale, setShowRoleMatchRationale] = useState(false);
-  const [showCandidate360, setShowCandidate360] = useState(false);
+  const [showCandidateFullReport, setShowCandidateFullReport] = useState(false);
   const [showCodeReplay, setShowCodeReplay] = useState(false);
   const [showCommunicationSample, setShowCommunicationSample] = useState(false);
   const [showExamFootage, setShowExamFootage] = useState(false);
@@ -230,11 +230,11 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               <Button 
                 className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold" 
                 size="sm" 
-                onClick={() => setShowCandidate360(true)}
-                data-testid={`button-360-view-${student.id}`}
+                onClick={() => setShowCandidateFullReport(true))
+                data-testid={`button-full-report-${student.id}`}
               >
                 <Eye className="w-4 h-4 mr-1" />
-                360° View
+                Full Report
               </Button>
             </div>
             <Button 
@@ -296,11 +296,11 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
         />
       )}
 
-      {/* Candidate 360 View Modal */}
-      {showCandidate360 && (
-        <Candidate360View 
+      {/* Candidate Full Report Modal */}
+      {showCandidateFullReport && (
+        <CandidateFullReport 
           student={student}
-          onClose={() => setShowCandidate360(false)}
+          onClose={() => setShowCandidateFullReport(false)}
         />
       )}
 
