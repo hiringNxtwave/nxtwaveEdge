@@ -596,16 +596,6 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
           </button>
           <button
             className={`px-4 py-2 font-semibold transition-colors ${
-              activeTab === 'ai-interview' 
-                ? 'border-b-2 border-blue-600 text-blue-600' 
-                : 'text-gray-600 hover:text-gray-800'
-            }`}
-            onClick={() => setActiveTab('ai-interview')}
-          >
-            AI Interview Recording
-          </button>
-          <button
-            className={`px-4 py-2 font-semibold transition-colors ${
               activeTab === 'details' 
                 ? 'border-b-2 border-blue-600 text-blue-600' 
                 : 'text-gray-600 hover:text-gray-800'
@@ -703,11 +693,8 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          )}
 
-          {activeTab === 'ai-interview' && (
-            <div className="space-y-6">
+              {/* AI Interview Recording */}
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-4">
