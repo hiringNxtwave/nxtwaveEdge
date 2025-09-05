@@ -172,7 +172,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               {/* DSA Score */}
               <div 
                 className="text-center p-2 rounded-lg bg-blue-50 hover:bg-blue-100 cursor-pointer transition-colors"
-                onClick={() => setSelectedAssessment({type: 'Data Structures & Algorithms', score: dsaScore, level: dsaScore >= 4 ? 'Advanced' : dsaScore >= 3 ? 'Intermediate' : 'Beginner'})}
+                onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore, level: dsaScore >= 4 ? 'Advanced' : dsaScore >= 3 ? 'Intermediate' : 'Beginner'})}
                 data-testid={`button-dsa-assessment-${student.id}`}
               >
                 <div className="flex items-center justify-center mb-1">
