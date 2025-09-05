@@ -148,7 +148,7 @@ const generateAssessmentData = (type: string, score: number, studentId: string):
         difficulty: "Easy"
       }
     ],
-    "Communication": [
+    "Verbal Ability": [
       {
         id: "comm_1",
         type: "mcq",
@@ -267,7 +267,7 @@ Step 6: Finished Messages
         difficulty: "Hard"
       }
     ],
-    "Communication": [
+    "Interview Performance": [
       {
         id: "interview_1", 
         question: "Tell me about a challenging project you worked on and how you overcame the difficulties.",
@@ -474,7 +474,7 @@ function safeBinarySearch(arr, target) {
         difficulty: "Medium"
       }
     ],
-    "Interview Performance": [
+    "System Design": [
       {
         id: "sys_1",
         question: "Explain the differences between HTTP and HTTPS, and describe how SSL/TLS handshake works.",

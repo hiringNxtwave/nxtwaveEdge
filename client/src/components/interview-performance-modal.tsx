@@ -150,7 +150,7 @@ export default function InterviewPerformanceModal({ student, isOpen, onClose }: 
                   </div>
                   <div className="text-center p-3 bg-blue-50 rounded">
                     <div className="text-xl font-bold text-blue-600">{data.communicationScore}%</div>
-                    <div className="text-xs text-gray-600">Communication</div>
+                    <div className="text-xs text-gray-600">Verbal Ability</div>
                   </div>
                   <div className="text-center p-3 bg-green-50 rounded">
                     <div className="text-xl font-bold text-green-600">{data.technicalScore}%</div>

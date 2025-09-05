@@ -12,7 +12,7 @@ import CandidateFullReport from "@/components/candidate-360-view";
 import CodeReplayModal from "@/components/code-replay-modal";
 import CommunicationSampleModal from "@/components/communication-sample-modal";
 import ExamFootageModal from "@/components/exam-footage-modal";
-import InterviewPerformanceModal from "@/components/interview-performance-modal";
+import InterviewPerformanceModal from "./interview-performance-modal";
 
 interface StudentCardProps {
   student: StudentWithSkills;
@@ -221,10 +221,10 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 
                 <div 
                   className="flex items-center gap-2 p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 cursor-pointer transition-colors"
-                  onClick={() => setSelectedAssessment({type: 'Communication', score: communicationScore * 20, level: communicationScore >= 4 ? 'Excellent' : communicationScore >= 3 ? 'Good' : 'Average'})}
+                  onClick={() => setSelectedAssessment({type: 'Verbal Ability', score: communicationScore * 20, level: communicationScore >= 4 ? 'Excellent' : communicationScore >= 3 ? 'Good' : 'Average'})}
                   data-testid={`button-communication-assessment-${student.id}`}
                 >
-                  <span className="font-medium text-purple-800 dark:text-purple-200 text-xs">Communication</span>
+                  <span className="font-medium text-purple-800 dark:text-purple-200 text-xs">Verbal Ability</span>
                   <div className="flex">{renderStars(communicationScore)}</div>
                 </div>
                 
