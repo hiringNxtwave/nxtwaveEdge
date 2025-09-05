@@ -34,7 +34,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const updateData = {
-        hiringVelocity: req.body.hiringVelocity,
+        collegesTier: req.body.collegesTier,
+        annualFresherHires: req.body.annualFresherHires,
         budgetRange: req.body.budgetRange,
         onboardingCompleted: true,
       };

@@ -34,7 +34,8 @@ export const users = pgTable("users", {
   profileImageUrl: varchar("profile_image_url"),
   // Recruiter-specific fields
   role: varchar("role").default("recruiter"), // 'recruiter', 'admin', 'student'
-  hiringVelocity: varchar("hiring_velocity"), // 'low', 'medium', 'high'
+  collegesTier: varchar("colleges_tier"), // 'only-iits', 'iits-nits-bits', 'tier1-including-iits', 'tier2-colleges', 'tier3-colleges'
+  annualFresherHires: varchar("annual_fresher_hires"), // '1-5', '6-15', '16-30', '31-50', '50+'
   budgetRange: varchar("budget_range"), // salary range they typically offer
   onboardingCompleted: boolean("onboarding_completed").default(false),
   createdAt: timestamp("created_at").defaultNow(),

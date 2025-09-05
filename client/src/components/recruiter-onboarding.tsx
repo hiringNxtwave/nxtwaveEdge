@@ -33,8 +33,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { TrendingUp, DollarSign, Target } from "lucide-react";
 
 const onboardingSchema = z.object({
-  hiringVelocity: z.enum(["low", "medium", "high"], {
-    required_error: "Please select hiring velocity",
+  collegesTier: z.enum(["only-iits", "iits-nits-bits", "tier1-including-iits", "tier2-colleges", "tier3-colleges"], {
+    required_error: "Please select which colleges you hire from",
+  }),
+  annualFresherHires: z.enum(["1-5", "6-15", "16-30", "31-50", "50+"], {
+    required_error: "Please select how many freshers you hire annually",
   }),
   budgetRange: z.string().min(1, "Budget range is required"),
 });
@@ -136,39 +139,104 @@ export function RecruiterOnboarding({
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6">
                   <FormField
                     control={form.control}
-                    name="hiringVelocity"
+                    name="collegesTier"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center gap-2 text-base font-medium">
+                          <Target className="w-4 h-4" />
+                          Which colleges did you hire from last year? *
+                        </FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger data-testid="select-colleges-tier" className="h-12">
+                              <SelectValue placeholder="Select college tier" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="only-iits">
+                              <div className="flex flex-col py-1">
+                                <span className="font-medium">Only IITs</span>
+                                <span className="text-xs text-gray-500">Top-tier Indian Institutes of Technology</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="iits-nits-bits">
+                              <div className="flex flex-col py-1">
+                                <span className="font-medium">IITs, NITs & BITS</span>
+                                <span className="text-xs text-gray-500">Premier technical institutes</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="tier1-including-iits">
+                              <div className="flex flex-col py-1">
+                                <span className="font-medium">Tier 1 Colleges including IITs</span>
+                                <span className="text-xs text-gray-500">Top engineering and management institutes</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="tier2-colleges">
+                              <div className="flex flex-col py-1">
+                                <span className="font-medium">Tier 2 Colleges like VIT, SRM etc</span>
+                                <span className="text-xs text-gray-500">Well-known private and state universities</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="tier3-colleges">
+                              <div className="flex flex-col py-1">
+                                <span className="font-medium">Tier 3 Colleges</span>
+                                <span className="text-xs text-gray-500">Regional and local institutions</span>
+                              </div>
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="annualFresherHires"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center gap-2 text-base font-medium">
                           <TrendingUp className="w-4 h-4" />
-                          How frequently do you hire? *
+                          How many freshers do you hire from campus every year? *
                         </FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger data-testid="select-hiring-velocity" className="h-12">
-                              <SelectValue placeholder="Select hiring frequency" />
+                            <SelectTrigger data-testid="select-annual-fresher-hires" className="h-12">
+                              <SelectValue placeholder="Select number of hires" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="low">
+                            <SelectItem value="1-5">
                               <div className="flex flex-col py-1">
-                                <span className="font-medium">Occasional</span>
-                                <span className="text-xs text-gray-500">1-5 hires per month</span>
+                                <span className="font-medium">1-5 freshers</span>
+                                <span className="text-xs text-gray-500">Small-scale hiring</span>
                               </div>
                             </SelectItem>
-                            <SelectItem value="medium">
+                            <SelectItem value="6-15">
                               <div className="flex flex-col py-1">
-                                <span className="font-medium">Regular</span>
-                                <span className="text-xs text-gray-500">6-20 hires per month</span>
+                                <span className="font-medium">6-15 freshers</span>
+                                <span className="text-xs text-gray-500">Medium-scale hiring</span>
                               </div>
                             </SelectItem>
-                            <SelectItem value="high">
+                            <SelectItem value="16-30">
                               <div className="flex flex-col py-1">
-                                <span className="font-medium">High Volume</span>
-                                <span className="text-xs text-gray-500">20+ hires per month</span>
+                                <span className="font-medium">16-30 freshers</span>
+                                <span className="text-xs text-gray-500">Large-scale hiring</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="31-50">
+                              <div className="flex flex-col py-1">
+                                <span className="font-medium">31-50 freshers</span>
+                                <span className="text-xs text-gray-500">Enterprise-level hiring</span>
+                              </div>
+                            </SelectItem>
+                            <SelectItem value="50+">
+                              <div className="flex flex-col py-1">
+                                <span className="font-medium">50+ freshers</span>
+                                <span className="text-xs text-gray-500">Mass recruitment</span>
                               </div>
                             </SelectItem>
                           </SelectContent>
