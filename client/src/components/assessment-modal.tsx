@@ -214,7 +214,7 @@ I'm excited about the possibility of growing with the company while contributing
         difficulty: "Hard"
       }
     ],
-    "DSA Assessment": [
+    "DSA Assessments": [
       {
         id: "dsa_1",
         question: "Implement a function to find the shortest path between two nodes in a weighted graph using Dijkstra's algorithm.",
@@ -336,82 +336,6 @@ function safeBinarySearch(arr, target) {
         isCorrect: score >= 75,
         timeTaken: Math.floor(12 + rand(3) * 6), // 12-18 minutes
         difficulty: "Medium"
-      }
-    ],
-    "Aptitude Test": [
-      {
-        id: "apt_1",
-        question: "If a train travels 120 km in 2 hours, and then 180 km in 3 hours, what is the average speed for the entire journey?\n\nA) 55 km/h\nB) 60 km/h\nC) 65 km/h\nD) 70 km/h",
-        studentAnswer: "Selected Answer: B) 60 km/h\n\nWorking:\nTotal distance = 120 + 180 = 300 km\nTotal time = 2 + 3 = 5 hours\nAverage speed = Total distance / Total time\nAverage speed = 300/5 = 60 km/h",
-        correctAnswer: "Correct answer: B) 60 km/h. Student showed clear step-by-step calculation and proper understanding of average speed formula.",
-        isCorrect: score >= 75,
-        timeTaken: Math.floor(3 + rand(3) * 2), // 3-5 minutes
-        difficulty: "Medium"
-      },
-      {
-        id: "apt_2",
-        question: "A company's profit increased by 25% in the first quarter and then decreased by 20% in the second quarter. If the initial profit was $10,000, what is the profit after two quarters?\n\nA) $9,000\nB) $10,000\nC) $11,000\nD) $12,000",
-        studentAnswer: "Selected Answer: B) $10,000\n\nCalculation:\nInitial profit: $10,000\nAfter Q1 increase (25%): $10,000 × 1.25 = $12,500\nAfter Q2 decrease (20%): $12,500 × 0.80 = $10,000\nFinal profit: $10,000",
-        correctAnswer: "Correct answer: B) $10,000. Excellent work showing compound percentage calculations step by step.",
-        isCorrect: score >= 80,
-        timeTaken: Math.floor(4 + rand(4) * 2), // 4-6 minutes
-        difficulty: "Medium"
-      },
-      {
-        id: "apt_3",
-        question: "In a class of 40 students, 60% are boys. If 25% of the boys and 20% of the girls play cricket, how many students play cricket?\n\nA) 8 students\nB) 9 students\nC) 10 students\nD) 11 students",
-        studentAnswer: "Selected Answer: C) 10 students\n\nSolution:\nTotal students = 40\nBoys = 60% of 40 = 24 boys\nGirls = 40 - 24 = 16 girls\n\nBoys playing cricket = 25% of 24 = 6 boys\nGirls playing cricket = 20% of 16 = 3.2 ≈ 3 girls\n\nTotal cricket players = 6 + 3 = 9 students\n\nNote: I made an error in my selection. The correct answer should be B) 9 students.",
-        correctAnswer: "Correct answer: B) 9 students. Student showed good problem-solving approach but made a calculation error in final selection. Self-correction noted shows good analytical thinking.",
-        isCorrect: score >= 70,
-        timeTaken: Math.floor(5 + rand(5) * 3), // 5-8 minutes
-        difficulty: "Medium"
-      },
-      {
-        id: "apt_4",
-        question: "If the ratio of ages of A and B is 3:4, and the sum of their ages is 35 years, what will be A's age after 5 years?\n\nA) 15 years\nB) 18 years\nC) 20 years\nD) 22 years",
-        studentAnswer: "Selected Answer: D) 22 years\n\nMethod:\nLet A's current age = 3x and B's current age = 4x\nSum of ages = 3x + 4x = 7x = 35\nSo x = 35/7 = 5\n\nA's current age = 3x = 3 × 5 = 15 years\nB's current age = 4x = 4 × 5 = 20 years\n\nA's age after 5 years = 15 + 5 = 20 years\n\nWait, I think I selected wrong. Answer should be C) 20 years.",
-        correctAnswer: "Correct answer: C) 20 years. Student demonstrated excellent problem-solving using ratio method. Self-correction shows good verification skills.",
-        isCorrect: score >= 85,
-        timeTaken: Math.floor(6 + rand(6) * 2), // 6-8 minutes
-        difficulty: "Hard"
-      }
-    ],
-    "Communication": [
-      {
-        id: "comm_1",
-        question: "Describe a challenging project you worked on and how you overcame the difficulties. (Spoken response - 3 minutes)",
-        studentAnswer: "Audio Transcript:\n\n\"So, I worked on developing a real-time chat application using React and Node.js during my internship. The main challenge I faced was implementing WebSocket connections with proper error handling and reconnection logic.\n\nInitially, I was getting frequent disconnections and the chat would just stop working. Users were losing messages and getting frustrated. I spent days trying to debug this.\n\nWhat I did was:\n1. First, I researched Socket.io documentation thoroughly\n2. I broke down the problem into smaller components\n3. I implemented a robust retry mechanism with exponential backoff\n4. I added proper error logging to understand what was happening\n5. I created a fallback system using long polling when WebSockets failed\n\nThe hardest part was testing edge cases like network drops and server restarts. I had to simulate these conditions.\n\nIn the end, the application became much more stable. The project taught me the importance of proper error handling in real-time applications and how to approach complex debugging systematically.\"\n\nDelivery Assessment:\n- Clear structure and logical flow\n- Good use of specific technical details\n- Confident speaking pace\n- Minimal filler words (um, uh)\n- Strong conclusion with key learnings",
-        correctAnswer: "Excellent communication: structured response, technical depth, clear problem-solution narrative, confident delivery. Shows good storytelling ability and reflection on learning.",
-        isCorrect: score >= 70,
-        timeTaken: Math.floor(8 + rand(5) * 4), // 8-12 minutes
-        difficulty: "Medium"
-      },
-      {
-        id: "comm_2",
-        question: "How would you explain a complex technical concept (like APIs) to a non-technical stakeholder? (Written + Verbal explanation)",
-        studentAnswer: "Written Response:\n\n\"I would use the restaurant analogy to explain APIs:\n\nAPIs are like waiters in a restaurant. When you (the application) want to order food (request data), you don't go directly to the kitchen (database or server). Instead, you tell the waiter (API) what you want from the menu (available endpoints).\n\nThe waiter takes your order, goes to the kitchen, and brings back exactly what you asked for in a nice, presentable format. The waiter knows how to communicate with the kitchen staff and translates your request into something they understand.\n\nSimilarly, APIs act as intermediaries between different software applications, allowing them to communicate and share data without knowing the internal complexities of each other.\"\n\nVerbal Explanation (Recorded):\n\"Let me give you a simple example everyone can relate to. Think about when you use a food delivery app like Zomato...\n\n[Student proceeded to explain using real-world examples, checking for understanding, and adapting language based on stakeholder feedback]\"\n\nCommunication Skills Demonstrated:\n- Clear analogies\n- Checked for understanding\n- Adapted explanation style\n- Used relatable examples",
-        correctAnswer: "Strong technical communication: effective analogies, clear written and verbal skills, stakeholder awareness. Good adaptation and verification of understanding.",
-        isCorrect: score >= 65,
-        timeTaken: Math.floor(5 + rand(6) * 3), // 5-8 minutes
-        difficulty: "Medium"
-      },
-      {
-        id: "comm_3",
-        question: "You need to present quarterly results to senior management. The project was delayed and over budget. How do you communicate this? (Role-play scenario)",
-        studentAnswer: "Presentation Approach (Recorded):\n\n\"Good morning, team. I want to start by acknowledging that our Q3 project didn't meet our original timeline and budget targets. Let me walk you through what happened, what we've learned, and our path forward.\n\nKey Points Covered:\n\n1. **Transparent Problem Statement**\n   - Project delivered 2 weeks late\n   - 15% over budget ($45K additional)\n   - Core functionality complete, 2 features postponed\n\n2. **Root Cause Analysis**\n   - Underestimated API integration complexity\n   - Third-party service changes mid-project\n   - Required additional security compliance review\n\n3. **Actions Taken**\n   - Negotiated extended timeline with stakeholders\n   - Prioritized critical features for go-live\n   - Implemented daily standups for better tracking\n\n4. **Value Delivered**\n   - Core platform operational and generating revenue\n   - User feedback positive (4.2/5 rating)\n   - Foundation built for future enhancements\n\n5. **Lessons Learned & Future Prevention**\n   - Better vendor risk assessment\n   - 20% buffer for complex integrations\n   - Earlier stakeholder alignment on scope\n\nNext quarter, we're implementing these process improvements...\"\n\nDelivery Assessment:\n- Owned the problem immediately\n- Data-driven communication\n- Solution-focused approach\n- Professional demeanor under pressure",
-        correctAnswer: "Outstanding crisis communication: accountability, transparency, data-backed analysis, forward-looking solutions. Demonstrates leadership communication skills under pressure.",
-        isCorrect: score >= 80,
-        timeTaken: Math.floor(10 + rand(7) * 5), // 10-15 minutes
-        difficulty: "Hard"
-      },
-      {
-        id: "comm_4",
-        question: "Explain your approach to giving constructive feedback to a team member whose code quality has been inconsistent. (Situational question)",
-        studentAnswer: "My Approach:\n\n**1. Preparation & Context**\nI would first review specific examples of the inconsistent code quality, noting both good and problematic instances. I'd choose a private, comfortable setting for the conversation.\n\n**2. Opening the Conversation**\n\"Hey [Name], I wanted to have a quick chat about our recent code reviews. I've noticed some inconsistency in our coding patterns, and I'd love to understand what's happening and how we can support you better.\"\n\n**3. Specific Examples (Not Personal Attacks)**\n- \"In the user authentication module, the error handling was really well structured\"\n- \"However, in the payment processing code, I noticed some missing validations and inconsistent naming conventions\"\n- \"This creates potential security risks and makes it harder for the team to maintain\"\n\n**4. Listen & Understand**\n\"What's your perspective on this? Are there any blockers or challenges you're facing?\"\n\n**5. Collaborative Solution**\n- Pair programming sessions\n- Code review checklist\n- Share resources on best practices\n- Regular check-ins\n\n**6. Follow-up Plan**\n\"Let's check in again next week to see how things are going. I'm here to support you.\"\n\n**Communication Principles Applied:**\n- Start with empathy\n- Use specific examples, not generalizations\n- Focus on behavior/code, not personality\n- Collaborative problem-solving\n- Clear follow-up plan\n- Supportive tone throughout",
-        correctAnswer: "Excellent feedback approach: structured, empathetic, specific, solution-oriented. Shows strong interpersonal and leadership communication skills.",
-        isCorrect: score >= 75,
-        timeTaken: Math.floor(7 + rand(8) * 4), // 7-11 minutes
-        difficulty: "Hard"
       }
     ],
     "Tech Fundamentals": [
