@@ -58,6 +58,12 @@ export default function CandidateComparison({ candidates, onRemove, onClose }: C
               src={student.profileImageUrl || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face`} 
               alt={`${student.firstName} ${student.lastName}`}
               className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face`;
+              }}
+              loading="lazy"
+              crossOrigin="anonymous"
             />
             <div>
               <h3 className="font-bold text-gray-900 dark:text-white">{student.firstName} {student.lastName}</h3>
@@ -66,7 +72,7 @@ export default function CandidateComparison({ candidates, onRemove, onClose }: C
                 <MapPin className="w-3 h-3" />
                 {student.location}
                 <span>•</span>
-                CGPA: {student.cgpa}
+                CGPA: {typeof student.cgpa === 'string' ? parseFloat(student.cgpa).toFixed(2) : (student.cgpa || 7.5).toFixed(2)}
               </div>
             </div>
           </div>

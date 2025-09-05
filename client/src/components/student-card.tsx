@@ -43,11 +43,12 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   
   const dsaScore = generateSkillScore(1);
   const aptitudeScore = generateSkillScore(2); 
-  const communicationScore = generateSkillScore(3);
-  const csFundamentalsScore = generateSkillScore(4);
+  const verbalScore = generateSkillScore(3);
+  const communicationScore = generateSkillScore(4);
+  const csFundamentalsScore = generateSkillScore(5);
 
   // Calculate match percentage based on skills, CGPA, and overall rating
-  const averageSkillScore = (dsaScore + aptitudeScore + communicationScore + csFundamentalsScore) / 4;
+  const averageSkillScore = (dsaScore + aptitudeScore + verbalScore + communicationScore) / 4;
   const cgpaValue = typeof student.cgpa === 'string' ? parseFloat(student.cgpa) : student.cgpa;
   const cgpaScore = ((cgpaValue || 7.5) / 10) * 5; // Convert CGPA to 5-point scale with fallback
   
@@ -84,6 +85,12 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 alt={`${student.firstName} ${student.lastName}`}
                 className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-lg"
                 data-testid={`img-student-avatar-${student.id}`}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face`;
+                }}
+                loading="lazy"
+                crossOrigin="anonymous"
               />
               {student.verified && (
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white" title="Verified Profile">
