@@ -148,34 +148,20 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
           </div>
 
-          {/* Salary & Location Information */}
+          {/* Salary Information */}
           <div className="border-l border-gray-200 pl-4">
-            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Salary & Preference</h4>
-            <div className="space-y-2">
-              {/* Student's Expectation */}
-              <div className="flex items-center gap-1">
-                <IndianRupee className="w-3 h-3 text-blue-600" />
-                <span className="text-sm font-medium text-gray-900 dark:text-white" data-testid={`text-student-expected-salary-${student.id}`}>
-                  {student.expectedSalaryMin && student.expectedSalaryMax ? 
-                    `${(student.expectedSalaryMin / 100).toFixed(0)}-${(student.expectedSalaryMax / 100).toFixed(0)} LPA` :
-                    "6-8 LPA"
-                  }
-                </span>
-                <Badge variant="outline" className="text-xs text-blue-600 border-blue-200">
-                  Expected
-                </Badge>
-              </div>
-              
-              {/* Location Preference */}
-              <div className="flex items-center gap-1">
-                <MapPin className="w-3 h-3 text-purple-600" />
-                <span className="text-sm font-medium text-gray-900 dark:text-white" data-testid={`text-student-location-preference-${student.id}`}>
-                  {student.preferredLocations || student.location?.split(',')[0] || "Flexible"}
-                </span>
-                <Badge variant="outline" className="text-xs text-purple-600 border-purple-200">
-                  Location Preference
-                </Badge>
-              </div>
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Salary Preference</h4>
+            <div className="flex items-center gap-1">
+              <IndianRupee className="w-3 h-3 text-blue-600" />
+              <span className="text-sm font-medium text-gray-900 dark:text-white" data-testid={`text-student-expected-salary-${student.id}`}>
+                {student.expectedSalaryMin && student.expectedSalaryMax ? 
+                  `${(student.expectedSalaryMin / 100).toFixed(0)}-${(student.expectedSalaryMax / 100).toFixed(0)} LPA` :
+                  "6-8 LPA"
+                }
+              </span>
+              <Badge variant="outline" className="text-xs text-blue-600 border-blue-200">
+                Expected
+              </Badge>
             </div>
           </div>
 
