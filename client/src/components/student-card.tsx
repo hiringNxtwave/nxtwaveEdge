@@ -222,8 +222,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
           </div>
 
-          {/* Overall Score & Match */}
-          <div className="flex items-center gap-4">
+          {/* Overall Score & Match - Stacked Vertically */}
+          <div className="flex flex-col items-center gap-2">
             <div className="text-center">
               <div className="text-xl font-bold text-blue-600 dark:text-blue-400" data-testid={`text-student-rating-${student.id}`}>
                 {Math.round(averageSkillScore * 20)}%
