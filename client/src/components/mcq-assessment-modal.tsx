@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -176,12 +176,15 @@ export default function MCQAssessmentModal({ assessmentType, student, score, onC
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" aria-describedby="mcq-assessment-description">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
             <Brain className="w-5 h-5 text-blue-600" />
             {assessmentType} Assessment - {student.firstName} {student.lastName}
           </DialogTitle>
+          <DialogDescription id="mcq-assessment-description">
+            View detailed {assessmentType.toLowerCase()} assessment results including questions, student answers, and explanations.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6">

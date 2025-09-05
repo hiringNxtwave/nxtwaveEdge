@@ -78,9 +78,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   return (
     <Card className="hover:shadow-xl transition-all duration-300 border-l-4 border-l-blue-500 bg-gradient-to-r from-white to-blue-50 dark:from-gray-800 dark:to-gray-750" data-testid={`card-student-${student.id}`}>
       <CardContent className="p-6">
-        {/* Main Row - Top Level Information */}
-        <div className="flex items-start gap-6 w-full mb-4">
-          {/* Student Profile Section */}
+        <div className="flex items-center gap-6 w-full">
+          {/* Student Info Section */}
           <Link href={`/student/${student.id}`} className="flex items-center space-x-4 cursor-pointer flex-shrink-0">
             <div className="relative">
               <img 
@@ -106,6 +105,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white" data-testid={`text-student-name-${student.id}`}>
                   {student.firstName} {student.lastName}
                 </h3>
+                {/* Individual Freshness Indicator */}
                 <div className={`px-2 py-1 rounded-full text-xs font-semibold ${
                   seed % 3 === 0 ? 'bg-green-100 text-green-700' :
                   seed % 3 === 1 ? 'bg-yellow-100 text-yellow-700' :
@@ -128,94 +128,61 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
           </Link>
 
-          {/* Action Buttons - Moved to Top Right */}
-          <div className="flex flex-col gap-2 flex-shrink-0 ml-auto">
-            <Link href={`/student/${student.id}`}>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full" size="sm" data-testid={`button-view-profile-${student.id}`}>
-                <Eye className="w-4 h-4 mr-1" />
-                View Profile
-              </Button>
-            </Link>
-            <Button 
-              className={`font-semibold w-full ${
-                isShortlisted(student.id) 
-                  ? 'bg-green-100 text-green-700 hover:bg-green-200' 
-                  : 'border border-green-500 text-green-600 hover:bg-green-50'
-              }`} 
-              size="sm" 
-              variant={isShortlisted(student.id) ? "default" : "outline"}
-              onClick={() => {
-                isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
-              }}
-              data-testid={`button-shortlist-${student.id}`}
-            >
-              {isShortlisted(student.id) ? (
-                <>
-                  <Check className="w-4 h-4 mr-1" />
-                  Added
-                </>
-              ) : (
-                <>
-                  <Plus className="w-4 h-4 mr-1" />
-                  Shortlist
-                </>
+          {/* Skills & Skills Preview */}
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap gap-2">
+              {student.skills?.slice(0, 4).map((skill) => (
+                <Badge key={skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs">
+                  {skill.name}
+                </Badge>
+              )) || [
+                <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">JavaScript</Badge>,
+                <Badge key="react" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">React</Badge>,
+                <Badge key="node" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">Node.js</Badge>
+              ]}
+              {(student.skills?.length || 3) > 4 && (
+                <Badge variant="outline" className="text-xs">
+                  +{(student.skills?.length || 3) - 4} more
+                </Badge>
               )}
-            </Button>
-          </div>
-        </div>
-
-        {/* Organized Data Sections */}
-        <div className="grid grid-cols-3 gap-6">
-          {/* Left Column: Skills & Preferences */}
-          <div className="space-y-4">
-            {/* Skills Section */}
-            <div>
-              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Technical Skills</h4>
-              <div className="flex flex-wrap gap-1">
-                {student.skills?.slice(0, 3).map((skill) => (
-                  <Badge key={skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs">
-                    {skill.name}
-                  </Badge>
-                )) || [
-                  <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">JavaScript</Badge>,
-                  <Badge key="react" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">React</Badge>,
-                  <Badge key="node" variant="secondary" className="bg-blue-50 text-blue-700 text-xs">Node.js</Badge>
-                ]}
-                {(student.skills?.length || 3) > 3 && (
-                  <Badge variant="outline" className="text-xs">
-                    +{(student.skills?.length || 3) - 3}
-                  </Badge>
-                )}
-              </div>
             </div>
+          </div>
 
-            {/* Preferences Section */}
-            <div>
-              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Preferences</h4>
-              <div className="space-y-1">
-                <div className="flex items-center gap-1">
-                  <IndianRupee className="w-3 h-3 text-blue-600" />
-                  <span className="text-xs font-medium text-gray-900 dark:text-white" data-testid={`text-student-expected-salary-${student.id}`}>
-                    {student.expectedSalaryMin && student.expectedSalaryMax ? 
-                      `${(student.expectedSalaryMin / 100).toFixed(0)}-${(student.expectedSalaryMax / 100).toFixed(0)} LPA` :
-                      "6-8 LPA"
-                    }
-                  </span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3 text-purple-600" />
-                  <span className="text-xs font-medium text-gray-900 dark:text-white" data-testid={`text-student-location-preference-${student.id}`}>
-                    {student.preferredLocations || student.location?.split(',')[0] || "Flexible"}
-                  </span>
-                </div>
+          {/* Salary & Location Information */}
+          <div className="border-l border-gray-200 pl-4">
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Salary & Preference</h4>
+            <div className="space-y-2">
+              {/* Student's Expectation */}
+              <div className="flex items-center gap-1">
+                <IndianRupee className="w-3 h-3 text-blue-600" />
+                <span className="text-sm font-medium text-gray-900 dark:text-white" data-testid={`text-student-expected-salary-${student.id}`}>
+                  {student.expectedSalaryMin && student.expectedSalaryMax ? 
+                    `${(student.expectedSalaryMin / 100).toFixed(0)}-${(student.expectedSalaryMax / 100).toFixed(0)} LPA` :
+                    "6-8 LPA"
+                  }
+                </span>
+                <Badge variant="outline" className="text-xs text-blue-600 border-blue-200">
+                  Expected
+                </Badge>
+              </div>
+              
+              {/* Location Preference */}
+              <div className="flex items-center gap-1">
+                <MapPin className="w-3 h-3 text-purple-600" />
+                <span className="text-sm font-medium text-gray-900 dark:text-white" data-testid={`text-student-location-preference-${student.id}`}>
+                  {student.preferredLocations || student.location?.split(',')[0] || "Flexible"}
+                </span>
+                <Badge variant="outline" className="text-xs text-purple-600 border-purple-200">
+                  Location Preference
+                </Badge>
               </div>
             </div>
           </div>
 
-          {/* Center Column: Assessment Performance */}
-          <div>
-            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Assessment Scores</h4>
-            <div className="grid grid-cols-2 gap-2">
+          {/* 4-Section Performance Display */}
+          <div className="border-l border-gray-200 pl-4">
+            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Performance Breakdown</h4>
+            <div className="grid grid-cols-2 gap-3">
               {/* DSA Score */}
               <div 
                 className="text-center p-2 rounded-lg bg-blue-50 hover:bg-blue-100 cursor-pointer transition-colors"
@@ -264,23 +231,52 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 <div className="text-xs font-medium text-orange-700">Communication</div>
               </div>
             </div>
+            
+            {/* Overall Match Score */}
+            <div className="mt-3 text-center">
+              <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
+                matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
+              }`}
+                   onClick={() => setShowRoleMatchRationale(true)}
+                   data-testid={`button-role-match-info-${student.id}`}>
+                {matchPercentage}% JD Match
+              </div>
+            </div>
           </div>
 
-          {/* Right Column: Match Score & Quick Stats */}
-          <div className="text-center">
-            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Job Match</h4>
-            <div className={`text-lg font-bold px-4 py-2 rounded-full cursor-pointer mb-3 ${
-              matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
-            }`}
-                 onClick={() => setShowRoleMatchRationale(true)}
-                 data-testid={`button-role-match-info-${student.id}`}>
-              {matchPercentage}%
-            </div>
-            <div className="space-y-1 text-xs text-gray-600">
-              <div>CGPA: {student.cgpa}</div>
-              <div>Rating: {overallRating}/5</div>
-              <div>{student.verified ? "✓ Verified" : "Pending"}</div>
-            </div>
+          {/* Action Buttons - Stacked Vertically */}
+          <div className="flex flex-col gap-2 flex-shrink-0">
+            <Link href={`/student/${student.id}`}>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full" size="sm" data-testid={`button-view-profile-${student.id}`}>
+                <Eye className="w-4 h-4 mr-1" />
+                View Profile
+              </Button>
+            </Link>
+            <Button 
+              className={`font-semibold w-full ${
+                isShortlisted(student.id) 
+                  ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                  : 'border border-green-500 text-green-600 hover:bg-green-50'
+              }`} 
+              size="sm" 
+              variant={isShortlisted(student.id) ? "default" : "outline"}
+              onClick={() => {
+                isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
+              }}
+              data-testid={`button-shortlist-${student.id}`}
+            >
+              {isShortlisted(student.id) ? (
+                <>
+                  <Check className="w-4 h-4 mr-1" />
+                  Added
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-1" />
+                  Shortlist
+                </>
+              )}
+            </Button>
           </div>
         </div>
       </CardContent>
