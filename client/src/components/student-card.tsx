@@ -18,6 +18,35 @@ interface StudentCardProps {
   showFullInfo?: boolean;
 }
 
+// Generate diverse profile images using different photo sources
+const generateProfileImage = (studentId: string, firstName: string) => {
+  const seed = parseInt(studentId.slice(-8), 16);
+  
+  // Array of diverse professional headshot photos from Unsplash
+  const photos = [
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face", // Male
+    "https://images.unsplash.com/photo-1494790108755-2616c6426e90?w=200&h=200&fit=crop&crop=face", // Female
+    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face", // Male
+    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face", // Female
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face", // Male
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face", // Female
+    "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=200&h=200&fit=crop&crop=face", // Male
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face", // Female
+    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop&crop=face", // Male
+    "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=200&h=200&fit=crop&crop=face", // Female
+    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=face", // Male
+    "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&h=200&fit=crop&crop=face", // Female
+    "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=200&h=200&fit=crop&crop=face", // Male
+    "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=200&h=200&fit=crop&crop=face", // Female
+    "https://images.unsplash.com/photo-1463453091185-61582044d556?w=200&h=200&fit=crop&crop=face", // Male
+    "https://images.unsplash.com/photo-1485893226505-9880b47cb3d9?w=200&h=200&fit=crop&crop=face", // Female
+  ];
+  
+  // Select photo based on student ID for consistency
+  const photoIndex = seed % photos.length;
+  return photos[photoIndex];
+};
+
 export default function StudentCard({ student, showFullInfo = false }: StudentCardProps) {
   const { isShortlisted, addToShortlist, removeFromShortlist } = useShortlist();
   const [selectedAssessment, setSelectedAssessment] = useState<{type: string, score: number, level: string} | null>(null);
@@ -80,10 +109,14 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           <Link href={`/student/${student.id}`} className="flex items-center space-x-4 cursor-pointer flex-shrink-0">
             <div className="relative">
               <img 
-                src={student.profileImageUrl || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face`} 
+                src={student.profileImageUrl || generateProfileImage(student.id, student.firstName)} 
                 alt={`${student.firstName} ${student.lastName}`}
                 className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-lg"
                 data-testid={`img-student-avatar-${student.id}`}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = generateProfileImage(student.id, student.firstName);
+                }}
               />
               {student.verified && (
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white" title="Verified Profile">
