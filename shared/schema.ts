@@ -32,6 +32,17 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  // Recruiter-specific fields
+  role: varchar("role").default("recruiter"), // 'recruiter', 'admin', 'student'
+  jobTitle: varchar("job_title"),
+  companyName: varchar("company_name"),
+  companySize: varchar("company_size"), // 'startup', 'small', 'medium', 'large', 'enterprise'
+  industry: varchar("industry"),
+  hiringVelocity: varchar("hiring_velocity"), // 'low', 'medium', 'high'
+  typicalRoles: text("typical_roles"), // JSON array of roles they typically hire for
+  budgetRange: varchar("budget_range"), // salary range they typically offer
+  preferredExperience: varchar("preferred_experience"), // 'fresher', 'experienced', 'both'
+  onboardingCompleted: boolean("onboarding_completed").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

@@ -29,6 +29,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Complete recruiter onboarding
+  app.put('/api/auth/complete-onboarding', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const updateData = {
+        jobTitle: req.body.jobTitle,
+        companyName: req.body.companyName,
+        companySize: req.body.companySize,
+        industry: req.body.industry,
+        hiringVelocity: req.body.hiringVelocity,
+        typicalRoles: req.body.typicalRoles,
+        budgetRange: req.body.budgetRange,
+        preferredExperience: req.body.preferredExperience,
+        onboardingCompleted: true,
+      };
+      
+      const updatedUser = await storage.updateUser(userId, updateData);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error completing onboarding:", error);
+      res.status(500).json({ message: "Failed to complete onboarding" });
+    }
+  });
+
   // Company routes
   app.get('/api/company', isAuthenticated, async (req: any, res) => {
     try {
