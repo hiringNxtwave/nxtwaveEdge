@@ -43,6 +43,20 @@ const generateProfileImage = (studentId: string, firstName: string) => {
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName)}&size=200&background=${backgrounds[bgIndex]}&color=${colors[colorIndex]}&bold=true&font-size=0.4`;
 };
 
+// Generate a simple CSS-based avatar as ultimate fallback
+const generateCSSAvatar = (firstName: string, studentId: string) => {
+  const seed = parseInt(studentId.slice(-8), 16);
+  const colors = [
+    "#3B82F6", "#EF4444", "#10B981", "#F59E0B", "#8B5CF6", 
+    "#EC4899", "#06B6D4", "#84CC16", "#F97316", "#6366F1"
+  ];
+  
+  const initials = firstName.charAt(0).toUpperCase();
+  const color = colors[seed % colors.length];
+  
+  return { initials, backgroundColor: color };
+};
+
 export default function StudentCard({ student, showFullInfo = false }: StudentCardProps) {
   const { isShortlisted, addToShortlist, removeFromShortlist } = useShortlist();
   const [selectedAssessment, setSelectedAssessment] = useState<{type: string, score: number, level: string} | null>(null);
@@ -52,6 +66,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   const [showCommunicationSample, setShowCommunicationSample] = useState(false);
   const [showExamFootage, setShowExamFootage] = useState(false);
   const [showInterviewPerformance, setShowInterviewPerformance] = useState(false);
+  const [imageError, setImageError] = useState(false);
   
   // Use student ID as seed for consistent ratings
   const seed = parseInt(student.id.slice(-8), 16);
@@ -124,16 +139,24 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           {/* Profile Picture */}
           <Link href={`/student/${student.id}`} className="flex-shrink-0">
             <div className="relative">
-              <img 
-                src={student.profileImageUrl || generateProfileImage(student.id, student.firstName)} 
-                alt={`${student.firstName} ${student.lastName}`}
-                className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-lg"
-                data-testid={`img-student-avatar-${student.id}`}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = generateProfileImage(student.id, student.firstName);
-                }}
-              />
+              {imageError ? (
+                // CSS-based fallback avatar
+                <div 
+                  className="w-16 h-16 rounded-full flex items-center justify-center border-2 border-white shadow-lg text-white font-bold text-lg"
+                  style={{ backgroundColor: generateCSSAvatar(student.firstName, student.id).backgroundColor }}
+                  data-testid={`div-student-avatar-fallback-${student.id}`}
+                >
+                  {generateCSSAvatar(student.firstName, student.id).initials}
+                </div>
+              ) : (
+                <img 
+                  src={student.profileImageUrl || generateProfileImage(student.id, student.firstName)} 
+                  alt={`${student.firstName} ${student.lastName}`}
+                  className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-lg"
+                  data-testid={`img-student-avatar-${student.id}`}
+                  onError={() => setImageError(true)}
+                />
+              )}
               {student.verified && (
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white" title="Verified Profile">
                   <Shield className="w-3 h-3 text-white" />
