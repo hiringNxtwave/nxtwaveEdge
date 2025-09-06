@@ -230,17 +230,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 </div>
               </div>
 
-              {/* Right: Skills, Match & Actions */}
+              {/* Right: Skills & Actions */}
               <div className="space-y-3 text-right">
-                {/* Match Percentage */}
-                <div className={`inline-block text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
-                  matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
-                }`}
-                     onClick={() => setShowRoleMatchRationale(true)}
-                     data-testid={`button-role-match-info-${student.id}`}>
-                  {matchPercentage}% Match
-                </div>
-                
                 {/* Skills */}
                 <div className="flex flex-wrap gap-1 justify-end max-w-[200px] ml-auto">
                   {Array.isArray(student.skills) ? student.skills.slice(0, 4).map((skill) => (
@@ -260,7 +251,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                   )}
                 </div>
                 
-                {/* Actions */}
+                {/* Interview Performance & Match */}
                 <div className="flex items-center gap-2 justify-end">
                   <div 
                     className="bg-white border border-blue-200 hover:border-blue-400 rounded-lg px-3 py-2 cursor-pointer transition-all hover:shadow-sm hover:bg-blue-50 text-center"
@@ -275,6 +266,18 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                     <div className="text-xs font-medium text-blue-700">Interview</div>
                   </div>
                   
+                  {/* Match Percentage */}
+                  <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
+                    matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
+                  }`}
+                       onClick={() => setShowRoleMatchRationale(true)}
+                       data-testid={`button-role-match-info-${student.id}`}>
+                    {matchPercentage}% Match
+                  </div>
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex flex-col gap-2 items-end">
                   <Link href={`/student/${student.id}`} className="block">
                     <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 font-medium" data-testid={`button-view-profile-${student.id}`}>
                       View Profile
