@@ -251,8 +251,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                   )}
                 </div>
                 
-                {/* Interview Performance & Match */}
-                <div className="flex items-center gap-2 justify-end">
+                {/* Interview Performance */}
+                <div className="flex justify-end">
                   <div 
                     className="bg-white border border-blue-200 hover:border-blue-400 rounded-lg px-3 py-2 cursor-pointer transition-all hover:shadow-sm hover:bg-blue-50 text-center"
                     onClick={() => setShowInterviewPerformance(true)}
@@ -265,8 +265,10 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                     </div>
                     <div className="text-xs font-medium text-blue-700">Interview</div>
                   </div>
-                  
-                  {/* Match Percentage */}
+                </div>
+                
+                {/* Match Percentage */}
+                <div className="flex justify-end">
                   <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
                     matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
                   }`}
