@@ -133,174 +133,180 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   };
 
   return (
-    <Card className="hover:shadow-xl transition-all duration-300 border-l-4 border-l-blue-500 bg-gradient-to-r from-white to-blue-50 dark:from-gray-800 dark:to-gray-750" data-testid={`card-student-${student.id}`}>
-      <CardContent className="p-3">
-        <div className="flex items-center justify-between">
-          {/* Left Section - Profile + Basic Info */}
-          <div className="flex items-center gap-3">
-            <Link href={`/student/${student.id}`} className="flex-shrink-0">
-              <div className="relative">
-                {imageError ? (
-                  <div 
-                    className="w-12 h-12 rounded-full flex items-center justify-center border-2 border-white shadow-lg text-white font-bold text-sm"
-                    style={{ backgroundColor: generateCSSAvatar(student.firstName, student.id).backgroundColor }}
-                    data-testid={`div-student-avatar-fallback-${student.id}`}
-                  >
-                    {generateCSSAvatar(student.firstName, student.id).initials}
-                  </div>
-                ) : (
-                  <img 
-                    src={student.profileImageUrl || generateProfileImage(student.id, student.firstName)} 
-                    alt={`${student.firstName} ${student.lastName}`}
-                    className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-lg"
-                    data-testid={`img-student-avatar-${student.id}`}
-                    onError={() => setImageError(true)}
-                  />
-                )}
-                {student.verified && (
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white" title="Verified Profile">
-                    <Shield className="w-2.5 h-2.5 text-white" />
-                  </div>
-                )}
-              </div>
-            </Link>
-            
-            <div>
-              <Link href={`/student/${student.id}`}>
-                <h3 className="text-base font-bold text-gray-900 dark:text-white hover:text-blue-600 cursor-pointer" data-testid={`text-student-name-${student.id}`}>
-                  {student.firstName} {student.lastName}
-                </h3>
-              </Link>
-              <p className="text-sm text-blue-600 dark:text-blue-400 font-medium" data-testid={`text-student-university-${student.id}`}>
-                {student.university}
-              </p>
-              <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-300">
-                <span className="font-medium" data-testid={`text-student-cgpa-${student.id}`}>
-                  CGPA: {displayCGPA}
-                </span>
-                <span data-testid={`text-student-location-${student.id}`}>
-                  📍 {student.location?.split(',')[0]}
-                </span>
-              </div>
+    <Card className="hover:shadow-lg transition-all duration-200 border-l-4 border-l-blue-500 bg-white" data-testid={`card-student-${student.id}`}>
+      <CardContent className="p-4">
+        <div className="flex items-center space-x-4">
+          {/* Profile Picture */}
+          <Link href={`/student/${student.id}`} className="flex-shrink-0">
+            <div className="relative">
+              {imageError ? (
+                <div 
+                  className="w-16 h-16 rounded-full flex items-center justify-center border-2 border-white shadow-sm text-white font-bold text-base"
+                  style={{ backgroundColor: generateCSSAvatar(student.firstName, student.id).backgroundColor }}
+                  data-testid={`div-student-avatar-fallback-${student.id}`}
+                >
+                  {generateCSSAvatar(student.firstName, student.id).initials}
+                </div>
+              ) : (
+                <img 
+                  src={student.profileImageUrl || generateProfileImage(student.id, student.firstName)} 
+                  alt={`${student.firstName} ${student.lastName}`}
+                  className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm"
+                  data-testid={`img-student-avatar-${student.id}`}
+                  onError={() => setImageError(true)}
+                />
+              )}
+              {student.verified && (
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center shadow-sm border-2 border-white" title="Verified Profile">
+                  <Shield className="w-3 h-3 text-white" />
+                </div>
+              )}
             </div>
-          </div>
-
-          {/* Center Section - Assessment Scores */}
-          <div className="grid grid-cols-2 gap-2 mx-4">
-            <div 
-              className="flex flex-col items-center px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 cursor-pointer transition-all text-center min-w-0"
-              onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Excellent' : dsaScore >= 3 ? 'Good' : 'Average'})}
-              data-testid={`button-dsa-assessment-${student.id}`}
-              title="Click to view detailed DSA assessment"
-            >
-              <div className="flex mb-1">{renderStars(dsaScore)}</div>
-              <span className="text-xs font-medium text-blue-800">DSA</span>
-            </div>
-            
-            <div 
-              className="flex flex-col items-center px-3 py-2 rounded-lg bg-green-50 dark:bg-green-900/20 hover:bg-green-100 cursor-pointer transition-all text-center min-w-0"
-              onClick={() => setSelectedAssessment({type: 'Aptitude', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Average'})}
-              data-testid={`button-aptitude-assessment-${student.id}`}
-              title="Click to view detailed Aptitude assessment"
-            >
-              <div className="flex mb-1">{renderStars(aptitudeScore)}</div>
-              <span className="text-xs font-medium text-green-800">Aptitude</span>
-            </div>
-            
-            <div 
-              className="flex flex-col items-center px-3 py-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 cursor-pointer transition-all text-center min-w-0"
-              onClick={() => setSelectedAssessment({type: 'Verbal Ability', score: communicationScore * 20, level: communicationScore >= 4 ? 'Excellent' : communicationScore >= 3 ? 'Good' : 'Average'})}
-              data-testid={`button-communication-assessment-${student.id}`}
-              title="Click to view detailed Verbal Ability assessment"
-            >
-              <div className="flex mb-1">{renderStars(communicationScore)}</div>
-              <span className="text-xs font-medium text-purple-800">Verbal</span>
-            </div>
-            
-            <div 
-              className="flex flex-col items-center px-3 py-2 rounded-lg bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 cursor-pointer transition-all text-center min-w-0"
-              onClick={() => setSelectedAssessment({type: 'CS Fundamentals', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Excellent' : csFundamentalsScore >= 3 ? 'Good' : 'Average'})}
-              data-testid={`button-cs-fundamentals-assessment-${student.id}`}
-              title="Click to view detailed CS Fundamentals assessment"
-            >
-              <div className="flex mb-1">{renderStars(csFundamentalsScore)}</div>
-              <span className="text-xs font-medium text-orange-800">CS Fundamentals</span>
-            </div>
-          </div>
-
-          {/* Center-Right Section - Skills */}
-          <div className="flex flex-wrap gap-1 max-w-[180px] mx-2">
-            {Array.isArray(student.skills) ? student.skills.slice(0, 5).map((skill) => (
-              <Badge key={skill.skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">
-                {skill.skill.name}
-              </Badge>
-            )) : [
-              <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">JS</Badge>,
-              <Badge key="react" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">React</Badge>,
-              <Badge key="node" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">Node</Badge>,
-              <Badge key="python" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">Python</Badge>,
-              <Badge key="mongo" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">Mongo</Badge>
-            ]}
-            {Array.isArray(student.skills) && student.skills.length > 5 && (
-              <Badge variant="outline" className="text-xs hover:bg-gray-50 cursor-pointer px-2 py-0.5">
-                +{student.skills.length - 5}
-              </Badge>
-            )}
-          </div>
+          </Link>
           
-          {/* Right Section - Match % + Actions */}
-          <div className="flex items-center gap-3">
-            <div className={`text-xs font-bold px-2 py-1 rounded-full cursor-pointer ${
-              matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
-            }`}
-                 onClick={() => setShowRoleMatchRationale(true)}
-                 data-testid={`button-role-match-info-${student.id}`}>
-              {matchPercentage}% Match
-            </div>
-            
-            <div 
-              className="bg-white border border-blue-200 hover:border-blue-400 rounded-lg px-2 py-1 cursor-pointer transition-all hover:shadow-md hover:bg-blue-50 text-center"
-              onClick={() => setShowInterviewPerformance(true)}
-              data-testid={`performance-overall-${student.id}`}
-              title="Click to view interview footage and performance analysis"
-            >
-              <div className="flex justify-center items-center gap-1" data-testid={`text-student-rating-${student.id}`}>
-                {renderStars(Math.round(averageSkillScore))}
-                <Video className="w-3 h-3 text-blue-600" />
+          {/* Main Info Section */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between h-full">
+              {/* Left: Name & University */}
+              <div className="space-y-1">
+                <Link href={`/student/${student.id}`}>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white hover:text-blue-600 cursor-pointer leading-tight" data-testid={`text-student-name-${student.id}`}>
+                    {student.firstName} {student.lastName}
+                  </h3>
+                </Link>
+                <p className="text-sm text-blue-600 dark:text-blue-400 font-medium" data-testid={`text-student-university-${student.id}`}>
+                  {student.university}
+                </p>
+                <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
+                  <span className="font-medium" data-testid={`text-student-cgpa-${student.id}`}>
+                    CGPA: {displayCGPA}
+                  </span>
+                  <span data-testid={`text-student-location-${student.id}`}>
+                    📍 {student.location?.split(',')[0]}
+                  </span>
+                </div>
               </div>
-              <div className="text-xs font-medium text-blue-700">Interview</div>
-            </div>
-            
-            <div className="flex gap-1">
-              <Link href={`/student/${student.id}`} className="block">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 h-auto" data-testid={`button-view-profile-${student.id}`}>
-                  View
-                </Button>
-              </Link>
-              <Button 
-                className={`font-semibold text-xs px-3 py-1 h-auto ${
-                  isShortlisted(student.id) 
-                    ? 'bg-green-100 text-green-700 hover:bg-green-200' 
-                    : 'border border-green-500 text-green-600 hover:bg-green-50'
-                }`} 
-                variant={isShortlisted(student.id) ? "default" : "outline"}
-                onClick={() => {
-                  isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
-                }}
-                data-testid={`button-shortlist-${student.id}`}
-              >
-                {isShortlisted(student.id) ? (
-                  <>
-                    <Check className="w-3 h-3 mr-1" />
-                    Added
-                  </>
-                ) : (
-                  <>
-                    <Plus className="w-3 h-3 mr-1" />
-                    Add
-                  </>
-                )}
-              </Button>
+
+              {/* Center: Assessment Grid */}
+              <div className="grid grid-cols-2 gap-2 mx-6">
+                <div 
+                  className="flex flex-col items-center px-4 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 cursor-pointer transition-colors text-center"
+                  onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Excellent' : dsaScore >= 3 ? 'Good' : 'Average'})}
+                  data-testid={`button-dsa-assessment-${student.id}`}
+                  title="Click to view detailed DSA assessment"
+                >
+                  <div className="flex mb-1">{renderStars(dsaScore)}</div>
+                  <span className="text-xs font-semibold text-blue-800">DSA</span>
+                </div>
+                
+                <div 
+                  className="flex flex-col items-center px-4 py-2 rounded-lg bg-green-50 hover:bg-green-100 cursor-pointer transition-colors text-center"
+                  onClick={() => setSelectedAssessment({type: 'Aptitude', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Average'})}
+                  data-testid={`button-aptitude-assessment-${student.id}`}
+                  title="Click to view detailed Aptitude assessment"
+                >
+                  <div className="flex mb-1">{renderStars(aptitudeScore)}</div>
+                  <span className="text-xs font-semibold text-green-800">Aptitude</span>
+                </div>
+                
+                <div 
+                  className="flex flex-col items-center px-4 py-2 rounded-lg bg-purple-50 hover:bg-purple-100 cursor-pointer transition-colors text-center"
+                  onClick={() => setSelectedAssessment({type: 'Verbal Ability', score: communicationScore * 20, level: communicationScore >= 4 ? 'Excellent' : communicationScore >= 3 ? 'Good' : 'Average'})}
+                  data-testid={`button-communication-assessment-${student.id}`}
+                  title="Click to view detailed Verbal Ability assessment"
+                >
+                  <div className="flex mb-1">{renderStars(communicationScore)}</div>
+                  <span className="text-xs font-semibold text-purple-800">Verbal</span>
+                </div>
+                
+                <div 
+                  className="flex flex-col items-center px-4 py-2 rounded-lg bg-orange-50 hover:bg-orange-100 cursor-pointer transition-colors text-center"
+                  onClick={() => setSelectedAssessment({type: 'CS Fundamentals', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Excellent' : csFundamentalsScore >= 3 ? 'Good' : 'Average'})}
+                  data-testid={`button-cs-fundamentals-assessment-${student.id}`}
+                  title="Click to view detailed CS Fundamentals assessment"
+                >
+                  <div className="flex mb-1">{renderStars(csFundamentalsScore)}</div>
+                  <span className="text-xs font-semibold text-orange-800">CS Fundamentals</span>
+                </div>
+              </div>
+
+              {/* Right: Skills, Match & Actions */}
+              <div className="space-y-3 text-right">
+                {/* Match Percentage */}
+                <div className={`inline-block text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
+                  matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
+                }`}
+                     onClick={() => setShowRoleMatchRationale(true)}
+                     data-testid={`button-role-match-info-${student.id}`}>
+                  {matchPercentage}% Match
+                </div>
+                
+                {/* Skills */}
+                <div className="flex flex-wrap gap-1 justify-end max-w-[200px] ml-auto">
+                  {Array.isArray(student.skills) ? student.skills.slice(0, 4).map((skill) => (
+                    <Badge key={skill.skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">
+                      {skill.skill.name}
+                    </Badge>
+                  )) : [
+                    <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">JS</Badge>,
+                    <Badge key="react" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">React</Badge>,
+                    <Badge key="node" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">Node</Badge>,
+                    <Badge key="python" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">Python</Badge>
+                  ]}
+                  {Array.isArray(student.skills) && student.skills.length > 4 && (
+                    <Badge variant="outline" className="text-xs hover:bg-gray-50 cursor-pointer px-2 py-0.5">
+                      +{student.skills.length - 4}
+                    </Badge>
+                  )}
+                </div>
+                
+                {/* Actions */}
+                <div className="flex items-center gap-2 justify-end">
+                  <div 
+                    className="bg-white border border-blue-200 hover:border-blue-400 rounded-lg px-3 py-2 cursor-pointer transition-all hover:shadow-sm hover:bg-blue-50 text-center"
+                    onClick={() => setShowInterviewPerformance(true)}
+                    data-testid={`performance-overall-${student.id}`}
+                    title="Click to view interview footage and performance analysis"
+                  >
+                    <div className="flex justify-center items-center gap-1 mb-1" data-testid={`text-student-rating-${student.id}`}>
+                      {renderStars(Math.round(averageSkillScore))}
+                      <Video className="w-3 h-3 text-blue-600" />
+                    </div>
+                    <div className="text-xs font-medium text-blue-700">Interview</div>
+                  </div>
+                  
+                  <Link href={`/student/${student.id}`} className="block">
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 font-medium" data-testid={`button-view-profile-${student.id}`}>
+                      View Profile
+                    </Button>
+                  </Link>
+                  
+                  <Button 
+                    className={`font-medium text-sm px-4 py-2 ${
+                      isShortlisted(student.id) 
+                        ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                        : 'border border-green-500 text-green-600 hover:bg-green-50'
+                    }`} 
+                    variant={isShortlisted(student.id) ? "default" : "outline"}
+                    onClick={() => {
+                      isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
+                    }}
+                    data-testid={`button-shortlist-${student.id}`}
+                  >
+                    {isShortlisted(student.id) ? (
+                      <>
+                        <Check className="w-4 h-4 mr-2" />
+                        Shortlisted
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Shortlist
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
