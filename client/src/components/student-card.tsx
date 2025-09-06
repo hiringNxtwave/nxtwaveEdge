@@ -260,8 +260,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                   )}
                 </div>
                 
-                {/* Actions - Vertical Stack */}
-                <div className="flex flex-col gap-2">
+                {/* Actions */}
+                <div className="flex items-center gap-2 justify-end">
                   <div 
                     className="bg-white border border-blue-200 hover:border-blue-400 rounded-lg px-3 py-2 cursor-pointer transition-all hover:shadow-sm hover:bg-blue-50 text-center"
                     onClick={() => setShowInterviewPerformance(true)}
@@ -276,13 +276,13 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                   </div>
                   
                   <Link href={`/student/${student.id}`} className="block">
-                    <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 font-medium w-full" data-testid={`button-view-profile-${student.id}`}>
+                    <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 font-medium" data-testid={`button-view-profile-${student.id}`}>
                       View Profile
                     </Button>
                   </Link>
                   
                   <Button 
-                    className={`font-medium text-sm px-4 py-2 w-full ${
+                    className={`font-medium text-sm px-4 py-2 ${
                       isShortlisted(student.id) 
                         ? 'bg-green-100 text-green-700 hover:bg-green-200' 
                         : 'border border-green-500 text-green-600 hover:bg-green-50'
