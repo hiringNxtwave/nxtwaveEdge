@@ -186,45 +186,45 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           </div>
 
           {/* Center Section - Assessment Scores */}
-          <div className="grid grid-cols-2 gap-1 mx-4">
+          <div className="grid grid-cols-2 gap-2 mx-4">
             <div 
-              className="flex flex-col items-center px-2 py-1 rounded bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 cursor-pointer transition-all text-center"
+              className="flex flex-col items-center px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 cursor-pointer transition-all text-center min-w-0"
               onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Excellent' : dsaScore >= 3 ? 'Good' : 'Average'})}
               data-testid={`button-dsa-assessment-${student.id}`}
               title="Click to view detailed DSA assessment"
             >
-              <div className="flex">{renderStars(dsaScore)}</div>
+              <div className="flex mb-1">{renderStars(dsaScore)}</div>
               <span className="text-xs font-medium text-blue-800">DSA</span>
             </div>
             
             <div 
-              className="flex flex-col items-center px-2 py-1 rounded bg-green-50 dark:bg-green-900/20 hover:bg-green-100 cursor-pointer transition-all text-center"
+              className="flex flex-col items-center px-3 py-2 rounded-lg bg-green-50 dark:bg-green-900/20 hover:bg-green-100 cursor-pointer transition-all text-center min-w-0"
               onClick={() => setSelectedAssessment({type: 'Aptitude', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Average'})}
               data-testid={`button-aptitude-assessment-${student.id}`}
               title="Click to view detailed Aptitude assessment"
             >
-              <div className="flex">{renderStars(aptitudeScore)}</div>
-              <span className="text-xs font-medium text-green-800">Apt</span>
+              <div className="flex mb-1">{renderStars(aptitudeScore)}</div>
+              <span className="text-xs font-medium text-green-800">Aptitude</span>
             </div>
             
             <div 
-              className="flex flex-col items-center px-2 py-1 rounded bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 cursor-pointer transition-all text-center"
+              className="flex flex-col items-center px-3 py-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 cursor-pointer transition-all text-center min-w-0"
               onClick={() => setSelectedAssessment({type: 'Verbal Ability', score: communicationScore * 20, level: communicationScore >= 4 ? 'Excellent' : communicationScore >= 3 ? 'Good' : 'Average'})}
               data-testid={`button-communication-assessment-${student.id}`}
               title="Click to view detailed Verbal Ability assessment"
             >
-              <div className="flex">{renderStars(communicationScore)}</div>
-              <span className="text-xs font-medium text-purple-800">Verb</span>
+              <div className="flex mb-1">{renderStars(communicationScore)}</div>
+              <span className="text-xs font-medium text-purple-800">Verbal</span>
             </div>
             
             <div 
-              className="flex flex-col items-center px-2 py-1 rounded bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 cursor-pointer transition-all text-center"
+              className="flex flex-col items-center px-3 py-2 rounded-lg bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 cursor-pointer transition-all text-center min-w-0"
               onClick={() => setSelectedAssessment({type: 'CS Fundamentals', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Excellent' : csFundamentalsScore >= 3 ? 'Good' : 'Average'})}
               data-testid={`button-cs-fundamentals-assessment-${student.id}`}
               title="Click to view detailed CS Fundamentals assessment"
             >
-              <div className="flex">{renderStars(csFundamentalsScore)}</div>
-              <span className="text-xs font-medium text-orange-800">CS</span>
+              <div className="flex mb-1">{renderStars(csFundamentalsScore)}</div>
+              <span className="text-xs font-medium text-orange-800">CS Fundamentals</span>
             </div>
           </div>
 
