@@ -250,16 +250,16 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           {/* Overall and Interview Performance & Match - Stacked Vertically */}
           <div className="flex flex-col items-center gap-2">
             <div 
-              className="text-center cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-all hover:shadow-md border border-transparent hover:border-gray-200"
+              className="bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-3 cursor-pointer transition-all hover:shadow-lg hover:bg-blue-50 text-center min-w-[160px]"
               onClick={() => setShowInterviewPerformance(true)}
               data-testid={`performance-overall-${student.id}`}
               title="Click to view interview footage and performance analysis"
             >
-              <div className="flex justify-center items-center gap-1 mb-1" data-testid={`text-student-rating-${student.id}`}>
+              <div className="flex justify-center items-center gap-1 mb-2" data-testid={`text-student-rating-${student.id}`}>
                 {renderStars(Math.round(averageSkillScore))}
-                <Video className="w-3 h-3 text-gray-500 opacity-60" />
+                <Video className="w-4 h-4 text-blue-600 ml-1" />
               </div>
-              <div className="text-xs text-gray-600">Overall and Interview Performance</div>
+              <div className="text-sm font-medium text-blue-700">Overall & Interview Performance</div>
             </div>
             <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
               matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
