@@ -301,44 +301,29 @@ export default function Home() {
             </Card>
           </div>
 
-          {/* Hiring Insights - Full Width */}
-          <Card className="bg-white border border-gray-200" data-testid="card-hiring-insights">
-            <CardHeader className="pb-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-xl">Hiring Insights</CardTitle>
-                  <CardDescription>Your recruitment analytics and performance metrics</CardDescription>
-                </div>
-                <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-purple-600" />
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-4 gap-6">
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600 mb-1">24</div>
-                  <div className="text-sm text-gray-600">Profiles viewed</div>
-                  <div className="text-xs text-gray-500 mt-1">This week</div>
-                </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <div className="text-2xl font-bold text-green-600 mb-1">12</div>
-                  <div className="text-sm text-gray-600">Avg. time to hire</div>
-                  <div className="text-xs text-gray-500 mt-1">Days</div>
-                </div>
-                <div className="text-center p-4 bg-purple-50 rounded-lg">
-                  <div className="text-2xl font-bold text-purple-600 mb-1">87%</div>
-                  <div className="text-sm text-gray-600">Response rate</div>
-                  <div className="text-xs text-gray-500 mt-1">Last 30 days</div>
-                </div>
-                <div className="text-center p-4 bg-orange-50 rounded-lg">
-                  <div className="text-2xl font-bold text-orange-600 mb-1">₹45L</div>
-                  <div className="text-sm text-gray-600">Cost saved</div>
-                  <div className="text-xs text-gray-500 mt-1">This quarter</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Quick Stats - Clean Layout */}
+          <div className="grid md:grid-cols-4 gap-6">
+            <div className="text-center p-6 bg-blue-50 rounded-lg border border-blue-100">
+              <div className="text-3xl font-bold text-blue-600 mb-2">24</div>
+              <div className="text-sm font-medium text-gray-700">Profiles viewed</div>
+              <div className="text-xs text-gray-500 mt-1">This week</div>
+            </div>
+            <div className="text-center p-6 bg-green-50 rounded-lg border border-green-100">
+              <div className="text-3xl font-bold text-green-600 mb-2">12</div>
+              <div className="text-sm font-medium text-gray-700">Avg. time to hire</div>
+              <div className="text-xs text-gray-500 mt-1">Days</div>
+            </div>
+            <div className="text-center p-6 bg-purple-50 rounded-lg border border-purple-100">
+              <div className="text-3xl font-bold text-purple-600 mb-2">87%</div>
+              <div className="text-sm font-medium text-gray-700">Response rate</div>
+              <div className="text-xs text-gray-500 mt-1">Last 30 days</div>
+            </div>
+            <div className="text-center p-6 bg-orange-50 rounded-lg border border-orange-100">
+              <div className="text-3xl font-bold text-orange-600 mb-2">₹45L</div>
+              <div className="text-sm font-medium text-gray-700">Cost saved</div>
+              <div className="text-xs text-gray-500 mt-1">This quarter</div>
+            </div>
+          </div>
         </div>
       </section>
 
