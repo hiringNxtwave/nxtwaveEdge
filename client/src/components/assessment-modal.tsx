@@ -876,7 +876,7 @@ console.log(twoSum([3, 3], 6));                  // 07:30
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium">Function declaration</p>
-                          <p className="text-xs text-gray-600">function twoSum(nums, target) {</p>
+                          <p className="text-xs text-gray-600">function twoSum(nums, target) &#123;</p>
                         </div>
                         <Button variant="outline" size="sm">
                           <Clock className="w-4 h-4 mr-1" />
