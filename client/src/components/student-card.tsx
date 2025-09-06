@@ -19,33 +19,28 @@ interface StudentCardProps {
   showFullInfo?: boolean;
 }
 
-// Generate diverse profile images using different photo sources
+// Generate profile images using reliable avatar services
 const generateProfileImage = (studentId: string, firstName: string) => {
   const seed = parseInt(studentId.slice(-8), 16);
   
-  // Array of diverse professional headshot photos from Unsplash
-  const photos = [
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face", // Male
-    "https://images.unsplash.com/photo-1494790108755-2616c6426e90?w=200&h=200&fit=crop&crop=face", // Female
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face", // Male
-    "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face", // Female
-    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=face", // Male
-    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop&crop=face", // Female
-    "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=200&h=200&fit=crop&crop=face", // Male
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=face", // Female
-    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop&crop=face", // Male
-    "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=200&h=200&fit=crop&crop=face", // Female
-    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&h=200&fit=crop&crop=face", // Male
-    "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&h=200&fit=crop&crop=face", // Female
-    "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=200&h=200&fit=crop&crop=face", // Male
-    "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=200&h=200&fit=crop&crop=face", // Female
-    "https://images.unsplash.com/photo-1463453091185-61582044d556?w=200&h=200&fit=crop&crop=face", // Male
-    "https://images.unsplash.com/photo-1485893226505-9880b47cb3d9?w=200&h=200&fit=crop&crop=face", // Female
+  // Use UI Avatars as a reliable fallback service
+  const colors = [
+    "3B82F6", "EF4444", "10B981", "F59E0B", "8B5CF6", 
+    "EC4899", "06B6D4", "84CC16", "F97316", "6366F1"
   ];
   
-  // Select photo based on student ID for consistency
-  const photoIndex = seed % photos.length;
-  return photos[photoIndex];
+  const backgrounds = [
+    "F3F4F6", "FEF2F2", "F0FDF4", "FFFBEB", "FAF5FF",
+    "FDF2F8", "F0F9FF", "F7FEE7", "FFF7ED", "F0F4FF"
+  ];
+  
+  const colorIndex = seed % colors.length;
+  const bgIndex = (seed + 3) % backgrounds.length;
+  
+  const initials = firstName.charAt(0).toUpperCase();
+  
+  // Use UI Avatars service which is more reliable than external photo services
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName)}&size=200&background=${backgrounds[bgIndex]}&color=${colors[colorIndex]}&bold=true&font-size=0.4`;
 };
 
 export default function StudentCard({ student, showFullInfo = false }: StudentCardProps) {
@@ -81,7 +76,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   };
   
   // Use generated CGPA for display
-  const displayCGPA = generateRealisticCGPA(student.id, student.cgpa);
+  const displayCGPA = generateRealisticCGPA(student.id, student.cgpa || undefined);
   
   // Generate consistent skill scores based on overall rating with some variation
   // Higher overall rating = higher individual skill scores, but with realistic variation
@@ -178,8 +173,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             <div>
               <div className="flex flex-wrap gap-2">
                 {Array.isArray(student.skills) ? student.skills.slice(0, 6).map((skill) => (
-                  <Badge key={skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">
-                    {skill.name}
+                  <Badge key={skill.skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">
+                    {skill.skill.name}
                   </Badge>
                 )) : [
                   <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">JavaScript</Badge>,
