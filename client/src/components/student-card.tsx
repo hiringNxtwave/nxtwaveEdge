@@ -196,47 +196,47 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             <div>
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div 
-                  className="flex items-center gap-2 p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-blue-200"
+                  className="flex items-center justify-between p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-blue-200 min-w-0"
                   onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Excellent' : dsaScore >= 3 ? 'Good' : 'Average'})}
                   data-testid={`button-dsa-assessment-${student.id}`}
                   title="Click to view detailed DSA assessment"
                 >
-                  <span className="font-medium text-blue-800 dark:text-blue-200 text-xs">DSA</span>
-                  <div className="flex">{renderStars(dsaScore)}</div>
-                  <Eye className="w-3 h-3 text-blue-600 opacity-60" />
+                  <span className="font-medium text-blue-800 dark:text-blue-200 text-xs flex-shrink-0">DSA</span>
+                  <div className="flex flex-shrink-0">{renderStars(dsaScore)}</div>
+                  <Eye className="w-3 h-3 text-blue-600 opacity-60 flex-shrink-0" />
                 </div>
                 
                 <div 
-                  className="flex items-center gap-2 p-2 rounded-lg bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-green-200"
+                  className="flex items-center justify-between p-2 rounded-lg bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-green-200 min-w-0"
                   onClick={() => setSelectedAssessment({type: 'Aptitude', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Average'})}
                   data-testid={`button-aptitude-assessment-${student.id}`}
                   title="Click to view detailed Aptitude assessment"
                 >
-                  <span className="font-medium text-green-800 dark:text-green-200 text-xs">Aptitude</span>
-                  <div className="flex">{renderStars(aptitudeScore)}</div>
-                  <Eye className="w-3 h-3 text-green-600 opacity-60" />
+                  <span className="font-medium text-green-800 dark:text-green-200 text-xs flex-shrink-0">Aptitude</span>
+                  <div className="flex flex-shrink-0">{renderStars(aptitudeScore)}</div>
+                  <Eye className="w-3 h-3 text-green-600 opacity-60 flex-shrink-0" />
                 </div>
                 
                 <div 
-                  className="flex items-center gap-2 p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-purple-200"
+                  className="flex items-center justify-between p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-purple-200 min-w-0"
                   onClick={() => setSelectedAssessment({type: 'Verbal Ability', score: communicationScore * 20, level: communicationScore >= 4 ? 'Excellent' : communicationScore >= 3 ? 'Good' : 'Average'})}
                   data-testid={`button-communication-assessment-${student.id}`}
                   title="Click to view detailed Verbal Ability assessment"
                 >
-                  <span className="font-medium text-purple-800 dark:text-purple-200 text-xs">Verbal Ability</span>
-                  <div className="flex">{renderStars(communicationScore)}</div>
-                  <Eye className="w-3 h-3 text-purple-600 opacity-60" />
+                  <span className="font-medium text-purple-800 dark:text-purple-200 text-xs flex-shrink-0">Verbal Ability</span>
+                  <div className="flex flex-shrink-0">{renderStars(communicationScore)}</div>
+                  <Eye className="w-3 h-3 text-purple-600 opacity-60 flex-shrink-0" />
                 </div>
                 
                 <div 
-                  className="flex items-center gap-2 p-2 rounded-lg bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-orange-200"
+                  className="flex items-center justify-between p-2 rounded-lg bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-orange-200 min-w-0"
                   onClick={() => setSelectedAssessment({type: 'CS Fundamentals', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Excellent' : csFundamentalsScore >= 3 ? 'Good' : 'Average'})}
                   data-testid={`button-cs-fundamentals-assessment-${student.id}`}
                   title="Click to view detailed CS Fundamentals assessment"
                 >
-                  <span className="font-medium text-orange-800 dark:text-orange-200 text-xs">CS Fundamentals</span>
-                  <div className="flex">{renderStars(csFundamentalsScore)}</div>
-                  <Eye className="w-3 h-3 text-orange-600 opacity-60" />
+                  <span className="font-medium text-orange-800 dark:text-orange-200 text-xs flex-shrink-0">CS Fundamentals</span>
+                  <div className="flex flex-shrink-0">{renderStars(csFundamentalsScore)}</div>
+                  <Eye className="w-3 h-3 text-orange-600 opacity-60 flex-shrink-0" />
                 </div>
               </div>
             </div>
