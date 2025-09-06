@@ -119,184 +119,202 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
   return (
     <Card className="hover:shadow-xl transition-all duration-300 border-l-4 border-l-blue-500 bg-gradient-to-r from-white to-blue-50 dark:from-gray-800 dark:to-gray-750" data-testid={`card-student-${student.id}`}>
-      <CardContent className="p-6">
-        <div className="flex items-start gap-6 w-full">
-          {/* Student Info Section */}
-          <Link href={`/student/${student.id}`} className="flex items-center space-x-4 cursor-pointer flex-shrink-0">
-            <div className="relative">
-              <img 
-                src={student.profileImageUrl || generateProfileImage(student.id, student.firstName)} 
-                alt={`${student.firstName} ${student.lastName}`}
-                className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-lg"
-                data-testid={`img-student-avatar-${student.id}`}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = generateProfileImage(student.id, student.firstName);
-                }}
-              />
-              {student.verified && (
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white" title="Verified Profile">
-                  <Shield className="w-3 h-3 text-white" />
-                </div>
-              )}
-              {/* Compact Status Indicator */}
-              <div 
-                className={`absolute -top-1 -left-1 w-3 h-3 rounded-full border-2 border-white ${
-                  seed % 3 === 0 ? 'bg-green-500' : seed % 3 === 1 ? 'bg-yellow-500' : 'bg-gray-400'
-                }`}
-                title={seed % 3 === 0 ? 'Fresh Profile' : seed % 3 === 1 ? 'Recent Activity' : 'Active User'}
-              />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white" data-testid={`text-student-name-${student.id}`}>
-                  {student.firstName} {student.lastName}
-                </h3>
-              </div>
-              <p className="text-sm text-blue-600 dark:text-blue-400 mb-1" data-testid={`text-student-university-${student.id}`}>
-                {student.university}
-              </p>
-              <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-300">
-                <span className="font-medium" data-testid={`text-student-cgpa-${student.id}`}>
-                  CGPA: {displayCGPA}
-                </span>
-                <span data-testid={`text-student-location-${student.id}`}>
-                  📍 {student.location?.split(',')[0]}
-                </span>
-              </div>
-            </div>
-          </Link>
-
-          {/* Skills & Ratings Section */}
-          <div className="flex-1 min-w-0 space-y-3">
-            {/* Skills Display */}
-            <div>
-              <div className="flex flex-wrap gap-2">
-                {Array.isArray(student.skills) ? student.skills.slice(0, 6).map((skill) => (
-                  <Badge key={skill.skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">
-                    {skill.skill.name}
-                  </Badge>
-                )) : [
-                  <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">JavaScript</Badge>,
-                  <Badge key="react" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">React</Badge>,
-                  <Badge key="node" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">Node.js</Badge>,
-                  <Badge key="python" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">Python</Badge>,
-                  <Badge key="mongo" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">MongoDB</Badge>,
-                  <Badge key="system" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">System Design</Badge>
-                ]}
-                {Array.isArray(student.skills) && student.skills.length > 6 && (
-                  <Badge variant="outline" className="text-xs hover:bg-gray-50 cursor-pointer">
-                    +{student.skills.length - 6} more
-                  </Badge>
+      <CardContent className="p-0">
+        {/* Header Section with Student Info */}
+        <div className="p-6 pb-4 border-b border-gray-100">
+          <div className="flex items-start gap-4">
+            <Link href={`/student/${student.id}`} className="flex items-center gap-4 cursor-pointer flex-1 min-w-0">
+              <div className="relative flex-shrink-0">
+                <img 
+                  src={student.profileImageUrl || generateProfileImage(student.id, student.firstName)} 
+                  alt={`${student.firstName} ${student.lastName}`}
+                  className="w-20 h-20 rounded-full object-cover border-2 border-white shadow-lg"
+                  data-testid={`img-student-avatar-${student.id}`}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = generateProfileImage(student.id, student.firstName);
+                  }}
+                />
+                {student.verified && (
+                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white" title="Verified Profile">
+                    <Shield className="w-3 h-3 text-white" />
+                  </div>
                 )}
-              </div>
-            </div>
-
-            {/* Assessment Ratings with Clickable Stars */}
-            <div>
-              <div className="grid grid-cols-2 gap-3 text-xs">
                 <div 
-                  className="flex items-center justify-between p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-blue-200 min-w-0"
+                  className={`absolute -top-1 -left-1 w-4 h-4 rounded-full border-2 border-white ${
+                    seed % 3 === 0 ? 'bg-green-500' : seed % 3 === 1 ? 'bg-yellow-500' : 'bg-gray-400'
+                  }`}
+                  title={seed % 3 === 0 ? 'Fresh Profile' : seed % 3 === 1 ? 'Recent Activity' : 'Active User'}
+                />
+              </div>
+              
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white" data-testid={`text-student-name-${student.id}`}>
+                    {student.firstName} {student.lastName}
+                  </h3>
+                  <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
+                    matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
+                  }`}
+                       onClick={() => setShowRoleMatchRationale(true)}
+                       data-testid={`button-role-match-info-${student.id}`}>
+                    {matchPercentage}% Match
+                  </div>
+                </div>
+                
+                <p className="text-sm text-blue-600 dark:text-blue-400 mb-2 font-medium" data-testid={`text-student-university-${student.id}`}>
+                  {student.university}
+                </p>
+                
+                <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-gray-300">
+                  <span className="font-medium" data-testid={`text-student-cgpa-${student.id}`}>
+                    CGPA: {displayCGPA}
+                  </span>
+                  <span data-testid={`text-student-location-${student.id}`}>
+                    📍 {student.location?.split(',')[0]}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+
+        {/* Content Section */}
+        <div className="p-6 space-y-6">
+          {/* Skills Section */}
+          <div>
+            <h4 className="text-sm font-semibold text-gray-700 mb-3">Skills</h4>
+            <div className="flex flex-wrap gap-2">
+              {Array.isArray(student.skills) ? student.skills.slice(0, 8).map((skill) => (
+                <Badge key={skill.skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">
+                  {skill.skill.name}
+                </Badge>
+              )) : [
+                <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">JavaScript</Badge>,
+                <Badge key="react" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">React</Badge>,
+                <Badge key="node" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">Node.js</Badge>,
+                <Badge key="python" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">Python</Badge>,
+                <Badge key="mongo" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">MongoDB</Badge>,
+                <Badge key="system" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer">System Design</Badge>
+              ]}
+              {Array.isArray(student.skills) && student.skills.length > 8 && (
+                <Badge variant="outline" className="text-xs hover:bg-gray-50 cursor-pointer">
+                  +{student.skills.length - 8} more
+                </Badge>
+              )}
+            </div>
+          </div>
+
+          {/* Assessment & Performance Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Assessment Ratings */}
+            <div className="lg:col-span-2">
+              <h4 className="text-sm font-semibold text-gray-700 mb-3">Assessment Scores</h4>
+              <div className="grid grid-cols-2 gap-3">
+                <div 
+                  className="flex items-center justify-between p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-blue-200"
                   onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Excellent' : dsaScore >= 3 ? 'Good' : 'Average'})}
                   data-testid={`button-dsa-assessment-${student.id}`}
                   title="Click to view detailed DSA assessment"
                 >
-                  <span className="font-medium text-blue-800 dark:text-blue-200 text-xs flex-shrink-0">DSA</span>
-                  <div className="flex flex-shrink-0">{renderStars(dsaScore)}</div>
-                  <Eye className="w-3 h-3 text-blue-600 opacity-60 flex-shrink-0" />
+                  <span className="font-medium text-blue-800 dark:text-blue-200 text-sm">DSA</span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex">{renderStars(dsaScore)}</div>
+                    <Eye className="w-3 h-3 text-blue-600 opacity-60" />
+                  </div>
                 </div>
                 
                 <div 
-                  className="flex items-center justify-between p-2 rounded-lg bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-green-200 min-w-0"
+                  className="flex items-center justify-between p-3 rounded-lg bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-green-200"
                   onClick={() => setSelectedAssessment({type: 'Aptitude', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Average'})}
                   data-testid={`button-aptitude-assessment-${student.id}`}
                   title="Click to view detailed Aptitude assessment"
                 >
-                  <span className="font-medium text-green-800 dark:text-green-200 text-xs flex-shrink-0">Aptitude</span>
-                  <div className="flex flex-shrink-0">{renderStars(aptitudeScore)}</div>
-                  <Eye className="w-3 h-3 text-green-600 opacity-60 flex-shrink-0" />
+                  <span className="font-medium text-green-800 dark:text-green-200 text-sm">Aptitude</span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex">{renderStars(aptitudeScore)}</div>
+                    <Eye className="w-3 h-3 text-green-600 opacity-60" />
+                  </div>
                 </div>
                 
                 <div 
-                  className="flex items-center justify-between p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-purple-200 min-w-0"
+                  className="flex items-center justify-between p-3 rounded-lg bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-purple-200"
                   onClick={() => setSelectedAssessment({type: 'Verbal Ability', score: communicationScore * 20, level: communicationScore >= 4 ? 'Excellent' : communicationScore >= 3 ? 'Good' : 'Average'})}
                   data-testid={`button-communication-assessment-${student.id}`}
                   title="Click to view detailed Verbal Ability assessment"
                 >
-                  <span className="font-medium text-purple-800 dark:text-purple-200 text-xs flex-shrink-0">Verbal Ability</span>
-                  <div className="flex flex-shrink-0">{renderStars(communicationScore)}</div>
-                  <Eye className="w-3 h-3 text-purple-600 opacity-60 flex-shrink-0" />
+                  <span className="font-medium text-purple-800 dark:text-purple-200 text-sm">Verbal</span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex">{renderStars(communicationScore)}</div>
+                    <Eye className="w-3 h-3 text-purple-600 opacity-60" />
+                  </div>
                 </div>
                 
                 <div 
-                  className="flex items-center justify-between p-2 rounded-lg bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-orange-200 min-w-0"
+                  className="flex items-center justify-between p-3 rounded-lg bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 cursor-pointer transition-all hover:shadow-md border border-transparent hover:border-orange-200"
                   onClick={() => setSelectedAssessment({type: 'CS Fundamentals', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Excellent' : csFundamentalsScore >= 3 ? 'Good' : 'Average'})}
                   data-testid={`button-cs-fundamentals-assessment-${student.id}`}
                   title="Click to view detailed CS Fundamentals assessment"
                 >
-                  <span className="font-medium text-orange-800 dark:text-orange-200 text-xs flex-shrink-0">CS Fundamentals</span>
-                  <div className="flex flex-shrink-0">{renderStars(csFundamentalsScore)}</div>
-                  <Eye className="w-3 h-3 text-orange-600 opacity-60 flex-shrink-0" />
+                  <span className="font-medium text-orange-800 dark:text-orange-200 text-sm">CS Fund.</span>
+                  <div className="flex items-center gap-2">
+                    <div className="flex">{renderStars(csFundamentalsScore)}</div>
+                    <Eye className="w-3 h-3 text-orange-600 opacity-60" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Overall and Interview Performance & Match - Stacked Vertically */}
-          <div className="flex flex-col items-center gap-2">
-            <div 
-              className="bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-3 cursor-pointer transition-all hover:shadow-lg hover:bg-blue-50 text-center min-w-[160px]"
-              onClick={() => setShowInterviewPerformance(true)}
-              data-testid={`performance-overall-${student.id}`}
-              title="Click to view interview footage and performance analysis"
-            >
-              <div className="flex justify-center items-center gap-1 mb-2" data-testid={`text-student-rating-${student.id}`}>
-                {renderStars(Math.round(averageSkillScore))}
-                <Video className="w-4 h-4 text-blue-600 ml-1" />
+            {/* Interview Performance & Actions */}
+            <div className="space-y-4">
+              <div 
+                className="bg-white border-2 border-blue-200 hover:border-blue-400 rounded-lg p-4 cursor-pointer transition-all hover:shadow-lg hover:bg-blue-50"
+                onClick={() => setShowInterviewPerformance(true)}
+                data-testid={`performance-overall-${student.id}`}
+                title="Click to view interview footage and performance analysis"
+              >
+                <div className="text-center">
+                  <div className="flex justify-center items-center gap-2 mb-2" data-testid={`text-student-rating-${student.id}`}>
+                    {renderStars(Math.round(averageSkillScore))}
+                    <Video className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div className="text-sm font-medium text-blue-700">Interview Performance</div>
+                </div>
               </div>
-              <div className="text-sm font-medium text-blue-700">Overall & Interview Performance</div>
+              
+              <div className="space-y-2">
+                <Link href={`/student/${student.id}`} className="block">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full" size="sm" data-testid={`button-view-profile-${student.id}`}>
+                    View Full Profile
+                  </Button>
+                </Link>
+                <Button 
+                  className={`font-semibold w-full ${
+                    isShortlisted(student.id) 
+                      ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                      : 'border border-green-500 text-green-600 hover:bg-green-50'
+                  }`} 
+                  size="sm" 
+                  variant={isShortlisted(student.id) ? "default" : "outline"}
+                  onClick={() => {
+                    isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
+                  }}
+                  data-testid={`button-shortlist-${student.id}`}
+                >
+                  {isShortlisted(student.id) ? (
+                    <>
+                      <Check className="w-4 h-4 mr-1" />
+                      Shortlisted
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add to Shortlist
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
-            <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
-              matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
-            }`}
-                 onClick={() => setShowRoleMatchRationale(true)}
-                 data-testid={`button-role-match-info-${student.id}`}>
-              {matchPercentage}% Match
-            </div>
-          </div>
-
-          {/* Action Buttons - Stacked Vertically */}
-          <div className="flex flex-col gap-2 flex-shrink-0 min-w-[100px]">
-            <Link href={`/student/${student.id}`}>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full" size="sm" data-testid={`button-view-profile-${student.id}`}>
-                View Profile
-              </Button>
-            </Link>
-            <Button 
-              className={`font-semibold w-full ${
-                isShortlisted(student.id) 
-                  ? 'bg-green-100 text-green-700 hover:bg-green-200' 
-                  : 'border border-green-500 text-green-600 hover:bg-green-50'
-              }`} 
-              size="sm" 
-              variant={isShortlisted(student.id) ? "default" : "outline"}
-              onClick={() => {
-                isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
-              }}
-              data-testid={`button-shortlist-${student.id}`}
-            >
-              {isShortlisted(student.id) ? (
-                <>
-                  <Check className="w-4 h-4 mr-1" />
-                  Added
-                </>
-              ) : (
-                <>
-                  <Plus className="w-4 h-4 mr-1" />
-                  Shortlist
-                </>
-              )}
-            </Button>
           </div>
         </div>
       </CardContent>
