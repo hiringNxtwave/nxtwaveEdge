@@ -1,15 +1,17 @@
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
-import { Handshake, Menu, Heart, Trophy, BookOpen } from "lucide-react";
+import { Handshake, Menu, Heart, Trophy, BookOpen, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useShortlist } from "@/contexts/shortlist-context";
+import { Chatbot } from "@/components/chatbot";
 
 export default function Header() {
   const { isAuthenticated, user } = useAuth();
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [chatbotOpen, setChatbotOpen] = useState(false);
   const { shortlistCount } = useShortlist();
 
   return (
@@ -150,6 +152,22 @@ export default function Header() {
           <div className="flex items-center space-x-4">
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setChatbotOpen(!chatbotOpen)}
+                  className={cn(
+                    "relative transition-colors",
+                    chatbotOpen ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground"
+                  )}
+                  data-testid="button-toggle-chatbot"
+                  title="AI Assistant"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  {!chatbotOpen && (
+                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-pulse" />
+                  )}
+                </Button>
                 <div className="hidden sm:flex items-center space-x-2">
                   {user?.profileImageUrl && (
                     <img 
@@ -248,6 +266,15 @@ export default function Header() {
           </div>
         )}
       </div>
+      
+      {/* AI Chatbot */}
+      {isAuthenticated && (
+        <Chatbot 
+          isOpen={chatbotOpen} 
+          onToggle={() => setChatbotOpen(!chatbotOpen)}
+          context={{ page: location, user }}
+        />
+      )}
     </header>
   );
 }
