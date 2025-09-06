@@ -618,7 +618,7 @@ io.on('connection', (socket) => {
 };
 
 export default function AssessmentModal({ assessment, student, onClose }: AssessmentModalProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'details'>('details');
+  const [activeTab, setActiveTab] = useState<'overview' | 'details' | 'code-recording'>('details');
   
   const assessmentData = generateAssessmentData(assessment.type, assessment.score, student.id);
   const correctAnswers = assessmentData.filter((q: AssessmentQuestion) => q.isCorrect).length;
@@ -669,6 +669,16 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
             onClick={() => setActiveTab('details')}
           >
             Detailed Responses
+          </button>
+          <button
+            className={`px-4 py-2 font-semibold transition-colors ${
+              activeTab === 'code-recording' 
+                ? 'border-b-2 border-blue-600 text-blue-600' 
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+            onClick={() => setActiveTab('code-recording')}
+          >
+            Code Recording
           </button>
         </div>
 
@@ -760,144 +770,220 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
                 </CardContent>
               </Card>
 
-              {/* AI Interview Recording */}
+            </div>
+          )}
+
+          {activeTab === 'code-recording' && (
+            <div className="space-y-6">
+              {/* Code Recording Header */}
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    <div className="p-2 bg-green-100 rounded-lg">
+                      <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold">AI Mock Interview Recording</h3>
-                      <p className="text-gray-600">30-minute behavioral and technical interview session</p>
+                      <h3 className="text-xl font-bold">Code Recording - Line by Line Analysis</h3>
+                      <p className="text-gray-600">Watch how {student.firstName} wrote the code with timeline seeking</p>
                     </div>
                   </div>
 
-                  {/* Mock Video Player */}
-                  <div className="relative bg-gray-900 rounded-lg overflow-hidden mb-6">
-                    <div className="aspect-video flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="p-4 bg-black/20 rounded-full mb-4 inline-block">
-                          <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                          </svg>
+                  {/* Code Player */}
+                  <div className="bg-gray-900 rounded-lg overflow-hidden mb-6">
+                    <div className="bg-gray-800 px-4 py-2 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex gap-1">
+                          <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                          <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                         </div>
-                        <p className="text-white text-lg">AI Interview Recording - 28:45</p>
-                        <p className="text-gray-300">Click to play interview session</p>
+                        <span className="text-gray-300 text-sm">solution.js</span>
                       </div>
+                      <div className="text-gray-300 text-sm">Recording: 24:32 total</div>
                     </div>
-                    {/* Video Controls */}
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                      <div className="flex items-center gap-4">
-                        <button className="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors">
-                          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    
+                    <div className="p-4">
+                      <pre className="text-green-400 text-sm font-mono leading-relaxed">
+                        <code>{`// Binary Search Implementation - Two Sum Problem
+// Started at 00:15
+
+function twoSum(nums, target) {                    // 00:45
+    const map = new Map();                         // 01:12
+    
+    for (let i = 0; i < nums.length; i++) {       // 01:45
+        const complement = target - nums[i];       // 02:30
+        
+        if (map.has(complement)) {                 // 03:15
+            return [map.get(complement), i];       // 03:45
+        }                                          // 04:00
+        
+        map.set(nums[i], i);                       // 04:30
+    }                                              // 04:45
+    
+    return [];                                     // 05:00
+}
+
+// Test cases - Added at 06:30
+console.log(twoSum([2, 7, 11, 15], 9));          // 07:00
+console.log(twoSum([3, 2, 4], 6));               // 07:15
+console.log(twoSum([3, 3], 6));                  // 07:30
+
+// Time Complexity: O(n) - Single pass         // 08:15
+// Space Complexity: O(n) - Hash map storage   // 08:45`}</code>
+                      </pre>
+                    </div>
+
+                    {/* Timeline Controls */}
+                    <div className="bg-gray-800 p-4 border-t border-gray-700">
+                      <div className="flex items-center gap-4 mb-3">
+                        <button className="p-2 bg-green-600 rounded-full hover:bg-green-700 transition-colors">
+                          <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z"/>
                           </svg>
                         </button>
-                        <div className="flex-1 bg-white/20 rounded-full h-2">
-                          <div className="bg-blue-500 h-2 rounded-full" style={{ width: '35%' }}></div>
+                        <span className="text-white text-sm font-mono">05:23 / 24:32</span>
+                        <div className="flex-1 bg-gray-600 rounded-full h-2 relative cursor-pointer">
+                          <div className="bg-green-500 h-2 rounded-full" style={{ width: '22%' }}></div>
+                          <div className="absolute top-0 left-0 w-full h-2 flex">
+                            {/* Code checkpoints */}
+                            <div className="absolute bg-blue-400 w-1 h-4 -mt-1" style={{ left: '3%' }} title="00:45 - Function declaration"></div>
+                            <div className="absolute bg-blue-400 w-1 h-4 -mt-1" style={{ left: '5%' }} title="01:12 - Map initialization"></div>
+                            <div className="absolute bg-blue-400 w-1 h-4 -mt-1" style={{ left: '7%' }} title="01:45 - For loop"></div>
+                            <div className="absolute bg-yellow-400 w-1 h-4 -mt-1" style={{ left: '12%' }} title="02:30 - Complement calculation"></div>
+                            <div className="absolute bg-green-400 w-1 h-4 -mt-1" style={{ left: '18%' }} title="03:45 - Return statement"></div>
+                            <div className="absolute bg-purple-400 w-1 h-4 -mt-1" style={{ left: '27%' }} title="06:30 - Test cases"></div>
+                          </div>
                         </div>
-                        <span className="text-white text-sm">10:02 / 28:45</span>
+                        <div className="flex gap-2">
+                          <button className="px-3 py-1 bg-gray-700 text-white text-xs rounded hover:bg-gray-600">0.5x</button>
+                          <button className="px-3 py-1 bg-green-600 text-white text-xs rounded">1x</button>
+                          <button className="px-3 py-1 bg-gray-700 text-white text-xs rounded hover:bg-gray-600">2x</button>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Interview Performance Metrics */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <Card className="bg-green-50">
-                      <CardContent className="p-4 text-center">
-                        <div className="text-2xl font-bold text-green-600">8.2/10</div>
-                        <div className="text-sm text-gray-600">Verbal Ability</div>
-                        <Badge variant="secondary" className="mt-1">Excellent</Badge>
-                      </CardContent>
-                    </Card>
+                  {/* Code Timeline Events */}
+                  <div>
+                    <h4 className="font-semibold text-lg mb-4">Code Development Timeline</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-4 p-3 bg-blue-50 rounded-lg border border-blue-200 cursor-pointer hover:bg-blue-100">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                          <span className="font-mono text-sm text-blue-800">00:45</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Function declaration</p>
+                          <p className="text-xs text-gray-600">function twoSum(nums, target) {</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <Clock className="w-4 h-4 mr-1" />
+                          Seek
+                        </Button>
+                      </div>
+
+                      <div className="flex items-center gap-4 p-3 bg-blue-50 rounded-lg border border-blue-200 cursor-pointer hover:bg-blue-100">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                          <span className="font-mono text-sm text-blue-800">01:12</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Map initialization</p>
+                          <p className="text-xs text-gray-600">const map = new Map();</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <Clock className="w-4 h-4 mr-1" />
+                          Seek
+                        </Button>
+                      </div>
+
+                      <div className="flex items-center gap-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200 cursor-pointer hover:bg-yellow-100">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                          <span className="font-mono text-sm text-yellow-800">02:30</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Core logic implementation</p>
+                          <p className="text-xs text-gray-600">const complement = target - nums[i];</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <Clock className="w-4 h-4 mr-1" />
+                          Seek
+                        </Button>
+                      </div>
+
+                      <div className="flex items-center gap-4 p-3 bg-green-50 rounded-lg border border-green-200 cursor-pointer hover:bg-green-100">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                          <span className="font-mono text-sm text-green-800">03:45</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Solution found condition</p>
+                          <p className="text-xs text-gray-600">return [map.get(complement), i];</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <Clock className="w-4 h-4 mr-1" />
+                          Seek
+                        </Button>
+                      </div>
+
+                      <div className="flex items-center gap-4 p-3 bg-purple-50 rounded-lg border border-purple-200 cursor-pointer hover:bg-purple-100">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                          <span className="font-mono text-sm text-purple-800">06:30</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Test cases added</p>
+                          <p className="text-xs text-gray-600">console.log(twoSum([2, 7, 11, 15], 9));</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <Clock className="w-4 h-4 mr-1" />
+                          Seek
+                        </Button>
+                      </div>
+
+                      <div className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg border border-gray-200 cursor-pointer hover:bg-gray-100">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
+                          <span className="font-mono text-sm text-gray-800">08:45</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">Complexity analysis comments</p>
+                          <p className="text-xs text-gray-600">// Time Complexity: O(n) - Single pass</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <Clock className="w-4 h-4 mr-1" />
+                          Seek
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Coding Statistics */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                     <Card className="bg-blue-50">
                       <CardContent className="p-4 text-center">
-                        <div className="text-2xl font-bold text-blue-600">7.8/10</div>
-                        <div className="text-sm text-gray-600">Problem Solving</div>
-                        <Badge variant="secondary" className="mt-1">Good</Badge>
+                        <div className="text-2xl font-bold text-blue-600">24:32</div>
+                        <div className="text-sm text-gray-600">Total Time</div>
+                        <Badge variant="secondary" className="mt-1">Efficient</Badge>
+                      </CardContent>
+                    </Card>
+                    <Card className="bg-green-50">
+                      <CardContent className="p-4 text-center">
+                        <div className="text-2xl font-bold text-green-600">15</div>
+                        <div className="text-sm text-gray-600">Lines of Code</div>
+                        <Badge variant="secondary" className="mt-1">Clean</Badge>
                       </CardContent>
                     </Card>
                     <Card className="bg-purple-50">
                       <CardContent className="p-4 text-center">
-                        <div className="text-2xl font-bold text-purple-600">8.5/10</div>
-                        <div className="text-sm text-gray-600">Cultural Fit</div>
-                        <Badge variant="secondary" className="mt-1">Excellent</Badge>
+                        <div className="text-2xl font-bold text-purple-600">3</div>
+                        <div className="text-sm text-gray-600">Test Cases</div>
+                        <Badge variant="secondary" className="mt-1">Thorough</Badge>
                       </CardContent>
                     </Card>
-                  </div>
-
-                  {/* Key Moments / Timestamps */}
-                  <div>
-                    <h4 className="font-semibold text-lg mb-3">Key Interview Moments</h4>
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-4 p-3 bg-green-50 rounded-lg border border-green-200">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="w-5 h-5 text-green-600" />
-                          <span className="font-medium text-green-800">02:15</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">Excellent explanation of React concepts</p>
-                          <p className="text-xs text-gray-600">Demonstrated strong understanding of component lifecycle and state management</p>
-                        </div>
-                        <Button variant="outline" size="sm">
-                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-1a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          Seek
-                        </Button>
-                      </div>
-                      <div className="flex items-center gap-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                        <div className="flex items-center gap-2">
-                          <Clock className="w-5 h-5 text-blue-600" />
-                          <span className="font-medium text-blue-800">08:30</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">Problem-solving approach discussion</p>
-                          <p className="text-xs text-gray-600">Walked through systematic debugging methodology with clear reasoning</p>
-                        </div>
-                        <Button variant="outline" size="sm">
-                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-1a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          Seek
-                        </Button>
-                      </div>
-                      <div className="flex items-center gap-4 p-3 bg-orange-50 rounded-lg border border-orange-200">
-                        <div className="flex items-center gap-2">
-                          <XCircle className="w-5 h-5 text-orange-600" />
-                          <span className="font-medium text-orange-800">15:45</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">Hesitation on advanced algorithms</p>
-                          <p className="text-xs text-gray-600">Could benefit from more practice with dynamic programming concepts</p>
-                        </div>
-                        <Button variant="outline" size="sm">
-                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-1a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          Seek
-                        </Button>
-                      </div>
-                      <div className="flex items-center gap-4 p-3 bg-green-50 rounded-lg border border-green-200">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="w-5 h-5 text-green-600" />
-                          <span className="font-medium text-green-800">22:10</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">Great cultural fit responses</p>
-                          <p className="text-xs text-gray-600">Showed enthusiasm for learning and team collaboration values</p>
-                        </div>
-                        <Button variant="outline" size="sm">
-                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-1a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          Seek
-                        </Button>
-                      </div>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
