@@ -230,20 +230,23 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
           {/* Center-Right: Skills */}
           <div className="flex flex-wrap gap-1 max-w-[160px]">
-            {Array.isArray(student.skills) ? student.skills.slice(0, 4).map((skill) => (
-              <Badge key={skill.skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">
-                {skill.skill.name}
-              </Badge>
-            )) : [
-              <Badge key="js" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">JS</Badge>,
-              <Badge key="react" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">React</Badge>,
-              <Badge key="node" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">Node</Badge>,
-              <Badge key="python" variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">Python</Badge>
-            ]}
-            {Array.isArray(student.skills) && student.skills.length > 4 && (
-              <Badge variant="outline" className="text-xs hover:bg-gray-50 cursor-pointer px-2 py-0.5">
-                +{student.skills.length - 4}
-              </Badge>
+            {Array.isArray(student.skills) && student.skills.length > 0 ? (
+              <>
+                {student.skills.slice(0, 4).map((skill) => (
+                  <Badge key={skill.skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">
+                    {skill.skill.name}
+                  </Badge>
+                ))}
+                {student.skills.length > 4 && (
+                  <Badge variant="outline" className="text-xs hover:bg-gray-50 cursor-pointer px-2 py-0.5">
+                    +{student.skills.length - 4}
+                  </Badge>
+                )}
+              </>
+            ) : (
+              <div className="text-xs text-gray-500 py-1">
+                Skills not specified
+              </div>
             )}
           </div>
           
