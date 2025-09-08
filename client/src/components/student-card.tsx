@@ -186,7 +186,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           </div>
 
           {/* Center: Assessment Grid */}
-          <div className="grid grid-cols-2 gap-2 mx-4">
+          <div className="grid grid-cols-3 gap-2 mx-4">
             <div 
               className="flex flex-col items-center px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 cursor-pointer transition-colors text-center"
               onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Excellent' : dsaScore >= 3 ? 'Good' : 'Average'})}
@@ -226,6 +226,19 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               <div className="flex mb-1">{renderStars(csFundamentalsScore)}</div>
               <span className="text-xs font-semibold text-orange-800">CS Fundamentals</span>
             </div>
+            
+            <div 
+              className="flex flex-col items-center px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 cursor-pointer transition-colors text-center"
+              onClick={() => setShowInterviewPerformance(true)}
+              data-testid={`performance-overall-${student.id}`}
+              title="Click to view interview footage and performance analysis"
+            >
+              <div className="flex justify-center items-center gap-1 mb-1" data-testid={`text-student-rating-${student.id}`}>
+                {renderStars(Math.round(averageSkillScore))}
+                <Video className="w-3 h-3 text-red-600" />
+              </div>
+              <span className="text-xs font-semibold text-red-800">Interview</span>
+            </div>
           </div>
 
           {/* Center-Right: Skills */}
@@ -248,21 +261,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           
           {/* Right: Performance & Actions */}
           <div className="flex items-center gap-3">
-            {/* Interview Performance & Match Percentage */}
+            {/* Match Percentage */}
             <div className="flex flex-col gap-2 items-center">
-              <div 
-                className="bg-white border border-blue-200 hover:border-blue-400 rounded-lg px-3 py-1.5 cursor-pointer transition-all hover:shadow-sm hover:bg-blue-50 text-center"
-                onClick={() => setShowInterviewPerformance(true)}
-                data-testid={`performance-overall-${student.id}`}
-                title="Click to view interview footage and performance analysis"
-              >
-                <div className="flex justify-center items-center gap-1 mb-1" data-testid={`text-student-rating-${student.id}`}>
-                  {renderStars(Math.round(averageSkillScore))}
-                  <Video className="w-3 h-3 text-blue-600" />
-                </div>
-                <div className="text-xs font-medium text-blue-700">Interview</div>
-              </div>
-              
               <div className={`text-sm font-bold px-3 py-1 rounded-full cursor-pointer ${
                 matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
               }`}
