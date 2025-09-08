@@ -243,11 +243,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                   </Badge>
                 )}
               </>
-            ) : (
-              <div className="text-xs text-gray-500 py-1">
-                Skills not specified
-              </div>
-            )}
+            ) : null}
           </div>
           
           {/* Right: Performance & Actions */}
