@@ -186,7 +186,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           </div>
 
           {/* Center: Assessment Grid */}
-          <div className="grid grid-cols-3 gap-2 mx-4">
+          <div className="grid grid-cols-5 gap-2 mx-4">
             <div 
               className="flex flex-col items-center px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 cursor-pointer transition-colors text-center"
               onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Excellent' : dsaScore >= 3 ? 'Good' : 'Average'})}
