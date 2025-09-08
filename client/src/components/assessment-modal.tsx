@@ -620,6 +620,10 @@ io.on('connection', (socket) => {
 export default function AssessmentModal({ assessment, student, onClose }: AssessmentModalProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'details' | 'code-recording'>('overview');
   
+  // Define which assessments involve coding
+  const codingAssessments = ['DSA', 'CS Fundamentals', 'Tech Fundamentals', 'System Design'];
+  const hasCodeRecording = codingAssessments.includes(assessment.type);
+  
   const assessmentData = generateAssessmentData(assessment.type, assessment.score, student.id);
   const correctAnswers = assessmentData.filter((q: AssessmentQuestion) => q.isCorrect).length;
   const totalQuestions = assessmentData.length;
@@ -670,16 +674,18 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
           >
             Detailed Responses
           </button>
-          <button
-            className={`px-4 py-2 font-semibold transition-colors ${
-              activeTab === 'code-recording' 
-                ? 'border-b-2 border-blue-600 text-blue-600' 
-                : 'text-gray-600 hover:text-gray-800'
-            }`}
-            onClick={() => setActiveTab('code-recording')}
-          >
-            Code Recording
-          </button>
+          {hasCodeRecording && (
+            <button
+              className={`px-4 py-2 font-semibold transition-colors ${
+                activeTab === 'code-recording' 
+                  ? 'border-b-2 border-blue-600 text-blue-600' 
+                  : 'text-gray-600 hover:text-gray-800'
+              }`}
+              onClick={() => setActiveTab('code-recording')}
+            >
+              Code Recording
+            </button>
+          )}
         </div>
 
         <div className="mt-6">
@@ -773,7 +779,7 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
             </div>
           )}
 
-          {activeTab === 'code-recording' && (
+          {activeTab === 'code-recording' && hasCodeRecording && (
             <div className="space-y-6">
               {/* Code Recording Header */}
               <Card>
