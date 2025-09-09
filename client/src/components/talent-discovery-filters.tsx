@@ -11,12 +11,13 @@ import { Sparkles, Target, Brain, Filter, Zap, Users, X } from "lucide-react";
 
 interface TalentRequirement {
   role: string;
-  experience: string;
   skills: string[];
   minCGPA: number;
-  salaryRange: [number, number];
   locations: string[];
   collegePreference: string;
+  // Simplified - removed unnecessary fields
+  experience: string;
+  salaryRange: [number, number];
   urgency: string;
   teamSize: number;
   workMode: string;
@@ -39,12 +40,13 @@ export function TalentDiscoveryFilters({
 }: TalentDiscoveryFiltersProps) {
   const [requirement, setRequirement] = useState<TalentRequirement>({
     role: "",
-    experience: "0-1",
     skills: [],
     minCGPA: 7.0,
-    salaryRange: [6, 15],
     locations: [],
     collegePreference: "any",
+    // Set defaults for required fields
+    experience: "0-1",
+    salaryRange: [6, 15],
     urgency: "normal",
     teamSize: 5,
     workMode: "hybrid"
@@ -136,34 +138,17 @@ export function TalentDiscoveryFilters({
           </CardHeader>
           
           <CardContent className="space-y-6">
-            {/* Role and Experience */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="role">Role/Position</Label>
-                <Input
-                  id="role"
-                  placeholder="e.g., Software Engineer, Data Scientist"
-                  value={requirement.role}
-                  onChange={(e) => setRequirement(prev => ({ ...prev, role: e.target.value }))}
-                  data-testid="input-role"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="experience">Experience Level</Label>
-                <Select 
-                  value={requirement.experience} 
-                  onValueChange={(value) => setRequirement(prev => ({ ...prev, experience: value }))}
-                >
-                  <SelectTrigger data-testid="select-experience">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0-1">Fresher (0-1 years)</SelectItem>
-                    <SelectItem value="1-2">Junior (1-2 years)</SelectItem>
-                    <SelectItem value="2-3">Mid-level (2-3 years)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            {/* Job Role */}
+            <div className="space-y-2">
+              <Label htmlFor="role">Job Role/Position *</Label>
+              <Input
+                id="role"
+                placeholder="e.g., Software Engineer, Data Scientist, Full Stack Developer"
+                value={requirement.role}
+                onChange={(e) => setRequirement(prev => ({ ...prev, role: e.target.value }))}
+                data-testid="input-role"
+                className="text-base"
+              />
             </div>
 
             {/* Skills Selection */}
@@ -231,86 +216,48 @@ export function TalentDiscoveryFilters({
               )}
             </div>
 
-            {/* CGPA and Salary Range */}
-            <div className="grid grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <Label>Minimum CGPA: {requirement.minCGPA}</Label>
-                <Slider
-                  value={[requirement.minCGPA]}
-                  onValueChange={([value]) => setRequirement(prev => ({ ...prev, minCGPA: value }))}
-                  min={6.0}
-                  max={10.0}
-                  step={0.1}
-                  className="w-full"
-                  data-testid="slider-min-cgpa"
-                />
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>6.0</span>
-                  <span>10.0</span>
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <Label>Salary Range: ₹{requirement.salaryRange[0]} - {requirement.salaryRange[1]} LPA</Label>
-                <Slider
-                  value={requirement.salaryRange}
-                  onValueChange={(value) => setRequirement(prev => ({ ...prev, salaryRange: value as [number, number] }))}
-                  min={3}
-                  max={50}
-                  step={1}
-                  className="w-full"
-                  data-testid="slider-salary-range"
-                />
-                <div className="flex justify-between text-xs text-gray-500">
-                  <span>₹3 LPA</span>
-                  <span>₹50 LPA</span>
-                </div>
+            {/* Minimum CGPA */}
+            <div className="space-y-3">
+              <Label>Minimum CGPA: {requirement.minCGPA}</Label>
+              <Slider
+                value={[requirement.minCGPA]}
+                onValueChange={([value]) => setRequirement(prev => ({ ...prev, minCGPA: value }))}
+                min={6.0}
+                max={10.0}
+                step={0.1}
+                className="w-full"
+                data-testid="slider-min-cgpa"
+              />
+              <div className="flex justify-between text-xs text-gray-500">
+                <span>6.0 (Minimum)</span>
+                <span>10.0 (Maximum)</span>
               </div>
             </div>
 
-            {/* College Preference and Work Mode */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>College Preference</Label>
-                <Select 
-                  value={requirement.collegePreference} 
-                  onValueChange={(value) => setRequirement(prev => ({ ...prev, collegePreference: value }))}
-                >
-                  <SelectTrigger data-testid="select-college-preference">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="any">Any College</SelectItem>
-                    <SelectItem value="tier1-plus">Tier 1+ (IITs, NITs, Top Private)</SelectItem>
-                    <SelectItem value="iit-nit-only">IITs & NITs Only</SelectItem>
-                    <SelectItem value="iit-only">IITs Only</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Work Mode</Label>
-                <Select 
-                  value={requirement.workMode} 
-                  onValueChange={(value) => setRequirement(prev => ({ ...prev, workMode: value }))}
-                >
-                  <SelectTrigger data-testid="select-work-mode">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="hybrid">Hybrid</SelectItem>
-                    <SelectItem value="remote">Remote</SelectItem>
-                    <SelectItem value="onsite">On-site</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            {/* College Preference */}
+            <div className="space-y-2">
+              <Label>College Tier Preference</Label>
+              <Select 
+                value={requirement.collegePreference} 
+                onValueChange={(value) => setRequirement(prev => ({ ...prev, collegePreference: value }))}
+              >
+                <SelectTrigger data-testid="select-college-preference">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="any">Any College</SelectItem>
+                  <SelectItem value="tier1-plus">Tier 1+ Colleges (IITs, NITs, Top Private)</SelectItem>
+                  <SelectItem value="iit-nit-only">IITs & NITs Only</SelectItem>
+                  <SelectItem value="iit-only">IITs Only</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Location Preferences */}
             <div className="space-y-3">
-              <Label>Preferred Locations</Label>
-              <div className="grid grid-cols-4 gap-2">
-                {indianCities.map(city => (
+              <Label>Preferred Locations (Optional)</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {indianCities.slice(0, 9).map(city => (
                   <div key={city} className="flex items-center space-x-2">
                     <Checkbox
                       id={`location-${city}`}
@@ -327,40 +274,11 @@ export function TalentDiscoveryFilters({
                   </div>
                 ))}
               </div>
+              {requirement.locations.length === 0 && (
+                <p className="text-xs text-gray-500">Leave blank to include all locations</p>
+              )}
             </div>
 
-            {/* Urgency and Team Size */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Hiring Urgency</Label>
-                <Select 
-                  value={requirement.urgency} 
-                  onValueChange={(value) => setRequirement(prev => ({ ...prev, urgency: value }))}
-                >
-                  <SelectTrigger data-testid="select-urgency">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Low (3+ months)</SelectItem>
-                    <SelectItem value="normal">Normal (1-3 months)</SelectItem>
-                    <SelectItem value="high">High (2-4 weeks)</SelectItem>
-                    <SelectItem value="urgent">Urgent (1-2 weeks)</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label>Team Size to Hire</Label>
-                <Input
-                  type="number"
-                  min="1"
-                  max="50"
-                  value={requirement.teamSize}
-                  onChange={(e) => setRequirement(prev => ({ ...prev, teamSize: parseInt(e.target.value) || 1 }))}
-                  data-testid="input-team-size"
-                />
-              </div>
-            </div>
 
             {/* Expected Matches Preview */}
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-4 border border-blue-200">
