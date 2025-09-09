@@ -44,12 +44,12 @@ export function TalentDiscoveryFilters({
     minCGPA: 7.0,
     locations: [],
     collegePreference: "any",
-    // Set defaults for required fields
-    experience: "0-1",
-    salaryRange: [6, 15],
-    urgency: "normal",
-    teamSize: 5,
-    workMode: "hybrid"
+    // Set defaults for required fields that aren't shown in UI
+    experience: "0-1", // Default to fresher level
+    salaryRange: [6, 15], // Reasonable default range
+    urgency: "normal", // Default urgency
+    teamSize: 5, // Default team size
+    workMode: "hybrid" // Default work mode
   });
 
   const [skillInput, setSkillInput] = useState("");

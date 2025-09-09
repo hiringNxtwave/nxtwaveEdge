@@ -154,16 +154,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const {
         role,
-        experience,
-        skills,
-        minCGPA,
-        salaryRange,
-        locations,
-        collegePreference,
-        urgency,
-        teamSize,
-        workMode
+        experience = "0-1",
+        skills = [],
+        minCGPA = 7.0,
+        salaryRange = [6, 15],
+        locations = [],
+        collegePreference = "any",
+        urgency = "normal",
+        teamSize = 5,
+        workMode = "hybrid"
       } = req.body;
+
+      // Log the request for debugging
+      console.log("Smart discovery request:", { 
+        role, experience, skills, minCGPA, salaryRange, 
+        locations, collegePreference, urgency, teamSize, workMode 
+      });
 
       const curatedCandidates = await storage.getSmartCuratedCandidates({
         role,
