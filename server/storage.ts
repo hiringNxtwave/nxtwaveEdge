@@ -23,7 +23,7 @@ import {
   type InsertProject,
   type ContactRequest,
   type InsertContactRequest,
-  type StudentWithSkills,
+  type StudentWithAssessments,
   type CompanyWithUser,
   type Assessment,
   type InsertAssessment,
@@ -49,16 +49,28 @@ export interface IStorage {
   
   // Student operations
   getStudents(filters?: {
-    skills?: string[];
+    assessmentCriteria?: {
+      minDsaScore?: number;
+      minCsFundamentalsScore?: number;
+      minAptitudeScore?: number;
+      minVerbalScore?: number;
+      minOverallScore?: number;
+    };
     location?: string;
     university?: string;
     minCgpa?: number;
     limit?: number;
     offset?: number;
-  }): Promise<StudentWithSkills[]>;
-  getStudentById(id: string): Promise<StudentWithSkills | undefined>;
+  }): Promise<StudentWithAssessments[]>;
+  getStudentById(id: string): Promise<StudentWithAssessments | undefined>;
   getStudentCount(filters?: {
-    skills?: string[];
+    assessmentCriteria?: {
+      minDsaScore?: number;
+      minCsFundamentalsScore?: number;
+      minAptitudeScore?: number;
+      minVerbalScore?: number;
+      minOverallScore?: number;
+    };
     location?: string;
     university?: string;
     minCgpa?: number;
@@ -95,7 +107,14 @@ export interface IStorage {
 
   // Role matching operations
   calculateRoleMatch(companyId: string, studentId: string, jobRequirements?: {
-    skills: string[];
+    assessmentCriteria?: {
+      minDsaScore?: number;
+      minCsFundamentalsScore?: number;
+      minAptitudeScore?: number;
+      minVerbalScore?: number;
+      minOverallScore?: number;
+    };
+    skills?: string[]; // For backward compatibility
     salaryRange?: { min: number; max: number };
     location?: string;
     role?: string;
@@ -114,7 +133,14 @@ export interface IStorage {
   getSmartCuratedCandidates(requirements: {
     role: string;
     experience: string;
-    skills: string[];
+    assessmentCriteria?: {
+      minDsaScore?: number;
+      minCsFundamentalsScore?: number;
+      minAptitudeScore?: number;
+      minVerbalScore?: number;
+      minOverallScore?: number;
+    };
+    skills?: string[]; // For backward compatibility
     minCGPA: number;
     salaryRange: [number, number];
     locations: string[];
@@ -123,7 +149,7 @@ export interface IStorage {
     teamSize: number;
     workMode: string;
     maxResults: number;
-  }): Promise<StudentWithSkills[]>;
+  }): Promise<StudentWithAssessments[]>;
 
   // Initial data seeding
   seedInitialData(): Promise<void>;
