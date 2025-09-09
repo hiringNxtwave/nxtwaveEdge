@@ -16,7 +16,7 @@ export default function Landing() {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
                 <Handshake className="text-white w-5 h-5" />
               </div>
               <span className="text-xl font-bold text-gray-900">NxtWave</span>
@@ -31,7 +31,7 @@ export default function Landing() {
               </Link>
               <Button 
                 onClick={() => window.location.href = "/api/login"}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-6"
                 data-testid="button-login"
               >
                 Login
@@ -49,7 +49,7 @@ export default function Landing() {
           </div>
           
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Hire India's Top Freshers.</span> In One Place.
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">Hire India's Top Freshers.</span> In One Place.
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto">
             Your "Uber for Talent" to match your hiring needs with India's Top 10% Freshers
@@ -58,7 +58,7 @@ export default function Landing() {
           <div className="flex justify-center mb-12">
             <Button 
               size="lg" 
-              className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold" 
+              className="px-8 py-4 text-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold" 
               onClick={() => window.location.href = "/api/login"}
               data-testid="button-explore-talent"
             >

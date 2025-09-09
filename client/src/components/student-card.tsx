@@ -204,7 +204,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               title="Click to view detailed Aptitude assessment"
             >
               <div className="flex mb-1">{renderStars(aptitudeScore)}</div>
-              <span className="text-xs font-semibold text-green-800">Aptitude</span>
+              <span className="text-xs font-semibold text-green-700">Aptitude</span>
             </div>
             
             <div 
@@ -214,7 +214,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               title="Click to view detailed Verbal Ability assessment"
             >
               <div className="flex mb-1">{renderStars(communicationScore)}</div>
-              <span className="text-xs font-semibold text-purple-800">Verbal</span>
+              <span className="text-xs font-semibold text-purple-600">Verbal</span>
             </div>
             
             <div 
@@ -224,7 +224,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               title="Click to view detailed CS Fundamentals assessment"
             >
               <div className="flex mb-1">{renderStars(csFundamentalsScore)}</div>
-              <span className="text-xs font-semibold text-orange-800">CS Fundamentals</span>
+              <span className="text-xs font-semibold text-orange-600">CS Fundamentals</span>
             </div>
             
             <div 
@@ -237,7 +237,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 {renderStars(Math.round(averageSkillScore))}
                 <Video className="w-3 h-3 text-indigo-600" />
               </div>
-              <span className="text-xs font-semibold text-indigo-800">Interview</span>
+              <span className="text-xs font-semibold text-indigo-600">Interview</span>
             </div>
           </div>
 
@@ -246,7 +246,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             {Array.isArray(student.skills) && student.skills.length > 0 ? (
               <>
                 {student.skills.slice(0, 4).map((skill) => (
-                  <Badge key={skill.skill.name} variant="secondary" className="bg-blue-50 text-blue-700 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">
+                  <Badge key={skill.skill.name} variant="secondary" className="bg-blue-50 text-blue-600 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">
                     {skill.skill.name}
                   </Badge>
                 ))}
@@ -275,7 +275,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             {/* Action Buttons */}
             <div className="flex flex-col gap-2">
               <Link href={`/student/${student.id}`} className="block">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-1.5 font-medium" data-testid={`button-view-profile-${student.id}`}>
+                <Button className="bg-blue-500 hover:bg-blue-600 text-white text-sm px-4 py-1.5 font-medium" data-testid={`button-view-profile-${student.id}`}>
                   View Profile
                 </Button>
               </Link>
