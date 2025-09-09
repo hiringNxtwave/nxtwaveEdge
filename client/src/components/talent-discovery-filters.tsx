@@ -7,11 +7,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Sparkles, Target, Brain, Filter, Zap, Users, X } from "lucide-react";
+import { Sparkles, Target, Brain, Filter, Zap, Users, ChevronDown, X } from "lucide-react";
 
 interface TalentRequirement {
   role: string;
-  skills: string[];
+  assessmentCriteria: {
+    minDsaScore?: number;
+    minCsFundamentalsScore?: number;
+    minAptitudeScore?: number;
+    minVerbalScore?: number;
+    minOverallScore?: number;
+  };
   minCGPA: number;
   locations: string[];
   collegePreference: string;
@@ -21,6 +27,8 @@ interface TalentRequirement {
   urgency: string;
   teamSize: number;
   workMode: string;
+  // For backward compatibility
+  skills?: string[];
 }
 
 interface TalentDiscoveryFiltersProps {
@@ -40,7 +48,9 @@ export function TalentDiscoveryFilters({
 }: TalentDiscoveryFiltersProps) {
   const [requirement, setRequirement] = useState<TalentRequirement>({
     role: "",
-    skills: [],
+    assessmentCriteria: {
+      minOverallScore: 70, // Default minimum overall score
+    },
     minCGPA: 7.0,
     locations: [],
     collegePreference: "any",
@@ -49,15 +59,34 @@ export function TalentDiscoveryFilters({
     salaryRange: [6, 15], // Reasonable default range
     urgency: "normal", // Default urgency
     teamSize: 5, // Default team size
-    workMode: "hybrid" // Default work mode
+    workMode: "hybrid", // Default work mode
+    skills: [] // For backward compatibility
   });
 
-  const [skillInput, setSkillInput] = useState("");
+  const handleSubmit = (action: (requirement: TalentRequirement) => void) => {
+    if (!requirement.role.trim()) {
+      return;
+    }
+    
+    // Convert assessment criteria to the format expected by backend
+    const processedRequirement = {
+      ...requirement,
+      // Keep skills as empty array for backward compatibility
+      skills: [],
+      // Pass assessment criteria for new filtering logic
+      assessmentCriteria: requirement.assessmentCriteria
+    };
+    
+    action(processedRequirement);
+  };
 
-  const popularSkills = [
-    "JavaScript", "Python", "Java", "React", "Node.js", "Angular", "Vue.js",
-    "Django", "Spring Boot", "MySQL", "PostgreSQL", "MongoDB", "AWS", "Docker",
-    "Machine Learning", "Data Structures", "Algorithms", "System Design"
+  const [showAdvancedAssessment, setShowAdvancedAssessment] = useState(false);
+
+  const assessmentCategories = [
+    { key: 'DsaScore', label: 'Data Structures & Algorithms', min: 0, max: 100 },
+    { key: 'CsFundamentalsScore', label: 'CS Fundamentals', min: 0, max: 100 },
+    { key: 'AptitudeScore', label: 'Logical & Quantitative Aptitude', min: 0, max: 100 },
+    { key: 'VerbalScore', label: 'Verbal Communication', min: 0, max: 100 },
   ];
 
   const indianCities = [
@@ -65,20 +94,13 @@ export function TalentDiscoveryFilters({
     "Kolkata", "Ahmedabad", "Jaipur", "Lucknow", "Indore", "Nagpur"
   ];
 
-  const handleSkillAdd = (skill: string) => {
-    if (skill && !requirement.skills.includes(skill)) {
-      setRequirement(prev => ({
-        ...prev,
-        skills: [...prev.skills, skill]
-      }));
-      setSkillInput("");
-    }
-  };
-
-  const handleSkillRemove = (skillToRemove: string) => {
+  const handleAssessmentCriteriaChange = (key: string, value: number | undefined) => {
     setRequirement(prev => ({
       ...prev,
-      skills: prev.skills.filter(skill => skill !== skillToRemove)
+      assessmentCriteria: {
+        ...prev.assessmentCriteria,
+        [`min${key}`]: value
+      } as any
     }));
   };
 
@@ -102,8 +124,9 @@ export function TalentDiscoveryFilters({
     if (requirement.collegePreference === "iit-nit-only") baseMatches *= 0.08;
     else if (requirement.collegePreference === "tier1-plus") baseMatches *= 0.25;
     
-    if (requirement.skills.length > 5) baseMatches *= 0.3;
-    else if (requirement.skills.length > 3) baseMatches *= 0.6;
+    // Assessment-based filtering
+    if (requirement.assessmentCriteria.minOverallScore && requirement.assessmentCriteria.minOverallScore > 85) baseMatches *= 0.2;
+    else if (requirement.assessmentCriteria.minOverallScore && requirement.assessmentCriteria.minOverallScore > 75) baseMatches *= 0.4;
     
     if (requirement.locations.length < 3) baseMatches *= 0.4;
     
@@ -151,69 +174,69 @@ export function TalentDiscoveryFilters({
               />
             </div>
 
-            {/* Skills Selection */}
-            <div className="space-y-3">
-              <Label>Required Skills</Label>
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Type skill and press Enter"
-                  value={skillInput}
-                  onChange={(e) => setSkillInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      handleSkillAdd(skillInput);
-                    }
-                  }}
-                  data-testid="input-skills"
+            {/* Assessment Criteria */}
+            <div className="space-y-4">
+              <Label>Assessment Requirements *</Label>
+              <p className="text-sm text-gray-600">Set minimum scores for standardized assessments (0-100 scale)</p>
+              
+              {/* Overall Score - Always Shown */}
+              <div className="space-y-3">
+                <Label>Minimum Overall Assessment Score: {requirement.assessmentCriteria.minOverallScore || 70}</Label>
+                <Slider
+                  value={[requirement.assessmentCriteria.minOverallScore || 70]}
+                  onValueChange={([value]) => handleAssessmentCriteriaChange('OverallScore', value)}
+                  min={50}
+                  max={100}
+                  step={5}
+                  className="w-full"
+                  data-testid="slider-min-overall-score"
                 />
-                <Button 
-                  onClick={() => handleSkillAdd(skillInput)}
-                  variant="outline"
-                  data-testid="button-add-skill"
-                >
-                  Add
-                </Button>
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>50 (Minimum)</span>
+                  <span>100 (Excellent)</span>
+                </div>
               </div>
-              
-              {/* Popular Skills Quick Add */}
+
+              {/* Advanced Assessment Breakdown */}
               <div className="space-y-2">
-                <Label className="text-xs text-gray-600">Quick Add Popular Skills:</Label>
-                <div className="flex flex-wrap gap-1">
-                  {popularSkills.slice(0, 12).map(skill => (
-                    <Badge
-                      key={skill}
-                      variant="outline"
-                      className={`cursor-pointer hover:bg-blue-100 text-xs ${
-                        requirement.skills.includes(skill) ? 'bg-blue-100 border-blue-300' : ''
-                      }`}
-                      onClick={() => handleSkillAdd(skill)}
-                      data-testid={`badge-skill-${skill.toLowerCase().replace(/\s+/g, '-')}`}
-                    >
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Selected Skills */}
-              {requirement.skills.length > 0 && (
-                <div className="space-y-2">
-                  <Label className="text-xs text-gray-600">Selected Skills:</Label>
-                  <div className="flex flex-wrap gap-1">
-                    {requirement.skills.map(skill => (
-                      <Badge
-                        key={skill}
-                        className="bg-blue-600 text-white cursor-pointer hover:bg-blue-700"
-                        onClick={() => handleSkillRemove(skill)}
-                        data-testid={`badge-selected-skill-${skill.toLowerCase().replace(/\s+/g, '-')}`}
-                      >
-                        {skill} ×
-                      </Badge>
-                    ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowAdvancedAssessment(!showAdvancedAssessment)}
+                  className="text-sm"
+                  data-testid="button-toggle-advanced-assessment"
+                >
+                  {showAdvancedAssessment ? 'Hide' : 'Show'} Individual Category Requirements
+                  <ChevronDown className={`ml-2 h-4 w-4 transition-transform ${showAdvancedAssessment ? 'rotate-180' : ''}`} />
+                </Button>
+                
+                {showAdvancedAssessment && (
+                  <div className="grid grid-cols-1 gap-4 p-4 border rounded-lg bg-gray-50 dark:bg-gray-800">
+                    {assessmentCategories.map(category => {
+                      const currentValue = requirement.assessmentCriteria[`min${category.key}`] || 0;
+                      return (
+                        <div key={category.key} className="space-y-2">
+                          <Label className="text-sm">{category.label}: {currentValue > 0 ? currentValue : 'No minimum'}</Label>
+                          <Slider
+                            value={[currentValue]}
+                            onValueChange={([value]) => handleAssessmentCriteriaChange(category.key, value > 0 ? value : undefined)}
+                            min={0}
+                            max={100}
+                            step={5}
+                            className="w-full"
+                            data-testid={`slider-${category.key.toLowerCase()}`}
+                          />
+                          <div className="flex justify-between text-xs text-gray-500">
+                            <span>0 (No minimum)</span>
+                            <span>100 (Excellent)</span>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
 
             {/* Minimum CGPA */}
@@ -299,7 +322,7 @@ export function TalentDiscoveryFilters({
             {/* Action Buttons */}
             <div className="grid grid-cols-2 gap-3">
               <Button
-                onClick={() => onApplyFilters(requirement)}
+                onClick={() => handleSubmit(onApplyFilters)}
                 disabled={isLoading}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold disabled:opacity-50"
                 data-testid="button-apply-filters"
@@ -309,7 +332,7 @@ export function TalentDiscoveryFilters({
               </Button>
               
               <Button
-                onClick={() => onAutoSuggest(requirement)}
+                onClick={() => handleSubmit(onAutoSuggest)}
                 disabled={isLoading || !requirement.role.trim()}
                 className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 data-testid="button-auto-suggest"
@@ -331,7 +354,7 @@ export function TalentDiscoveryFilters({
             
             <div className="text-center">
               <p className="text-xs text-gray-500">
-                🧠 AI-powered matching considers skills, college reputation, performance scores, and cultural fit
+                🧠 AI-powered matching based on standardized assessments: DSA, CS Fundamentals, Aptitude & Communication
               </p>
             </div>
           </CardContent>

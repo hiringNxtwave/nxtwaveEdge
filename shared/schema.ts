@@ -67,7 +67,6 @@ export const students = pgTable("students", {
   major: varchar("major").notNull(),
   graduationYear: integer("graduation_year").notNull(),
   cgpa: decimal("cgpa", { precision: 3, scale: 2 }),
-  codingRating: integer("coding_rating").notNull().default(3), // 1-5 stars
   location: varchar("location").notNull(),
   bio: text("bio"),
   profileImageUrl: varchar("profile_image_url"),
@@ -76,6 +75,16 @@ export const students = pgTable("students", {
   linkedinUrl: varchar("linkedin_url"),
   githubUrl: varchar("github_url"),
   verified: boolean("verified").default(true),
+  
+  // Standardized Assessment Scores (Gold Standard Evaluation)
+  dsaScore: integer("dsa_score"), // 0-100 - Data Structures & Algorithms
+  csFundamentalsScore: integer("cs_fundamentals_score"), // 0-100 - Computer Science Fundamentals  
+  aptitudeScore: integer("aptitude_score"), // 0-100 - Logical & Quantitative Aptitude
+  verbalCommunicationScore: integer("verbal_communication_score"), // 0-100 - English & Communication Skills
+  overallAssessmentScore: integer("overall_assessment_score"), // 0-100 - Weighted average of all scores
+  assessmentCompleted: boolean("assessment_completed").default(false),
+  assessmentDate: timestamp("assessment_date"),
+  
   // Student preferences and salary expectations
   expectedSalaryMin: integer("expected_salary_min"), // in thousands (e.g., 800 for 8LPA)
   expectedSalaryMax: integer("expected_salary_max"), // in thousands (e.g., 1200 for 12LPA)
@@ -460,12 +469,12 @@ export type InsertIdVerification = z.infer<typeof insertIdVerificationSchema>;
 export type IdVerification = typeof idVerifications.$inferSelect;
 
 // Extended types for joined data
-export type StudentWithSkills = Student & {
-  skills: (StudentSkill & { skill: Skill })[];
+export type StudentWithAssessments = Student & {
   projects: Project[];
   fullName: string;
   institution: string;
   course: string;
+  assessmentLevel: 'Excellent' | 'Good' | 'Average' | 'Below Average' | 'Not Assessed';
 };
 
 export type CompanyWithUser = Company & {
