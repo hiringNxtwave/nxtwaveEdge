@@ -228,16 +228,16 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
             
             <div 
-              className="flex flex-col items-center px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 cursor-pointer transition-colors text-center"
+              className="flex flex-col items-center px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 cursor-pointer transition-colors text-center"
               onClick={() => setShowInterviewPerformance(true)}
               data-testid={`performance-overall-${student.id}`}
               title="Click to view interview footage and performance analysis"
             >
               <div className="flex justify-center items-center gap-1 mb-1" data-testid={`text-student-rating-${student.id}`}>
                 {renderStars(Math.round(averageSkillScore))}
-                <Video className="w-3 h-3 text-red-600" />
+                <Video className="w-3 h-3 text-indigo-600" />
               </div>
-              <span className="text-xs font-semibold text-red-800">Interview</span>
+              <span className="text-xs font-semibold text-indigo-800">Interview</span>
             </div>
           </div>
 
