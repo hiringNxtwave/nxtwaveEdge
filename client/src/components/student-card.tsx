@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, MapPin, GraduationCap, Check, Plus, Shield, Eye, Info, Target, Video, Clock, Award, Zap, TrendingUp, Users, DollarSign, CheckCircle } from "lucide-react";
-import type { StudentWithSkills } from "@shared/schema";
+import type { StudentWithAssessments } from "@shared/schema";
 import { Link } from "wouter";
 import { useShortlist } from "@/contexts/shortlist-context";
 import { useState } from "react";
@@ -15,7 +15,7 @@ import ExamFootageModal from "@/components/exam-footage-modal";
 import InterviewPerformanceModal from "./interview-performance-modal";
 
 interface StudentCardProps {
-  student: StudentWithSkills;
+  student: StudentWithAssessments;
   showFullInfo?: boolean;
 }
 
@@ -241,22 +241,23 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
           </div>
 
-          {/* Center-Right: Skills */}
-          <div className="flex flex-wrap gap-1 max-w-[160px]">
-            {Array.isArray(student.skills) && student.skills.length > 0 ? (
-              <>
-                {student.skills.slice(0, 4).map((skill) => (
-                  <Badge key={skill.skill.name} variant="secondary" className="bg-blue-50 text-blue-600 text-xs hover:bg-blue-100 cursor-pointer px-2 py-0.5">
-                    {skill.skill.name}
-                  </Badge>
-                ))}
-                {student.skills.length > 4 && (
-                  <Badge variant="outline" className="text-xs hover:bg-gray-50 cursor-pointer px-2 py-0.5">
-                    +{student.skills.length - 4}
-                  </Badge>
-                )}
-              </>
-            ) : null}
+          {/* Center-Right: Assessment Level Badge */}
+          <div className="flex items-center">
+            <Badge 
+              variant="secondary" 
+              className={`text-sm font-semibold px-3 py-2 ${
+                averageSkillScore >= 4.5 ? 'bg-green-100 text-green-800' :
+                averageSkillScore >= 4 ? 'bg-blue-100 text-blue-800' :
+                averageSkillScore >= 3 ? 'bg-yellow-100 text-yellow-800' :
+                'bg-orange-100 text-orange-800'
+              }`}
+              data-testid={`badge-assessment-level-${student.id}`}
+            >
+              {averageSkillScore >= 4.5 ? '🏆 Gold Standard' :
+               averageSkillScore >= 4 ? '🥈 Excellent' :
+               averageSkillScore >= 3 ? '🥉 Good' :
+               '📚 Developing'}
+            </Badge>
           </div>
           
           {/* Right: Performance & Actions */}
