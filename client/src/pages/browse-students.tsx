@@ -175,7 +175,7 @@ export default function BrowseStudents() {
                 <div className="flex items-center gap-2">
                   <Button
                     onClick={() => setShowSmartDiscovery(true)}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold"
+                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold"
                     data-testid="button-smart-discovery"
                     title="AI-powered candidate matching based on your job requirements"
                   >
@@ -204,7 +204,7 @@ export default function BrowseStudents() {
                 {compareList.length > 0 && (
                   <Button
                     onClick={() => setShowComparison(true)}
-                    className="bg-purple-600 hover:bg-purple-700 text-white font-semibold"
+                    className="bg-purple-500 hover:bg-purple-600 text-white font-semibold"
                     data-testid="button-compare-candidates"
                   >
                     <GitCompare className="w-4 h-4 mr-2" />

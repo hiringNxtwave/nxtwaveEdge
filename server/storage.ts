@@ -1233,7 +1233,11 @@ function inorderTraversal(root) {
       return sortedResults.map(student => ({
         ...student,
         projects: [], // Can be populated later if needed
-        cgpa: student.cgpa?.toString() || "7.0"
+        cgpa: student.cgpa?.toString() || "7.0",
+        fullName: `${student.firstName} ${student.lastName}`,
+        institution: student.university,
+        course: student.degree,
+        skills: student.skillsArray || [] // Ensure skills are properly mapped
       })) as StudentWithSkills[];
 
     } catch (error) {
