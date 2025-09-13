@@ -160,22 +160,6 @@ export default function Header() {
           <div className="flex items-center space-x-6">
             {isAuthenticated ? (
               <div className="flex items-center space-x-6">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setChatbotOpen(!chatbotOpen)}
-                  className={cn(
-                    "relative transition-colors",
-                    chatbotOpen ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground"
-                  )}
-                  data-testid="button-toggle-chatbot"
-                  title="AI Assistant"
-                >
-                  <MessageCircle className="w-5 h-5" />
-                  {!chatbotOpen && (
-                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-pulse" />
-                  )}
-                </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
