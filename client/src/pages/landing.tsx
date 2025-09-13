@@ -10,28 +10,32 @@ export default function Landing() {
   useScrollToTop();
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white dark:from-gray-900 dark:to-gray-800">
-      {/* Navigation Bar */}
-      <nav className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+    <div className="min-h-screen hero-gradient dark:hero-gradient-dark relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 gradient-ray floating-animation"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-grid-pattern opacity-5"></div>
+      
+      {/* Glass Morphism Navigation */}
+      <nav className="glass-nav sticky top-0 z-50">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
                 <Handshake className="text-white w-5 h-5" />
               </div>
-              <span className="text-xl font-bold text-gray-900">NxtWave</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">NxtWave</span>
             </div>
             
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="/for-students" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+              <Link href="/for-students" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all duration-300 hover:scale-105">
                 For Students
               </Link>
-              <Link href="/for-colleges" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">
+              <Link href="/for-colleges" className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-all duration-300 hover:scale-105">
                 For Colleges
               </Link>
               <Button 
                 onClick={() => window.location.href = "/api/login"}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-6"
+                className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-medium px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                 data-testid="button-login"
               >
                 Login
@@ -41,30 +45,96 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center bg-blue-100 border border-blue-200 rounded-full px-4 py-2 text-blue-700 text-sm font-medium mb-6">
+      {/* Premium Hero Section */}
+      <div className="relative container mx-auto px-4 py-20">
+        <div className="text-center mb-20">
+          {/* Animated Badge */}
+          <div className="inline-flex items-center glass-card rounded-full px-6 py-3 text-blue-700 dark:text-blue-300 text-sm font-medium mb-8 pulse-glow">
+            <div className="w-2 h-2 bg-green-500 rounded-full mr-3 animate-pulse"></div>
             🚀 More than 3000 companies trust NxtWave for their hiring needs
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-500">Hire India's Top Freshers.</span> In One Place.
+          {/* Premium Typography */}
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-extrabold mb-8 leading-tight">
+            <span className="premium-gradient-text">Hire India's Top Freshers.</span>
+            <br />
+            <span className="text-gray-900 dark:text-white">In One Place.</span>
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-4xl mx-auto">
-            Your "Uber for Talent" to match your hiring needs with India's Top 10% Freshers
+          
+          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+            Your <span className="premium-gradient-text font-semibold">"Uber for Talent"</span> to match your hiring needs with India's Top 10% Freshers
           </p>
           
-          <div className="flex justify-center mb-12">
-            <Button 
-              size="lg" 
-              className="px-8 py-4 text-lg bg-blue-500 hover:bg-blue-600 text-white font-semibold" 
+          {/* Dual Premium CTAs */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+            <button 
               onClick={() => window.location.href = "/api/login"}
+              className="btn-premium bg-gradient-to-r from-blue-600 to-indigo-600 text-white focus:ring-blue-500"
               data-testid="button-explore-talent"
             >
               Start Hiring Now
               <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+            </button>
+            
+            <button 
+              onClick={() => window.location.href = "/api/login"}
+              className="btn-secondary-premium"
+              data-testid="button-book-demo"
+            >
+              <Globe className="w-5 h-5 mr-2" />
+              Book a Demo
+            </button>
+          </div>
+          
+          {/* Dashboard Mockup Placeholder */}
+          <div className="relative max-w-6xl mx-auto mb-16">
+            <div className="dashboard-mockup rounded-3xl p-8 hover-lift">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-4">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
+                  <div className="text-left">
+                    <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-32 mb-2"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-24"></div>
+                  </div>
+                </div>
+                <div className="flex space-x-2">
+                  <div className="w-3 h-3 bg-red-400 rounded-full"></div>
+                  <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                  <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div className="mock-data-row rounded-xl p-4 space-y-3">
+                  <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                  <div className="h-6 mock-chart rounded"></div>
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                </div>
+                <div className="mock-data-row rounded-xl p-4 space-y-3">
+                  <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-2/3"></div>
+                  <div className="h-8 rounded" style={{background: 'linear-gradient(45deg, #10b981, #3b82f6)'}}></div>
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                </div>
+                <div className="mock-data-row rounded-xl p-4 space-y-3">
+                  <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/2"></div>
+                  <div className="h-4 rounded" style={{background: 'linear-gradient(45deg, #f59e0b, #ef4444)'}}></div>
+                  <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="mock-data-row rounded-lg p-3 text-center">
+                    <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2"></div>
+                    <div className="h-4 bg-gradient-to-r from-blue-400 to-purple-500 rounded w-2/3 mx-auto"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Floating Elements */}
+            <div className="absolute top-4 right-4 w-16 h-16 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-20 floating-animation"></div>
+            <div className="absolute bottom-8 left-8 w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full opacity-30 floating-animation" style={{animationDelay: '2s'}}></div>
           </div>
 
           {/* Social Proof Stats */}
