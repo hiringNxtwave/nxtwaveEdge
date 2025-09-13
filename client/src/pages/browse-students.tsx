@@ -45,23 +45,22 @@ export default function BrowseStudents() {
   // Show limited results for non-authenticated users
   const studentsPerPage = isAuthenticated ? 48 : 12;
 
-  const { data: studentsData, isLoading } = useQuery({
-    queryKey: ["/api/students", filters, currentPage],
-    queryFn: async () => {
-      const params = new URLSearchParams();
-      if (filters.skills.length > 0) params.append("skills", filters.skills.join(","));
-      if (filters.location) params.append("location", filters.location);
-      if (filters.university) params.append("university", filters.university);
-      if (filters.minCgpa) params.append("minCgpa", filters.minCgpa.toString());
-      if (filters.maxCgpa) params.append("maxCgpa", filters.maxCgpa.toString());
-      if (filters.codingRating) params.append("codingRating", filters.codingRating.toString());
-      params.append("limit", studentsPerPage.toString());
-      params.append("offset", ((currentPage - 1) * studentsPerPage).toString());
+  // Build query URL with parameters for the global queryFn
+  const buildStudentsQuery = () => {
+    const params = new URLSearchParams();
+    if (filters.skills.length > 0) params.append("skills", filters.skills.join(","));
+    if (filters.location) params.append("location", filters.location);
+    if (filters.university) params.append("university", filters.university);
+    if (filters.minCgpa) params.append("minCgpa", filters.minCgpa.toString());
+    if (filters.maxCgpa) params.append("maxCgpa", filters.maxCgpa.toString());
+    if (filters.codingRating) params.append("codingRating", filters.codingRating.toString());
+    params.append("limit", studentsPerPage.toString());
+    params.append("offset", ((currentPage - 1) * studentsPerPage).toString());
+    return `/api/students?${params}`;
+  };
 
-      const response = await fetch(`/api/students?${params}`);
-      if (!response.ok) throw new Error("Failed to fetch students");
-      return response.json();
-    },
+  const { data: studentsData, isLoading } = useQuery<any[] | {students: any[], total: number}>({
+    queryKey: [buildStudentsQuery()],
   });
 
   const { data: skills } = useQuery({
@@ -79,8 +78,12 @@ export default function BrowseStudents() {
   });
 
   // Use smart results if available, otherwise use regular students data
-  const students = isUsingSmartResults ? smartResults : (studentsData?.students || studentsData || []);
-  const totalCount = isUsingSmartResults ? smartResults.length : (studentsData?.total || students.length);
+  const students = isUsingSmartResults ? smartResults : (
+    Array.isArray(studentsData) ? studentsData : (studentsData as any)?.students || []
+  );
+  const totalCount = isUsingSmartResults ? smartResults.length : (
+    Array.isArray(studentsData) ? studentsData.length : (studentsData as any)?.total || students.length
+  );
   
   // Check if we're using fallback data
   const isUsingFallbackData = isFallbackData(studentsData) || isFallbackData(skills) || isFallbackData(totalCountData);
