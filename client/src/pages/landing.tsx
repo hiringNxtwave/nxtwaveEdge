@@ -78,238 +78,84 @@ export default function Landing() {
             
           </div>
           
-          {/* TalentConnect Dashboard Mockup */}
-          <div className="relative max-w-7xl mx-auto mb-16">
-            <div className="bg-white rounded-3xl shadow-2xl p-6 hover-lift border border-gray-200">
-              {/* Dashboard Header */}
-              <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
-                <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                    <Handshake className="text-white w-5 h-5" />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-lg font-bold text-gray-900">TechCorp Dashboard</div>
-                    <div className="text-sm text-gray-500">Talent Matchmaking Console</div>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2 bg-green-50 px-3 py-1 rounded-full">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-sm text-green-700 font-medium">AI Matching Active</span>
-                  </div>
-                  <div className="flex space-x-1">
-                    <div className="w-3 h-3 bg-red-400 rounded-full"></div>
-                    <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                    <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Filters and Actions Bar */}
-              <div className="flex items-center justify-between mb-6 p-4 bg-gray-50 rounded-xl">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2 bg-white px-3 py-2 rounded-lg border">
-                    <Filter className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-700">React, Node.js</span>
-                  </div>
-                  <div className="flex items-center space-x-2 bg-white px-3 py-2 rounded-lg border">
-                    <MapPin className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-700">Bangalore, Mumbai</span>
-                  </div>
-                  <div className="flex items-center space-x-2 bg-white px-3 py-2 rounded-lg border">
-                    <Target className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-700">8-12 LPA</span>
-                  </div>
-                </div>
+          {/* Simple Dashboard Preview */}
+          <div className="relative max-w-4xl mx-auto mb-16">
+            <div className="bg-white rounded-xl shadow-lg p-4 border border-gray-200">
+              {/* Simple Header */}
+              <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-600">127 matches found</span>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
-                    <Heart className="w-4 h-4 mr-1" />
-                    Shortlist Selected
-                  </Button>
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <Handshake className="text-white w-4 h-4" />
+                  </div>
+                  <span className="text-sm text-green-700 font-medium">AI Matching Active</span>
                 </div>
+                <span className="text-sm text-gray-600">127 matches found</span>
               </div>
               
-              {/* Student Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                {/* Student Card 1 */}
-                <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:border-blue-300">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                      <input type="checkbox" className="w-4 h-4 text-blue-600 rounded" defaultChecked />
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-                        AR
-                      </div>
-                    </div>
+              {/* Simplified Student Cards */}
+              <div className="grid grid-cols-3 gap-3 mb-4">
+                {/* Card 1 */}
+                <div className="bg-gray-50 rounded-lg p-3 text-center">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-semibold mx-auto mb-2">
+                    AR
                   </div>
-                  <div className="mb-3">
-                    <h3 className="font-semibold text-gray-900">Arjun Reddy</h3>
-                    <p className="text-sm text-gray-600">IIT Delhi • CSE • 2024</p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Badge className="bg-blue-100 text-blue-800 text-xs">React</Badge>
-                      <Badge className="bg-green-100 text-green-800 text-xs">Node.js</Badge>
-                    </div>
-                  </div>
-                  <div className="space-y-2 mb-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-600">Coding Score</span>
-                      <span className="text-xs font-medium text-green-600">94/100</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div className="bg-green-500 h-1.5 rounded-full" style={{width: '94%'}}></div>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-600">Communication</span>
-                      <span className="text-xs font-medium text-blue-600">89/100</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div className="bg-blue-500 h-1.5 rounded-full" style={{width: '89%'}}></div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                    <div className="flex items-center space-x-1">
-                      <SiGoogle className="w-4 h-4 text-gray-600" />
-                      <span className="text-xs text-gray-600">97% match</span>
-                    </div>
-                    <Button size="sm" variant="outline" className="text-xs px-2 py-1">
-                      <Bookmark className="w-3 h-3 mr-1" />
-                      Shortlist
-                    </Button>
+                  <h4 className="text-xs font-semibold text-gray-900">Arjun R.</h4>
+                  <p className="text-xs text-gray-600">IIT Delhi</p>
+                  <div className="flex items-center justify-center space-x-1 mt-1">
+                    <SiGoogle className="w-5 h-5 text-blue-600" />
+                    <span className="text-xs text-gray-600">97% match</span>
                   </div>
                 </div>
 
-                {/* Student Card 2 */}
-                <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:border-blue-300">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                      <input type="checkbox" className="w-4 h-4 text-blue-600 rounded" />
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                        PS
-                      </div>
-                    </div>
+                {/* Card 2 */}
+                <div className="bg-gray-50 rounded-lg p-3 text-center">
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-semibold mx-auto mb-2">
+                    PS
                   </div>
-                  <div className="mb-3">
-                    <h3 className="font-semibold text-gray-900">Priya Sharma</h3>
-                    <p className="text-sm text-gray-600">NIT Trichy • IT • 2024</p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Badge className="bg-orange-100 text-orange-800 text-xs">Python</Badge>
-                      <Badge className="bg-purple-100 text-purple-800 text-xs">Django</Badge>
-                    </div>
-                  </div>
-                  <div className="space-y-2 mb-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-600">Coding Score</span>
-                      <span className="text-xs font-medium text-green-600">91/100</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div className="bg-green-500 h-1.5 rounded-full" style={{width: '91%'}}></div>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-600">Communication</span>
-                      <span className="text-xs font-medium text-blue-600">85/100</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div className="bg-blue-500 h-1.5 rounded-full" style={{width: '85%'}}></div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                    <div className="flex items-center space-x-1">
-                      <SiAmazon className="w-4 h-4 text-gray-600" />
-                      <span className="text-xs text-gray-600">94% match</span>
-                    </div>
-                    <Button size="sm" variant="outline" className="text-xs px-2 py-1">
-                      <Bookmark className="w-3 h-3 mr-1" />
-                      Shortlist
-                    </Button>
+                  <h4 className="text-xs font-semibold text-gray-900">Priya S.</h4>
+                  <p className="text-xs text-gray-600">NIT Trichy</p>
+                  <div className="flex items-center justify-center space-x-1 mt-1">
+                    <SiAmazon className="w-5 h-5 text-orange-600" />
+                    <span className="text-xs text-gray-600">94% match</span>
                   </div>
                 </div>
 
-                {/* Student Card 3 */}
-                <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:border-blue-300">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
-                      <input type="checkbox" className="w-4 h-4 text-blue-600 rounded" defaultChecked />
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-semibold">
-                        RK
-                      </div>
-                    </div>
+                {/* Card 3 */}
+                <div className="bg-gray-50 rounded-lg p-3 text-center">
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center text-white text-xs font-semibold mx-auto mb-2">
+                    RK
                   </div>
-                  <div className="mb-3">
-                    <h3 className="font-semibold text-gray-900">Rohit Kumar</h3>
-                    <p className="text-sm text-gray-600">BITS Pilani • CSE • 2024</p>
-                    <div className="flex items-center space-x-2 mt-1">
-                      <Badge className="bg-red-100 text-red-800 text-xs">Angular</Badge>
-                      <Badge className="bg-blue-100 text-blue-800 text-xs">Java</Badge>
-                    </div>
-                  </div>
-                  <div className="space-y-2 mb-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-600">Coding Score</span>
-                      <span className="text-xs font-medium text-green-600">88/100</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div className="bg-green-500 h-1.5 rounded-full" style={{width: '88%'}}></div>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-600">Communication</span>
-                      <span className="text-xs font-medium text-blue-600">92/100</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5">
-                      <div className="bg-blue-500 h-1.5 rounded-full" style={{width: '92%'}}></div>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                    <div className="flex items-center space-x-1">
-                      <SiFlipkart className="w-4 h-4 text-gray-600" />
-                      <span className="text-xs text-gray-600">91% match</span>
-                    </div>
-                    <Button size="sm" variant="outline" className="text-xs px-2 py-1">
-                      <Check className="w-3 h-3 mr-1" />
-                      Selected
-                    </Button>
+                  <h4 className="text-xs font-semibold text-gray-900">Rohit K.</h4>
+                  <p className="text-xs text-gray-600">BITS Pilani</p>
+                  <div className="flex items-center justify-center space-x-1 mt-1">
+                    <SiFlipkart className="w-5 h-5 text-blue-500" />
+                    <span className="text-xs text-gray-600">91% match</span>
                   </div>
                 </div>
               </div>
               
-              {/* Summary Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-gray-100">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">127</div>
-                  <div className="text-xs text-gray-600">Total Matches</div>
+              {/* Simple Stats */}
+              <div className="grid grid-cols-3 gap-3 text-center text-xs">
+                <div>
+                  <div className="font-bold text-blue-600">127</div>
+                  <div className="text-gray-600">Matches</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">23</div>
-                  <div className="text-xs text-gray-600">Shortlisted</div>
+                <div>
+                  <div className="font-bold text-green-600">23</div>
+                  <div className="text-gray-600">Shortlisted</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">94%</div>
-                  <div className="text-xs text-gray-600">Avg Match Score</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-orange-600">15</div>
-                  <div className="text-xs text-gray-600">Interviews Scheduled</div>
+                <div>
+                  <div className="font-bold text-purple-600">94%</div>
+                  <div className="text-gray-600">Avg Score</div>
                 </div>
               </div>
             </div>
             
-            {/* Floating Elements */}
-            <div className="absolute top-4 right-4 w-16 h-16 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full opacity-20 floating-animation"></div>
-            <div className="absolute bottom-8 left-8 w-12 h-12 bg-gradient-to-r from-green-400 to-blue-500 rounded-full opacity-30 floating-animation" style={{animationDelay: '2s'}}></div>
-            
-            {/* AI Matchmaking Badge */}
-            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 rounded-full text-sm font-medium shadow-lg">
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                <span>AI-Powered Matchmaking for Top Companies</span>
+            {/* Simple Badge */}
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-xs font-medium shadow-lg">
+              <div className="flex items-center space-x-1">
+                <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                <span>AI-Powered Matching</span>
               </div>
             </div>
           </div>
