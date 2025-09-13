@@ -9,6 +9,7 @@ import { Link } from "wouter";
 import { Users, Building2, TrendingUp, Star, Award, Globe, Target, CheckCircle, ArrowRight, MapPin, GraduationCap, Heart, Zap, BookOpen } from "lucide-react";
 import { SiTata, SiInfosys, SiWipro, SiGoogle, SiAmazon, SiFlipkart } from "react-icons/si";
 import Header from "@/components/header";
+import MarketIntelligence from "@/components/market-intelligence";
 import { useShortlist } from "@/contexts/shortlist-context";
 
 // Helper functions for personalized dashboard
@@ -161,6 +162,12 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Market Intelligence Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <MarketIntelligence />
+        </div>
+      </section>
 
       {/* Trusted Companies Section */}
       <section className="py-16 bg-gradient-to-r from-gray-50 to-blue-50">
