@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { apiRequest, isFallbackData } from "@/lib/queryClient";
+import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Lock, Users, Star, Zap, GitCompare, BarChart3, CheckSquare, Brain, Sparkles, Filter, AlertTriangle, Database } from "lucide-react";
 
@@ -45,48 +45,65 @@ export default function BrowseStudents() {
   // Show limited results for non-authenticated users
   const studentsPerPage = isAuthenticated ? 48 : 12;
 
-  // Build query URL with parameters for the global queryFn
-  const buildStudentsQuery = () => {
-    const params = new URLSearchParams();
-    if (filters.skills.length > 0) params.append("skills", filters.skills.join(","));
-    if (filters.location) params.append("location", filters.location);
-    if (filters.university) params.append("university", filters.university);
-    if (filters.minCgpa) params.append("minCgpa", filters.minCgpa.toString());
-    if (filters.maxCgpa) params.append("maxCgpa", filters.maxCgpa.toString());
-    if (filters.codingRating) params.append("codingRating", filters.codingRating.toString());
-    params.append("limit", studentsPerPage.toString());
-    params.append("offset", ((currentPage - 1) * studentsPerPage).toString());
-    return `/api/students?${params}`;
-  };
+  const { data: studentsData, isLoading } = useQuery({
+    queryKey: ["/api/students", filters, currentPage],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (filters.skills.length > 0) params.append("skills", filters.skills.join(","));
+      if (filters.location) params.append("location", filters.location);
+      if (filters.university) params.append("university", filters.university);
+      if (filters.minCgpa) params.append("minCgpa", filters.minCgpa.toString());
+      if (filters.maxCgpa) params.append("maxCgpa", filters.maxCgpa.toString());
+      if (filters.codingRating) params.append("codingRating", filters.codingRating.toString());
+      params.append("limit", studentsPerPage.toString());
+      params.append("offset", ((currentPage - 1) * studentsPerPage).toString());
 
-  const { data: studentsData, isLoading } = useQuery<any[] | {students: any[], total: number}>({
-    queryKey: [buildStudentsQuery()],
+      const response = await fetch(`/api/students?${params}`, {
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return response.json();
+    },
   });
 
   const { data: skills } = useQuery({
     queryKey: ["/api/skills"],
+    queryFn: async () => {
+      const response = await fetch("/api/skills", {
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      return response.json();
+    },
   });
 
   // Get total student count for the smart discovery component
   const { data: totalCountData } = useQuery({
     queryKey: ["/api/students/count"],
     queryFn: async () => {
-      const response = await fetch("/api/students/count");
-      if (!response.ok) throw new Error("Failed to fetch count");
+      const response = await fetch("/api/students/count", {
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
       return response.json();
     },
   });
 
   // Use smart results if available, otherwise use regular students data
-  const students = isUsingSmartResults ? smartResults : (
-    Array.isArray(studentsData) ? studentsData : (studentsData as any)?.students || []
-  );
-  const totalCount = isUsingSmartResults ? smartResults.length : (
-    Array.isArray(studentsData) ? studentsData.length : (studentsData as any)?.total || students.length
-  );
-  
-  // Check if we're using fallback data
-  const isUsingFallbackData = isFallbackData(studentsData) || isFallbackData(skills) || isFallbackData(totalCountData);
+  const students = isUsingSmartResults ? smartResults : (studentsData || []);
+  const totalCount = isUsingSmartResults ? smartResults.length : (totalCountData?.count || students.length);
 
   // Smart discovery mutation
   const smartDiscoveryMutation = useMutation({
@@ -124,34 +141,6 @@ export default function BrowseStudents() {
       <Header />
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        {/* Fallback Data Indicator */}
-        {isUsingFallbackData && (
-          <div className="mb-4">
-            <Card className="bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200 dark:from-orange-900/20 dark:to-amber-900/20 dark:border-orange-800">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center">
-                    <Database className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-orange-900 dark:text-orange-100 flex items-center gap-2">
-                      <AlertTriangle className="w-4 h-4" />
-                      Development Mode - Using Sample Data
-                    </h3>
-                    <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
-                      You're viewing sample student profiles while the backend is loading. 
-                      All features are functional - continue working on your homepage redesign! 
-                      Real data will load automatically when the server is ready.
-                    </p>
-                  </div>
-                  <Badge variant="outline" className="border-orange-400 text-orange-700 dark:text-orange-300 whitespace-nowrap">
-                    Fallback Active
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
         
         {/* Clean Header with Responsive Layout */}
         <div className="mb-6">

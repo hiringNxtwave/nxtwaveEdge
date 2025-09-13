@@ -251,6 +251,8 @@ export class DatabaseStorage implements IStorage {
     limit?: number;
     offset?: number;
   }): Promise<StudentWithAssessments[]> {
+    try {
+      console.log("🔍 getStudents called with filters:", JSON.stringify(filters, null, 2));
     const whereConditions = [];
     
     if (filters?.location) {
@@ -262,7 +264,7 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (filters?.minCgpa) {
-      whereConditions.push(gte(students.cgpa, filters.minCgpa.toString()));
+      whereConditions.push(sql`${students.cgpa} ~ '^[0-9]+(\.[0-9]+)?$' AND NULLIF(${students.cgpa}, '')::numeric >= ${filters.minCgpa}`);
     }
 
     let baseQuery = db
@@ -281,11 +283,11 @@ export class DatabaseStorage implements IStorage {
     const results = whereConditions.length > 0
       ? await baseQuery
           .where(whereConditions.length === 1 ? whereConditions[0] : and(...whereConditions))
-          .orderBy(desc(students.cgpa))
+          .orderBy(sql`NULLIF(${students.cgpa}, '')::numeric DESC NULLS LAST`)
           .limit(filters?.limit || 20)
           .offset(filters?.offset || 0)
       : await baseQuery
-          .orderBy(desc(students.cgpa))
+          .orderBy(sql`NULLIF(${students.cgpa}, '')::numeric DESC NULLS LAST`)
           .limit(filters?.limit || 20)
           .offset(filters?.offset || 0);
 
@@ -322,7 +324,15 @@ export class DatabaseStorage implements IStorage {
       }
     }
     
-    return Array.from(studentMap.values());
+    const result = Array.from(studentMap.values());
+    console.log(`✅ getStudents returning ${result.length} students`);
+    return result;
+    } catch (error) {
+      console.error("❌ Error in getStudents:", error);
+      console.error("Error details:", error instanceof Error ? error.message : String(error));
+      console.error("Error stack:", error instanceof Error ? error.stack : 'No stack trace');
+      throw error;
+    }
   }
 
   async getStudentById(id: string): Promise<StudentWithAssessments | undefined> {
@@ -379,7 +389,7 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (filters?.minCgpa) {
-      whereConditions.push(gte(students.cgpa, filters.minCgpa.toString()));
+      whereConditions.push(sql`${students.cgpa} ~ '^[0-9]+(\.[0-9]+)?$' AND NULLIF(${students.cgpa}, '')::numeric >= ${filters.minCgpa}`);
     }
 
     // Add skills filtering by joining with studentSkills table

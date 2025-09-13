@@ -88,6 +88,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Debug/reload endpoints (unguarded for debugging)
+  const BUILD_TS = Date.now();
+  
+  app.get('/api/_crash', (req, res) => {
+    res.json({ message: "Forcing server restart..." });
+    setTimeout(() => process.exit(0), 100);
+  });
+  
+  app.get('/api/_version', (req, res) => {
+    res.json({ buildTs: BUILD_TS, env: process.env.NODE_ENV });
+  });
+
   // Student routes (public for preview, protected for full access)
   app.get('/api/students', async (req, res) => {
     try {
@@ -126,7 +138,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(limitedStudents);
     } catch (error) {
       console.error("Error fetching students:", error);
-      res.status(500).json({ message: "Failed to fetch students" });
+      console.error("Error details:", error instanceof Error ? error.message : String(error));
+      console.error("Error stack:", error instanceof Error ? error.stack : 'No stack trace');
+      
+      if (req.query._debug === '1') {
+        res.status(500).json({ 
+          message: "Failed to fetch students", 
+          dev: { 
+            message: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : 'No stack trace'
+          }
+        });
+      } else {
+        res.status(500).json({ message: "Failed to fetch students" });
+      }
     }
   });
 
