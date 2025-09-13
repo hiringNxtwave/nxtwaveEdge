@@ -13,9 +13,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, isFallbackData } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Lock, Users, Star, Zap, GitCompare, BarChart3, CheckSquare, Brain, Sparkles, Filter } from "lucide-react";
+import { Lock, Users, Star, Zap, GitCompare, BarChart3, CheckSquare, Brain, Sparkles, Filter, AlertTriangle, Database } from "lucide-react";
 
 export default function BrowseStudents() {
   useScrollToTop();
@@ -64,13 +64,26 @@ export default function BrowseStudents() {
     },
   });
 
-  // Use smart results if available, otherwise use regular students data
-  const students = isUsingSmartResults ? smartResults : (studentsData?.students || studentsData || []);
-  const totalCount = isUsingSmartResults ? smartResults.length : (studentsData?.total || students.length);
-
   const { data: skills } = useQuery({
     queryKey: ["/api/skills"],
   });
+
+  // Get total student count for the smart discovery component
+  const { data: totalCountData } = useQuery({
+    queryKey: ["/api/students/count"],
+    queryFn: async () => {
+      const response = await fetch("/api/students/count");
+      if (!response.ok) throw new Error("Failed to fetch count");
+      return response.json();
+    },
+  });
+
+  // Use smart results if available, otherwise use regular students data
+  const students = isUsingSmartResults ? smartResults : (studentsData?.students || studentsData || []);
+  const totalCount = isUsingSmartResults ? smartResults.length : (studentsData?.total || students.length);
+  
+  // Check if we're using fallback data
+  const isUsingFallbackData = isFallbackData(studentsData) || isFallbackData(skills) || isFallbackData(totalCountData);
 
   // Smart discovery mutation
   const smartDiscoveryMutation = useMutation({
@@ -101,16 +114,6 @@ export default function BrowseStudents() {
     },
   });
 
-  // Get total student count for the smart discovery component
-  const { data: totalCountData } = useQuery({
-    queryKey: ["/api/students/count"],
-    queryFn: async () => {
-      const response = await fetch("/api/students/count");
-      if (!response.ok) throw new Error("Failed to fetch count");
-      return response.json();
-    },
-  });
-
   const totalStudentCount = totalCountData?.count || 1920;
 
   return (
@@ -118,6 +121,35 @@ export default function BrowseStudents() {
       <Header />
       
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        {/* Fallback Data Indicator */}
+        {isUsingFallbackData && (
+          <div className="mb-4">
+            <Card className="bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200 dark:from-orange-900/20 dark:to-amber-900/20 dark:border-orange-800">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center">
+                    <Database className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-orange-900 dark:text-orange-100 flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4" />
+                      Development Mode - Using Sample Data
+                    </h3>
+                    <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
+                      You're viewing sample student profiles while the backend is loading. 
+                      All features are functional - continue working on your homepage redesign! 
+                      Real data will load automatically when the server is ready.
+                    </p>
+                  </div>
+                  <Badge variant="outline" className="border-orange-400 text-orange-700 dark:text-orange-300 whitespace-nowrap">
+                    Fallback Active
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+        
         {/* Clean Header with Responsive Layout */}
         <div className="mb-6">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
