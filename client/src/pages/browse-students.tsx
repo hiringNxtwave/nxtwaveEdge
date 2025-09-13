@@ -117,34 +117,35 @@ export default function BrowseStudents() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Header />
       
-      <div className="container mx-auto px-4 py-4">
-        {/* Clean Header with Filters on Right */}
-        <div className="mb-6 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
-              {isUsingSmartResults ? (
-                <>
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-                    <Brain className="w-4 h-4 text-white" />
-                  </div>
-                  AI-Curated Top Matches
-                </>
-              ) : "Talent Database"}
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300">
-              {isLoading 
-                ? "Loading students..." 
-                : isAuthenticated 
-                  ? isUsingSmartResults
-                    ? `${students.length} candidates selected by AI from 1,900+ profiles based on your requirements`
-                    : `Browse verified talent pool of ${totalStudentCount.toLocaleString()}+ students`
-                  : `Preview of ${students.length} from 1,900+ students`
-              }
-            </p>
-          </div>
-          
-          {/* Top Right: Filters & Actions */}
-          <div className="flex items-center gap-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        {/* Clean Header with Responsive Layout */}
+        <div className="mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
+                {isUsingSmartResults ? (
+                  <>
+                    <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                      <Brain className="w-4 h-4 text-white" />
+                    </div>
+                    AI-Curated Top Matches
+                  </>
+                ) : "Talent Database"}
+              </h1>
+              <p className="text-gray-600 dark:text-gray-300">
+                {isLoading 
+                  ? "Loading students..." 
+                  : isAuthenticated 
+                    ? isUsingSmartResults
+                      ? `${students.length} candidates selected by AI from 1,900+ profiles based on your requirements`
+                      : `Browse verified talent pool of ${totalStudentCount.toLocaleString()}+ students`
+                    : `Preview of ${students.length} from 1,900+ students`
+                }
+              </p>
+            </div>
+            
+            {/* Filters & Actions - Responsive Layout */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             {/* Compact Filters */}
             <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 shadow-sm">
               <StudentFilters
@@ -213,6 +214,7 @@ export default function BrowseStudents() {
                 )}
               </div>
             )}
+            </div>
           </div>
         </div>
 
@@ -296,7 +298,7 @@ export default function BrowseStudents() {
               </p>
             </div>
           ) : (
-            <div className="space-y-4" data-testid="list-students">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="grid-students">
               {students?.map((student: any) => (
                 <StudentCard key={student.id} student={student} />
               ))}

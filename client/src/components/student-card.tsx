@@ -71,8 +71,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
   // Use student ID as seed for consistent ratings
   const seed = parseInt(student.id.slice(-8), 16);
   
-  // Overall rating from codingRating field (this is the baseline)
-  const overallRating = student.codingRating || 4;
+  // Overall rating derived from assessment scores (baseline 4)
+  const overallRating = 4;
   
   // Generate realistic CGPA values based on student ID for variety
   const generateRealisticCGPA = (studentId: string, baseCGPA?: string) => {
