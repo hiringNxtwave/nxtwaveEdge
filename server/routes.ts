@@ -91,10 +91,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Debug/reload endpoints (unguarded for debugging)
   const BUILD_TS = Date.now();
   
-  app.get('/api/_crash', (req, res) => {
-    res.json({ message: "Forcing server restart..." });
-    setTimeout(() => process.exit(0), 100);
-  });
+  // Removed _crash endpoint for safety
   
   app.get('/api/_version', (req, res) => {
     res.json({ buildTs: BUILD_TS, env: process.env.NODE_ENV });

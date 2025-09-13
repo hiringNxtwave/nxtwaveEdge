@@ -264,7 +264,7 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (filters?.minCgpa) {
-      whereConditions.push(sql`${students.cgpa} ~ '^[0-9]+(\.[0-9]+)?$' AND NULLIF(${students.cgpa}, '')::numeric >= ${filters.minCgpa}`);
+      whereConditions.push(sql`CASE WHEN ${students.cgpa} ~ '^[0-9]+(\.[0-9]+)?$' THEN (${students.cgpa}::numeric >= ${filters.minCgpa}) ELSE false END`);
     }
 
     let baseQuery = db
@@ -283,11 +283,11 @@ export class DatabaseStorage implements IStorage {
     const results = whereConditions.length > 0
       ? await baseQuery
           .where(whereConditions.length === 1 ? whereConditions[0] : and(...whereConditions))
-          .orderBy(sql`NULLIF(${students.cgpa}, '')::numeric DESC NULLS LAST`)
+          .orderBy(desc(students.createdAt))
           .limit(filters?.limit || 20)
           .offset(filters?.offset || 0)
       : await baseQuery
-          .orderBy(sql`NULLIF(${students.cgpa}, '')::numeric DESC NULLS LAST`)
+          .orderBy(desc(students.createdAt))
           .limit(filters?.limit || 20)
           .offset(filters?.offset || 0);
 
@@ -389,7 +389,7 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (filters?.minCgpa) {
-      whereConditions.push(sql`${students.cgpa} ~ '^[0-9]+(\.[0-9]+)?$' AND NULLIF(${students.cgpa}, '')::numeric >= ${filters.minCgpa}`);
+      whereConditions.push(sql`CASE WHEN ${students.cgpa} ~ '^[0-9]+(\.[0-9]+)?$' THEN (${students.cgpa}::numeric >= ${filters.minCgpa}) ELSE false END`);
     }
 
     // Add skills filtering by joining with studentSkills table
