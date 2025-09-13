@@ -52,7 +52,7 @@ export default function Home() {
   const { shortlistCount } = useShortlist();
 
   const { data: stats } = useQuery({
-    queryKey: ["/api/stats"],
+    queryKey: ["/api/company/stats"],
     enabled: !!user,
   });
 
