@@ -15,17 +15,17 @@ export default function Header() {
   const { shortlistCount } = useShortlist();
 
   return (
-    <header className="bg-card/95 backdrop-blur-md shadow-clean border-b border-border sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-        <div className="flex justify-between items-center h-18">
-          <Link href="/" className="flex items-center space-x-3 group" data-testid="link-home">
-            <div className="w-11 h-11 bg-primary rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 shadow-clean">
-              <Handshake className="text-primary-foreground w-6 h-6" />
+    <header className="bg-card shadow-sm border-b border-border sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <Link href="/" className="flex items-center space-x-2" data-testid="link-home">
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <Handshake className="text-primary-foreground w-5 h-5" />
             </div>
-            <span className="text-2xl font-bold text-foreground tracking-tight">NxtWave</span>
+            <span className="text-xl font-bold text-foreground">NxtWave</span>
           </Link>
           
-          <nav className="hidden md:flex items-center space-x-10">
+          <nav className="hidden md:flex items-center space-x-8">
             {!isAuthenticated ? (
               // Marketing navigation for unauthenticated users
               <>
@@ -149,9 +149,9 @@ export default function Header() {
             )}
           </nav>
           
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-4">
             {isAuthenticated ? (
-              <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-4">
                 <Button
                   variant="ghost"
                   size="sm"

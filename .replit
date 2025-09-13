@@ -20,9 +20,5 @@ integrations = ["javascript_websocket==1.0.0", "javascript_sendgrid==1.0.0", "ja
 localPort = 5000
 externalPort = 80
 
-[[ports]]
-localPort = 34455
-externalPort = 3000
-
 [objectStorage]
 defaultBucketID = "replit-objstore-c2d21e6f-37ab-49e0-97ee-d3763516b21a"
