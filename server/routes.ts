@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import OpenAI from 'openai';
+import multer from 'multer';
 import { 
   insertCompanySchema,
   insertCompanyRequirementsSchema,
@@ -13,6 +14,29 @@ import {
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Configure multer for file uploads
+  const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+      fileSize: 10 * 1024 * 1024, // 10MB limit
+    },
+    fileFilter: (req, file, cb) => {
+      // Allow PDF, Word docs, and text files
+      const allowedTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain'
+      ];
+      
+      if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+      } else {
+        cb(new Error('Invalid file type. Only PDF, Word documents, and text files are allowed.'));
+      }
+    }
+  });
+
   // Auth middleware
   await setupAuth(app);
 
@@ -219,6 +243,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error parsing job description:", error);
       res.status(500).json({ message: "Failed to parse job description" });
+    }
+  });
+
+  // JD File Parsing endpoint
+  app.post('/api/company/parse-jd-file', isAuthenticated, upload.single('jdFile'), async (req: any, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      // Extract text content from the uploaded file
+      let jobDescription = '';
+      
+      if (req.file.mimetype === 'text/plain') {
+        // Plain text file
+        jobDescription = req.file.buffer.toString('utf8');
+      } else if (req.file.mimetype === 'application/pdf') {
+        // For PDF files, we'd need a PDF parser (like pdf-parse)
+        // For now, return an error suggesting text upload
+        return res.status(400).json({ 
+          message: "PDF parsing not yet implemented. Please copy the text content and use the manual entry option." 
+        });
+      } else if (
+        req.file.mimetype === 'application/msword' || 
+        req.file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ) {
+        // For Word docs, we'd need a doc parser (like mammoth)
+        // For now, return an error suggesting text upload
+        return res.status(400).json({ 
+          message: "Word document parsing not yet implemented. Please copy the text content and use the manual entry option." 
+        });
+      }
+
+      if (!jobDescription || jobDescription.trim().length < 50) {
+        return res.status(400).json({ 
+          message: "Job description content is too short or empty. Please ensure the file contains a detailed job description." 
+        });
+      }
+
+      // Parse the extracted job description
+      const parsedData = await storage.parseJobDescription(jobDescription.trim());
+      
+      // Include the original job description in the response
+      res.json({
+        ...parsedData,
+        jobDescription: jobDescription.trim()
+      });
+    } catch (error) {
+      console.error("Error parsing JD file:", error);
+      
+      if (error instanceof multer.MulterError) {
+        if (error.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).json({ message: "File is too large. Maximum size is 10MB." });
+        }
+        return res.status(400).json({ message: `File upload error: ${error.message}` });
+      }
+      
+      res.status(500).json({ message: "Failed to parse job description file" });
     }
   });
 

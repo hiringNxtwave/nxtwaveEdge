@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,7 +41,13 @@ import {
   Building, 
   Users,
   Briefcase,
-  GraduationCap
+  GraduationCap,
+  Upload,
+  FileText,
+  CheckCircle,
+  Zap,
+  Star,
+  Target
 } from 'lucide-react';
 
 // Simplified form schema focusing on core fields
@@ -82,6 +88,10 @@ export function CompanyProfileManager() {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isParsingJD, setIsParsingJD] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [useManualEntry, setUseManualEntry] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch company requirements
   const { data: requirements = [], isLoading, refetch } = useQuery<CompanyRequirement[]>({
@@ -100,7 +110,61 @@ export function CompanyProfileManager() {
     },
   });
 
-  // Parse JD mutation
+  // Parse JD from file mutation
+  const parseFileMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('jdFile', file);
+      
+      const response = await fetch('/api/company/parse-jd-file', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to parse file');
+      }
+      
+      return await response.json();
+    },
+    onSuccess: (data) => {
+      // Auto-fill form fields with parsed data
+      if (data.jobTitle) {
+        form.setValue('jobTitle', data.jobTitle);
+      }
+      if (data.jobDescription) {
+        form.setValue('jobDescription', data.jobDescription);
+      }
+      if (data.salaryRange) {
+        form.setValue('salaryMin', data.salaryRange.min);
+        form.setValue('salaryMax', data.salaryRange.max);
+      }
+      if (data.location) {
+        form.setValue('jobLocation', data.location);
+      }
+      if (data.experienceLevel) {
+        form.setValue('experienceLevel', data.experienceLevel);
+      }
+      
+      toast({
+        title: "🎉 JD File Parsed Successfully!",
+        description: "All fields have been auto-filled from your uploaded file",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "❌ Parsing Failed",
+        description: "Could not parse the file. You can fill in details manually instead.",
+        variant: "destructive",
+      });
+      setUseManualEntry(true);
+    },
+    onSettled: () => {
+      setIsUploading(false);
+    },
+  });
+
+  // Parse JD from text mutation
   const parseJDMutation = useMutation({
     mutationFn: async (jobDescription: string) => {
       const response = await apiRequest('POST', '/api/company/parse-jd', { jobDescription });
@@ -120,7 +184,7 @@ export function CompanyProfileManager() {
       }
       
       toast({
-        title: "JD Parsed Successfully!",
+        title: "✨ JD Parsed Successfully!",
         description: "Fields have been auto-filled from your job description",
       });
     },
@@ -149,7 +213,7 @@ export function CompanyProfileManager() {
     },
     onSuccess: () => {
       toast({
-        title: "Success!",
+        title: "🎉 Success!",
         description: editingId ? "Job requirement updated" : "Job requirement created",
       });
       handleCancel();
@@ -172,12 +236,38 @@ export function CompanyProfileManager() {
     },
     onSuccess: () => {
       toast({
-        title: "Deleted",
+        title: "🗑️ Deleted",
         description: "Job requirement has been deleted",
       });
       refetch();
     },
   });
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Check file type
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain'
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      toast({
+        title: "❌ Invalid File Type",
+        description: "Please upload a PDF, Word document, or text file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploadedFile(file);
+    setIsUploading(true);
+    parseFileMutation.mutate(file);
+  };
 
   const handleParseJD = () => {
     const jobDescription = form.getValues('jobDescription');
@@ -220,7 +310,12 @@ export function CompanyProfileManager() {
   const handleCancel = () => {
     setIsAdding(false);
     setEditingId(null);
+    setUploadedFile(null);
+    setUseManualEntry(false);
     form.reset();
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const onSubmit = (data: JobRequirementsForm) => {
@@ -231,8 +326,8 @@ export function CompanyProfileManager() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading job requirements...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading job requirements...</p>
         </div>
       </div>
     );
@@ -240,160 +335,399 @@ export function CompanyProfileManager() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Job Requirements</h2>
-          <p className="text-muted-foreground">
-            Manage your hiring requirements and let our AI parse job descriptions
-          </p>
+      {/* Colorful Header */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-2xl p-8 text-white">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="relative z-10 flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight mb-2">Job Requirements</h2>
+            <p className="text-blue-100 text-lg">
+              Manage your hiring requirements with AI-powered JD parsing
+            </p>
+          </div>
+          {!isAdding && (
+            <Button 
+              onClick={() => setIsAdding(true)} 
+              className="bg-white text-purple-700 hover:bg-gray-100 gap-2 px-6 py-3 text-lg font-semibold" 
+              data-testid="button-add-requirement"
+            >
+              <Plus className="w-5 h-5" />
+              Add New Requirement
+            </Button>
+          )}
         </div>
-        {!isAdding && (
-          <Button onClick={() => setIsAdding(true)} className="gap-2" data-testid="button-add-requirement">
-            <Plus className="w-4 h-4" />
-            Add New Requirement
-          </Button>
-        )}
+        <div className="absolute top-4 right-4 opacity-20">
+          <Zap className="w-32 h-32" />
+        </div>
       </div>
 
       {/* Add/Edit Form */}
       {isAdding && (
-        <Card className="border-dashed border-2 border-primary/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Briefcase className="w-5 h-5" />
-              {editingId ? 'Edit Job Requirement' : 'Create New Job Requirement'}
+        <Card className="border-2 border-blue-200 shadow-xl overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
+            <CardTitle className="flex items-center gap-3 text-2xl">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Briefcase className="w-6 h-6 text-blue-600" />
+              </div>
+              <span className="text-gray-800">
+                {editingId ? 'Edit Job Requirement' : 'Create New Job Requirement'}
+              </span>
             </CardTitle>
-            <CardDescription>
-              Fill in the details below or paste a job description for AI parsing
+            <CardDescription className="text-lg text-gray-600">
+              Upload a JD file for instant parsing or fill in details manually
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-8">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                {/* Job Description with AI Parse */}
-                <div className="space-y-4">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                
+                {/* File Upload Section - Primary Option */}
+                {!useManualEntry && (
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-dashed border-green-300 rounded-xl p-8">
+                    <div className="text-center space-y-4">
+                      <div className="flex justify-center">
+                        <div className="p-4 bg-green-100 rounded-full">
+                          <Upload className="w-8 h-8 text-green-600" />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                          🚀 Option 1: Upload Job Description File
+                        </h3>
+                        <p className="text-gray-600 mb-4">
+                          Upload a PDF, Word document, or text file and let AI extract all details automatically
+                        </p>
+                      </div>
+
+                      {uploadedFile ? (
+                        <div className="bg-white rounded-lg p-4 border border-green-200">
+                          <div className="flex items-center gap-3 justify-center">
+                            <FileText className="w-5 h-5 text-green-600" />
+                            <span className="font-medium text-gray-800">{uploadedFile.name}</span>
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                          </div>
+                          {isUploading && (
+                            <div className="mt-2 text-center">
+                              <div className="inline-flex items-center gap-2 text-blue-600">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+                                <span>Parsing file...</span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <>
+                          <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileUpload}
+                            accept=".pdf,.doc,.docx,.txt"
+                            className="hidden"
+                            data-testid="input-file-upload"
+                          />
+                          <Button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-3 text-lg gap-3"
+                            data-testid="button-upload-file"
+                          >
+                            <Upload className="w-5 h-5" />
+                            Choose JD File to Upload
+                          </Button>
+                        </>
+                      )}
+
+                      <div className="text-center pt-4">
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          onClick={() => setUseManualEntry(true)}
+                          className="text-gray-600 hover:text-gray-800"
+                          data-testid="button-manual-entry"
+                        >
+                          Or fill in details manually instead →
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Job Description - Always Available */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <FileText className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      📄 Job Description {!useManualEntry && uploadedFile && '(Auto-filled from file)'}
+                    </h3>
+                  </div>
+
                   <FormField
                     control={form.control}
                     name="jobDescription"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2">
+                        <FormLabel className="flex items-center gap-2 text-gray-700 font-medium">
                           Job Description
-                          <Badge variant="secondary" className="text-xs">AI Parsable</Badge>
+                          <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs">
+                            <Sparkles className="w-3 h-3 mr-1" />
+                            AI Parsable
+                          </Badge>
                         </FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Paste your full job description here. Our AI will automatically extract job title, salary, location, and requirements..."
-                            className="min-h-[120px]"
+                            placeholder={uploadedFile && !useManualEntry 
+                              ? "Job description will be auto-filled from your uploaded file, or you can edit it manually here..." 
+                              : "Paste your full job description here. Our AI will automatically extract job title, salary, location, and requirements..."
+                            }
+                            className="min-h-[120px] border-blue-200 focus:border-blue-400"
                             {...field}
                             data-testid="textarea-job-description"
                           />
                         </FormControl>
-                        <div className="flex gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={handleParseJD}
-                            disabled={isParsingJD}
-                            className="gap-2"
-                            data-testid="button-parse-jd"
-                          >
-                            <Sparkles className="w-4 h-4" />
-                            {isParsingJD ? 'Parsing...' : 'Parse with AI'}
-                          </Button>
-                          <span className="text-xs text-muted-foreground self-center">
-                            Auto-fill form fields from job description
-                          </span>
-                        </div>
+                        {useManualEntry && (
+                          <div className="flex gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={handleParseJD}
+                              disabled={isParsingJD}
+                              className="gap-2 border-purple-200 text-purple-700 hover:bg-purple-50"
+                              data-testid="button-parse-jd"
+                            >
+                              <Sparkles className="w-4 h-4" />
+                              {isParsingJD ? 'Parsing...' : 'Parse with AI'}
+                            </Button>
+                            <span className="text-xs text-gray-500 self-center">
+                              Auto-fill form fields from job description
+                            </span>
+                          </div>
+                        )}
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
+
+                {/* Manual Entry Toggle */}
+                {useManualEntry && (
+                  <div className="text-center">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setUseManualEntry(false)}
+                      className="text-gray-600 hover:text-gray-800"
+                    >
+                      ← Switch back to file upload mode
+                    </Button>
+                  </div>
+                )}
 
                 {/* Core Job Details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="jobTitle"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <Briefcase className="w-4 h-4" />
-                          Job Title
-                        </FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., Frontend Developer" {...field} data-testid="input-job-title" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="experienceLevel"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Experience Level</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger data-testid="select-experience-level">
-                              <SelectValue placeholder="Select experience level" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="fresher">Fresher (0 years)</SelectItem>
-                            <SelectItem value="0-1">0-1 years</SelectItem>
-                            <SelectItem value="1-3">1-3 years</SelectItem>
-                            <SelectItem value="3-5">3-5 years</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* Salary Range */}
-                <div className="space-y-3">
-                  <FormLabel className="flex items-center gap-2">
-                    <IndianRupee className="w-4 h-4" />
-                    Salary Range (in thousands)
-                  </FormLabel>
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-6">
+                  <h4 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <Target className="w-5 h-5 text-blue-600" />
+                    Job Details
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                       control={form.control}
-                      name="salaryMin"
+                      name="jobTitle"
                       render={({ field }) => (
                         <FormItem>
+                          <FormLabel className="flex items-center gap-2 text-gray-700 font-medium">
+                            <Briefcase className="w-4 h-4 text-blue-600" />
+                            Job Title
+                          </FormLabel>
                           <FormControl>
-                            <Input
-                              type="number"
-                              placeholder="300"
-                              {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                              data-testid="input-salary-min"
+                            <Input 
+                              placeholder="e.g., Frontend Developer" 
+                              className="border-gray-300 focus:border-blue-400"
+                              {...field} 
+                              data-testid="input-job-title" 
                             />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
+
                     <FormField
                       control={form.control}
-                      name="salaryMax"
+                      name="experienceLevel"
                       render={({ field }) => (
                         <FormItem>
+                          <FormLabel className="text-gray-700 font-medium">Experience Level</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="border-gray-300 focus:border-blue-400" data-testid="select-experience-level">
+                                <SelectValue placeholder="Select experience level" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="fresher">🎓 Fresher (0 years)</SelectItem>
+                              <SelectItem value="0-1">💼 0-1 years</SelectItem>
+                              <SelectItem value="1-3">🚀 1-3 years</SelectItem>
+                              <SelectItem value="3-5">⭐ 3-5 years</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* Salary Range */}
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
+                    <FormLabel className="flex items-center gap-2 text-gray-700 font-medium mb-3">
+                      <IndianRupee className="w-4 h-4 text-green-600" />
+                      Salary Range (in thousands)
+                    </FormLabel>
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="salaryMin"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                placeholder="300"
+                                className="border-green-300 focus:border-green-400"
+                                {...field}
+                                onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                data-testid="input-salary-min"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="salaryMax"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                placeholder="800"
+                                className="border-green-300 focus:border-green-400"
+                                {...field}
+                                onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                data-testid="input-salary-max"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <p className="text-xs text-green-700 mt-2">
+                      💰 Enter amounts in thousands (e.g., 300 for ₹3 LPA, 800 for ₹8 LPA)
+                    </p>
+                  </div>
+
+                  {/* Location & Work Mode */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="jobLocation"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2 text-gray-700 font-medium">
+                            <MapPin className="w-4 h-4 text-red-500" />
+                            Job Location
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="e.g., Bangalore, Mumbai" 
+                              className="border-gray-300 focus:border-red-400"
+                              {...field} 
+                              data-testid="input-job-location" 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="workMode"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-medium">Work Mode</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="border-gray-300 focus:border-blue-400" data-testid="select-work-mode">
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="onsite">🏢 On-site</SelectItem>
+                              <SelectItem value="hybrid">🌍 Hybrid</SelectItem>
+                              <SelectItem value="remote">💻 Remote</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* College Requirements */}
+                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-6 space-y-4">
+                  <h4 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <GraduationCap className="w-5 h-5 text-purple-600" />
+                    College & Academic Requirements
+                  </h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <FormField
+                      control={form.control}
+                      name="preferredColleges"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center gap-2 text-gray-700 font-medium">
+                            <Star className="w-4 h-4 text-yellow-500" />
+                            Preferred Colleges
+                          </FormLabel>
+                          <FormControl>
+                            <Input 
+                              placeholder="e.g., IIT, NIT, BITS (optional)" 
+                              className="border-purple-300 focus:border-purple-400"
+                              {...field} 
+                              data-testid="input-preferred-colleges" 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="minimumCGPA"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-gray-700 font-medium">Minimum CGPA</FormLabel>
                           <FormControl>
                             <Input
                               type="number"
-                              placeholder="800"
+                              step="0.1"
+                              min="0"
+                              max="10"
+                              placeholder="7.0 (optional)"
+                              className="border-purple-300 focus:border-purple-400"
                               {...field}
-                              onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                              data-testid="input-salary-max"
+                              onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
+                              data-testid="input-minimum-cgpa"
                             />
                           </FormControl>
                           <FormMessage />
@@ -401,89 +735,27 @@ export function CompanyProfileManager() {
                       )}
                     />
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Enter amounts in thousands (e.g., 300 for ₹3 LPA, 800 for ₹8 LPA)
-                  </p>
                 </div>
 
-                {/* Location & Work Mode */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Hiring Details */}
+                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-6">
                   <FormField
                     control={form.control}
-                    name="jobLocation"
+                    name="hiresExpected"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <MapPin className="w-4 h-4" />
-                          Job Location
+                        <FormLabel className="flex items-center gap-2 text-gray-700 font-medium text-lg">
+                          <Users className="w-5 h-5 text-blue-600" />
+                          Number of Hires Expected
                         </FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., Bangalore, Mumbai" {...field} data-testid="input-job-location" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="workMode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Work Mode</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger data-testid="select-work-mode">
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="onsite">On-site</SelectItem>
-                            <SelectItem value="hybrid">Hybrid</SelectItem>
-                            <SelectItem value="remote">Remote</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                {/* College Requirements */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="preferredColleges"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex items-center gap-2">
-                          <GraduationCap className="w-4 h-4" />
-                          Preferred Colleges
-                        </FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., IIT, NIT, BITS (optional)" {...field} data-testid="input-preferred-colleges" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="minimumCGPA"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Minimum CGPA</FormLabel>
                         <FormControl>
                           <Input
                             type="number"
-                            step="0.1"
-                            min="0"
-                            max="10"
-                            placeholder="7.0 (optional)"
+                            min="1"
+                            className="border-blue-300 focus:border-blue-400 max-w-xs"
                             {...field}
-                            onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
-                            data-testid="input-minimum-cgpa"
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                            data-testid="input-hires-expected"
                           />
                         </FormControl>
                         <FormMessage />
@@ -492,44 +764,31 @@ export function CompanyProfileManager() {
                   />
                 </div>
 
-                {/* Hiring Details */}
-                <FormField
-                  control={form.control}
-                  name="hiresExpected"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center gap-2">
-                        <Users className="w-4 h-4" />
-                        Number of Hires Expected
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          min="1"
-                          {...field}
-                          onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
-                          data-testid="input-hires-expected"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
                 {/* Action Buttons */}
-                <div className="flex gap-3 pt-4">
+                <div className="flex gap-4 pt-6 border-t border-gray-200">
                   <Button
                     type="submit"
                     disabled={saveMutation.isPending}
-                    className="gap-2"
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg gap-2"
                     data-testid="button-save-requirement"
                   >
-                    {saveMutation.isPending ? 'Saving...' : editingId ? 'Update Requirement' : 'Create Requirement'}
+                    {saveMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-5 h-5" />
+                        {editingId ? 'Update Requirement' : 'Create Requirement'}
+                      </>
+                    )}
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={handleCancel}
+                    className="px-8 py-3 text-lg border-gray-300 hover:bg-gray-50"
                     data-testid="button-cancel-requirement"
                   >
                     Cancel
@@ -544,75 +803,90 @@ export function CompanyProfileManager() {
       {/* Requirements List */}
       <div className="space-y-4">
         {requirements.length === 0 ? (
-          <Card className="text-center py-12">
+          <Card className="text-center py-16 border-2 border-dashed border-gray-300">
             <CardContent className="pt-6">
-              <Building className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No job requirements yet</h3>
-              <p className="text-muted-foreground mb-4">
+              <div className="p-4 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                <Building className="w-10 h-10 text-blue-600" />
+              </div>
+              <h3 className="text-2xl font-semibold mb-3 text-gray-800">No job requirements yet</h3>
+              <p className="text-gray-600 mb-6 text-lg">
                 Create your first job requirement to start finding the right candidates
               </p>
-              <Button onClick={() => setIsAdding(true)} className="gap-2">
-                <Plus className="w-4 h-4" />
+              <Button 
+                onClick={() => setIsAdding(true)} 
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white gap-2 px-8 py-3 text-lg"
+              >
+                <Plus className="w-5 h-5" />
                 Create First Requirement
               </Button>
             </CardContent>
           </Card>
         ) : (
-          requirements.map((req) => (
-            <Card key={req.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="pt-6">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-xl font-semibold">{req.jobTitle}</h3>
-                      <Badge variant={req.isActive ? 'default' : 'secondary'}>
-                        {req.isActive ? 'Active' : 'Inactive'}
-                      </Badge>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <IndianRupee className="w-4 h-4" />
-                        <span>₹{req.salaryMin/100}L - ₹{req.salaryMax/100}L</span>
+          requirements.map((req, index) => (
+            <Card key={req.id} className="hover:shadow-lg transition-all duration-200 border border-gray-200 overflow-hidden">
+              <CardContent className="p-0">
+                <div className={`h-1 bg-gradient-to-r ${
+                  index % 3 === 0 ? 'from-blue-500 to-purple-500' :
+                  index % 3 === 1 ? 'from-green-500 to-emerald-500' :
+                  'from-orange-500 to-red-500'
+                }`}></div>
+                <div className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        <h3 className="text-xl font-semibold text-gray-800">{req.jobTitle}</h3>
+                        <Badge 
+                          variant={req.isActive ? 'default' : 'secondary'}
+                          className={req.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}
+                        >
+                          {req.isActive ? '✅ Active' : '⏸️ Inactive'}
+                        </Badge>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <MapPin className="w-4 h-4" />
-                        <span>{req.jobLocation}</span>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                        <div className="flex items-center gap-2 text-sm bg-green-50 text-green-700 px-3 py-2 rounded-lg">
+                          <IndianRupee className="w-4 h-4" />
+                          <span className="font-medium">₹{req.salaryMin/100}L - ₹{req.salaryMax/100}L</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm bg-red-50 text-red-700 px-3 py-2 rounded-lg">
+                          <MapPin className="w-4 h-4" />
+                          <span className="font-medium">{req.jobLocation}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm bg-blue-50 text-blue-700 px-3 py-2 rounded-lg">
+                          <Users className="w-4 h-4" />
+                          <span className="font-medium">{req.hiresExpected} hire{req.hiresExpected > 1 ? 's' : ''}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm bg-purple-50 text-purple-700 px-3 py-2 rounded-lg">
+                          <GraduationCap className="w-4 h-4" />
+                          <span className="font-medium">{req.experienceLevel}</span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Users className="w-4 h-4" />
-                        <span>{req.hiresExpected} hire{req.hiresExpected > 1 ? 's' : ''}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <GraduationCap className="w-4 h-4" />
-                        <span>{req.experienceLevel}</span>
-                      </div>
+
+                      <p className="text-gray-600 line-clamp-2 text-sm">
+                        {req.jobDescription}
+                      </p>
                     </div>
 
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {req.jobDescription}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-2 ml-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(req)}
-                      className="gap-2"
-                      data-testid={`button-edit-${req.id}`}
-                    >
-                      <Edit3 className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDelete(req.id)}
-                      className="gap-2 text-red-600 hover:text-red-700"
-                      data-testid={`button-delete-${req.id}`}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                    <div className="flex gap-2 ml-6">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(req)}
+                        className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50"
+                        data-testid={`button-edit-${req.id}`}
+                      >
+                        <Edit3 className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDelete(req.id)}
+                        className="gap-2 border-red-200 text-red-600 hover:bg-red-50"
+                        data-testid={`button-delete-${req.id}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>
