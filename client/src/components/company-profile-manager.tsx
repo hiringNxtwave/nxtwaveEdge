@@ -335,20 +335,19 @@ export function CompanyProfileManager() {
 
   return (
     <div className="space-y-6">
-      {/* Colorful Header */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 rounded-2xl p-8 text-white">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative z-10 flex items-center justify-between">
+      {/* Header */}
+      <div className="bg-blue-50 border border-blue-100 rounded-lg p-6">
+        <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-3xl font-bold tracking-tight mb-2">Job Requirements</h2>
-            <p className="text-blue-100 text-lg">
-              Manage your hiring requirements with AI-powered JD parsing
+            <h2 className="text-3xl font-bold text-blue-600 mb-2">Job Requirements</h2>
+            <p className="text-gray-600 text-lg">
+              Manage your hiring requirements and let our AI parse job descriptions
             </p>
           </div>
           {!isAdding && (
             <Button 
               onClick={() => setIsAdding(true)} 
-              className="bg-white text-purple-700 hover:bg-gray-100 gap-2 px-6 py-3 text-lg font-semibold" 
+              className="bg-blue-600 text-white hover:bg-blue-700 gap-2 px-6 py-3 text-lg font-semibold" 
               data-testid="button-add-requirement"
             >
               <Plus className="w-5 h-5" />
@@ -356,24 +355,21 @@ export function CompanyProfileManager() {
             </Button>
           )}
         </div>
-        <div className="absolute top-4 right-4 opacity-20">
-          <Zap className="w-32 h-32" />
-        </div>
       </div>
 
       {/* Add/Edit Form */}
       {isAdding && (
-        <Card className="border-2 border-blue-200 shadow-xl overflow-hidden">
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
-            <CardTitle className="flex items-center gap-3 text-2xl">
+        <Card className="bg-white border border-gray-200 shadow-lg overflow-hidden">
+          <CardHeader className="bg-blue-50 border-b border-blue-100">
+            <CardTitle className="flex items-center gap-3 text-xl">
               <div className="p-2 bg-blue-100 rounded-lg">
-                <Briefcase className="w-6 h-6 text-blue-600" />
+                <Briefcase className="w-5 h-5 text-blue-600" />
               </div>
               <span className="text-gray-800">
                 {editingId ? 'Edit Job Requirement' : 'Create New Job Requirement'}
               </span>
             </CardTitle>
-            <CardDescription className="text-lg text-gray-600">
+            <CardDescription className="text-gray-600">
               Upload a JD file for instant parsing or fill in details manually
             </CardDescription>
           </CardHeader>
@@ -383,17 +379,17 @@ export function CompanyProfileManager() {
                 
                 {/* File Upload Section - Primary Option */}
                 {!useManualEntry && (
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-dashed border-green-300 rounded-xl p-8">
+                  <div className="bg-green-50 border border-green-100 rounded-lg p-6">
                     <div className="text-center space-y-4">
                       <div className="flex justify-center">
-                        <div className="p-4 bg-green-100 rounded-full">
-                          <Upload className="w-8 h-8 text-green-600" />
+                        <div className="p-3 bg-green-100 rounded-lg">
+                          <Upload className="w-6 h-6 text-green-600" />
                         </div>
                       </div>
                       
                       <div>
-                        <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                          🚀 Option 1: Upload Job Description File
+                        <h3 className="text-lg font-semibold text-green-600 mb-2">
+                          Upload Job Description File
                         </h3>
                         <p className="text-gray-600 mb-4">
                           Upload a PDF, Word document, or text file and let AI extract all details automatically
@@ -401,16 +397,16 @@ export function CompanyProfileManager() {
                       </div>
 
                       {uploadedFile ? (
-                        <div className="bg-white rounded-lg p-4 border border-green-200">
+                        <div className="bg-white rounded-lg p-4 border border-green-100">
                           <div className="flex items-center gap-3 justify-center">
                             <FileText className="w-5 h-5 text-green-600" />
-                            <span className="font-medium text-gray-800">{uploadedFile.name}</span>
-                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <span className="font-medium text-gray-700">{uploadedFile.name}</span>
+                            <CheckCircle className="w-5 h-5 text-green-600" />
                           </div>
                           {isUploading && (
                             <div className="mt-2 text-center">
                               <div className="inline-flex items-center gap-2 text-blue-600">
-                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
                                 <span>Parsing file...</span>
                               </div>
                             </div>
@@ -429,21 +425,21 @@ export function CompanyProfileManager() {
                           <Button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-3 text-lg gap-3"
+                            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 gap-2"
                             data-testid="button-upload-file"
                           >
-                            <Upload className="w-5 h-5" />
+                            <Upload className="w-4 h-4" />
                             Choose JD File to Upload
                           </Button>
                         </>
                       )}
 
-                      <div className="text-center pt-4">
+                      <div className="text-center pt-2">
                         <Button
                           type="button"
                           variant="ghost"
                           onClick={() => setUseManualEntry(true)}
-                          className="text-gray-600 hover:text-gray-800"
+                          className="text-gray-600 hover:text-gray-800 text-sm"
                           data-testid="button-manual-entry"
                         >
                           Or fill in details manually instead →
@@ -454,13 +450,13 @@ export function CompanyProfileManager() {
                 )}
 
                 {/* Job Description - Always Available */}
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6">
+                <div className="bg-blue-50 border border-blue-100 rounded-lg p-6">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-blue-100 rounded-lg">
-                      <FileText className="w-5 h-5 text-blue-600" />
+                      <FileText className="w-4 h-4 text-blue-600" />
                     </div>
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      📄 Job Description {!useManualEntry && uploadedFile && '(Auto-filled from file)'}
+                    <h3 className="text-lg font-semibold text-blue-600">
+                      Job Description {!useManualEntry && uploadedFile && '(Auto-filled from file)'}
                     </h3>
                   </div>
 
@@ -582,8 +578,8 @@ export function CompanyProfileManager() {
                   </div>
 
                   {/* Salary Range */}
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
-                    <FormLabel className="flex items-center gap-2 text-gray-700 font-medium mb-3">
+                  <div className="bg-green-50 border border-green-100 rounded-lg p-4">
+                    <FormLabel className="flex items-center gap-2 text-green-600 font-medium mb-3">
                       <IndianRupee className="w-4 h-4 text-green-600" />
                       Salary Range (in thousands)
                     </FormLabel>
@@ -597,7 +593,7 @@ export function CompanyProfileManager() {
                               <Input
                                 type="number"
                                 placeholder="300"
-                                className="border-green-300 focus:border-green-400"
+                                className="border-gray-300 focus:border-green-600"
                                 {...field}
                                 onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                                 data-testid="input-salary-min"
@@ -616,7 +612,7 @@ export function CompanyProfileManager() {
                               <Input
                                 type="number"
                                 placeholder="800"
-                                className="border-green-300 focus:border-green-400"
+                                className="border-gray-300 focus:border-green-600"
                                 {...field}
                                 onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
                                 data-testid="input-salary-max"
@@ -682,8 +678,8 @@ export function CompanyProfileManager() {
                 </div>
 
                 {/* College Requirements */}
-                <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-6 space-y-4">
-                  <h4 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                <div className="bg-purple-50 border border-purple-100 rounded-lg p-6 space-y-4">
+                  <h4 className="text-lg font-semibold text-purple-600 flex items-center gap-2">
                     <GraduationCap className="w-5 h-5 text-purple-600" />
                     College & Academic Requirements
                   </h4>
@@ -695,13 +691,13 @@ export function CompanyProfileManager() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="flex items-center gap-2 text-gray-700 font-medium">
-                            <Star className="w-4 h-4 text-yellow-500" />
+                            <Star className="w-4 h-4 text-orange-600" />
                             Preferred Colleges
                           </FormLabel>
                           <FormControl>
                             <Input 
                               placeholder="e.g., IIT, NIT, BITS (optional)" 
-                              className="border-purple-300 focus:border-purple-400"
+                              className="border-gray-300 focus:border-purple-600"
                               {...field} 
                               data-testid="input-preferred-colleges" 
                             />
@@ -724,7 +720,7 @@ export function CompanyProfileManager() {
                               min="0"
                               max="10"
                               placeholder="7.0 (optional)"
-                              className="border-purple-300 focus:border-purple-400"
+                              className="border-gray-300 focus:border-purple-600"
                               {...field}
                               onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
                               data-testid="input-minimum-cgpa"
@@ -738,21 +734,21 @@ export function CompanyProfileManager() {
                 </div>
 
                 {/* Hiring Details */}
-                <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-6">
+                <div className="bg-orange-50 border border-orange-100 rounded-lg p-6">
                   <FormField
                     control={form.control}
                     name="hiresExpected"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 text-gray-700 font-medium text-lg">
-                          <Users className="w-5 h-5 text-blue-600" />
+                        <FormLabel className="flex items-center gap-2 text-orange-600 font-medium text-lg">
+                          <Users className="w-5 h-5 text-orange-600" />
                           Number of Hires Expected
                         </FormLabel>
                         <FormControl>
                           <Input
                             type="number"
                             min="1"
-                            className="border-blue-300 focus:border-blue-400 max-w-xs"
+                            className="border-gray-300 focus:border-orange-600 max-w-xs"
                             {...field}
                             onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
                             data-testid="input-hires-expected"
