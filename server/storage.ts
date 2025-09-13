@@ -49,6 +49,7 @@ export interface IStorage {
   
   // Student operations
   getStudents(filters?: {
+    skills?: string[];
     assessmentCriteria?: {
       minDsaScore?: number;
       minCsFundamentalsScore?: number;
@@ -64,6 +65,7 @@ export interface IStorage {
   }): Promise<StudentWithAssessments[]>;
   getStudentById(id: string): Promise<StudentWithAssessments | undefined>;
   getStudentCount(filters?: {
+    skills?: string[];
     assessmentCriteria?: {
       minDsaScore?: number;
       minCsFundamentalsScore?: number;
@@ -235,6 +237,7 @@ export class DatabaseStorage implements IStorage {
 
   // Student operations
   async getStudents(filters?: {
+    skills?: string[];
     assessmentCriteria?: {
       minDsaScore?: number;
       minCsFundamentalsScore?: number;
@@ -262,10 +265,18 @@ export class DatabaseStorage implements IStorage {
       whereConditions.push(gte(students.cgpa, filters.minCgpa.toString()));
     }
 
-    const baseQuery = db
+    let baseQuery = db
       .select()
       .from(students)
       .leftJoin(projects, eq(students.id, projects.studentId));
+
+    // Add skills filtering by joining with studentSkills table
+    if (filters?.skills && filters.skills.length > 0) {
+      baseQuery = baseQuery
+        .leftJoin(studentSkills, eq(students.id, studentSkills.studentId))
+        .leftJoin(skills, eq(studentSkills.skillId, skills.id));
+      whereConditions.push(sql`${skills.name} = ANY(${filters.skills})`);
+    }
 
     const results = whereConditions.length > 0
       ? await baseQuery
@@ -371,10 +382,26 @@ export class DatabaseStorage implements IStorage {
       whereConditions.push(gte(students.cgpa, filters.minCgpa.toString()));
     }
 
+    // Add skills filtering by joining with studentSkills table
+    if (filters?.skills && filters.skills.length > 0) {
+      const baseCountQuery = db
+        .select({ count: sql`count(distinct ${students.id})` })
+        .from(students)
+        .leftJoin(studentSkills, eq(students.id, studentSkills.studentId))
+        .leftJoin(skills, eq(studentSkills.skillId, skills.id));
+      whereConditions.push(sql`${skills.name} = ANY(${filters.skills})`);
+      
+      const [result] = whereConditions.length > 0
+        ? await baseCountQuery.where(whereConditions.length === 1 ? whereConditions[0] : and(...whereConditions))
+        : await baseCountQuery;
+      return Number(result.count);
+    }
+
+    // Simple count query without skills filtering
     const baseCountQuery = db.select({ count: sql`count(*)` }).from(students);
     
     const [result] = whereConditions.length > 0
-      ? await baseCountQuery.where(and(...whereConditions))
+      ? await baseCountQuery.where(whereConditions.length === 1 ? whereConditions[0] : and(...whereConditions))
       : await baseCountQuery;
     return Number(result.count);
   }
