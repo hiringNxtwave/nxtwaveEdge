@@ -34,7 +34,7 @@ import {
   type AssessmentWithResponses,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, ilike, gte, desc, asc, sql } from "drizzle-orm";
+import { eq, and, ilike, gte, desc, asc, sql, inArray } from "drizzle-orm";
 
 export interface IStorage {
   // User operations - mandatory for Replit Auth
@@ -275,7 +275,7 @@ export class DatabaseStorage implements IStorage {
       baseQuery = baseQuery
         .leftJoin(studentSkills, eq(students.id, studentSkills.studentId))
         .leftJoin(skills, eq(studentSkills.skillId, skills.id));
-      whereConditions.push(sql`${skills.name} = ANY(${filters.skills})`);
+      whereConditions.push(inArray(skills.name, filters.skills));
     }
 
     const results = whereConditions.length > 0
@@ -389,7 +389,7 @@ export class DatabaseStorage implements IStorage {
         .from(students)
         .leftJoin(studentSkills, eq(students.id, studentSkills.studentId))
         .leftJoin(skills, eq(studentSkills.skillId, skills.id));
-      whereConditions.push(sql`${skills.name} = ANY(${filters.skills})`);
+      whereConditions.push(inArray(skills.name, filters.skills));
       
       const [result] = whereConditions.length > 0
         ? await baseCountQuery.where(whereConditions.length === 1 ? whereConditions[0] : and(...whereConditions))
