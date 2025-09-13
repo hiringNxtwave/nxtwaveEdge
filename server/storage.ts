@@ -222,15 +222,32 @@ export class DatabaseStorage implements IStorage {
     return updatedCompany;
   }
 
+  // Helper function to determine assessment level based on scores
+  private getAssessmentLevel(overallScore?: number | null, dsaScore?: number | null, csFundamentalsScore?: number | null, aptitudeScore?: number | null, verbalScore?: number | null): 'Excellent' | 'Good' | 'Average' | 'Below Average' | 'Not Assessed' {
+    const score = overallScore ?? ((dsaScore || 0) + (csFundamentalsScore || 0) + (aptitudeScore || 0) + (verbalScore || 0)) / 4;
+    
+    if (!score || score === 0) return 'Not Assessed';
+    if (score >= 85) return 'Excellent';
+    if (score >= 70) return 'Good';
+    if (score >= 55) return 'Average';
+    return 'Below Average';
+  }
+
   // Student operations
   async getStudents(filters?: {
-    skills?: string[];
+    assessmentCriteria?: {
+      minDsaScore?: number;
+      minCsFundamentalsScore?: number;
+      minAptitudeScore?: number;
+      minVerbalScore?: number;
+      minOverallScore?: number;
+    };
     location?: string;
     university?: string;
     minCgpa?: number;
     limit?: number;
     offset?: number;
-  }): Promise<StudentWithSkills[]> {
+  }): Promise<StudentWithAssessments[]> {
     const whereConditions = [];
     
     if (filters?.location) {
@@ -248,8 +265,6 @@ export class DatabaseStorage implements IStorage {
     const baseQuery = db
       .select()
       .from(students)
-      .leftJoin(studentSkills, eq(students.id, studentSkills.studentId))
-      .leftJoin(skills, eq(studentSkills.skillId, skills.id))
       .leftJoin(projects, eq(students.id, projects.studentId));
 
     const results = whereConditions.length > 0
@@ -265,32 +280,28 @@ export class DatabaseStorage implements IStorage {
 
     
     // Group results by student
-    const studentMap = new Map<string, StudentWithSkills>();
+    const studentMap = new Map<string, StudentWithAssessments>();
     
     for (const row of results) {
       const student = row.students;
       if (!studentMap.has(student.id)) {
         studentMap.set(student.id, {
           ...student,
-          skills: [],
           projects: [],
           fullName: `${student.firstName} ${student.lastName}`,
-          institution: student.university,
-          course: `${student.degree} in ${student.major}`,
+          institution: student.university || 'Unknown Institution',
+          course: `${student.degree || 'Unknown'} in ${student.major || 'Unknown'}`,
+          assessmentLevel: this.getAssessmentLevel(
+            student.overallAssessmentScore, 
+            student.dsaScore, 
+            student.csFundamentalsScore, 
+            student.aptitudeScore, 
+            student.verbalCommunicationScore
+          ),
         });
       }
       
       const studentData = studentMap.get(student.id)!;
-      
-      if (row.student_skills && row.skills) {
-        const existingSkill = studentData.skills.find(s => s.skillId === row.student_skills!.skillId);
-        if (!existingSkill) {
-          studentData.skills.push({
-            ...row.student_skills,
-            skill: row.skills,
-          });
-        }
-      }
       
       if (row.projects) {
         const existingProject = studentData.projects.find(p => p.id === row.projects!.id);
@@ -303,7 +314,7 @@ export class DatabaseStorage implements IStorage {
     return Array.from(studentMap.values());
   }
 
-  async getStudentById(id: string): Promise<StudentWithSkills | undefined> {
+  async getStudentById(id: string): Promise<StudentWithAssessments | undefined> {
     const results = await db
       .select()
       .from(students)
@@ -315,7 +326,7 @@ export class DatabaseStorage implements IStorage {
     if (results.length === 0) return undefined;
 
     const student = results[0].students;
-    const studentData: StudentWithSkills = {
+    const studentData: StudentWithAssessments = {
       ...student,
       skills: [],
       projects: [],
@@ -1172,7 +1183,7 @@ function inorderTraversal(root) {
     teamSize: number;
     workMode: string;
     maxResults: number;
-  }): Promise<StudentWithSkills[]> {
+  }): Promise<StudentWithAssessments[]> {
     try {
       // Build dynamic query based on requirements
       let query = db
@@ -1255,7 +1266,7 @@ function inorderTraversal(root) {
         .sort((a, b) => b.fitScore - a.fitScore)
         .slice(0, requirements.maxResults);
 
-      // Format the results to match StudentWithSkills interface
+      // Format the results to match StudentWithAssessments interface
       return sortedResults.map(student => ({
         ...student,
         projects: [], // Can be populated later if needed
@@ -1264,7 +1275,7 @@ function inorderTraversal(root) {
         institution: student.university,
         course: student.degree,
         skills: student.skillsArray || [] // Ensure skills are properly mapped
-      })) as StudentWithSkills[];
+      })) as StudentWithAssessments[];
 
     } catch (error) {
       console.error("Error in smart candidate curation:", error);
