@@ -214,7 +214,7 @@
 
 .btn-secondary {
   @apply btn-clean bg-secondary text-secondary-foreground border border-border;
-  @apply hover:bg-secondary/80 active:bg-secondary/90;
+  @apply hover:bg-gray-100 active:bg-gray-200;
 }
 
 /* Animations */
