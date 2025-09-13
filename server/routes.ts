@@ -97,6 +97,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ buildTs: BUILD_TS, env: process.env.NODE_ENV });
   });
 
+  // DB health check endpoint
+  app.get('/api/_dbcheck', async (req, res) => {
+    try {
+      const result = await storage.dbHealthCheck();
+      res.json({ status: 'ok', result });
+    } catch (error) {
+      res.status(500).json({ 
+        status: 'error', 
+        message: error instanceof Error ? error.message : String(error) 
+      });
+    }
+  });
+
   // Student routes (public for preview, protected for full access)
   app.get('/api/students', async (req, res) => {
     try {
@@ -163,11 +176,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         minCgpa: minCgpa ? parseFloat(minCgpa as string) : undefined,
       };
 
+      console.log("🔍 Count API called with filters:", JSON.stringify(filters, null, 2));
       const count = await storage.getStudentCount(filters);
       res.json({ count });
     } catch (error) {
       console.error("Error counting students:", error);
-      res.status(500).json({ message: "Failed to count students" });
+      
+      if (req.query._debug === '1') {
+        res.status(500).json({ 
+          message: "Failed to count students", 
+          dev: { 
+            message: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : 'No stack trace'
+          }
+        });
+      } else {
+        res.status(500).json({ message: "Failed to count students" });
+      }
     }
   });
 

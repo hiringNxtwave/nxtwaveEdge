@@ -263,9 +263,10 @@ export class DatabaseStorage implements IStorage {
       whereConditions.push(ilike(students.university, `%${filters.university}%`));
     }
     
-    if (filters?.minCgpa) {
-      whereConditions.push(sql`CASE WHEN ${students.cgpa} ~ '^[0-9]+(\.[0-9]+)?$' THEN (${students.cgpa}::numeric >= ${filters.minCgpa}) ELSE false END`);
-    }
+    // TODO: Re-enable minCgpa filter with proper casting
+    // if (filters?.minCgpa) {
+    //   whereConditions.push(sql`CASE WHEN ${students.cgpa} ~ '^[0-9]+(\.[0-9]+)?$' THEN (${students.cgpa}::numeric >= ${filters.minCgpa}) ELSE false END`);
+    // }
 
     let baseQuery = db
       .select()
@@ -372,48 +373,76 @@ export class DatabaseStorage implements IStorage {
     return studentData;
   }
 
+  // DB health check method  
+  async dbHealthCheck(): Promise<any> {
+    try {
+      const result = await db.execute(sql`select 1 as ok`);
+      return { status: 'ok', result };
+    } catch (error) {
+      console.error('Database health check failed:', error);
+      return { status: 'error', message: error instanceof Error ? error.message : String(error) };
+    }
+  }
+
   async getStudentCount(filters?: {
     skills?: string[];
     location?: string;
     university?: string;
     minCgpa?: number;
   }): Promise<number> {
-    const whereConditions = [];
-    
-    if (filters?.location) {
-      whereConditions.push(ilike(students.location, `%${filters.location}%`));
-    }
-    
-    if (filters?.university) {
-      whereConditions.push(ilike(students.university, `%${filters.university}%`));
-    }
-    
-    if (filters?.minCgpa) {
-      whereConditions.push(sql`CASE WHEN ${students.cgpa} ~ '^[0-9]+(\.[0-9]+)?$' THEN (${students.cgpa}::numeric >= ${filters.minCgpa}) ELSE false END`);
-    }
-
-    // Add skills filtering by joining with studentSkills table
-    if (filters?.skills && filters.skills.length > 0) {
-      const baseCountQuery = db
-        .select({ count: sql`count(distinct ${students.id})` })
-        .from(students)
-        .leftJoin(studentSkills, eq(students.id, studentSkills.studentId))
-        .leftJoin(skills, eq(studentSkills.skillId, skills.id));
-      whereConditions.push(inArray(skills.name, filters.skills));
+    try {
+      console.log("🔍 getStudentCount called with filters:", JSON.stringify(filters, null, 2));
       
-      const [result] = whereConditions.length > 0
-        ? await baseCountQuery.where(whereConditions.length === 1 ? whereConditions[0] : and(...whereConditions))
-        : await baseCountQuery;
-      return Number(result.count);
-    }
+      const whereConditions = [];
+      
+      if (filters?.location) {
+        whereConditions.push(ilike(students.location, `%${filters.location}%`));
+      }
+      
+      if (filters?.university) {
+        whereConditions.push(ilike(students.university, `%${filters.university}%`));
+      }
+      
+      // Add skills filtering by joining with studentSkills table
+      if (filters?.skills && filters.skills.length > 0) {
+        console.log("📊 Counting students with skills filter");
+        const results = await db
+          .select({ count: sql`count(distinct ${students.id})` })
+          .from(students)
+          .leftJoin(studentSkills, eq(students.id, studentSkills.studentId))
+          .leftJoin(skills, eq(studentSkills.skillId, skills.id))
+          .where(and(
+            inArray(skills.name, filters.skills),
+            ...(whereConditions.length > 0 ? whereConditions : [])
+          ));
+        
+        console.log("📊 Skills count query results:", results);
+        return Number(results[0]?.count || 0);
+      }
 
-    // Simple count query without skills filtering
-    const baseCountQuery = db.select({ count: sql`count(*)` }).from(students);
-    
-    const [result] = whereConditions.length > 0
-      ? await baseCountQuery.where(whereConditions.length === 1 ? whereConditions[0] : and(...whereConditions))
-      : await baseCountQuery;
-    return Number(result.count);
+      // Simple count query without skills filtering
+      if (whereConditions.length === 0) {
+        console.log("📊 Getting total student count (no filters)");
+        const results = await db.select({ count: sql`count(*)` }).from(students);
+        console.log("📊 Total count results:", results);
+        return Number(results[0]?.count || 0);
+      }
+      
+      // Count with location/university filters only
+      console.log("📊 Counting students with location/university filters");
+      const results = await db
+        .select({ count: sql`count(*)` })
+        .from(students)
+        .where(whereConditions.length === 1 ? whereConditions[0] : and(...whereConditions));
+      
+      console.log("📊 Filtered count results:", results);
+      return Number(results[0]?.count || 0);
+    } catch (error) {
+      console.error("❌ Error in getStudentCount:", error);
+      console.error("Error details:", error instanceof Error ? error.message : String(error));
+      console.error("Error stack:", error instanceof Error ? error.stack : 'No stack trace');
+      throw error;
+    }
   }
 
   // Skill operations
