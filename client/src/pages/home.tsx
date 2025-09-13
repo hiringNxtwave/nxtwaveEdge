@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
-import { Users, Building2, MessageSquare, TrendingUp, Star, Award, Globe, Target, CheckCircle, ArrowRight, MapPin, GraduationCap, Heart, Zap, Calendar, BookOpen } from "lucide-react";
+import { Users, Building2, TrendingUp, Star, Award, Globe, Target, CheckCircle, ArrowRight, MapPin, GraduationCap, Heart, Zap, BookOpen } from "lucide-react";
 import { SiTata, SiInfosys, SiWipro, SiGoogle, SiAmazon, SiFlipkart } from "react-icons/si";
 import Header from "@/components/header";
 import { useShortlist } from "@/contexts/shortlist-context";
@@ -56,12 +56,6 @@ export default function Home() {
     enabled: !!user,
   });
 
-  // Sample recent activity for demo
-  const recentActivity = [
-    { type: "view", student: "Rahul Sharma", university: "IIT Delhi", time: "2 hours ago" },
-    { type: "shortlist", student: "Priya Patel", university: "NIT Trichy", time: "5 hours ago" },
-    { type: "contact", student: "Amit Kumar", university: "BITS Pilani", time: "1 day ago" },
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -167,70 +161,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Dashboard Stats */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            {/* Recent Activity */}
-            <Card className="bg-white" data-testid="card-recent-activity">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-green-600" />
-                  Recent Activity
-                </CardTitle>
-                <CardDescription>Your latest hiring actions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {recentActivity.length > 0 ? (
-                  <div className="space-y-4">
-                    {recentActivity.map((activity, index) => (
-                      <div key={index} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                            activity.type === 'view' ? 'bg-blue-100' :
-                            activity.type === 'shortlist' ? 'bg-green-100' : 'bg-purple-100'
-                          }`}>
-                            {activity.type === 'view' ? 
-                              <Users className="w-4 h-4 text-blue-600" /> :
-                              activity.type === 'shortlist' ? 
-                              <Heart className="w-4 h-4 text-green-600" /> :
-                              <MessageSquare className="w-4 h-4 text-purple-600" />
-                            }
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm text-gray-900">{activity.student}</p>
-                            <p className="text-xs text-gray-600">{activity.university}</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <Badge variant={activity.type === 'shortlist' ? 'default' : 'secondary'} className="text-xs">
-                            {activity.type === 'view' ? 'Viewed' : 
-                             activity.type === 'shortlist' ? 'Shortlisted' : 'Contacted'}
-                          </Badge>
-                          <p className="text-xs text-gray-500 mt-1">{activity.time}</p>
-                        </div>
-                      </div>
-                    ))}
-                    <div className="pt-4">
-                      <Button variant="outline" size="sm" className="w-full">
-                        View All Activity
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <Users className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                    <p className="text-gray-500 mb-4">No activity yet</p>
-                    <Link href="/browse">
-                      <Button size="sm">Start Browsing Candidates</Button>
-                    </Link>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* Trusted Companies Section */}
       <section className="py-16 bg-gradient-to-r from-gray-50 to-blue-50">
