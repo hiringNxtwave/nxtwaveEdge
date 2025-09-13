@@ -173,7 +173,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 </h3>
               </Link>
               <p className="text-sm text-blue-600 dark:text-blue-400 font-medium truncate mb-2" data-testid={`text-student-university-${student.id}`}>
-                {student.university}
+                {student.university} {student.nirfRanking && `(NIRF #${student.nirfRanking})`}
               </p>
               <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
                 <span className="font-medium" data-testid={`text-student-cgpa-${student.id}`}>

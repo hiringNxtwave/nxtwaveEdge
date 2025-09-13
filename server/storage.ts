@@ -908,13 +908,49 @@ export class DatabaseStorage implements IStorage {
       "Chatterjee", "Banerjee", "Chakraborty", "Majumdar", "Sarkar", "Ganguly", "Paul", "Biswas", "Mitra", "Dey"
     ];
 
-    const universities = [
-      "IIT Delhi", "IIT Bombay", "IIT Madras", "IIT Kanpur", "IIT Kharagpur", "IIT Roorkee", "IIT Guwahati", "IIT Hyderabad",
-      "BITS Pilani", "BITS Goa", "BITS Hyderabad", "NIT Trichy", "NIT Warangal", "NIT Surathkal", "NIT Calicut", "NIT Durgapur",
-      "IIIT Hyderabad", "IIIT Bangalore", "IIIT Delhi", "IIIT Allahabad", "Delhi University", "Mumbai University", "Pune University",
-      "Anna University", "Jadavpur University", "Calcutta University", "Bangalore University", "Osmania University",
-      "VIT Vellore", "VIT Chennai", "SRM University", "Manipal Institute", "PES University", "RV College", "BMS College",
-      "PSG College", "Coimbatore Institute", "Thapar University", "LPU", "Amity University", "Shiv Nadar University"
+    const universityRankings = [
+      { name: "IIT Madras", nirfRanking: 1 },
+      { name: "IIT Delhi", nirfRanking: 2 },
+      { name: "IIT Bombay", nirfRanking: 3 },
+      { name: "IIT Kanpur", nirfRanking: 4 },
+      { name: "IIT Kharagpur", nirfRanking: 5 },
+      { name: "IIT Roorkee", nirfRanking: 6 },
+      { name: "IIT Guwahati", nirfRanking: 7 },
+      { name: "IIT Hyderabad", nirfRanking: 8 },
+      { name: "NIT Trichy", nirfRanking: 9 },
+      { name: "NIT Surathkal", nirfRanking: 10 },
+      { name: "IIIT Hyderabad", nirfRanking: 12 },
+      { name: "NIT Warangal", nirfRanking: 16 },
+      { name: "BITS Pilani", nirfRanking: 24 },
+      { name: "NIT Calicut", nirfRanking: 27 },
+      { name: "VIT Vellore", nirfRanking: 33 },
+      { name: "IIIT Delhi", nirfRanking: 41 },
+      { name: "BITS Goa", nirfRanking: 45 },
+      { name: "Jadavpur University", nirfRanking: 48 },
+      { name: "Delhi Technological University", nirfRanking: 51 },
+      { name: "SRM University", nirfRanking: 54 },
+      { name: "BITS Hyderabad", nirfRanking: 58 },
+      { name: "VIT Chennai", nirfRanking: 61 },
+      { name: "Thapar University", nirfRanking: 67 },
+      { name: "Manipal Institute", nirfRanking: 72 },
+      { name: "PES University", nirfRanking: 78 },
+      { name: "Anna University", nirfRanking: 85 },
+      { name: "NIT Durgapur", nirfRanking: 89 },
+      { name: "IIIT Bangalore", nirfRanking: 92 },
+      { name: "IIIT Allahabad", nirfRanking: 96 },
+      { name: "Delhi University", nirfRanking: 101 },
+      { name: "Mumbai University", nirfRanking: 108 },
+      { name: "Pune University", nirfRanking: 115 },
+      { name: "RV College", nirfRanking: 125 },
+      { name: "BMS College", nirfRanking: 132 },
+      { name: "PSG College", nirfRanking: 145 },
+      { name: "Coimbatore Institute", nirfRanking: 152 },
+      { name: "Bangalore University", nirfRanking: 158 },
+      { name: "Calcutta University", nirfRanking: 165 },
+      { name: "Osmania University", nirfRanking: 172 },
+      { name: "LPU", nirfRanking: 185 },
+      { name: "Amity University", nirfRanking: 192 },
+      { name: "Shiv Nadar University", nirfRanking: 198 }
     ];
 
     const locations = [
@@ -963,37 +999,37 @@ export class DatabaseStorage implements IStorage {
     // Create high-quality targeted profiles first (these will have high JD match)
     const highMatchProfiles = [
       {
-        firstName: "Arjun", lastName: "Sharma", university: "IIT Delhi", degree: "B.Tech", major: "Computer Science",
+        firstName: "Arjun", lastName: "Sharma", university: "IIT Delhi", nirfRanking: 2, degree: "B.Tech", major: "Computer Science",
         cgpa: "9.2", codingRating: 5, location: "Delhi", graduationYear: 2024,
         bio: "Full-stack developer with 2+ years of experience in React, Node.js, and cloud technologies. Strong problem-solving skills and passionate about building scalable applications.",
         profileImageUrl: profileImages[0]
       },
       {
-        firstName: "Priya", lastName: "Patel", university: "IIT Bombay", degree: "B.Tech", major: "Computer Science",
+        firstName: "Priya", lastName: "Patel", university: "IIT Bombay", nirfRanking: 3, degree: "B.Tech", major: "Computer Science",
         cgpa: "9.0", codingRating: 5, location: "Mumbai", graduationYear: 2024,
         bio: "Software engineer specializing in backend development, microservices, and DevOps. Experience with Java, Spring Boot, Docker, and Kubernetes.",
         profileImageUrl: profileImages[1]
       },
       {
-        firstName: "Rahul", lastName: "Kumar", university: "BITS Pilani", degree: "B.Tech", major: "Computer Science",
+        firstName: "Rahul", lastName: "Kumar", university: "BITS Pilani", nirfRanking: 24, degree: "B.Tech", major: "Computer Science",
         cgpa: "8.8", codingRating: 5, location: "Bangalore", graduationYear: 2024,
         bio: "Frontend specialist with expertise in React, TypeScript, and modern web technologies. Strong focus on user experience and performance optimization.",
         profileImageUrl: profileImages[2]
       },
       {
-        firstName: "Sneha", lastName: "Reddy", university: "IIT Madras", degree: "B.Tech", major: "Computer Science",
+        firstName: "Sneha", lastName: "Reddy", university: "IIT Madras", nirfRanking: 1, degree: "B.Tech", major: "Computer Science",
         cgpa: "9.1", codingRating: 5, location: "Chennai", graduationYear: 2024,
         bio: "Data engineer with experience in Python, Apache Spark, and cloud platforms. Skilled in building data pipelines and machine learning systems.",
         profileImageUrl: profileImages[3]
       },
       {
-        firstName: "Vikram", lastName: "Singh", university: "IIT Kanpur", degree: "B.Tech", major: "Computer Science",
+        firstName: "Vikram", lastName: "Singh", university: "IIT Kanpur", nirfRanking: 4, degree: "B.Tech", major: "Computer Science",
         cgpa: "8.9", codingRating: 4, location: "Pune", graduationYear: 2024,
         bio: "Mobile app developer with expertise in React Native and Flutter. Experience in building cross-platform applications with clean architecture.",
         profileImageUrl: profileImages[4]
       },
       {
-        firstName: "Ananya", lastName: "Joshi", university: "NIT Trichy", degree: "B.Tech", major: "Computer Science",
+        firstName: "Ananya", lastName: "Joshi", university: "NIT Trichy", nirfRanking: 9, degree: "B.Tech", major: "Computer Science",
         cgpa: "8.7", codingRating: 4, location: "Bangalore", graduationYear: 2024,
         bio: "AI/ML enthusiast with hands-on experience in TensorFlow, PyTorch, and computer vision. Strong mathematical background and research experience.",
         profileImageUrl: profileImages[5]
@@ -1016,7 +1052,7 @@ export class DatabaseStorage implements IStorage {
     for (let i = highMatchProfiles.length; i < 520; i++) {
       const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
       const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
-      const university = universities[Math.floor(Math.random() * universities.length)];
+      const universityData = universityRankings[Math.floor(Math.random() * universityRankings.length)];
       const location = locations[Math.floor(Math.random() * locations.length)];
       const major = majors[Math.floor(Math.random() * majors.length)];
       const degree = degrees[Math.floor(Math.random() * degrees.length)];
@@ -1036,7 +1072,8 @@ export class DatabaseStorage implements IStorage {
         firstName,
         lastName,
         email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@email.com`,
-        university,
+        university: universityData.name,
+        nirfRanking: universityData.nirfRanking,
         degree,
         major,
         graduationYear,

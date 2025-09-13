@@ -126,6 +126,7 @@ export const students = pgTable("students", {
   email: varchar("email").unique().notNull(),
   phone: varchar("phone"),
   university: varchar("university").notNull(),
+  nirfRanking: integer("nirf_ranking"), // NIRF ranking of the university
   degree: varchar("degree").notNull(),
   major: varchar("major").notNull(),
   graduationYear: integer("graduation_year").notNull(),
