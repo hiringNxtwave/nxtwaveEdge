@@ -296,40 +296,40 @@ export default function Landing() {
       </section>
 
       {/* Assessment Quality Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      <section className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Why NxtWave for Fresher Hiring?</h2>
+            <h2 className="text-4xl font-bold mb-4 text-gray-900">Why NxtWave for Fresher Hiring?</h2>
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
-              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
                 <div className="text-xl">🚀</div>
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-white">One Platform. Unlimited Talent.</h3>
-              <p className="text-sm opacity-90">200,000+ pre-assessed students from 3,000+ colleges, refreshed every 90 days. Filter by skills, CTC, year, or traits — and hire in minutes.</p>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900">One Platform. Unlimited Talent.</h3>
+              <p className="text-sm text-gray-600">200,000+ pre-assessed students from 3,000+ colleges, refreshed every 90 days. Filter by skills, CTC, year, or traits — and hire in minutes.</p>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
-              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
                 <div className="text-xl">🎯</div>
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-white">Pre-Assessed & Job-Ready</h3>
-              <p className="text-sm opacity-90">Rigorous offline tests in coding, DSA, aptitude & communication. Get data-driven profiles matched to your roles.</p>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900">Pre-Assessed & Job-Ready</h3>
+              <p className="text-sm text-gray-600">Rigorous offline tests in coding, DSA, aptitude & communication. Get data-driven profiles matched to your roles.</p>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
-              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
                 <div className="text-xl">🔍</div>
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-white">Matchmaking, Not Mass Hiring</h3>
-              <p className="text-sm opacity-90">AI-powered filters surface only the right-fit candidates — no noise, no wasted cycles.</p>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900">Matchmaking, Not Mass Hiring</h3>
+              <p className="text-sm text-gray-600">AI-powered filters surface only the right-fit candidates — no noise, no wasted cycles.</p>
             </div>
-            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-6 border border-white/30">
-              <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+            <div className="bg-white rounded-xl p-6 shadow-md border border-gray-200 hover:shadow-lg transition-all duration-300">
+              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-4">
                 <div className="text-xl">💰</div>
               </div>
-              <h3 className="text-lg font-semibold mb-2 text-white">Save Time & Costs</h3>
-              <p className="text-sm opacity-90">Skip 1,000 campus visits. One dashboard = instant shortlists. ₹50–70 lakhs saved per hiring cycle.</p>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900">Save Time & Costs</h3>
+              <p className="text-sm text-gray-600">Skip 1,000 campus visits. One dashboard = instant shortlists. ₹50–70 lakhs saved per hiring cycle.</p>
             </div>
           </div>
           
