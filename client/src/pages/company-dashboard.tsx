@@ -4,6 +4,7 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { type Company, type ContactRequest, type CompanyWithUser } from "@shared/schema";
 import Header from "@/components/header";
 import CompanyStats from "@/components/company-stats";
+import MarketInsights from "@/components/market-insights";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,10 +22,6 @@ export default function CompanyDashboard() {
     enabled: !!user,
   });
 
-  const { data: contactRequests, isLoading: requestsLoading } = useQuery<ContactRequest[]>({
-    queryKey: ["/api/contact-requests"],
-    enabled: !!company,
-  });
 
   const { data: stats } = useQuery<{
     totalViews: number;
@@ -94,83 +91,16 @@ export default function CompanyDashboard() {
         <CompanyStats stats={stats ?? { totalViews: 0, contactsSent: 0, responseRate: 0, activeSearches: 0 }} />
 
         <div className="grid lg:grid-cols-3 gap-6 mt-8">
-          {/* Recent Contact Requests */}
+          {/* Market Insights */}
           <div className="lg:col-span-2">
-            <Card data-testid="card-contact-requests">
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle>Recent Contact Requests</CardTitle>
-                    <CardDescription>
-                      Students you've reached out to
-                    </CardDescription>
-                  </div>
-                  <Link href="/browse">
-                    <Button variant="outline" size="sm" data-testid="button-browse-more">
-                      <Users className="mr-2 h-4 w-4" />
-                      Browse More
-                    </Button>
-                  </Link>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {requestsLoading ? (
-                  <div className="space-y-4">
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="flex gap-4">
-                        <Skeleton className="h-12 w-12 rounded-full" />
-                        <div className="flex-1 space-y-2">
-                          <Skeleton className="h-4 w-3/4" />
-                          <Skeleton className="h-3 w-1/2" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : !contactRequests || contactRequests?.length === 0 ? (
-                  <div className="text-center py-8" data-testid="text-no-requests">
-                    <MessageSquare className="mx-auto h-8 w-8 text-gray-400 mb-2" />
-                    <p className="text-gray-500 dark:text-gray-400">
-                      No contact requests yet.
-                    </p>
-                    <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-                      Start browsing students to send contact requests.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-4" data-testid="list-contact-requests">
-                    {contactRequests?.slice(0, 5).map((request) => (
-                      <div key={request.id} className="flex items-center gap-4 p-3 border border-gray-200 dark:border-gray-700 rounded-lg" data-testid={`request-${request.id}`}>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-medium text-gray-900 dark:text-white" data-testid={`text-request-student-${request.id}`}>
-                              {(request as any).studentName || 'Student'}
-                            </h4>
-                            <Badge 
-                              variant={
-                                request.status === 'pending' ? 'secondary' :
-                                request.status === 'responded' ? 'default' : 'destructive'
-                              }
-                              data-testid={`badge-request-status-${request.id}`}
-                            >
-                              {request.status}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-300" data-testid={`text-request-message-${request.id}`}>
-                            {request.message?.substring(0, 100) || 'No message'}...
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1" data-testid={`text-request-date-${request.id}`}>
-                            {request.createdAt ? new Date(request.createdAt).toLocaleDateString() : 'N/A'}
-                          </p>
-                        </div>
-                        <Button variant="ghost" size="sm" data-testid={`button-view-request-${request.id}`}>
-                          <ExternalLink className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <MarketInsights 
+              companyTier={(company as Company)?.size === "1-10" ? "Tier 3" : 
+                         (company as Company)?.size === "11-50" ? "Tier 2" : 
+                         (company as Company)?.size === "51-200" ? "Tier 2" : "Tier 1"}
+              companyLocation={(company as Company)?.location || "Bangalore"}
+              companySize={(company as Company)?.size || "Mid-size"}
+              industry={(company as Company)?.industry || "Technology"}
+            />
           </div>
 
           {/* Company Profile */}
