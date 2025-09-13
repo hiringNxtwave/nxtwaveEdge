@@ -5,6 +5,7 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import OpenAI from 'openai';
 import { 
   insertCompanySchema,
+  insertCompanyRequirementsSchema,
   insertContactRequestSchema,
   type Student,
   type StudentWithAssessments,
@@ -85,6 +86,139 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating company:", error);
       res.status(400).json({ message: "Invalid company data" });
+    }
+  });
+
+  // Company Requirements routes
+  app.get('/api/company/requirements', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const company = await storage.getCompanyByUserId(userId);
+      
+      if (!company) {
+        return res.status(404).json({ message: "Company not found" });
+      }
+      
+      const requirements = await storage.getCompanyRequirements(company.id);
+      res.json(requirements);
+    } catch (error) {
+      console.error("Error fetching company requirements:", error);
+      res.status(500).json({ message: "Failed to fetch company requirements" });
+    }
+  });
+
+  app.get('/api/company/requirements/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const requirements = await storage.getCompanyRequirementById(id);
+      
+      if (!requirements) {
+        return res.status(404).json({ message: "Requirements not found" });
+      }
+      
+      res.json(requirements);
+    } catch (error) {
+      console.error("Error fetching company requirements:", error);
+      res.status(500).json({ message: "Failed to fetch company requirements" });
+    }
+  });
+
+  app.post('/api/company/requirements', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const company = await storage.getCompanyByUserId(userId);
+      
+      if (!company) {
+        return res.status(404).json({ message: "Company not found" });
+      }
+
+      const requirementsData = insertCompanyRequirementsSchema.parse({
+        ...req.body,
+        companyId: company.id,
+      });
+      
+      const requirements = await storage.createCompanyRequirements(requirementsData);
+      res.json(requirements);
+    } catch (error) {
+      console.error("Error creating company requirements:", error);
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid requirements data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to create company requirements" });
+      }
+    }
+  });
+
+  app.put('/api/company/requirements/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.claims.sub;
+      const company = await storage.getCompanyByUserId(userId);
+      
+      if (!company) {
+        return res.status(404).json({ message: "Company not found" });
+      }
+
+      // Verify that the requirement belongs to this company
+      const existingRequirement = await storage.getCompanyRequirementById(id);
+      if (!existingRequirement || existingRequirement.companyId !== company.id) {
+        return res.status(404).json({ message: "Requirements not found" });
+      }
+
+      // Validate the update data using partial schema
+      const updateSchema = insertCompanyRequirementsSchema.omit({ companyId: true }).partial();
+      const updateData = updateSchema.parse(req.body);
+      
+      const updatedRequirements = await storage.updateCompanyRequirements(id, updateData);
+      res.json(updatedRequirements);
+    } catch (error) {
+      console.error("Error updating company requirements:", error);
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid requirements data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to update company requirements" });
+      }
+    }
+  });
+
+  app.delete('/api/company/requirements/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.claims.sub;
+      const company = await storage.getCompanyByUserId(userId);
+      
+      if (!company) {
+        return res.status(404).json({ message: "Company not found" });
+      }
+
+      // Verify that the requirement belongs to this company
+      const existingRequirement = await storage.getCompanyRequirementById(id);
+      if (!existingRequirement || existingRequirement.companyId !== company.id) {
+        return res.status(404).json({ message: "Requirements not found" });
+      }
+
+      await storage.deleteCompanyRequirements(id);
+      res.json({ message: "Requirements deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting company requirements:", error);
+      res.status(500).json({ message: "Failed to delete company requirements" });
+    }
+  });
+
+  // JD Parsing endpoint
+  app.post('/api/company/parse-jd', isAuthenticated, async (req: any, res) => {
+    try {
+      const { jobDescription } = req.body;
+      
+      if (!jobDescription || typeof jobDescription !== 'string') {
+        return res.status(400).json({ message: "Job description is required" });
+      }
+
+      const parsedData = await storage.parseJobDescription(jobDescription);
+      res.json(parsedData);
+    } catch (error) {
+      console.error("Error parsing job description:", error);
+      res.status(500).json({ message: "Failed to parse job description" });
     }
   });
 

@@ -91,7 +91,7 @@ export const companyRequirements = pgTable("company_requirements", {
   technicalKeywords: text("technical_keywords"), // JSON array of parsed technical terms
   
   // Academic Requirements
-  minimumCGPA: decimal("minimum_cgpa", { precision: 3, scale: 2 }),
+  minimumCGPA: decimal("minimum_cgpa", { precision: 4, scale: 2 }),
   preferredColleges: text("preferred_colleges"), // JSON array of college names/tiers
   requiredDegrees: text("required_degrees"), // JSON array of degree types
   graduationYears: text("graduation_years"), // JSON array of allowed years

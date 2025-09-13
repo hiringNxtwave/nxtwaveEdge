@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
@@ -5,17 +6,20 @@ import { type Company, type ContactRequest, type CompanyWithUser } from "@shared
 import Header from "@/components/header";
 import CompanyStats from "@/components/company-stats";
 import MarketInsights from "@/components/market-insights";
+import { CompanyProfileManager } from "@/components/company-profile-manager";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "wouter";
-import { Users, MessageSquare, Building2, Plus, ExternalLink } from "lucide-react";
+import { Users, MessageSquare, Building2, Plus, ExternalLink, BarChart3, Target } from "lucide-react";
 
 export default function CompanyDashboard() {
   useScrollToTop();
   
   const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState("overview");
 
   const { data: company, isLoading: companyLoading } = useQuery<CompanyWithUser>({
     queryKey: ["/api/company"],
@@ -90,39 +94,54 @@ export default function CompanyDashboard() {
         {/* Stats Overview */}
         <CompanyStats stats={stats ?? { totalViews: 0, contactsSent: 0, responseRate: 0, activeSearches: 0 }} />
 
-        <div className="grid lg:grid-cols-3 gap-6 mt-8">
-          {/* Market Insights */}
-          <div className="lg:col-span-2">
-            <MarketInsights 
-              companyTier={(company as Company)?.size === "1-10" ? "Tier 3" : 
-                         (company as Company)?.size === "11-50" ? "Tier 2" : 
-                         (company as Company)?.size === "51-200" ? "Tier 2" : "Tier 1"}
-              companyLocation={(company as Company)?.location || "Bangalore"}
-              companySize={(company as Company)?.size || "Mid-size"}
-              industry={(company as Company)?.industry || "Technology"}
-            />
-          </div>
+        {/* Main Dashboard Tabs */}
+        <div className="mt-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="overview" data-testid="tab-overview">
+                <BarChart3 className="w-4 h-4 mr-2" />
+                Market Insights
+              </TabsTrigger>
+              <TabsTrigger value="requirements" data-testid="tab-requirements">
+                <Target className="w-4 h-4 mr-2" />
+                Job Requirements
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="overview" className="mt-6">
+              <div className="grid lg:grid-cols-3 gap-6">
+                {/* Market Insights */}
+                <div className="lg:col-span-2">
+                  <MarketInsights 
+                    companyTier={(company as Company)?.size === "1-10" ? "Tier 3" : 
+                               (company as Company)?.size === "11-50" ? "Tier 2" : 
+                               (company as Company)?.size === "51-200" ? "Tier 2" : "Tier 1"}
+                    companyLocation={(company as Company)?.location || "Bangalore"}
+                    companySize={(company as Company)?.size || "Mid-size"}
+                    industry={(company as Company)?.industry || "Technology"}
+                  />
+                </div>
 
-          {/* Company Profile */}
-          <div className="space-y-6">
-            <Card data-testid="card-company-profile">
-              <CardHeader>
-                <CardTitle>Company Profile</CardTitle>
-                <CardDescription>Your company information</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div>
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Industry</span>
-                  <p data-testid="text-company-industry">{(company as Company)?.industry || 'Not specified'}</p>
-                </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Size</span>
-                  <p data-testid="text-company-size">{(company as Company)?.size || 'Not specified'}</p>
-                </div>
-                <div>
-                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Location</span>
-                  <p data-testid="text-company-location">{(company as Company)?.location || 'Not specified'}</p>
-                </div>
+                {/* Company Profile */}
+                <div className="space-y-6">
+                  <Card data-testid="card-company-profile">
+                    <CardHeader>
+                      <CardTitle>Company Profile</CardTitle>
+                      <CardDescription>Your company information</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div>
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Industry</span>
+                        <p data-testid="text-company-industry">{(company as Company)?.industry || 'Not specified'}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Size</span>
+                        <p data-testid="text-company-size">{(company as Company)?.size || 'Not specified'}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Location</span>
+                        <p data-testid="text-company-location">{(company as Company)?.location || 'Not specified'}</p>
+                      </div>
                 {(company as Company)?.website && (
                   <div>
                     <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Website</span>
@@ -140,31 +159,38 @@ export default function CompanyDashboard() {
                 <Button variant="outline" className="w-full mt-4" data-testid="button-edit-profile">
                   Edit Profile
                 </Button>
-              </CardContent>
-            </Card>
+                    </CardContent>
+                  </Card>
 
-            <Card data-testid="card-quick-actions">
-              <CardHeader>
-                <CardTitle>Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Link href="/browse">
-                  <Button className="w-full justify-start" variant="outline" data-testid="button-quick-browse">
-                    <Users className="mr-2 h-4 w-4" />
-                    Browse Students
-                  </Button>
-                </Link>
-                <Button className="w-full justify-start" variant="outline" data-testid="button-quick-post-job">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Post New Job
-                </Button>
-                <Button className="w-full justify-start" variant="outline" data-testid="button-quick-manage-requests">
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Manage Requests
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+                  <Card data-testid="card-quick-actions">
+                    <CardHeader>
+                      <CardTitle>Quick Actions</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <Link href="/browse">
+                        <Button className="w-full justify-start" variant="outline" data-testid="button-quick-browse">
+                          <Users className="mr-2 h-4 w-4" />
+                          Browse Students
+                        </Button>
+                      </Link>
+                      <Button className="w-full justify-start" variant="outline" data-testid="button-quick-post-job">
+                        <Plus className="mr-2 h-4 w-4" />
+                        Post New Job
+                      </Button>
+                      <Button className="w-full justify-start" variant="outline" data-testid="button-quick-manage-requests">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Manage Requests
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            </TabsContent>
+            
+            <TabsContent value="requirements" className="mt-6">
+              <CompanyProfileManager />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
