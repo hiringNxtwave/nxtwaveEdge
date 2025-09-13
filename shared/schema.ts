@@ -474,7 +474,7 @@ export type StudentWithAssessments = Student & {
   fullName: string;
   institution: string;
   course: string;
-  assessmentLevel: 'Excellent' | 'Good' | 'Average' | 'Below Average' | 'Not Assessed';
+  assessmentLevel: 'Excellent' | 'Strong' | 'Good' | 'Needs Improvement' | 'Not Assessed';
 };
 
 export type CompanyWithUser = Company & {
