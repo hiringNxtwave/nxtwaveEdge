@@ -186,25 +186,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
           </div>
 
-          {/* Right: Badge, Match & Actions */}
+          {/* Right: Match & Actions */}
           <div className="flex items-center gap-4">
-            {/* Assessment Level Badge */}
-            <Badge 
-              variant="secondary" 
-              className={`text-sm font-semibold px-3 py-2 whitespace-nowrap ${
-                averageSkillScore >= 4.5 ? 'bg-green-100 text-green-800' :
-                averageSkillScore >= 4 ? 'bg-blue-100 text-blue-800' :
-                averageSkillScore >= 3 ? 'bg-yellow-100 text-yellow-800' :
-                'bg-orange-100 text-orange-800'
-              }`}
-              data-testid={`badge-assessment-level-${student.id}`}
-            >
-              {averageSkillScore >= 4.5 ? '🏆 Gold Standard' :
-               averageSkillScore >= 4 ? '🥈 Excellent' :
-               averageSkillScore >= 3 ? '🥉 Good' :
-               '📚 Developing'}
-            </Badge>
-            
             {/* Match Percentage */}
             <div className={`text-base font-bold px-4 py-2 rounded-lg cursor-pointer whitespace-nowrap ${
               matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
