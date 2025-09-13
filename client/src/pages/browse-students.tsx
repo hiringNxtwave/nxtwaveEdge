@@ -169,31 +169,7 @@ export default function BrowseStudents() {
             </div>
             
             {/* Filters & Actions - Responsive Layout */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            {/* Compact Filters */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 shadow-sm">
-              <StudentFilters
-                filters={{
-                  university: filters.university || "all",
-                  codingRating: filters.codingRating?.toString() || "all"
-                }}
-                onFiltersChange={(newFilters) => {
-                  setFilters({
-                    skills: [],
-                    location: "",
-                    university: newFilters.university === "all" ? "" : newFilters.university,
-                    minCgpa: undefined,
-                    maxCgpa: undefined,
-                    codingRating: newFilters.codingRating && newFilters.codingRating !== "all" ? parseInt(newFilters.codingRating) : undefined
-                  });
-                  setCurrentPage(1);
-                }}
-                skills={(skills as any) || []}
-                resultCount={students.length}
-                totalCount={totalCount}
-              />
-            </div>
-
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4">
             {/* Smart Discovery & Actions */}
             {isAuthenticated && (
               <div className="space-y-2">
@@ -238,6 +214,30 @@ export default function BrowseStudents() {
                 )}
               </div>
             )}
+
+            {/* Compact Filters */}
+            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 shadow-sm">
+              <StudentFilters
+                filters={{
+                  university: filters.university || "all",
+                  codingRating: filters.codingRating?.toString() || "all"
+                }}
+                onFiltersChange={(newFilters) => {
+                  setFilters({
+                    skills: [],
+                    location: "",
+                    university: newFilters.university === "all" ? "" : newFilters.university,
+                    minCgpa: undefined,
+                    maxCgpa: undefined,
+                    codingRating: newFilters.codingRating && newFilters.codingRating !== "all" ? parseInt(newFilters.codingRating) : undefined
+                  });
+                  setCurrentPage(1);
+                }}
+                skills={(skills as any) || []}
+                resultCount={students.length}
+                totalCount={totalCount}
+              />
+            </div>
             </div>
           </div>
         </div>
