@@ -322,7 +322,7 @@ export default function BrowseStudents() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-testid="grid-students">
+            <div className="grid grid-cols-1 gap-6" data-testid="grid-students">
               {students?.map((student: any) => (
                 <StudentCard key={student.id} student={student} />
               ))}
