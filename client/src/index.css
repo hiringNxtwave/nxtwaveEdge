@@ -209,7 +209,7 @@
 
 .btn-primary {
   @apply btn-clean bg-primary text-primary-foreground;
-  @apply hover:bg-primary/90 active:bg-primary/95;
+  @apply hover:bg-blue-600 active:bg-blue-700;
 }
 
 .btn-secondary {
