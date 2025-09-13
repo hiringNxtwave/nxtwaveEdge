@@ -164,70 +164,84 @@ export default function Header() {
                   <DropdownMenuTrigger asChild>
                     <Button 
                       variant="ghost" 
-                      className="flex items-center space-x-2 h-auto px-3 py-2"
+                      className="flex items-center gap-3 h-auto px-3 py-2 hover:bg-accent rounded-lg transition-colors"
                       data-testid="button-user-dropdown"
                     >
                       {user?.profileImageUrl ? (
                         <img 
                           src={user.profileImageUrl} 
                           alt="Profile" 
-                          className="w-8 h-8 rounded-full object-cover"
+                          className="w-8 h-8 rounded-full object-cover ring-2 ring-border"
                           data-testid="img-profile-avatar"
                         />
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border">
                           <User className="w-4 h-4 text-primary" />
                         </div>
                       )}
-                      <span className="hidden sm:block text-sm font-medium" data-testid="text-user-name">
-                        {user?.firstName || user?.email?.split('@')[0] || 'User'}
-                      </span>
-                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                      <div className="hidden sm:flex items-center gap-2">
+                        <span className="text-sm font-medium text-foreground" data-testid="text-user-name">
+                          {user?.firstName || user?.email?.split('@')[0] || 'User'}
+                        </span>
+                        <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                      </div>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground sm:hidden transition-transform group-data-[state=open]:rotate-180" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <DropdownMenuLabel>
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'User'}
-                        </p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                          {user?.email}
-                        </p>
+                  <DropdownMenuContent align="end" className="w-64 p-2">
+                    <DropdownMenuLabel className="px-3 py-2">
+                      <div className="flex items-center gap-3">
+                        {user?.profileImageUrl ? (
+                          <img 
+                            src={user.profileImageUrl} 
+                            alt="Profile" 
+                            className="w-10 h-10 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                            <User className="w-5 h-5 text-primary" />
+                          </div>
+                        )}
+                        <div className="flex flex-col">
+                          <p className="text-sm font-semibold leading-none text-foreground">
+                            {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'User'}
+                          </p>
+                          <p className="text-xs leading-none text-muted-foreground mt-1">
+                            {user?.email}
+                          </p>
+                        </div>
                       </div>
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
+                    <DropdownMenuSeparator className="my-2" />
+                    <DropdownMenuItem asChild className="p-0">
                       <Link 
                         href="/company-profile" 
-                        className="flex items-center cursor-pointer"
+                        className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-md cursor-pointer hover:bg-accent transition-colors"
                         data-testid="link-company-profile"
                       >
-                        <Building className="mr-2 h-4 w-4" />
-                        <span>Company Profile</span>
+                        <Building className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-foreground">Company Profile</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-start h-auto p-0"
+                    <DropdownMenuItem asChild className="p-0">
+                      <button 
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-md cursor-pointer hover:bg-accent transition-colors text-left"
                         onClick={() => setChatbotOpen(!chatbotOpen)}
                         data-testid="button-ai-assistant"
                       >
-                        <MessageCircle className="mr-2 h-4 w-4" />
-                        <span>AI Assistant</span>
-                      </Button>
+                        <MessageCircle className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-foreground">AI Assistant</span>
+                      </button>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-start h-auto p-0 text-red-600 hover:text-red-600 hover:bg-red-50"
+                    <DropdownMenuSeparator className="my-2" />
+                    <DropdownMenuItem asChild className="p-0">
+                      <button 
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-md cursor-pointer hover:bg-red-50 hover:text-red-600 transition-colors text-left text-red-600"
                         onClick={() => window.location.href = "/api/logout"}
                         data-testid="button-logout"
                       >
-                        Sign Out
-                      </Button>
+                        <span className="text-red-600">Sign Out</span>
+                      </button>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
