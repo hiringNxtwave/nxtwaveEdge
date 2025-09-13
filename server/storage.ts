@@ -1,6 +1,7 @@
 import {
   users,
   companies,
+  companyRequirements,
   students,
   skills,
   studentSkills,
@@ -13,6 +14,8 @@ import {
   type UpsertUser,
   type Company,
   type InsertCompany,
+  type CompanyRequirements,
+  type InsertCompanyRequirements,
   type Student,
   type InsertStudent,
   type Skill,
@@ -25,6 +28,7 @@ import {
   type InsertContactRequest,
   type StudentWithAssessments,
   type CompanyWithUser,
+  type CompanyWithRequirements,
   type Assessment,
   type InsertAssessment,
   type AssessmentQuestion,
@@ -46,6 +50,32 @@ export interface IStorage {
   getCompanyByUserId(userId: string): Promise<CompanyWithUser | undefined>;
   createCompany(company: InsertCompany): Promise<Company>;
   updateCompany(id: string, company: Partial<InsertCompany>): Promise<Company>;
+  
+  // Company Requirements operations
+  getCompanyRequirements(companyId: string): Promise<CompanyRequirements[]>;
+  getCompanyRequirementById(id: string): Promise<CompanyRequirements | undefined>;
+  createCompanyRequirements(requirements: InsertCompanyRequirements): Promise<CompanyRequirements>;
+  updateCompanyRequirements(id: string, requirements: Partial<InsertCompanyRequirements>): Promise<CompanyRequirements>;
+  deleteCompanyRequirements(id: string): Promise<void>;
+  parseJobDescription(jd: string): Promise<{
+    requiredSkills: string[];
+    preferredSkills: string[];
+    technicalKeywords: string[];
+    salaryRange?: { min: number; max: number };
+    location?: string;
+    experienceLevel?: string;
+    academicRequirements?: {
+      minimumCGPA?: number;
+      requiredDegrees?: string[];
+      graduationYears?: string[];
+    };
+    assessmentWeights?: {
+      dsaWeight: number;
+      csFundamentalsWeight: number;
+      aptitudeWeight: number;
+      communicationWeight: number;
+    };
+  }>;
   
   // Student operations
   getStudents(filters?: {
@@ -205,6 +235,246 @@ export class DatabaseStorage implements IStorage {
       ...result.companies,
       user: result.users,
     };
+  }
+
+  // Company Requirements operations
+  async getCompanyRequirements(companyId: string): Promise<CompanyRequirements[]> {
+    return await db
+      .select()
+      .from(companyRequirements)
+      .where(eq(companyRequirements.companyId, companyId))
+      .orderBy(desc(companyRequirements.createdAt));
+  }
+
+  async getCompanyRequirementById(id: string): Promise<CompanyRequirements | undefined> {
+    const [result] = await db
+      .select()
+      .from(companyRequirements)
+      .where(eq(companyRequirements.id, id));
+    return result;
+  }
+
+  async createCompanyRequirements(requirements: InsertCompanyRequirements): Promise<CompanyRequirements> {
+    const [newRequirements] = await db
+      .insert(companyRequirements)
+      .values(requirements)
+      .returning();
+    return newRequirements;
+  }
+
+  async updateCompanyRequirements(id: string, requirements: Partial<InsertCompanyRequirements>): Promise<CompanyRequirements> {
+    const [updatedRequirements] = await db
+      .update(companyRequirements)
+      .set({ ...requirements, lastUpdated: new Date() })
+      .where(eq(companyRequirements.id, id))
+      .returning();
+    return updatedRequirements;
+  }
+
+  async deleteCompanyRequirements(id: string): Promise<void> {
+    await db
+      .delete(companyRequirements)
+      .where(eq(companyRequirements.id, id));
+  }
+
+  async parseJobDescription(jd: string): Promise<{
+    requiredSkills: string[];
+    preferredSkills: string[];
+    technicalKeywords: string[];
+    salaryRange?: { min: number; max: number };
+    location?: string;
+    experienceLevel?: string;
+    academicRequirements?: {
+      minimumCGPA?: number;
+      requiredDegrees?: string[];
+      graduationYears?: string[];
+    };
+    assessmentWeights?: {
+      dsaWeight: number;
+      csFundamentalsWeight: number;
+      aptitudeWeight: number;
+      communicationWeight: number;
+    };
+  }> {
+    // Comprehensive JD parsing logic
+    const result: {
+      requiredSkills: string[];
+      preferredSkills: string[];
+      technicalKeywords: string[];
+      salaryRange?: { min: number; max: number };
+      location?: string;
+      experienceLevel?: string;
+      academicRequirements?: {
+        minimumCGPA?: number;
+        requiredDegrees?: string[];
+        graduationYears?: string[];
+      };
+      assessmentWeights?: {
+        dsaWeight: number;
+        csFundamentalsWeight: number;
+        aptitudeWeight: number;
+        communicationWeight: number;
+      };
+    } = {
+      requiredSkills: [],
+      preferredSkills: [],
+      technicalKeywords: [],
+    };
+    
+    const jdLower = jd.toLowerCase();
+    
+    // Extract technical skills
+    const technicalSkills = [
+      'javascript', 'typescript', 'python', 'java', 'react', 'angular', 'vue', 'node.js', 'nodejs',
+      'express', 'django', 'flask', 'spring', 'mongodb', 'postgresql', 'mysql', 'redis',
+      'aws', 'azure', 'gcp', 'docker', 'kubernetes', 'git', 'html', 'css', 'scss', 'sass',
+      'machine learning', 'ml', 'ai', 'data science', 'tensorflow', 'pytorch', 'pandas',
+      'numpy', 'spark', 'hadoop', 'kafka', 'elasticsearch', 'graphql', 'rest api', 'microservices',
+      'c++', 'c#', 'go', 'rust', 'kotlin', 'swift', 'flutter', 'react native', 'android', 'ios',
+      'devops', 'ci/cd', 'jenkins', 'github actions', 'terraform', 'ansible'
+    ];
+    
+    const foundSkills = technicalSkills.filter(skill => 
+      jdLower.includes(skill) || 
+      jdLower.includes(skill.replace(/[^a-z]/g, ''))
+    );
+    
+    // Categorize as required vs preferred based on context
+    const requiredIndicators = ['required', 'must have', 'essential', 'mandatory', 'experience in'];
+    const preferredIndicators = ['preferred', 'nice to have', 'good to have', 'bonus', 'plus'];
+    
+    foundSkills.forEach(skill => {
+      const skillContext = this.extractContextAroundSkill(jdLower, skill);
+      
+      if (requiredIndicators.some(indicator => skillContext.includes(indicator))) {
+        result.requiredSkills.push(skill);
+      } else if (preferredIndicators.some(indicator => skillContext.includes(indicator))) {
+        result.preferredSkills.push(skill);
+      } else {
+        result.requiredSkills.push(skill); // Default to required
+      }
+      
+      result.technicalKeywords.push(skill);
+    });
+    
+    // Extract salary range
+    const salaryRegex = /(₹|inr|rs\.?)\s*([0-9]+(?:\.[0-9]+)?)\s*(?:to|-)\s*([0-9]+(?:\.[0-9]+)?)\s*(lpa|lakhs?|l)/gi;
+    const salaryMatch = salaryRegex.exec(jd);
+    
+    if (salaryMatch) {
+      const min = parseFloat(salaryMatch[2]) * 100; // Convert LPA to thousands
+      const max = parseFloat(salaryMatch[3]) * 100;
+      result.salaryRange = { min, max };
+    }
+    
+    // Extract location
+    const locationKeywords = [
+      'bangalore', 'bengaluru', 'mumbai', 'delhi', 'ncr', 'gurgaon', 'gurugram', 'noida',
+      'hyderabad', 'chennai', 'pune', 'kolkata', 'ahmedabad', 'jaipur', 'kochi', 'remote'
+    ];
+    
+    const foundLocation = locationKeywords.find(loc => jdLower.includes(loc));
+    if (foundLocation) {
+      result.location = foundLocation;
+    }
+    
+    // Extract experience level
+    const experienceRegex = /(?:fresher|0[\s-]*(?:to|-)\s*[0-9]+|[0-9]+[\s-]*(?:to|-)\s*[0-9]+)\s*(?:years?|yrs?)/gi;
+    const experienceMatch = experienceRegex.exec(jd);
+    
+    if (experienceMatch || jdLower.includes('fresher') || jdLower.includes('entry level')) {
+      result.experienceLevel = 'fresher';
+    }
+    
+    // Extract academic requirements
+    const cgpaRegex = /(?:cgpa|gpa)\s*(?:of|:)?\s*([0-9]+(?:\.[0-9]+)?)/gi;
+    const cgpaMatch = cgpaRegex.exec(jd);
+    
+    const academicRequirements: any = {};
+    
+    if (cgpaMatch) {
+      academicRequirements.minimumCGPA = parseFloat(cgpaMatch[1]);
+    }
+    
+    const degreeKeywords = ['b.tech', 'btech', 'b.e', 'be', 'mtech', 'm.tech', 'mca', 'bca', 'cs', 'computer science'];
+    const foundDegrees = degreeKeywords.filter(degree => jdLower.includes(degree));
+    
+    if (foundDegrees.length > 0) {
+      academicRequirements.requiredDegrees = foundDegrees;
+    }
+    
+    if (Object.keys(academicRequirements).length > 0) {
+      result.academicRequirements = academicRequirements;
+    }
+    
+    // Generate assessment weights based on role type
+    const assessmentWeights = this.generateAssessmentWeights(jd, result.requiredSkills);
+    if (assessmentWeights) {
+      result.assessmentWeights = assessmentWeights;
+    }
+    
+    return result;
+  }
+  
+  private extractContextAroundSkill(text: string, skill: string): string {
+    const index = text.indexOf(skill);
+    if (index === -1) return '';
+    
+    const start = Math.max(0, index - 100);
+    const end = Math.min(text.length, index + skill.length + 100);
+    
+    return text.substring(start, end);
+  }
+  
+  private generateAssessmentWeights(jd: string, skills: string[]): {
+    dsaWeight: number;
+    csFundamentalsWeight: number;
+    aptitudeWeight: number;
+    communicationWeight: number;
+  } | null {
+    const jdLower = jd.toLowerCase();
+    
+    // Default weights
+    let dsaWeight = 25;
+    let csFundamentalsWeight = 25;
+    let aptitudeWeight = 25;
+    let communicationWeight = 25;
+    
+    // Backend/Algorithm heavy roles
+    if (skills.some(skill => ['algorithms', 'data structures', 'backend', 'java', 'python', 'c++'].includes(skill)) ||
+        jdLower.includes('backend') || jdLower.includes('algorithm') || jdLower.includes('data structure')) {
+      dsaWeight = 40;
+      csFundamentalsWeight = 30;
+      aptitudeWeight = 20;
+      communicationWeight = 10;
+    }
+    
+    // Frontend roles
+    else if (skills.some(skill => ['react', 'angular', 'vue', 'javascript', 'typescript', 'html', 'css'].includes(skill)) ||
+             jdLower.includes('frontend') || jdLower.includes('ui') || jdLower.includes('ux')) {
+      dsaWeight = 15;
+      csFundamentalsWeight = 35;
+      aptitudeWeight = 25;
+      communicationWeight = 25;
+    }
+    
+    // Full-stack roles
+    else if (jdLower.includes('full stack') || jdLower.includes('fullstack')) {
+      dsaWeight = 30;
+      csFundamentalsWeight = 30;
+      aptitudeWeight = 25;
+      communicationWeight = 15;
+    }
+    
+    // Client-facing/Product roles
+    else if (jdLower.includes('client') || jdLower.includes('product') || jdLower.includes('customer')) {
+      dsaWeight = 15;
+      csFundamentalsWeight = 20;
+      aptitudeWeight = 25;
+      communicationWeight = 40;
+    }
+    
+    return { dsaWeight, csFundamentalsWeight, aptitudeWeight, communicationWeight };
   }
 
   async createCompany(company: InsertCompany): Promise<Company> {
