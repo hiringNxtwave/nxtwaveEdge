@@ -56,6 +56,69 @@ export const companies = pgTable("companies", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Company Job Requirements - Enhanced profile for better matchmaking
+export const companyRequirements = pgTable("company_requirements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  companyId: varchar("company_id").notNull().references(() => companies.id),
+  
+  // Job Details
+  jobTitle: varchar("job_title").notNull(),
+  jobDescription: text("job_description").notNull(),
+  department: varchar("department"),
+  experienceLevel: varchar("experience_level").default("fresher"), // fresher, 0-1, 1-3, 3-5
+  
+  // Hiring Information
+  hiresExpected: integer("hires_expected").notNull(),
+  urgencyLevel: varchar("urgency_level").default("medium"), // low, medium, high, urgent
+  applicationDeadline: timestamp("application_deadline"),
+  
+  // Location & Work Mode
+  jobLocation: varchar("job_location").notNull(),
+  remoteAllowed: boolean("remote_allowed").default(false),
+  workMode: varchar("work_mode").default("onsite"), // onsite, hybrid, remote
+  relocationAssistance: boolean("relocation_assistance").default(false),
+  
+  // Compensation
+  salaryMin: integer("salary_min"), // in thousands (e.g., 800 for 8LPA)
+  salaryMax: integer("salary_max"), // in thousands (e.g., 1200 for 12LPA)
+  currency: varchar("currency").default("INR"),
+  bonusStructure: text("bonus_structure"),
+  benefits: text("benefits"), // JSON array of benefits
+  
+  // Parsed Requirements (extracted from JD)
+  requiredSkills: text("required_skills"), // JSON array of skills
+  preferredSkills: text("preferred_skills"), // JSON array of preferred skills
+  technicalKeywords: text("technical_keywords"), // JSON array of parsed technical terms
+  
+  // Academic Requirements
+  minimumCGPA: decimal("minimum_cgpa", { precision: 3, scale: 2 }),
+  preferredColleges: text("preferred_colleges"), // JSON array of college names/tiers
+  requiredDegrees: text("required_degrees"), // JSON array of degree types
+  graduationYears: text("graduation_years"), // JSON array of allowed years
+  
+  // Assessment Criteria (weights for matching algorithm)
+  dsaWeight: integer("dsa_weight").default(25), // 0-100
+  csFundamentalsWeight: integer("cs_fundamentals_weight").default(25), // 0-100
+  aptitudeWeight: integer("aptitude_weight").default(25), // 0-100
+  communicationWeight: integer("communication_weight").default(25), // 0-100
+  
+  // Additional Requirements
+  positionsOfResponsibility: boolean("positions_of_responsibility").default(false),
+  portfolioRequired: boolean("portfolio_required").default(false),
+  githubRequired: boolean("github_required").default(false),
+  certificationPreferences: text("certification_preferences"), // JSON array
+  
+  // Company Culture Fit
+  companyValues: text("company_values"), // JSON array
+  workCulture: varchar("work_culture"), // startup, corporate, remote-first, etc.
+  teamSize: varchar("team_size"),
+  
+  // Status
+  isActive: boolean("is_active").default(true),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const students = pgTable("students", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   firstName: varchar("first_name").notNull(),
@@ -192,6 +255,14 @@ export const companiesRelations = relations(companies, ({ one, many }) => ({
   }),
   contactRequests: many(contactRequests),
   interviews: many(interviews),
+  requirements: many(companyRequirements),
+}));
+
+export const companyRequirementsRelations = relations(companyRequirements, ({ one }) => ({
+  company: one(companies, {
+    fields: [companyRequirements.companyId],
+    references: [companies.id],
+  }),
 }));
 
 export const studentsRelations = relations(students, ({ many }) => ({
@@ -266,6 +337,12 @@ export const insertCompanySchema = createInsertSchema(companies).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const insertCompanyRequirementsSchema = createInsertSchema(companyRequirements).omit({
+  id: true,
+  createdAt: true,
+  lastUpdated: true,
 });
 
 export const insertStudentSchema = createInsertSchema(students).omit({
@@ -443,6 +520,8 @@ export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 export type InsertCompany = z.infer<typeof insertCompanySchema>;
 export type Company = typeof companies.$inferSelect;
+export type InsertCompanyRequirements = z.infer<typeof insertCompanyRequirementsSchema>;
+export type CompanyRequirements = typeof companyRequirements.$inferSelect;
 export type InsertStudent = z.infer<typeof insertStudentSchema>;
 export type Student = typeof students.$inferSelect;
 export type InsertSkill = z.infer<typeof insertSkillSchema>;
@@ -479,6 +558,10 @@ export type StudentWithAssessments = Student & {
 
 export type CompanyWithUser = Company & {
   user: User;
+};
+
+export type CompanyWithRequirements = Company & {
+  requirements: CompanyRequirements[];
 };
 
 export type AssessmentWithResponses = typeof assessments.$inferSelect & {
