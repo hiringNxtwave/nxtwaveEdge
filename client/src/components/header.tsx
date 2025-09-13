@@ -1,11 +1,19 @@
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
-import { Handshake, Menu, Heart, Trophy, BookOpen, MessageCircle } from "lucide-react";
+import { Handshake, Menu, Heart, Trophy, BookOpen, MessageCircle, User, Settings, Building, ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useShortlist } from "@/contexts/shortlist-context";
 import { Chatbot } from "@/components/chatbot";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Header() {
   const { isAuthenticated, user } = useAuth();
@@ -168,26 +176,77 @@ export default function Header() {
                     <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full animate-pulse" />
                   )}
                 </Button>
-                <div className="hidden sm:flex items-center space-x-2">
-                  {user?.profileImageUrl && (
-                    <img 
-                      src={user.profileImageUrl} 
-                      alt="Profile" 
-                      className="w-8 h-8 rounded-full object-cover"
-                      data-testid="img-profile-avatar"
-                    />
-                  )}
-                  <span className="text-sm font-medium" data-testid="text-user-name">
-                    {user?.firstName || user?.email}
-                  </span>
-                </div>
-                <Button 
-                  variant="outline" 
-                  onClick={() => window.location.href = "/api/logout"}
-                  data-testid="button-logout"
-                >
-                  Sign Out
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      className="flex items-center space-x-2 h-auto px-3 py-2"
+                      data-testid="button-user-dropdown"
+                    >
+                      {user?.profileImageUrl ? (
+                        <img 
+                          src={user.profileImageUrl} 
+                          alt="Profile" 
+                          className="w-8 h-8 rounded-full object-cover"
+                          data-testid="img-profile-avatar"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <User className="w-4 h-4 text-primary" />
+                        </div>
+                      )}
+                      <span className="hidden sm:block text-sm font-medium" data-testid="text-user-name">
+                        {user?.firstName || user?.email?.split('@')[0] || 'User'}
+                      </span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'User'}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user?.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link 
+                        href="/company-profile" 
+                        className="flex items-center cursor-pointer"
+                        data-testid="link-company-profile"
+                      >
+                        <Building className="mr-2 h-4 w-4" />
+                        <span>Company Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start h-auto p-0"
+                        onClick={() => setChatbotOpen(!chatbotOpen)}
+                        data-testid="button-ai-assistant"
+                      >
+                        <MessageCircle className="mr-2 h-4 w-4" />
+                        <span>AI Assistant</span>
+                      </Button>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-start h-auto p-0 text-red-600 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => window.location.href = "/api/logout"}
+                        data-testid="button-logout"
+                      >
+                        Sign Out
+                      </Button>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             ) : (
               <div className="flex items-center space-x-4">

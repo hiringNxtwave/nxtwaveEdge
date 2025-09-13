@@ -20,6 +20,8 @@ import StudentProfileForm from "./pages/student-profile-form";
 import StudentDashboard from "./pages/student-dashboard";
 import TalentDashboard from "./pages/talent-dashboard";
 import ShortlistingPage from "./pages/shortlisting";
+import Header from "./components/header";
+import { CompanyProfileManager } from "./components/company-profile-manager";
 
 function Router() {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -65,6 +67,18 @@ function Router() {
             <Route path="/talent-dashboard" component={TalentDashboard} />
             <Route path="/talent" component={TalentDashboard} />
             <Route path="/shortlisting" component={ShortlistingPage} />
+            <Route path="/company-profile" component={() => (
+              <div className="min-h-screen bg-gray-50">
+                <Header />
+                <div className="max-w-7xl mx-auto px-4 py-8">
+                  <div className="mb-8">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Company Profile & Hiring Requirements</h1>
+                    <p className="text-gray-600">Manage your hiring requirements and job descriptions</p>
+                  </div>
+                  <CompanyProfileManager />
+                </div>
+              </div>
+            )} />
           </>
         )}
         <Route component={NotFound} />
