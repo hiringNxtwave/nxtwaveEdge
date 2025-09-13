@@ -7,7 +7,7 @@ import {
   insertCompanySchema,
   insertContactRequestSchema,
   type Student,
-  type StudentWithSkills,
+  type StudentWithAssessments,
 } from "@shared/schema";
 import { z } from "zod";
 

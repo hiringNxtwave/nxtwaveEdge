@@ -223,14 +223,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Helper function to determine assessment level based on scores
-  private getAssessmentLevel(overallScore?: number | null, dsaScore?: number | null, csFundamentalsScore?: number | null, aptitudeScore?: number | null, verbalScore?: number | null): 'Excellent' | 'Good' | 'Average' | 'Below Average' | 'Not Assessed' {
+  private getAssessmentLevel(overallScore?: number | null, dsaScore?: number | null, csFundamentalsScore?: number | null, aptitudeScore?: number | null, verbalScore?: number | null): 'Excellent' | 'Strong' | 'Good' | 'Needs Improvement' | 'Not Assessed' {
     const score = overallScore ?? ((dsaScore || 0) + (csFundamentalsScore || 0) + (aptitudeScore || 0) + (verbalScore || 0)) / 4;
     
     if (!score || score === 0) return 'Not Assessed';
     if (score >= 85) return 'Excellent';
-    if (score >= 70) return 'Good';
-    if (score >= 55) return 'Average';
-    return 'Below Average';
+    if (score >= 70) return 'Strong';
+    if (score >= 55) return 'Good';
+    return 'Needs Improvement';
   }
 
   // Student operations
