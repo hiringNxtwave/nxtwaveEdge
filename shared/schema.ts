@@ -29,9 +29,14 @@ export const sessions = pgTable(
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   email: varchar("email").unique(),
+  mobile: varchar("mobile").unique(), // Mobile number for SMS authentication
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  // Authentication preferences
+  authMethod: varchar("auth_method").default("email"), // 'email', 'mobile', 'both'
+  emailVerified: boolean("email_verified").default(false),
+  mobileVerified: boolean("mobile_verified").default(false),
   // Recruiter-specific fields
   role: varchar("role").default("recruiter"), // 'recruiter', 'admin', 'student'
   collegesTier: varchar("colleges_tier"), // 'only-iits', 'iits-nits-bits', 'tier1-including-iits', 'tier2-colleges', 'tier3-colleges'
@@ -41,6 +46,61 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// OTP Codes Table - manages OTP lifecycle for authentication
+export const otpCodes = pgTable("otp_codes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  // Contact information (either email or mobile, not both)
+  email: varchar("email"),
+  mobile: varchar("mobile"),
+  countryCode: varchar("country_code").default("+91"), // Country code for mobile numbers
+  
+  // OTP details
+  code: varchar("code", { length: 6 }).notNull(), // 6-digit OTP code
+  hashedCode: varchar("hashed_code").notNull(), // Hashed version for security
+  purpose: varchar("purpose").notNull().default("login"), // 'login', 'registration', 'password_reset'
+  
+  // Security and lifecycle management
+  isUsed: boolean("is_used").default(false),
+  isExpired: boolean("is_expired").default(false),
+  expiresAt: timestamp("expires_at").notNull(), // OTP expiry time (typically 5-10 minutes)
+  
+  // Rate limiting and fraud prevention
+  attemptsCount: integer("attempts_count").default(0), // Number of verification attempts
+  maxAttempts: integer("max_attempts").default(3), // Maximum allowed attempts
+  isBlocked: boolean("is_blocked").default(false), // Block after max attempts exceeded
+  blockedUntil: timestamp("blocked_until"), // Block duration for rate limiting
+  
+  // Request tracking
+  requestIp: varchar("request_ip"), // IP address that requested OTP
+  userAgent: varchar("user_agent"), // User agent string for fraud detection
+  deviceFingerprint: varchar("device_fingerprint"), // Device fingerprint hash
+  
+  // Delivery tracking
+  deliveryStatus: varchar("delivery_status").default("pending"), // 'pending', 'sent', 'delivered', 'failed'
+  deliveryProvider: varchar("delivery_provider"), // 'sendgrid', 'twilio', 'aws_sns'
+  deliveryAttempts: integer("delivery_attempts").default(0),
+  deliveredAt: timestamp("delivered_at"),
+  
+  // Audit trail
+  createdAt: timestamp("created_at").defaultNow(),
+  verifiedAt: timestamp("verified_at"), // When OTP was successfully verified
+  
+  // Additional metadata for analytics
+  sessionId: varchar("session_id"), // Browser session ID for tracking
+  referrer: varchar("referrer"), // How user arrived at registration/login
+}, (table) => [
+  // Performance indexes
+  index("IDX_otp_email").on(table.email),
+  index("IDX_otp_mobile").on(table.mobile),
+  index("IDX_otp_expires_at").on(table.expiresAt),
+  index("IDX_otp_created_at").on(table.createdAt),
+  index("IDX_otp_request_ip").on(table.requestIp),
+  // Composite indexes for common queries
+  index("IDX_otp_email_purpose").on(table.email, table.purpose),
+  index("IDX_otp_mobile_purpose").on(table.mobile, table.purpose),
+  index("IDX_otp_ip_created").on(table.requestIp, table.createdAt),
+]);
 
 export const companies = pgTable("companies", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -242,11 +302,17 @@ export const assessmentResponses = pgTable("assessment_responses", {
 });
 
 // Relations
-export const usersRelations = relations(users, ({ one }) => ({
+export const usersRelations = relations(users, ({ one, many }) => ({
   company: one(companies, {
     fields: [users.id],
     references: [companies.userId],
   }),
+  otpCodes: many(otpCodes),
+}));
+
+export const otpCodesRelations = relations(otpCodes, ({ one }) => ({
+  // Note: OTP codes don't directly reference users since they can be used for registration
+  // The relationship is implicit through email/mobile matching
 }));
 
 export const companiesRelations = relations(companies, ({ one, many }) => ({
@@ -378,6 +444,26 @@ export const insertAssessmentSchema = createInsertSchema(assessments).omit({
   createdAt: true,
   updatedAt: true,
 });
+
+export const insertOtpCodeSchema = createInsertSchema(otpCodes).omit({
+  id: true,
+  createdAt: true,
+  verifiedAt: true,
+  deliveredAt: true,
+}).extend({
+  // Additional validation for OTP fields
+  code: z.string().regex(/^\d{6}$/, "OTP must be exactly 6 digits"),
+  mobile: z.string().regex(/^\+[1-9]\d{1,14}$/, "Invalid mobile number format").optional(),
+  email: z.string().email("Invalid email format").optional(),
+  purpose: z.enum(["login", "registration", "password_reset"]),
+  authMethod: z.enum(["email", "mobile"]),
+}).refine(
+  (data) => (data.email && !data.mobile) || (!data.email && data.mobile),
+  {
+    message: "Either email or mobile must be provided, but not both",
+    path: ["email", "mobile"],
+  }
+);
 
 // Code Submissions Table - stores coding solutions with timestamp tracking
 export const codeSubmissions = pgTable("code_submissions", {
@@ -519,6 +605,8 @@ export const insertIdVerificationSchema = createInsertSchema(idVerifications).om
 // Types
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+export type InsertOtpCode = z.infer<typeof insertOtpCodeSchema>;
+export type OtpCode = typeof otpCodes.$inferSelect;
 export type InsertCompany = z.infer<typeof insertCompanySchema>;
 export type Company = typeof companies.$inferSelect;
 export type InsertCompanyRequirements = z.infer<typeof insertCompanyRequirementsSchema>;
