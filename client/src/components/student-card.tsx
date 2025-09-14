@@ -202,8 +202,8 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
           </div>
           
-          {/* Action Buttons - Full width on mobile, proper spacing */}
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+          {/* Action Buttons - Full width on mobile, right-aligned on desktop */}
+          <div className="flex flex-col sm:flex-row sm:justify-end gap-3 md:gap-4">
             <Link href={`/student/${student.id}`} className="flex-1 sm:flex-initial">
               <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-3 sm:px-5 sm:py-2 min-h-[44px] sm:min-h-[36px]" data-testid={`button-view-profile-${student.id}`}>
                 View Profile
