@@ -24,16 +24,16 @@ export default function Header() {
 
   return (
     <header className="bg-card/95 backdrop-blur-md shadow-clean border-b border-border sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center space-x-3 group" data-testid="link-home">
-            <div className="w-11 h-11 bg-primary rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 shadow-clean">
-              <Handshake className="text-primary-foreground w-6 h-6" />
+      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-14 md:h-16">
+          <Link href="/" className="flex items-center space-x-2 md:space-x-3 group" data-testid="link-home">
+            <div className="w-9 h-9 md:w-11 md:h-11 bg-primary rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 shadow-clean">
+              <Handshake className="text-primary-foreground w-5 h-5 md:w-6 md:h-6" />
             </div>
-            <span className="text-2xl font-bold text-foreground tracking-tight">NxtWave</span>
+            <span className="text-xl md:text-2xl font-bold text-foreground tracking-tight">NxtWave</span>
           </Link>
           
-          <nav className="hidden md:flex items-center space-x-10">
+          <nav className="hidden lg:flex items-center space-x-8 xl:space-x-10">
             {!isAuthenticated ? (
               // Marketing navigation for unauthenticated users
               <>
@@ -159,19 +159,19 @@ export default function Header() {
           
           <div className="flex items-center space-x-6">
             {isAuthenticated ? (
-              <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-3 md:space-x-6">
                 <Button
                   variant="ghost"
                   onClick={() => setChatbotOpen(!chatbotOpen)}
                   className={cn(
-                    "flex items-center gap-2 h-auto px-3 py-2 hover:bg-accent rounded-lg transition-colors",
+                    "flex items-center gap-2 h-auto px-3 py-2 hover:bg-accent rounded-lg transition-colors min-h-[44px]",
                     chatbotOpen ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground"
                   )}
                   data-testid="button-toggle-chatbot"
                   title="AI Assistant"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span className="hidden sm:inline text-sm font-medium">AI Assistant</span>
+                  <span className="hidden md:inline text-sm font-medium">AI Assistant</span>
                   {!chatbotOpen && (
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   )}
@@ -180,7 +180,7 @@ export default function Header() {
                   <DropdownMenuTrigger asChild>
                     <Button 
                       variant="ghost" 
-                      className="flex items-center gap-3 h-auto px-3 py-2 hover:bg-accent rounded-lg transition-colors"
+                      className="flex items-center gap-2 md:gap-3 h-auto px-2 md:px-3 py-2 hover:bg-accent rounded-lg transition-colors min-h-[44px]"
                       data-testid="button-user-dropdown"
                     >
                       {user?.profileImageUrl ? (
@@ -195,13 +195,13 @@ export default function Header() {
                           <User className="w-4 h-4 text-primary" />
                         </div>
                       )}
-                      <div className="hidden sm:flex items-center gap-2">
+                      <div className="hidden md:flex items-center gap-2">
                         <span className="text-sm font-medium text-foreground" data-testid="text-user-name">
                           {user?.firstName || user?.email?.split('@')[0] || 'User'}
                         </span>
                         <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
                       </div>
-                      <ChevronDown className="w-4 h-4 text-muted-foreground sm:hidden transition-transform group-data-[state=open]:rotate-180" />
+                      <ChevronDown className="w-4 h-4 text-muted-foreground md:hidden transition-transform group-data-[state=open]:rotate-180" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-64 p-2">
@@ -263,10 +263,11 @@ export default function Header() {
                 </DropdownMenu>
               </div>
             ) : (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3 md:space-x-4">
                 <Button 
                   variant="ghost" 
                   onClick={() => window.location.href = "/api/login"}
+                  className="min-h-[44px] px-4"
                   data-testid="button-signin"
                 >
                   Sign In
@@ -274,6 +275,7 @@ export default function Header() {
                 {location === "/" && (
                   <Button 
                     onClick={() => window.location.href = "/api/login"}
+                    className="min-h-[44px] px-4 hidden sm:inline-flex"
                     data-testid="button-start-hiring"
                   >
                     Browse Candidates
@@ -285,7 +287,7 @@ export default function Header() {
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="lg:hidden min-h-[44px] min-w-[44px] p-2"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               data-testid="button-mobile-menu"
             >
@@ -295,45 +297,227 @@ export default function Header() {
         </div>
         
         {/* Mobile menu */}
-        {mobileMenuOpen && isAuthenticated && (
-          <div className="md:hidden border-t border-border py-4">
-            <nav className="flex flex-col space-y-4">
-              <Link 
-                href="/browse" 
-                onClick={() => setMobileMenuOpen(false)}
-                data-testid="link-mobile-browse"
-              >
-                <Button 
-                  variant={location === "/browse" ? "default" : "ghost"} 
-                  className={cn(
-                    "w-full justify-start font-medium transition-colors",
-                    location === "/browse" 
-                      ? "bg-primary text-primary-foreground" 
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+        {mobileMenuOpen && (
+          <div className="lg:hidden border-t border-border py-4">
+            <nav className="flex flex-col space-y-3">
+              {!isAuthenticated ? (
+                // Mobile navigation for unauthenticated users
+                <>
+                  {location === "/for-students" ? (
+                    <>
+                      <Link 
+                        href="/" 
+                        onClick={() => setMobileMenuOpen(false)}
+                        data-testid="link-mobile-for-companies"
+                      >
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
+                        >
+                          For Companies
+                        </Button>
+                      </Link>
+                      <Link 
+                        href="/for-colleges" 
+                        onClick={() => setMobileMenuOpen(false)}
+                        data-testid="link-mobile-for-colleges"
+                      >
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
+                        >
+                          For Colleges
+                        </Button>
+                      </Link>
+                      <Link 
+                        href="/for-students" 
+                        onClick={() => setMobileMenuOpen(false)}
+                        data-testid="link-mobile-for-students"
+                      >
+                        <Button 
+                          variant="default" 
+                          className="w-full justify-start font-medium transition-colors min-h-[48px] bg-primary text-primary-foreground"
+                        >
+                          For Students
+                        </Button>
+                      </Link>
+                    </>
+                  ) : location === "/for-colleges" ? (
+                    <>
+                      <Link 
+                        href="/" 
+                        onClick={() => setMobileMenuOpen(false)}
+                        data-testid="link-mobile-for-companies"
+                      >
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
+                        >
+                          For Companies
+                        </Button>
+                      </Link>
+                      <Link 
+                        href="/for-colleges" 
+                        onClick={() => setMobileMenuOpen(false)}
+                        data-testid="link-mobile-for-colleges"
+                      >
+                        <Button 
+                          variant="default" 
+                          className="w-full justify-start font-medium transition-colors min-h-[48px] bg-primary text-primary-foreground"
+                        >
+                          For Colleges
+                        </Button>
+                      </Link>
+                      <Link 
+                        href="/for-students" 
+                        onClick={() => setMobileMenuOpen(false)}
+                        data-testid="link-mobile-for-students"
+                      >
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
+                        >
+                          For Students
+                        </Button>
+                      </Link>
+                    </>
+                  ) : (
+                    // Default navigation for landing page
+                    <>
+                      <Link 
+                        href="/for-colleges" 
+                        onClick={() => setMobileMenuOpen(false)}
+                        data-testid="link-mobile-for-colleges"
+                      >
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
+                        >
+                          For Colleges
+                        </Button>
+                      </Link>
+                      <Link 
+                        href="/for-students" 
+                        onClick={() => setMobileMenuOpen(false)}
+                        data-testid="link-mobile-for-students"
+                      >
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
+                        >
+                          For Students
+                        </Button>
+                      </Link>
+                    </>
                   )}
-                >
-                  Browse Candidates
-                </Button>
-              </Link>
-              {shortlistCount > 0 && (
-                <Link 
-                  href="/shortlist" 
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="link-mobile-shortlist"
-                >
-                  <Button 
-                    variant={location === "/shortlist" ? "default" : "ghost"} 
-                    className={cn(
-                      "w-full justify-start font-medium transition-colors",
-                      location === "/shortlist" 
-                        ? "bg-primary text-primary-foreground" 
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                    )}
+                  <div className="border-t border-border pt-3 mt-3">
+                    <Button 
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        window.location.href = "/api/login";
+                      }}
+                      className="w-full min-h-[48px] font-medium"
+                      data-testid="button-mobile-signin"
+                    >
+                      Sign In
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                // Mobile navigation for authenticated users
+                <>
+                  <Link 
+                    href="/" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-testid="link-mobile-dashboard"
                   >
-                    <Heart className="w-4 h-4 mr-2" />
-                    Shortlisted ({shortlistCount})
-                  </Button>
-                </Link>
+                    <Button 
+                      variant={location === "/" ? "default" : "ghost"} 
+                      className={cn(
+                        "w-full justify-start font-medium transition-colors min-h-[48px]",
+                        location === "/" 
+                          ? "bg-primary text-primary-foreground" 
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      )}
+                    >
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <Link 
+                    href="/browse" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-testid="link-mobile-browse"
+                  >
+                    <Button 
+                      variant={location === "/browse" ? "default" : "ghost"} 
+                      className={cn(
+                        "w-full justify-start font-medium transition-colors min-h-[48px]",
+                        location === "/browse" 
+                          ? "bg-primary text-primary-foreground" 
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      )}
+                    >
+                      Browse Profiles
+                    </Button>
+                  </Link>
+                  <Link 
+                    href="/shortlist" 
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-testid="link-mobile-shortlist"
+                  >
+                    <Button 
+                      variant={location === "/shortlist" ? "default" : "ghost"} 
+                      className={cn(
+                        "w-full justify-start font-medium transition-colors min-h-[48px]",
+                        location === "/shortlist" 
+                          ? "bg-primary text-primary-foreground" 
+                          : shortlistCount > 0 
+                            ? "text-primary hover:text-primary hover:bg-primary/10" 
+                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                      )}
+                    >
+                      <Heart className={cn("w-4 h-4 mr-2", shortlistCount > 0 ? "fill-current" : "")} />
+                      Shortlisted
+                      {shortlistCount > 0 && (
+                        <span className="ml-auto bg-primary/20 px-2 py-0.5 rounded-full text-xs font-semibold">
+                          {shortlistCount}
+                        </span>
+                      )}
+                    </Button>
+                  </Link>
+                  <div className="border-t border-border pt-3 mt-3">
+                    <button 
+                      className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md cursor-pointer hover:bg-accent transition-colors text-left min-h-[48px]"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setChatbotOpen(!chatbotOpen);
+                      }}
+                      data-testid="button-mobile-ai-assistant"
+                    >
+                      <MessageCircle className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-foreground">AI Assistant</span>
+                    </button>
+                    <Link 
+                      href="/company-profile" 
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md cursor-pointer hover:bg-accent transition-colors min-h-[48px]"
+                      data-testid="link-mobile-company-profile"
+                    >
+                      <Building className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-foreground">Company Profile</span>
+                    </Link>
+                    <button 
+                      className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md cursor-pointer hover:bg-red-50 hover:text-red-600 transition-colors text-left text-red-600 min-h-[48px]"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        window.location.href = "/api/logout";
+                      }}
+                      data-testid="button-mobile-logout"
+                    >
+                      <span className="text-red-600">Sign Out</span>
+                    </button>
+                  </div>
+                </>
               )}
             </nav>
           </div>
