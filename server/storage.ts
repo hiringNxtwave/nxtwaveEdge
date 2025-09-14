@@ -10,6 +10,7 @@ import {
   assessments,
   assessmentQuestions,
   assessmentResponses,
+  otpCodes,
   type User,
   type UpsertUser,
   type Company,
@@ -36,9 +37,12 @@ import {
   type AssessmentResponse,
   type InsertAssessmentResponse,
   type AssessmentWithResponses,
+  type OtpCode,
+  type InsertOtpCode,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, ilike, gte, desc, asc, sql, inArray } from "drizzle-orm";
+import { eq, and, ilike, gte, desc, asc, sql, inArray, lt } from "drizzle-orm";
+import bcrypt from "bcrypt";
 
 export interface IStorage {
   // User operations - mandatory for Replit Auth
@@ -182,6 +186,24 @@ export interface IStorage {
     workMode: string;
     maxResults: number;
   }): Promise<StudentWithAssessments[]>;
+
+  // OTP operations
+  createOtpCode(otpData: InsertOtpCode): Promise<OtpCode>;
+  getOtpCode(id: string): Promise<OtpCode | undefined>;
+  getOtpByEmailOrMobile(email?: string, mobile?: string, purpose?: string): Promise<OtpCode | undefined>;
+  verifyOtpCode(id: string, code: string, requestIp?: string): Promise<{
+    success: boolean;
+    message: string;
+    otpCode?: OtpCode;
+  }>;
+  updateOtpStatus(id: string, updates: Partial<InsertOtpCode>): Promise<OtpCode>;
+  invalidateOtpCode(id: string): Promise<void>;
+  cleanupExpiredOtpCodes(): Promise<number>;
+  checkRateLimit(email?: string, mobile?: string, requestIp?: string): Promise<{
+    allowed: boolean;
+    remainingAttempts: number;
+    resetTime?: Date;
+  }>;
 
   // Initial data seeding
   seedInitialData(): Promise<void>;
@@ -822,6 +844,202 @@ export class DatabaseStorage implements IStorage {
     }
 
     return assessmentData;
+  }
+
+  // OTP operations
+  async createOtpCode(otpData: InsertOtpCode): Promise<OtpCode> {
+    // Hash the OTP code for security
+    const hashedCode = await bcrypt.hash(otpData.code, 10);
+    
+    const [newOtp] = await db
+      .insert(otpCodes)
+      .values({
+        ...otpData,
+        hashedCode,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes from now
+        deliveryStatus: 'pending'
+      })
+      .returning();
+    return newOtp;
+  }
+
+  async getOtpCode(id: string): Promise<OtpCode | undefined> {
+    const [otp] = await db.select().from(otpCodes).where(eq(otpCodes.id, id));
+    return otp;
+  }
+
+  async getOtpByEmailOrMobile(email?: string, mobile?: string, purpose?: string): Promise<OtpCode | undefined> {
+    const conditions = [];
+    
+    if (email) {
+      conditions.push(eq(otpCodes.email, email));
+    }
+    if (mobile) {
+      conditions.push(eq(otpCodes.mobile, mobile));
+    }
+    if (purpose) {
+      conditions.push(eq(otpCodes.purpose, purpose));
+    }
+    
+    // Get the most recent non-expired, non-used OTP
+    conditions.push(eq(otpCodes.isUsed, false));
+    conditions.push(eq(otpCodes.isExpired, false));
+    conditions.push(gte(otpCodes.expiresAt, new Date()));
+    
+    const [otp] = await db
+      .select()
+      .from(otpCodes)
+      .where(and(...conditions))
+      .orderBy(desc(otpCodes.createdAt))
+      .limit(1);
+    
+    return otp;
+  }
+
+  async verifyOtpCode(id: string, code: string, requestIp?: string): Promise<{
+    success: boolean;
+    message: string;
+    otpCode?: OtpCode;
+  }> {
+    const otp = await this.getOtpCode(id);
+    
+    if (!otp) {
+      return { success: false, message: 'OTP not found' };
+    }
+
+    // Check if OTP is already used
+    if (otp.isUsed) {
+      return { success: false, message: 'OTP has already been used' };
+    }
+
+    // Check if OTP is expired
+    if (otp.isExpired || new Date() > otp.expiresAt) {
+      await this.updateOtpStatus(id, { isExpired: true });
+      return { success: false, message: 'OTP has expired' };
+    }
+
+    // Check if blocked due to too many attempts
+    if (otp.isBlocked) {
+      if (otp.blockedUntil && new Date() < otp.blockedUntil) {
+        return { success: false, message: 'Too many incorrect attempts. Please try again later.' };
+      } else {
+        // Unblock if block period has expired
+        await this.updateOtpStatus(id, { 
+          isBlocked: false, 
+          blockedUntil: null, 
+          attemptsCount: 0 
+        });
+      }
+    }
+
+    // Verify the OTP code
+    const isValidCode = await bcrypt.compare(code, otp.hashedCode);
+    
+    if (!isValidCode) {
+      const newAttemptsCount = (otp.attemptsCount || 0) + 1;
+      const maxAttempts = otp.maxAttempts || 3;
+      
+      if (newAttemptsCount >= maxAttempts) {
+        // Block the OTP for 15 minutes
+        await this.updateOtpStatus(id, {
+          attemptsCount: newAttemptsCount,
+          isBlocked: true,
+          blockedUntil: new Date(Date.now() + 15 * 60 * 1000) // 15 minutes
+        });
+        return { success: false, message: 'Too many incorrect attempts. OTP blocked for 15 minutes.' };
+      } else {
+        await this.updateOtpStatus(id, { attemptsCount: newAttemptsCount });
+        return { 
+          success: false, 
+          message: `Invalid OTP. ${maxAttempts - newAttemptsCount} attempts remaining.` 
+        };
+      }
+    }
+
+    // Mark OTP as used
+    const updatedOtp = await this.updateOtpStatus(id, { 
+      isUsed: true, 
+      verifiedAt: new Date() 
+    });
+    
+    return { 
+      success: true, 
+      message: 'OTP verified successfully', 
+      otpCode: updatedOtp 
+    };
+  }
+
+  async updateOtpStatus(id: string, updates: Partial<InsertOtpCode>): Promise<OtpCode> {
+    const [updatedOtp] = await db
+      .update(otpCodes)
+      .set(updates)
+      .where(eq(otpCodes.id, id))
+      .returning();
+    return updatedOtp;
+  }
+
+  async invalidateOtpCode(id: string): Promise<void> {
+    await db
+      .update(otpCodes)
+      .set({ isUsed: true, isExpired: true })
+      .where(eq(otpCodes.id, id));
+  }
+
+  async cleanupExpiredOtpCodes(): Promise<number> {
+    const result = await db
+      .delete(otpCodes)
+      .where(lt(otpCodes.expiresAt, new Date()));
+    
+    return result.rowCount || 0;
+  }
+
+  async checkRateLimit(email?: string, mobile?: string, requestIp?: string): Promise<{
+    allowed: boolean;
+    remainingAttempts: number;
+    resetTime?: Date;
+  }> {
+    const now = new Date();
+    const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+    
+    const conditions = [];
+    
+    if (email) {
+      conditions.push(eq(otpCodes.email, email));
+    }
+    if (mobile) {
+      conditions.push(eq(otpCodes.mobile, mobile));
+    }
+    if (requestIp) {
+      conditions.push(eq(otpCodes.requestIp, requestIp));
+    }
+    
+    conditions.push(gte(otpCodes.createdAt, oneHourAgo));
+    
+    const recentOtps = await db
+      .select()
+      .from(otpCodes)
+      .where(and(...conditions))
+      .orderBy(desc(otpCodes.createdAt));
+    
+    const maxAttemptsPerHour = 5; // Allow 5 OTP requests per hour
+    const currentAttempts = recentOtps.length;
+    
+    if (currentAttempts >= maxAttemptsPerHour) {
+      // Find the oldest OTP in the current hour to determine reset time
+      const oldestOtp = recentOtps[recentOtps.length - 1];
+      const resetTime = new Date(oldestOtp.createdAt.getTime() + 60 * 60 * 1000);
+      
+      return {
+        allowed: false,
+        remainingAttempts: 0,
+        resetTime
+      };
+    }
+    
+    return {
+      allowed: true,
+      remainingAttempts: maxAttemptsPerHour - currentAttempts
+    };
   }
 
   // Initial data seeding
