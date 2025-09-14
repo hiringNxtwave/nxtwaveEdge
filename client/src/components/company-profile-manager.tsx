@@ -324,34 +324,35 @@ export function CompanyProfileManager() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div className="flex items-center justify-center py-12 px-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading job requirements...</p>
+          <div className="animate-spin rounded-full h-6 md:h-8 w-6 md:w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-sm md:text-base">Loading job requirements...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6 px-4 sm:px-0">
       {/* Header */}
-      <div className="bg-blue-50 border border-blue-100 rounded-lg p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-3xl font-bold text-blue-600 mb-2">Job Requirements</h2>
-            <p className="text-gray-600 text-lg">
+      <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 md:p-6">
+        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+          <div className="text-center md:text-left">
+            <h2 className="text-2xl md:text-3xl font-bold text-blue-600 mb-2">Job Requirements</h2>
+            <p className="text-gray-600 text-base md:text-lg">
               Manage your hiring requirements and let our AI parse job descriptions
             </p>
           </div>
           {!isAdding && (
             <Button 
               onClick={() => setIsAdding(true)} 
-              className="bg-blue-600 text-white hover:bg-blue-700 gap-2 px-6 py-3 text-lg font-semibold" 
+              className="bg-blue-600 text-white hover:bg-blue-700 gap-2 px-4 md:px-6 py-2 md:py-3 text-base md:text-lg font-semibold w-full md:w-auto" 
               data-testid="button-add-requirement"
             >
-              <Plus className="w-5 h-5" />
-              Add New Requirement
+              <Plus className="w-4 md:w-5 h-4 md:h-5" />
+              <span className="md:hidden">Add Requirement</span>
+              <span className="hidden md:inline">Add New Requirement</span>
             </Button>
           )}
         </div>
@@ -360,26 +361,28 @@ export function CompanyProfileManager() {
       {/* Add/Edit Form */}
       {isAdding && (
         <Card className="bg-white border border-gray-200 shadow-lg overflow-hidden">
-          <CardHeader className="bg-blue-50 border-b border-blue-100">
-            <CardTitle className="flex items-center gap-3 text-xl">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Briefcase className="w-5 h-5 text-blue-600" />
+          <CardHeader className="bg-blue-50 border-b border-blue-100 p-4 md:p-6">
+            <CardTitle className="flex flex-col space-y-2 md:flex-row md:items-center md:gap-3 md:space-y-0 text-lg md:text-xl">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Briefcase className="w-4 md:w-5 h-4 md:h-5 text-blue-600" />
+                </div>
+                <span className="text-gray-800 text-base md:text-xl">
+                  {editingId ? 'Edit Job Requirement' : 'Create New Job Requirement'}
+                </span>
               </div>
-              <span className="text-gray-800">
-                {editingId ? 'Edit Job Requirement' : 'Create New Job Requirement'}
-              </span>
             </CardTitle>
-            <CardDescription className="text-gray-600">
+            <CardDescription className="text-gray-600 text-sm md:text-base mt-2">
               Upload a JD file for instant parsing or fill in details manually
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-8">
+          <CardContent className="p-4 md:p-8">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                 
                 {/* File Upload Section - Primary Option */}
                 {!useManualEntry && (
-                  <div className="bg-green-50 border border-green-100 rounded-lg p-6">
+                  <div className="bg-green-50 border border-green-100 rounded-lg p-4 md:p-6">
                     <div className="text-center space-y-4">
                       <div className="flex justify-center">
                         <div className="p-3 bg-green-100 rounded-lg">
@@ -388,24 +391,24 @@ export function CompanyProfileManager() {
                       </div>
                       
                       <div>
-                        <h3 className="text-lg font-semibold text-green-600 mb-2">
+                        <h3 className="text-base md:text-lg font-semibold text-green-600 mb-2">
                           Upload Job Description File
                         </h3>
-                        <p className="text-gray-600 mb-4">
+                        <p className="text-gray-600 mb-4 text-sm md:text-base px-2 md:px-0">
                           Upload a PDF, Word document, or text file and let AI extract all details automatically
                         </p>
                       </div>
 
                       {uploadedFile ? (
-                        <div className="bg-white rounded-lg p-4 border border-green-100">
-                          <div className="flex items-center gap-3 justify-center">
+                        <div className="bg-white rounded-lg p-4 border border-green-100 mx-2 md:mx-0">
+                          <div className="flex flex-col md:flex-row items-center gap-3 justify-center">
                             <FileText className="w-5 h-5 text-green-600" />
-                            <span className="font-medium text-gray-700">{uploadedFile.name}</span>
+                            <span className="font-medium text-gray-700 text-sm md:text-base text-center md:text-left break-words">{uploadedFile.name}</span>
                             <CheckCircle className="w-5 h-5 text-green-600" />
                           </div>
                           {isUploading && (
                             <div className="mt-2 text-center">
-                              <div className="inline-flex items-center gap-2 text-blue-600">
+                              <div className="inline-flex items-center gap-2 text-blue-600 text-sm">
                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
                                 <span>Parsing file...</span>
                               </div>
@@ -425,11 +428,12 @@ export function CompanyProfileManager() {
                           <Button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 gap-2"
+                            className="bg-green-600 hover:bg-green-700 text-white px-4 md:px-6 py-3 md:py-2 gap-2 text-sm md:text-base w-full md:w-auto max-w-xs md:max-w-none mx-auto"
                             data-testid="button-upload-file"
                           >
                             <Upload className="w-4 h-4" />
-                            Choose JD File to Upload
+                            <span className="md:hidden">Choose File</span>
+                            <span className="hidden md:inline">Choose JD File to Upload</span>
                           </Button>
                         </>
                       )}
@@ -439,10 +443,11 @@ export function CompanyProfileManager() {
                           type="button"
                           variant="ghost"
                           onClick={() => setUseManualEntry(true)}
-                          className="text-gray-600 hover:text-gray-800 text-sm"
+                          className="text-gray-600 hover:text-gray-800 text-xs md:text-sm px-2 py-1"
                           data-testid="button-manual-entry"
                         >
-                          Or fill in details manually instead →
+                          <span className="md:hidden">Fill manually →</span>
+                          <span className="hidden md:inline">Or fill in details manually instead →</span>
                         </Button>
                       </div>
                     </div>
@@ -450,14 +455,19 @@ export function CompanyProfileManager() {
                 )}
 
                 {/* Job Description - Always Available */}
-                <div className="bg-blue-50 border border-blue-100 rounded-lg p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-blue-100 rounded-lg">
-                      <FileText className="w-4 h-4 text-blue-600" />
+                <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 md:p-6">
+                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3 mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-blue-100 rounded-lg">
+                        <FileText className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <h3 className="text-base md:text-lg font-semibold text-blue-600">
+                        Job Description
+                      </h3>
                     </div>
-                    <h3 className="text-lg font-semibold text-blue-600">
-                      Job Description {!useManualEntry && uploadedFile && '(Auto-filled from file)'}
-                    </h3>
+                    {!useManualEntry && uploadedFile && (
+                      <span className="text-xs md:text-sm text-blue-500">(Auto-filled from file)</span>
+                    )}
                   </div>
 
                   <FormField
@@ -484,20 +494,20 @@ export function CompanyProfileManager() {
                           />
                         </FormControl>
                         {useManualEntry && (
-                          <div className="flex gap-2">
+                          <div className="flex flex-col md:flex-row gap-2 md:items-center">
                             <Button
                               type="button"
                               variant="outline"
                               size="sm"
                               onClick={handleParseJD}
                               disabled={isParsingJD}
-                              className="gap-2 border-purple-200 text-purple-700 hover:bg-purple-50"
+                              className="gap-2 border-purple-200 text-purple-700 hover:bg-purple-50 w-full md:w-auto"
                               data-testid="button-parse-jd"
                             >
                               <Sparkles className="w-4 h-4" />
                               {isParsingJD ? 'Parsing...' : 'Parse with AI'}
                             </Button>
-                            <span className="text-xs text-gray-500 self-center">
+                            <span className="text-xs text-gray-500 text-center md:text-left">
                               Auto-fill form fields from job description
                             </span>
                           </div>
@@ -515,21 +525,22 @@ export function CompanyProfileManager() {
                       type="button"
                       variant="ghost"
                       onClick={() => setUseManualEntry(false)}
-                      className="text-gray-600 hover:text-gray-800"
+                      className="text-gray-600 hover:text-gray-800 text-sm px-2 py-1"
                     >
-                      ← Switch back to file upload mode
+                      <span className="md:hidden">← Upload mode</span>
+                      <span className="hidden md:inline">← Switch back to file upload mode</span>
                     </Button>
                   </div>
                 )}
 
                 {/* Core Job Details */}
-                <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-6">
-                  <h4 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    <Target className="w-5 h-5 text-blue-600" />
+                <div className="bg-white border border-gray-200 rounded-xl p-4 md:p-6 space-y-4 md:space-y-6">
+                  <h4 className="text-base md:text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <Target className="w-4 md:w-5 h-4 md:h-5 text-blue-600" />
                     Job Details
                   </h4>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <FormField
                       control={form.control}
                       name="jobTitle"
@@ -579,11 +590,11 @@ export function CompanyProfileManager() {
 
                   {/* Salary Range */}
                   <div className="bg-green-50 border border-green-100 rounded-lg p-4">
-                    <FormLabel className="flex items-center gap-2 text-green-600 font-medium mb-3">
+                    <FormLabel className="flex items-center gap-2 text-green-600 font-medium mb-3 text-sm md:text-base">
                       <IndianRupee className="w-4 h-4 text-green-600" />
                       Salary Range (in thousands)
                     </FormLabel>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-2 md:gap-4">
                       <FormField
                         control={form.control}
                         name="salaryMin"
@@ -629,7 +640,7 @@ export function CompanyProfileManager() {
                   </div>
 
                   {/* Location & Work Mode */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <FormField
                       control={form.control}
                       name="jobLocation"
@@ -678,13 +689,13 @@ export function CompanyProfileManager() {
                 </div>
 
                 {/* College Requirements */}
-                <div className="bg-purple-50 border border-purple-100 rounded-lg p-6 space-y-4">
-                  <h4 className="text-lg font-semibold text-purple-600 flex items-center gap-2">
-                    <GraduationCap className="w-5 h-5 text-purple-600" />
+                <div className="bg-purple-50 border border-purple-100 rounded-lg p-4 md:p-6 space-y-4">
+                  <h4 className="text-base md:text-lg font-semibold text-purple-600 flex items-center gap-2">
+                    <GraduationCap className="w-4 md:w-5 h-4 md:h-5 text-purple-600" />
                     College & Academic Requirements
                   </h4>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <FormField
                       control={form.control}
                       name="preferredColleges"
@@ -734,21 +745,21 @@ export function CompanyProfileManager() {
                 </div>
 
                 {/* Hiring Details */}
-                <div className="bg-orange-50 border border-orange-100 rounded-lg p-6">
+                <div className="bg-orange-50 border border-orange-100 rounded-lg p-4 md:p-6">
                   <FormField
                     control={form.control}
                     name="hiresExpected"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 text-orange-600 font-medium text-lg">
-                          <Users className="w-5 h-5 text-orange-600" />
+                        <FormLabel className="flex items-center gap-2 text-orange-600 font-medium text-base md:text-lg">
+                          <Users className="w-4 md:w-5 h-4 md:h-5 text-orange-600" />
                           Number of Hires Expected
                         </FormLabel>
                         <FormControl>
                           <Input
                             type="number"
                             min="1"
-                            className="border-gray-300 focus:border-orange-600 max-w-xs"
+                            className="border-gray-300 focus:border-orange-600 w-full md:max-w-xs"
                             {...field}
                             onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
                             data-testid="input-hires-expected"
@@ -761,22 +772,24 @@ export function CompanyProfileManager() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex gap-4 pt-6 border-t border-gray-200">
+                <div className="flex flex-col md:flex-row gap-3 md:gap-4 pt-4 md:pt-6 border-t border-gray-200">
                   <Button
                     type="submit"
                     disabled={saveMutation.isPending}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 text-lg gap-2"
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 md:px-8 py-3 text-base md:text-lg gap-2 w-full md:w-auto order-1 md:order-none"
                     data-testid="button-save-requirement"
                   >
                     {saveMutation.isPending ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        Saving...
+                        <span className="md:hidden">Saving...</span>
+                        <span className="hidden md:inline">Saving...</span>
                       </>
                     ) : (
                       <>
-                        <CheckCircle className="w-5 h-5" />
-                        {editingId ? 'Update Requirement' : 'Create Requirement'}
+                        <CheckCircle className="w-4 md:w-5 h-4 md:h-5" />
+                        <span className="md:hidden">{editingId ? 'Update' : 'Create'}</span>
+                        <span className="hidden md:inline">{editingId ? 'Update Requirement' : 'Create Requirement'}</span>
                       </>
                     )}
                   </Button>
@@ -784,7 +797,7 @@ export function CompanyProfileManager() {
                     type="button"
                     variant="outline"
                     onClick={handleCancel}
-                    className="px-8 py-3 text-lg border-gray-300 hover:bg-gray-50"
+                    className="px-6 md:px-8 py-3 text-base md:text-lg border-gray-300 hover:bg-gray-50 w-full md:w-auto order-2 md:order-none"
                     data-testid="button-cancel-requirement"
                   >
                     Cancel
@@ -799,88 +812,91 @@ export function CompanyProfileManager() {
       {/* Requirements List */}
       <div className="space-y-4">
         {requirements.length === 0 ? (
-          <Card className="text-center py-16 border-2 border-dashed border-gray-300">
-            <CardContent className="pt-6">
-              <div className="p-4 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full w-20 h-20 mx-auto mb-6 flex items-center justify-center">
-                <Building className="w-10 h-10 text-blue-600" />
+          <Card className="text-center py-12 md:py-16 border-2 border-dashed border-gray-300 mx-4 sm:mx-0">
+            <CardContent className="pt-6 px-4 md:px-6">
+              <div className="p-3 md:p-4 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 flex items-center justify-center">
+                <Building className="w-8 h-8 md:w-10 md:h-10 text-blue-600" />
               </div>
-              <h3 className="text-2xl font-semibold mb-3 text-gray-800">No job requirements yet</h3>
-              <p className="text-gray-600 mb-6 text-lg">
+              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-gray-800">No job requirements yet</h3>
+              <p className="text-gray-600 mb-6 text-base md:text-lg px-2 md:px-0">
                 Create your first job requirement to start finding the right candidates
               </p>
               <Button 
                 onClick={() => setIsAdding(true)} 
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white gap-2 px-8 py-3 text-lg"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white gap-2 px-6 md:px-8 py-3 text-base md:text-lg w-full md:w-auto max-w-xs md:max-w-none"
               >
-                <Plus className="w-5 h-5" />
-                Create First Requirement
+                <Plus className="w-4 md:w-5 h-4 md:h-5" />
+                <span className="md:hidden">Create Requirement</span>
+                <span className="hidden md:inline">Create First Requirement</span>
               </Button>
             </CardContent>
           </Card>
         ) : (
           requirements.map((req, index) => (
-            <Card key={req.id} className="hover:shadow-lg transition-all duration-200 border border-gray-200 overflow-hidden">
+            <Card key={req.id} className="hover:shadow-lg transition-all duration-200 border border-gray-200 overflow-hidden mx-4 sm:mx-0">
               <CardContent className="p-0">
                 <div className={`h-1 bg-gradient-to-r ${
                   index % 3 === 0 ? 'from-blue-500 to-purple-500' :
                   index % 3 === 1 ? 'from-green-500 to-emerald-500' :
                   'from-orange-500 to-red-500'
                 }`}></div>
-                <div className="p-6">
-                  <div className="flex items-start justify-between">
+                <div className="p-4 md:p-6">
+                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <h3 className="text-xl font-semibold text-gray-800">{req.jobTitle}</h3>
+                      <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3 mb-3">
+                        <h3 className="text-lg md:text-xl font-semibold text-gray-800">{req.jobTitle}</h3>
                         <Badge 
                           variant={req.isActive ? 'default' : 'secondary'}
-                          className={req.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}
+                          className={`${req.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'} w-fit`}
                         >
                           {req.isActive ? '✅ Active' : '⏸️ Inactive'}
                         </Badge>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                        <div className="flex items-center gap-2 text-sm bg-green-50 text-green-700 px-3 py-2 rounded-lg">
-                          <IndianRupee className="w-4 h-4" />
-                          <span className="font-medium">₹{req.salaryMin/100}L - ₹{req.salaryMax/100}L</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 mb-4">
+                        <div className="flex items-center gap-2 text-xs md:text-sm bg-green-50 text-green-700 px-2 md:px-3 py-2 rounded-lg">
+                          <IndianRupee className="w-3 md:w-4 h-3 md:h-4 flex-shrink-0" />
+                          <span className="font-medium truncate">₹{req.salaryMin/100}L - ₹{req.salaryMax/100}L</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm bg-red-50 text-red-700 px-3 py-2 rounded-lg">
-                          <MapPin className="w-4 h-4" />
-                          <span className="font-medium">{req.jobLocation}</span>
+                        <div className="flex items-center gap-2 text-xs md:text-sm bg-red-50 text-red-700 px-2 md:px-3 py-2 rounded-lg">
+                          <MapPin className="w-3 md:w-4 h-3 md:h-4 flex-shrink-0" />
+                          <span className="font-medium truncate">{req.jobLocation}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm bg-blue-50 text-blue-700 px-3 py-2 rounded-lg">
-                          <Users className="w-4 h-4" />
-                          <span className="font-medium">{req.hiresExpected} hire{req.hiresExpected > 1 ? 's' : ''}</span>
+                        <div className="flex items-center gap-2 text-xs md:text-sm bg-blue-50 text-blue-700 px-2 md:px-3 py-2 rounded-lg">
+                          <Users className="w-3 md:w-4 h-3 md:h-4 flex-shrink-0" />
+                          <span className="font-medium truncate">{req.hiresExpected} hire{req.hiresExpected > 1 ? 's' : ''}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm bg-purple-50 text-purple-700 px-3 py-2 rounded-lg">
-                          <GraduationCap className="w-4 h-4" />
-                          <span className="font-medium">{req.experienceLevel}</span>
+                        <div className="flex items-center gap-2 text-xs md:text-sm bg-purple-50 text-purple-700 px-2 md:px-3 py-2 rounded-lg">
+                          <GraduationCap className="w-3 md:w-4 h-3 md:h-4 flex-shrink-0" />
+                          <span className="font-medium truncate">{req.experienceLevel}</span>
                         </div>
                       </div>
 
-                      <p className="text-gray-600 line-clamp-2 text-sm">
+                      <p className="text-gray-600 line-clamp-2 text-xs md:text-sm">
                         {req.jobDescription}
                       </p>
                     </div>
 
-                    <div className="flex gap-2 ml-6">
+                    <div className="flex gap-2 md:ml-6 self-start">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleEdit(req)}
-                        className="gap-2 border-blue-200 text-blue-700 hover:bg-blue-50"
+                        className="gap-1 md:gap-2 border-blue-200 text-blue-700 hover:bg-blue-50 flex-1 md:flex-none"
                         data-testid={`button-edit-${req.id}`}
                       >
-                        <Edit3 className="w-4 h-4" />
+                        <Edit3 className="w-3 md:w-4 h-3 md:h-4" />
+                        <span className="md:hidden text-xs">Edit</span>
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleDelete(req.id)}
-                        className="gap-2 border-red-200 text-red-600 hover:bg-red-50"
+                        className="gap-1 md:gap-2 border-red-200 text-red-600 hover:bg-red-50 flex-1 md:flex-none"
                         data-testid={`button-delete-${req.id}`}
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3 md:w-4 h-3 md:h-4" />
+                        <span className="md:hidden text-xs">Delete</span>
                       </Button>
                     </div>
                   </div>
