@@ -157,9 +157,9 @@ export default function Header() {
             )}
           </nav>
           
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center gap-3 md:gap-4 lg:gap-6">
             {isAuthenticated ? (
-              <div className="flex items-center space-x-3 md:space-x-6">
+              <div className="flex items-center gap-3 md:gap-4 lg:gap-6">
                 <Button
                   variant="ghost"
                   onClick={() => setChatbotOpen(!chatbotOpen)}
@@ -204,8 +204,8 @@ export default function Header() {
                       <ChevronDown className="w-4 h-4 text-muted-foreground md:hidden transition-transform group-data-[state=open]:rotate-180" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-64 p-2">
-                    <DropdownMenuLabel className="px-3 py-2">
+                  <DropdownMenuContent align="end" className="w-64 p-3 md:p-4">
+                    <DropdownMenuLabel className="p-3 md:p-4">
                       <div className="flex items-center gap-3">
                         {user?.profileImageUrl ? (
                           <img 
@@ -263,7 +263,7 @@ export default function Header() {
                 </DropdownMenu>
               </div>
             ) : (
-              <div className="flex items-center space-x-3 md:space-x-4">
+              <div className="flex items-center gap-3 md:gap-4">
                 <Button 
                   variant="ghost" 
                   onClick={() => window.location.href = "/api/login"}
@@ -299,7 +299,7 @@ export default function Header() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-border py-4">
-            <nav className="flex flex-col space-y-3">
+            <nav className="flex flex-col gap-3 md:gap-4">
               {!isAuthenticated ? (
                 // Mobile navigation for unauthenticated users
                 <>

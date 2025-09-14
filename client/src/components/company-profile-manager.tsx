@@ -334,12 +334,12 @@ export function CompanyProfileManager() {
   }
 
   return (
-    <div className="space-y-4 md:space-y-6 px-4 sm:px-0">
+    <div className="space-y-3 md:space-y-4 lg:space-y-6 px-4 sm:px-0">
       {/* Header */}
-      <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 md:p-6">
-        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+      <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 md:p-4 lg:p-5">
+        <div className="flex flex-col gap-3 md:gap-4 md:flex-row md:items-center md:justify-between">
           <div className="text-center md:text-left">
-            <h2 className="text-2xl md:text-3xl font-bold text-blue-600 mb-2">Job Requirements</h2>
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-blue-600 mb-2">Job Requirements</h2>
             <p className="text-gray-600 text-base md:text-lg">
               Manage your hiring requirements and let our AI parse job descriptions
             </p>
@@ -347,7 +347,7 @@ export function CompanyProfileManager() {
           {!isAdding && (
             <Button 
               onClick={() => setIsAdding(true)} 
-              className="bg-blue-600 text-white hover:bg-blue-700 gap-2 px-4 md:px-6 py-2 md:py-3 text-base md:text-lg font-semibold w-full md:w-auto" 
+              className="bg-blue-600 text-white hover:bg-blue-700 gap-2 px-4 md:px-6 py-3 md:py-2 text-sm md:text-base font-semibold w-full md:w-auto min-h-[44px]" 
               data-testid="button-add-requirement"
             >
               <Plus className="w-4 md:w-5 h-4 md:h-5" />
@@ -361,8 +361,8 @@ export function CompanyProfileManager() {
       {/* Add/Edit Form */}
       {isAdding && (
         <Card className="bg-white border border-gray-200 shadow-lg overflow-hidden">
-          <CardHeader className="bg-blue-50 border-b border-blue-100 p-4 md:p-6">
-            <CardTitle className="flex flex-col space-y-2 md:flex-row md:items-center md:gap-3 md:space-y-0 text-lg md:text-xl">
+          <CardHeader className="bg-blue-50 border-b border-blue-100 p-3 md:p-4 lg:p-6">
+            <CardTitle className="flex flex-col gap-2 md:gap-3 md:flex-row md:items-center text-lg md:text-xl">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-100 rounded-lg">
                   <Briefcase className="w-4 md:w-5 h-4 md:h-5 text-blue-600" />
@@ -376,9 +376,9 @@ export function CompanyProfileManager() {
               Upload a JD file for instant parsing or fill in details manually
             </CardDescription>
           </CardHeader>
-          <CardContent className="p-4 md:p-8">
+          <CardContent className="p-3 md:p-4 lg:p-6">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6 lg:space-y-8">
                 
                 {/* File Upload Section - Primary Option */}
                 {!useManualEntry && (

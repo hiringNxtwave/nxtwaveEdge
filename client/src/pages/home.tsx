@@ -78,27 +78,27 @@ export default function Home() {
           <div className="mb-6 md:mb-8">
             <Link href="/browse">
               <Card className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all cursor-pointer text-white" data-testid="card-browse-candidates">
-                <CardContent className="p-6 md:p-8">
-                  <div className="flex flex-col md:flex-row items-start md:items-center md:justify-between space-y-4 md:space-y-0">
+                <CardContent className="p-3 md:p-4 lg:p-6">
+                  <div className="flex flex-col md:flex-row items-start md:items-center md:justify-between gap-4 md:gap-0">
                     <div className="flex-1">
                       <h2 className="text-xl md:text-2xl font-bold mb-2">Find Your Next Great Hire</h2>
                       <p className="text-blue-100 mb-4 text-sm md:text-base">Browse pre-assessed candidates ready to join your team</p>
-                      <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-6 text-xs md:text-sm">
-                        <div className="flex items-center space-x-2">
+                      <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 lg:gap-6 text-xs md:text-sm">
+                        <div className="flex items-center gap-2">
                           <Target className="w-4 h-4" />
                           <span>Top 10% talent</span>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center gap-2">
                           <CheckCircle className="w-4 h-4" />
                           <span>Pre-assessed</span>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center gap-2">
                           <Zap className="w-4 h-4" />
                           <span>Immediate hire</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex md:flex-col items-center space-x-3 md:space-x-0 md:space-y-2 md:text-right">
+                    <div className="flex md:flex-col items-center gap-3 md:gap-2 md:text-right">
                       <div className="w-12 h-12 md:w-16 md:h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
                         <Users className="w-6 h-6 md:w-8 md:h-8" />
                       </div>
@@ -137,23 +137,23 @@ export default function Home() {
 
 
           {/* Quick Stats - Clean Layout */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-            <div className="text-center p-4 md:p-6 bg-blue-50 rounded-lg border border-blue-100">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
+            <div className="text-center p-3 md:p-4 lg:p-5 bg-blue-50 rounded-lg border border-blue-100">
               <div className="text-2xl md:text-3xl font-bold text-blue-600 mb-1 md:mb-2">24</div>
               <div className="text-xs md:text-sm font-medium text-gray-700">Profiles viewed</div>
               <div className="text-xs text-gray-500 mt-1">This week</div>
             </div>
-            <div className="text-center p-4 md:p-6 bg-green-50 rounded-lg border border-green-100">
+            <div className="text-center p-3 md:p-4 lg:p-5 bg-green-50 rounded-lg border border-green-100">
               <div className="text-2xl md:text-3xl font-bold text-green-600 mb-1 md:mb-2">12</div>
               <div className="text-xs md:text-sm font-medium text-gray-700">Avg. time to hire</div>
               <div className="text-xs text-gray-500 mt-1">Days</div>
             </div>
-            <div className="text-center p-4 md:p-6 bg-purple-50 rounded-lg border border-purple-100">
+            <div className="text-center p-3 md:p-4 lg:p-5 bg-purple-50 rounded-lg border border-purple-100">
               <div className="text-2xl md:text-3xl font-bold text-purple-600 mb-1 md:mb-2">87%</div>
               <div className="text-xs md:text-sm font-medium text-gray-700">Response rate</div>
               <div className="text-xs text-gray-500 mt-1">Last 30 days</div>
             </div>
-            <div className="text-center p-4 md:p-6 bg-orange-50 rounded-lg border border-orange-100">
+            <div className="text-center p-3 md:p-4 lg:p-5 bg-orange-50 rounded-lg border border-orange-100">
               <div className="text-2xl md:text-3xl font-bold text-orange-600 mb-1 md:mb-2">₹45L</div>
               <div className="text-xs md:text-sm font-medium text-gray-700">Cost saved</div>
               <div className="text-xs text-gray-500 mt-1">This quarter</div>

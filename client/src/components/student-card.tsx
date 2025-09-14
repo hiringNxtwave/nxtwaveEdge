@@ -136,7 +136,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
     <Card className="hover:shadow-md transition-all duration-200 border-l-4 border-l-blue-500 bg-white" data-testid={`card-student-${student.id}`}>
       <CardContent className="p-3 sm:p-4 lg:p-5">
         {/* Mobile: Stacked Layout, Desktop: Side-by-side */}
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {/* Profile Section */}
           <div className="flex items-start gap-3 sm:gap-4">
             <Link href={`/student/${student.id}`} className="flex-shrink-0">
@@ -203,9 +203,9 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           </div>
           
           {/* Action Buttons - Full width on mobile, proper spacing */}
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
             <Link href={`/student/${student.id}`} className="flex-1 sm:flex-initial">
-              <Button className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-3 sm:px-5 sm:py-2 min-h-[44px] sm:min-h-[36px]" data-testid={`button-view-profile-${student.id}`}>
+              <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-3 sm:px-5 sm:py-2 min-h-[44px] sm:min-h-[36px]" data-testid={`button-view-profile-${student.id}`}>
                 View Profile
               </Button>
             </Link>
@@ -213,7 +213,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             <Button 
               className={`w-full sm:w-auto font-medium text-sm px-4 py-3 sm:px-5 sm:py-2 min-h-[44px] sm:min-h-[36px] ${
                 isShortlisted(student.id) 
-                  ? 'bg-green-100 text-green-700 hover:bg-green-200' 
+                  ? 'bg-green-100 text-green-600 hover:bg-green-200' 
                   : 'border border-green-500 text-green-600 hover:bg-green-50'
               }`} 
               variant={isShortlisted(student.id) ? "default" : "outline"}
@@ -237,29 +237,29 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
           </div>
 
           {/* Assessment Grid - Responsive layout */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
             <div 
-              className="flex flex-col items-center px-2 py-3 sm:px-3 sm:py-2 rounded-lg bg-blue-50 hover:bg-blue-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
+              className="flex flex-col items-center p-3 md:p-4 rounded-lg bg-blue-50 border border-blue-100 hover:bg-blue-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
               onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Excellent' : dsaScore >= 3 ? 'Good' : 'Average'})}
               data-testid={`button-dsa-assessment-${student.id}`}
               title="Click to view detailed DSA assessment"
             >
               <div className="flex mb-1 scale-90 sm:scale-100">{renderStars(dsaScore)}</div>
-              <span className="text-xs font-semibold text-blue-800">DSA</span>
+              <span className="text-xs font-semibold text-blue-600">DSA</span>
             </div>
             
             <div 
-              className="flex flex-col items-center px-2 py-3 sm:px-3 sm:py-2 rounded-lg bg-green-50 hover:bg-green-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
+              className="flex flex-col items-center p-3 md:p-4 rounded-lg bg-green-50 border border-green-100 hover:bg-green-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
               onClick={() => setSelectedAssessment({type: 'Aptitude', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Average'})}
               data-testid={`button-aptitude-assessment-${student.id}`}
               title="Click to view detailed Aptitude assessment"
             >
               <div className="flex mb-1 scale-90 sm:scale-100">{renderStars(aptitudeScore)}</div>
-              <span className="text-xs font-semibold text-green-700">Aptitude</span>
+              <span className="text-xs font-semibold text-green-600">Aptitude</span>
             </div>
             
             <div 
-              className="flex flex-col items-center px-2 py-3 sm:px-3 sm:py-2 rounded-lg bg-purple-50 hover:bg-purple-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
+              className="flex flex-col items-center p-3 md:p-4 rounded-lg bg-purple-50 border border-purple-100 hover:bg-purple-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
               onClick={() => setSelectedAssessment({type: 'Verbal Ability', score: communicationScore * 20, level: communicationScore >= 4 ? 'Excellent' : communicationScore >= 3 ? 'Good' : 'Average'})}
               data-testid={`button-communication-assessment-${student.id}`}
               title="Click to view detailed Verbal Ability assessment"
@@ -269,7 +269,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
             
             <div 
-              className="flex flex-col items-center px-2 py-3 sm:px-3 sm:py-2 rounded-lg bg-orange-50 hover:bg-orange-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
+              className="flex flex-col items-center p-3 md:p-4 rounded-lg bg-orange-50 border border-orange-100 hover:bg-orange-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
               onClick={() => setSelectedAssessment({type: 'CS Fundamentals', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Excellent' : csFundamentalsScore >= 3 ? 'Good' : 'Average'})}
               data-testid={`button-cs-fundamentals-assessment-${student.id}`}
               title="Click to view detailed CS Fundamentals assessment"
@@ -279,7 +279,7 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </div>
             
             <div 
-              className="flex flex-col items-center px-2 py-3 sm:px-3 sm:py-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto] col-span-2 sm:col-span-1"
+              className="flex flex-col items-center p-3 md:p-4 rounded-lg bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto] col-span-2 sm:col-span-1"
               onClick={() => setShowInterviewPerformance(true)}
               data-testid={`performance-overall-${student.id}`}
               title="Click to view interview footage and performance analysis"
