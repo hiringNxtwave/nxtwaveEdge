@@ -13,6 +13,7 @@ import {
   ChevronRight,
   User,
   LogOut,
+  BarChart3,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -29,6 +30,7 @@ const navItems = [
   { href: "/", icon: LayoutDashboard, label: "Dashboard", exact: true },
   { href: "/browse", icon: Search, label: "Browse Talent" },
   { href: "/shortlist", icon: Heart, label: "Shortlisted", badge: true },
+  { href: "/market-intelligence", icon: BarChart3, label: "Market Intelligence" },
   { href: "/company-profile", icon: Building2, label: "Company Profile" },
 ];
 

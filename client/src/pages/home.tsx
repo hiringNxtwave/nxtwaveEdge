@@ -95,34 +95,26 @@ function RecruiterDashboard({ user, shortlistCount }: { user: any; shortlistCoun
         </div>
 
         {/* Main 2-col layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-          {/* LEFT — Market Intelligence (2/3) */}
-          <div className="lg:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm p-5">
-            <h2 className="text-sm font-semibold text-slate-800 mb-4">Market Intelligence</h2>
-            <MarketIntelligence compact />
-          </div>
-
-          {/* RIGHT — Actions + Activity (1/3) */}
+          {/* LEFT — Hiring Checklist */}
           <div className="space-y-4">
-
             {/* Shortlist banner (only when items exist) */}
             {shortlistCount > 0 && (
               <Link href="/shortlist">
-                <div className="flex items-center justify-between rounded-xl border border-rose-100 bg-rose-50 px-4 py-3.5 cursor-pointer hover:border-rose-200 transition-all" data-testid="card-your-shortlist">
+                <div className="flex items-center justify-between rounded-xl border border-blue-100 bg-blue-50 px-4 py-3.5 cursor-pointer hover:border-blue-200 transition-all" data-testid="card-your-shortlist">
                   <div className="flex items-center gap-2.5">
-                    <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
+                    <Heart className="w-4 h-4 text-blue-600 fill-blue-600" />
                     <div>
                       <p className="text-sm font-semibold text-slate-900">Your Shortlist</p>
                       <p className="text-xs text-slate-500">{shortlistCount} candidate{shortlistCount !== 1 ? "s" : ""} saved</p>
                     </div>
                   </div>
-                  <span className="text-lg font-bold text-rose-500">{shortlistCount}</span>
+                  <span className="text-lg font-bold text-blue-600">{shortlistCount}</span>
                 </div>
               </Link>
             )}
 
-            {/* Hiring Checklist */}
             <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4">
               <h2 className="text-sm font-semibold text-slate-800 mb-3">Hiring Checklist</h2>
               {[
@@ -132,36 +124,50 @@ function RecruiterDashboard({ user, shortlistCount }: { user: any; shortlistCoun
                 { done: false, label: "Schedule interviews",        href: "/shortlist" },
               ].map((item, i) => (
                 <Link key={i} href={item.href}>
-                  <div className="flex items-center gap-2.5 py-2 border-b border-slate-50 last:border-0 hover:bg-slate-50 rounded px-1 -mx-1 transition-colors cursor-pointer">
+                  <div className="flex items-center gap-2.5 py-2.5 border-b border-slate-50 last:border-0 hover:bg-slate-50 rounded px-1 -mx-1 transition-colors cursor-pointer">
                     <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${item.done ? "bg-blue-500" : "border-2 border-slate-200"}`}>
                       {item.done && <CheckCircle className="w-2.5 h-2.5 text-white" />}
                     </div>
-                    <span className={`text-xs font-medium ${item.done ? "text-slate-400 line-through" : "text-slate-700"}`}>{item.label}</span>
+                    <span className={`text-xs font-medium flex-1 ${item.done ? "text-slate-400 line-through" : "text-slate-700"}`}>{item.label}</span>
+                    <ChevronRight className="w-3 h-3 text-slate-300" />
                   </div>
                 </Link>
               ))}
             </div>
 
-            {/* Recent Activity */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4">
-              <h2 className="text-sm font-semibold text-slate-800 mb-3">Recent Activity</h2>
-              <div className="space-y-3">
-                {recentActivity.map((a, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className={`w-1.5 h-1.5 rounded-full ${a.dot} mt-1.5 shrink-0`} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-slate-700 truncate">
-                        {a.action} — <span className="text-slate-900">{a.name}</span>
-                      </p>
-                      <p className="text-[11px] text-slate-400 mt-0.5">{a.detail}</p>
-                    </div>
-                    <span className="text-[10px] text-slate-400 shrink-0">{a.time}</span>
-                  </div>
-                ))}
+            {/* Market Intelligence teaser */}
+            <Link href="/market-intelligence">
+              <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4 cursor-pointer hover:border-blue-100 hover:shadow-md transition-all group">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-sm font-semibold text-slate-800">Market Intelligence</h2>
+                  <span className="text-xs text-blue-600 font-medium group-hover:underline flex items-center gap-1">
+                    View full report <ChevronRight className="w-3 h-3" />
+                  </span>
+                </div>
+                <MarketIntelligence compact />
               </div>
-            </div>
-
+            </Link>
           </div>
+
+          {/* RIGHT — Recent Activity */}
+          <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4">
+            <h2 className="text-sm font-semibold text-slate-800 mb-3">Recent Activity</h2>
+            <div className="space-y-3">
+              {recentActivity.map((a, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className={`w-1.5 h-1.5 rounded-full ${a.dot} mt-1.5 shrink-0`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-slate-700 truncate">
+                      {a.action} — <span className="text-slate-900">{a.name}</span>
+                    </p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">{a.detail}</p>
+                  </div>
+                  <span className="text-[10px] text-slate-400 shrink-0">{a.time}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
