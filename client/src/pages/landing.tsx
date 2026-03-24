@@ -196,17 +196,16 @@ export default function Landing() {
             <div>
               <div className="inline-flex items-center gap-2 bg-white border border-blue-100 shadow-sm rounded-full px-4 py-1.5 text-sm font-medium text-blue-700 mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block animate-pulse"></span>
-                India's 'Uber' for Hiring Entry Level Talent
+                India's First National Engineering Hiring Standard
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-[1.1] mb-5">
-                Hire India's <span className="text-blue-600">Top 1%</span><br />
-                Engineers.<br />
-                <span className="text-3xl md:text-4xl font-bold text-slate-600">From a National Standard Assessment.</span>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-[1.1] mb-4">
+                India's <span className="text-blue-600">'Uber'</span> for Hiring<br />
+                Entry Level Talent
               </h1>
 
               <p className="text-base md:text-lg text-slate-500 mb-8 max-w-lg leading-relaxed">
-                An offline, proctored, fool-proof tech hiring system built for scale and certainty.
+                Hire top <span className="font-semibold text-slate-700">0.1%</span> engineers — offline assessed, nationally ranked, delivered in 3 hours.
               </p>
 
               {/* Rotating point */}
