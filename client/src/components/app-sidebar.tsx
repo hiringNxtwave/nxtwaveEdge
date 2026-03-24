@@ -1,4 +1,5 @@
 import { Link, useLocation } from "wouter";
+import nxtWaveLogo from "@assets/image_1774348454567.png";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useShortlist } from "@/contexts/shortlist-context";
@@ -14,7 +15,6 @@ import {
   MessageCircle,
   User,
   LogOut,
-  Handshake,
   BarChart3,
   Layers,
 } from "lucide-react";
@@ -76,11 +76,11 @@ export default function AppSidebar() {
             collapsed ? "px-0 justify-center" : "px-4 gap-3"
           )}
         >
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20">
-            <Handshake className="w-4 h-4 text-slate-950" />
-          </div>
           {!collapsed && (
-            <span className="font-bold text-white text-[15px] tracking-tight">NxtWave</span>
+            <img src={nxtWaveLogo} alt="NxtWave" className="h-8 w-auto brightness-0 invert" />
+          )}
+          {collapsed && (
+            <img src={nxtWaveLogo} alt="NxtWave" className="h-6 w-auto brightness-0 invert" />
           )}
         </div>
 
