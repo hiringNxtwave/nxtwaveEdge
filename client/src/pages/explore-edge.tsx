@@ -365,14 +365,9 @@ export default function ExploreEdge() {
             Access 1,920+ pre-verified engineers who've cleared every stage of
             this process — no screening required on your end.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="/login">
-              <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-colors">
-                Get Started <ArrowRight className="w-4 h-4" />
-              </button>
-            </Link>
+          <div className="flex items-center justify-center">
             <Link href="/">
-              <button className="inline-flex items-center gap-2 border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white font-semibold text-sm px-8 py-3.5 rounded-xl transition-colors">
+              <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-colors">
                 Browse Talent
               </button>
             </Link>
