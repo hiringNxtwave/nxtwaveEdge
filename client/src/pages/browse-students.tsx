@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import StudentCard from "@/components/student-card";
@@ -9,6 +9,30 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Lock, Users, Star, GitCompare } from "lucide-react";
+
+/**
+ * Mirrors the match-percentage formula in StudentCard so we can sort before render.
+ * Higher score = better match → appears at the top of the list.
+ */
+function calcMatchScore(student: any): number {
+  const seed = parseInt(student.id.slice(-8), 16);
+  const overallRating = 4;
+
+  const skillScore = (offset: number) => {
+    const variation = ((seed * 37 + offset) % 3) - 1; // -1 | 0 | +1
+    return Math.max(1, Math.min(5, overallRating + variation));
+  };
+
+  const avg =
+    (skillScore(1) + skillScore(2) + skillScore(3) + skillScore(4)) / 4;
+
+  const cgpaRaw =
+    typeof student.cgpa === "string" ? parseFloat(student.cgpa) : student.cgpa;
+  const cgpaScore = ((cgpaRaw || 7.5) / 10) * 5;
+
+  const raw = avg * 0.4 + cgpaScore * 0.3 + overallRating * 0.3;
+  return Math.min(95, Math.max(60, Math.round(raw * 20) || 75));
+}
 
 export default function BrowseStudents() {
   useScrollToTop();
@@ -66,7 +90,10 @@ export default function BrowseStudents() {
     },
   });
 
-  const students = studentsData || [];
+  // Sort by match score descending so the highest-match candidates appear first
+  const students = [...(studentsData || [])].sort(
+    (a, b) => calcMatchScore(b) - calcMatchScore(a)
+  );
   const totalStudentCount = totalCountData?.count || 1920;
   const totalCount = totalCountData?.count || students.length;
 
