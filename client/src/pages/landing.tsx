@@ -30,65 +30,83 @@ const EDGE_CARDS = [
 /* ── SVG Illustrations ─────────────────────────────────── */
 
 function HeroIllustration() {
+  const poolDots = [
+    { cx: 58,  cy: 88  }, { cx: 88,  cy: 78  }, { cx: 116, cy: 92  },
+    { cx: 48,  cy: 122 }, { cx: 78,  cy: 114 }, { cx: 108, cy: 128 },
+    { cx: 132, cy: 108 }, { cx: 62,  cy: 158 }, { cx: 92,  cy: 148 },
+    { cx: 122, cy: 162 }, { cx: 48,  cy: 192 }, { cx: 80,  cy: 184 },
+    { cx: 112, cy: 196 }, { cx: 136, cy: 176 }, { cx: 58,  cy: 226 },
+    { cx: 90,  cy: 218 }, { cx: 120, cy: 232 }, { cx: 68,  cy: 262 },
+    { cx: 100, cy: 254 }, { cx: 128, cy: 268 }, { cx: 52,  cy: 292 },
+  ];
+  const cards = [
+    { y: 82,  initials: "AK", name: "Arjun Kumar",  campus: "IIT Delhi",    score: "98" },
+    { y: 182, initials: "PS", name: "Priya Sharma",  campus: "NIT Trichy",   score: "96" },
+    { y: 282, initials: "RV", name: "Rahul Verma",   campus: "BITS Pilani",  score: "94" },
+  ];
   return (
-    <svg viewBox="0 0 480 400" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-lg">
-      {/* Background circles */}
-      <circle cx="240" cy="200" r="170" fill="#EFF6FF" />
-      <circle cx="240" cy="200" r="120" fill="#DBEAFE" />
+    <svg viewBox="0 0 490 410" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-lg">
+      {/* Soft background */}
+      <rect width="490" height="410" rx="24" fill="#F0F5FF" />
 
-      {/* Central figure — candidate card */}
-      <rect x="185" y="90" width="110" height="150" rx="18" fill="white" stroke="#DBEAFE" strokeWidth="2" />
-      {/* Avatar circle */}
-      <circle cx="240" cy="130" r="26" fill="#EFF6FF" />
-      {/* Code </> icon */}
-      <text x="240" y="136" textAnchor="middle" fill="#1D4ED8" fontSize="18" fontWeight="bold">&lt;/&gt;</text>
-      {/* Name bar */}
-      <rect x="203" y="163" width="74" height="7" rx="3.5" fill="#DBEAFE" />
-      {/* Role tag */}
-      <rect x="210" y="176" width="60" height="6" rx="3" fill="#EFF6FF" />
-      {/* Score row */}
-      <rect x="195" y="193" width="110" height="1.5" fill="#F1F5F9" />
-      <text x="210" y="213" fill="#1D4ED8" fontSize="13" fontWeight="bold">96</text>
-      <text x="225" y="213" fill="#94A3B8" fontSize="9">/100</text>
-      <text x="261" y="213" textAnchor="end" fill="#64748B" fontSize="8">MAANG</text>
-      {/* Verified tick bottom */}
-      <circle cx="240" cy="228" r="9" fill="#2563EB" />
-      <path d="M235.5 228 l3 3 l6-6" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-
-      {/* Verified badge — top right */}
-      <rect x="320" y="80" width="110" height="52" rx="12" fill="white" stroke="#DBEAFE" strokeWidth="1.5" />
-      <circle cx="345" cy="106" r="12" fill="#2563EB" />
-      <path d="M339 106 l4 4 l7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <text x="363" y="102" fill="#1E293B" fontSize="10" fontWeight="bold">Verified</text>
-      <text x="363" y="116" fill="#64748B" fontSize="9">Top Candidate</text>
-
-      {/* Score card — top left */}
-      <rect x="58" y="90" width="108" height="60" rx="12" fill="white" stroke="#DBEAFE" strokeWidth="1.5" />
-      <text x="112" y="115" textAnchor="middle" fill="#1D4ED8" fontSize="20" fontWeight="bold">96</text>
-      <text x="112" y="130" textAnchor="middle" fill="#64748B" fontSize="9">MAANG Score</text>
-      <rect x="70" y="138" width="84" height="4" rx="2" fill="#DBEAFE" />
-      <rect x="70" y="138" width="73" height="4" rx="2" fill="#2563EB" />
-
-      {/* Delivery badge — bottom right */}
-      <rect x="315" y="255" width="120" height="52" rx="12" fill="#1D4ED8" />
-      <text x="375" y="278" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">⚡ 3 Hours</text>
-      <text x="375" y="295" textAnchor="middle" fill="#BFDBFE" fontSize="9">Delivery Guaranteed</text>
-
-      {/* Offline badge — bottom left */}
-      <rect x="55" y="262" width="118" height="52" rx="12" fill="white" stroke="#DBEAFE" strokeWidth="1.5" />
-      <text x="114" y="284" textAnchor="middle" fill="#1E293B" fontSize="10" fontWeight="bold">🛡 Offline</text>
-      <text x="114" y="298" textAnchor="middle" fill="#64748B" fontSize="9">Proctored Exam</text>
-
-      {/* Connecting lines */}
-      <line x1="190" y1="165" x2="166" y2="145" stroke="#BFDBFE" strokeWidth="1.5" strokeDasharray="4 3" />
-      <line x1="290" y1="165" x2="320" y2="130" stroke="#BFDBFE" strokeWidth="1.5" strokeDasharray="4 3" />
-      <line x1="280" y1="230" x2="315" y2="265" stroke="#BFDBFE" strokeWidth="1.5" strokeDasharray="4 3" />
-      <line x1="200" y1="235" x2="173" y2="265" stroke="#BFDBFE" strokeWidth="1.5" strokeDasharray="4 3" />
-
-      {/* NIRF campus dots around orbit */}
-      {[{ cx: 110, cy: 200 }, { cx: 240, cy: 52 }, { cx: 370, cy: 200 }, { cx: 240, cy: 348 }].map((p, i) => (
-        <circle key={i} cx={p.cx} cy={p.cy} r="6" fill="#2563EB" opacity="0.3" />
+      {/* ── LEFT: Candidate pool ── */}
+      <text x="90" y="42" textAnchor="middle" fill="#2563EB" fontSize="8.5" fontWeight="bold" letterSpacing="0.8">3,00,000+ ASSESSED</text>
+      {poolDots.map((d, i) => (
+        <circle key={i} cx={d.cx} cy={d.cy} r={i % 4 === 0 ? 10 : 7}
+          fill={i % 5 === 0 ? "#DBEAFE" : i % 3 === 0 ? "#BFDBFE" : "#EFF6FF"}
+          stroke="#C7D7F5" strokeWidth="1" />
       ))}
+      {/* tiny "person" silhouette in each dot */}
+      {poolDots.slice(0, 7).map((d, i) => (
+        <g key={`p${i}`} opacity="0.5">
+          <circle cx={d.cx} cy={d.cy - 2} r="2.5" fill="#93C5FD" />
+          <path d={`M${d.cx - 3} ${d.cy + 5} Q${d.cx} ${d.cy + 3} ${d.cx + 3} ${d.cy + 5}`}
+            stroke="#93C5FD" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+        </g>
+      ))}
+
+      {/* Funnel lines: pool → filter */}
+      {[110, 190, 270].map((y, i) => (
+        <line key={i} x1="148" y1={y} x2="188" y2={190} stroke="#BFDBFE" strokeWidth="1.5" strokeDasharray="4 3" />
+      ))}
+
+      {/* ── CENTER: NxtWave filter engine ── */}
+      <rect x="182" y="148" width="96" height="100" rx="20" fill="#1D4ED8" />
+      {/* lightning bolt */}
+      <path d="M232 168 l-10 20 h8 l-10 22" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <text x="230" y="262" textAnchor="middle" fill="#93C5FD" fontSize="7.5" fontWeight="bold" letterSpacing="0.5">NxtWave</text>
+
+      {/* Filter lines: filter → cards */}
+      {[120, 220, 320].map((y, i) => (
+        <line key={i} x1="278" y1={190} x2="300" y2={y} stroke="#BFDBFE" strokeWidth="1.5" strokeDasharray="4 3" />
+      ))}
+
+      {/* ── RIGHT: Verified shortlist cards ── */}
+      {cards.map(({ y, initials, name, campus, score }) => (
+        <g key={initials}>
+          <rect x="298" y={y} width="168" height="72" rx="14" fill="white" stroke="#DBEAFE" strokeWidth="1.5" />
+          {/* Avatar */}
+          <circle cx="326" cy={y + 36} r="20" fill="#EFF6FF" />
+          <text x="326" y={y + 41} textAnchor="middle" fill="#1D4ED8" fontSize="10" fontWeight="bold">{initials}</text>
+          {/* Name & campus */}
+          <text x="356" y={y + 24} fill="#0F172A" fontSize="9.5" fontWeight="bold">{name}</text>
+          <text x="356" y={y + 38} fill="#64748B" fontSize="8">{campus}</text>
+          {/* Score pill */}
+          <rect x="355" y={y + 46} width="52" height="14" rx="7" fill="#EFF6FF" />
+          <text x="381" y={y + 57} textAnchor="middle" fill="#1D4ED8" fontSize="7.5" fontWeight="bold">MAANG {score}</text>
+          {/* Verified tick */}
+          <circle cx="450" cy={y + 18} r="11" fill="#2563EB" />
+          <path d={`M445 ${y + 18} l3.5 3.5 l6.5-7`} stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+      ))}
+
+      {/* ── BOTTOM: Speed badge ── */}
+      <rect x="155" y="364" width="180" height="36" rx="18" fill="#1D4ED8" />
+      <text x="245" y="387" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">⚡ Under 1 Hour</text>
+
+      {/* Top-1% label above cards */}
+      <rect x="318" y="56" width="118" height="20" rx="10" fill="#DBEAFE" />
+      <text x="377" y="70" textAnchor="middle" fill="#1D4ED8" fontSize="8.5" fontWeight="bold">✓ Top 1% Shortlist</text>
     </svg>
   );
 }
@@ -366,7 +384,7 @@ export default function Landing() {
                     <rect x="25" y="15" width="6" height="3" rx="1.5" fill="#6EE7B7"/>
                   </svg>
                 ),
-                title: "Shortlists in 3 Hours",
+                title: "Shortlists in Under 1 Hour",
                 desc: "Only benchmark-cleared, high-trust candidates make it to your shortlist.",
               },
               {
@@ -564,14 +582,14 @@ export default function Landing() {
               ))}
               {/* Bolt */}
               <rect x="124" y="0" width="32" height="18" rx="9" fill="#2563EB" />
-              <text x="140" y="13" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">⚡ 3h</text>
+              <text x="140" y="13" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">⚡ 1h</text>
             </svg>
           </div>
 
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
             Ready to Hire India's<br />Top 1% Engineering Talent?
           </h2>
-          <p className="text-slate-400 mb-10 text-base">Verified. Assessed. Delivered in 3 hours.</p>
+          <p className="text-slate-400 mb-10 text-base">Verified. Assessed. Delivered in under 1 hour.</p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
@@ -590,7 +608,7 @@ export default function Landing() {
               Explore Edge
             </button>
           </div>
-          <p className="text-xs text-slate-500 mt-4">Delivered within 3 hours.</p>
+          <p className="text-xs text-slate-500 mt-4">Delivered within 1 hour.</p>
         </div>
       </section>
       {/* ── Footer strip ── */}
