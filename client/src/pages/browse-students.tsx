@@ -99,9 +99,10 @@ export default function BrowseStudents() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Page Header */}
+      {/* Page Header — title + filters in one bar */}
       <div className="bg-white border-b border-slate-100 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+          {/* Left: title + count */}
           <div>
             <h1 className="text-xl font-bold text-slate-900">Browse Talent</h1>
             <p className="text-sm text-slate-500 mt-0.5">
@@ -112,49 +113,52 @@ export default function BrowseStudents() {
                   : `Preview of ${students.length} from ${totalStudentCount.toLocaleString()}+ students`}
             </p>
           </div>
-          {isAuthenticated && compareList.length > 0 && (
-            <Button
-              onClick={() => setShowComparison(true)}
-              size="sm"
-              className="bg-blue-600 hover:bg-blue-700 text-white text-sm"
-              data-testid="button-compare-candidates"
-            >
-              <GitCompare className="w-3.5 h-3.5 mr-1.5" />
-              Compare ({compareList.length})
-            </Button>
-          )}
+
+          {/* Right: filters + compare button */}
+          <div className="flex items-center gap-4">
+            <StudentFilters
+              filters={{
+                university: filters.university || "all",
+                codingRating: filters.codingRating?.toString() || "all",
+              }}
+              onFiltersChange={(newFilters) => {
+                setFilters({
+                  skills: [],
+                  location: "",
+                  university: newFilters.university === "all" ? "" : newFilters.university,
+                  minCgpa: undefined,
+                  maxCgpa: undefined,
+                  codingRating:
+                    newFilters.codingRating && newFilters.codingRating !== "all"
+                      ? parseInt(newFilters.codingRating)
+                      : undefined,
+                });
+                setCurrentPage(1);
+              }}
+              skills={(skills as any) || []}
+              resultCount={students.length}
+              totalCount={totalCount}
+            />
+            {isAuthenticated && compareList.length > 0 && (
+              <>
+                <div className="h-5 w-px bg-slate-200" />
+                <Button
+                  onClick={() => setShowComparison(true)}
+                  size="sm"
+                  className="bg-blue-600 hover:bg-blue-700 text-white text-sm"
+                  data-testid="button-compare-candidates"
+                >
+                  <GitCompare className="w-3.5 h-3.5 mr-1.5" />
+                  Compare ({compareList.length})
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-5">
-
-        {/* Filters Bar */}
-        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4 mb-5">
-          <StudentFilters
-            filters={{
-              university: filters.university || "all",
-              codingRating: filters.codingRating?.toString() || "all",
-            }}
-            onFiltersChange={(newFilters) => {
-              setFilters({
-                skills: [],
-                location: "",
-                university: newFilters.university === "all" ? "" : newFilters.university,
-                minCgpa: undefined,
-                maxCgpa: undefined,
-                codingRating:
-                  newFilters.codingRating && newFilters.codingRating !== "all"
-                    ? parseInt(newFilters.codingRating)
-                    : undefined,
-              });
-              setCurrentPage(1);
-            }}
-            skills={(skills as any) || []}
-            resultCount={students.length}
-            totalCount={totalCount}
-          />
-        </div>
 
         {/* Limited Access Banner */}
         {!isAuthenticated && (
