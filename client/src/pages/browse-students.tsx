@@ -7,7 +7,9 @@ import StudentFilters from "@/components/student-filters";
 import CandidateComparison from "@/components/candidate-comparison";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Lock, Users, Star, GitCompare, TrendingUp, Shield } from "lucide-react";
+import { Link } from "wouter";
+import { Lock, Users, Star, GitCompare, TrendingUp, Shield, Heart, Clock, Briefcase } from "lucide-react";
+import { useShortlist } from "@/contexts/shortlist-context";
 
 /**
  * Mirrors the match-percentage formula in StudentCard so we can sort before render.
@@ -36,7 +38,20 @@ function calcMatchScore(student: any): number {
 export default function BrowseStudents() {
   useScrollToTop();
 
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const { shortlistCount } = useShortlist();
+
+  const displayName = user?.firstName
+    ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`.trim()
+    : "Recruiter";
+
+  const metrics = [
+    { icon: Users,     color: "text-blue-600",  bg: "bg-blue-50",  border: "border-blue-100",  value: "24",                           label: "Profiles Viewed",  sub: "This week" },
+    { icon: Heart,     color: "text-slate-700", bg: "bg-slate-100", border: "border-slate-200", value: String(shortlistCount || 0),    label: "Shortlisted",      sub: "Candidates saved" },
+    { icon: Clock,     color: "text-blue-600",  bg: "bg-blue-50",  border: "border-blue-100",  value: "12",                           label: "Avg. Days to Hire", sub: "Platform avg. 14" },
+    { icon: TrendingUp,color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-100", value: "₹45L",                         label: "Cost Saved",        sub: "vs agency fees" },
+  ];
+
   const [filters, setFilters] = useState({
     skills: [] as string[],
     location: "",
@@ -98,12 +113,45 @@ export default function BrowseStudents() {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Page Header — title + filters in one bar */}
+
+      {/* ── Welcome header + KPIs (authenticated only) ── */}
+      {isAuthenticated && (
+        <div className="bg-white border-b border-slate-100 px-6 py-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between mb-4">
+            <div>
+              <p className="text-xs text-slate-400 font-medium mb-0.5">Welcome back</p>
+              <h1 className="text-xl font-bold text-slate-900" data-testid="text-welcome">{displayName}</h1>
+            </div>
+            <Link href="/company-profile">
+              <Button variant="outline" size="sm" className="border-slate-200 text-slate-600 text-sm">
+                <Briefcase className="w-3.5 h-3.5 mr-1.5" />
+                Post a Job
+              </Button>
+            </Link>
+          </div>
+          <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {metrics.map((m) => (
+              <div key={m.label} className={`rounded-xl border ${m.border} bg-white p-4 shadow-sm`}>
+                <div className={`w-8 h-8 rounded-lg ${m.bg} flex items-center justify-center mb-3`}>
+                  <m.icon className={`w-4 h-4 ${m.color}`} />
+                </div>
+                <div className={`text-2xl font-bold ${m.color} mb-0.5`}>{m.value}</div>
+                <div className="text-sm font-semibold text-slate-700">{m.label}</div>
+                <div className="text-xs text-slate-400 mt-0.5">{m.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Filter bar ── */}
       <div className="bg-white border-b border-slate-100 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           {/* Left: title + count */}
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Browse Talent</h1>
+            <h1 className={`font-bold text-slate-900 ${isAuthenticated ? "text-base" : "text-xl"}`}>
+              {isAuthenticated ? "Talent Directory" : "Browse Talent"}
+            </h1>
             <p className="text-sm text-slate-500 mt-0.5">
               {isLoading
                 ? "Loading candidates..."

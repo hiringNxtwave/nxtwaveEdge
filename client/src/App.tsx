@@ -43,9 +43,9 @@ function Router() {
           </>
         ) : (
           <>
-            <Route path="/" component={() => <AppShell><Home /></AppShell>} />
-            <Route path="/student-dashboard" component={() => <AppShell><StudentDashboard /></AppShell>} />
+            <Route path="/" component={() => <AppShell><BrowseStudents /></AppShell>} />
             <Route path="/browse" component={() => <AppShell><BrowseStudents /></AppShell>} />
+            <Route path="/student-dashboard" component={() => <AppShell><StudentDashboard /></AppShell>} />
             <Route path="/student/:id" component={() => <AppShell><StudentProfile /></AppShell>} />
             <Route path="/student-profile" component={() => <AppShell><StudentProfileForm /></AppShell>} />
             <Route path="/shortlist" component={() => <AppShell><ShortlistedCandidates /></AppShell>} />

@@ -5,7 +5,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useShortlist } from "@/contexts/shortlist-context";
 import { useState, useEffect } from "react";
 import {
-  LayoutDashboard,
   Search,
   Heart,
   Building2,
@@ -27,8 +26,7 @@ const SIDEBAR_FULL = 220;
 const SIDEBAR_MINI = 68;
 
 const navItems = [
-  { href: "/", icon: LayoutDashboard, label: "Dashboard", exact: true },
-  { href: "/browse", icon: Search, label: "Browse Talent" },
+  { href: "/", icon: Search, label: "Browse Talent", exact: false, aliases: ["/browse"] },
   { href: "/shortlist", icon: Heart, label: "Shortlisted", badge: true },
   { href: "/market-intelligence", icon: BarChart3, label: "Market Intelligence" },
   { href: "/company-profile", icon: Building2, label: "Company Profile" },
@@ -47,9 +45,13 @@ export default function AppSidebar() {
     );
   }, [collapsed]);
 
-  const isActive = (href: string, exact?: boolean) => {
-    if (exact) return location === href;
-    return location === href || location.startsWith(href + "/");
+  const isActive = (item: typeof navItems[0]) => {
+    const { href, exact, aliases } = item as any;
+    const allPaths = [href, ...(aliases || [])];
+    if (exact === false || !exact) {
+      return allPaths.some(p => location === p || location.startsWith(p + "/"));
+    }
+    return allPaths.some(p => location === p);
   };
 
   const displayName = user?.firstName
@@ -90,7 +92,7 @@ export default function AppSidebar() {
       {/* Nav Items */}
       <nav className={cn("flex-1 overflow-y-auto space-y-0.5", collapsed ? "px-2 pt-4" : "px-2")}>
         {navItems.map((item) => {
-          const active = isActive(item.href, item.exact);
+          const active = isActive(item);
           const showBadge = item.badge && shortlistCount > 0;
 
           return (
