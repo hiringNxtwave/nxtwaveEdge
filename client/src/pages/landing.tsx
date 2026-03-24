@@ -223,7 +223,6 @@ export default function Landing() {
                   Explore Edge
                 </button>
               </div>
-              <p className="text-xs text-slate-400">Shortlists delivered within 3 hours.</p>
             </div>
 
             {/* Right — Hero illustration */}
