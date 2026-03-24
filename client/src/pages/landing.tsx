@@ -19,7 +19,12 @@ const TESTIMONIALS = [
   { quote: "We're very happy with the quality of candidates shared and would love to receive more profiles from you.", author: "Hiring Manager", company: "Hyperfin" },
 ];
 
-const PARTNER_LOGOS = ["Kotak", "Lloyds", "ThoughtWorks", "Exotel", "Anand Rathi", "ADP"];
+const PARTNER_LOGOS = [
+  { name: "Lloyds Bank", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Lloyds-Bank-Logo-New.png" },
+  { name: "Thoughtworks", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Thoughtworks_logo.png" },
+  { name: "ADP", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/adp%20logo.png" },
+  { name: "Arcon", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/arcon.png" },
+];
 
 const EDGE_CARDS = [
   { problem: "Because online evaluation can't be trusted anymore", problemDesc: "Cheating and test inflation have made digital assessments unreliable.", solution: "With Edge: Reliable assessments built on proven offline integrity.", align: "left" },
@@ -560,11 +565,14 @@ export default function Landing() {
             Trusted by India's Leading Engineering Hiring Teams
           </p>
 
-          <div className="flex flex-wrap justify-center gap-x-12 gap-y-5 mb-16">
-            {PARTNER_LOGOS.map(name => (
-              <span key={name} className="text-slate-300 font-bold text-xl tracking-tight opacity-75 hover:opacity-100 transition-opacity">
-                {name}
-              </span>
+          <div className="flex flex-wrap justify-center items-center gap-x-14 gap-y-8 mb-16">
+            {PARTNER_LOGOS.map(logo => (
+              <img
+                key={logo.name}
+                src={logo.url}
+                alt={logo.name}
+                className="h-9 w-auto object-contain brightness-0 invert opacity-70 hover:opacity-100 transition-opacity"
+              />
             ))}
           </div>
 
