@@ -197,8 +197,10 @@ export default function Landing() {
                 India's <span className="text-blue-600">'Uber'</span> for Hiring Entry Level Talent
               </h1>
 
-              <p className="text-base md:text-lg text-slate-500 mb-8 max-w-lg leading-relaxed">
-                Hire top <span className="font-semibold text-slate-700">1%</span> engineers filtered through National Standard Assessment — Offline Assessed, nationally ranked under an hour.
+              <p className="text-base md:text-lg text-slate-700 font-medium mb-8 max-w-lg leading-relaxed">
+                Hire top <span className="text-blue-600 font-bold">1%</span> engineers filtered through National Standard Assessment —{" "}
+                <span className="text-slate-900">Offline Assessed</span>, nationally ranked{" "}
+                <span className="text-slate-900">under an hour</span>.
               </p>
 
               {/* Rotating point */}
