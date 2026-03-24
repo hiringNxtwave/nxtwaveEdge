@@ -52,8 +52,8 @@ export default function AdvancedStudentsTable({
   const [searchTerm, setSearchTerm] = useState("");
   const [sortField, setSortField] = useState<string>("dsaScore");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [universityFilter, setUniversityFilter] = useState("");
-  const [verificationFilter, setVerificationFilter] = useState("");
+  const [universityFilter, setUniversityFilter] = useState("all");
+  const [verificationFilter, setVerificationFilter] = useState("all");
   const [skillFilter, setSkillFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedAssessment, setSelectedAssessment] = useState<{
@@ -72,8 +72,8 @@ export default function AdvancedStudentsTable({
       search: searchTerm,
       sortField,
       sortOrder,
-      university: universityFilter,
-      verification: verificationFilter,
+      university: universityFilter === "all" ? "" : universityFilter,
+      verification: verificationFilter === "all" ? "" : verificationFilter,
       skill: skillFilter,
       limit,
       offset: (currentPage - 1) * 20
@@ -193,7 +193,7 @@ export default function AdvancedStudentsTable({
               <SelectValue placeholder="Filter by University" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Universities</SelectItem>
+              <SelectItem value="all">All Universities</SelectItem>
               <SelectItem value="IIT Delhi">IIT Delhi</SelectItem>
               <SelectItem value="IIT Mumbai">IIT Mumbai</SelectItem>
               <SelectItem value="NIT Trichy">NIT Trichy</SelectItem>
@@ -205,7 +205,7 @@ export default function AdvancedStudentsTable({
               <SelectValue placeholder="ID Verification" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Students</SelectItem>
+              <SelectItem value="all">All Students</SelectItem>
               <SelectItem value="verified">ID Verified Only</SelectItem>
               <SelectItem value="pending">Verification Pending</SelectItem>
             </SelectContent>

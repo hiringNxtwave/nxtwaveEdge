@@ -44,8 +44,8 @@ interface TalentBasketsProps {
 
 export default function TalentBaskets({ onSelectBasket }: TalentBasketsProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [locationFilter, setLocationFilter] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
+  const [locationFilter, setLocationFilter] = useState("all");
+  const [roleFilter, setRoleFilter] = useState("all");
 
   // Mock curated baskets data
   const talentBaskets: TalentBasket[] = [
@@ -138,8 +138,8 @@ export default function TalentBaskets({ onSelectBasket }: TalentBasketsProps) {
   const filteredBaskets = talentBaskets.filter(basket => {
     const matchesSearch = basket.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          basket.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesLocation = !locationFilter || basket.location === locationFilter;
-    const matchesRole = !roleFilter || basket.roles.some(role => role === roleFilter);
+    const matchesLocation = locationFilter === "all" || basket.location === locationFilter;
+    const matchesRole = roleFilter === "all" || basket.roles.some(role => role === roleFilter);
     
     return matchesSearch && matchesLocation && matchesRole;
   });
@@ -190,7 +190,7 @@ export default function TalentBaskets({ onSelectBasket }: TalentBasketsProps) {
             <SelectValue placeholder="All Locations" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Locations</SelectItem>
+            <SelectItem value="all">All Locations</SelectItem>
             {uniqueLocations.map(location => (
               <SelectItem key={location} value={location}>{location}</SelectItem>
             ))}
@@ -202,7 +202,7 @@ export default function TalentBaskets({ onSelectBasket }: TalentBasketsProps) {
             <SelectValue placeholder="All Roles" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Roles</SelectItem>
+            <SelectItem value="all">All Roles</SelectItem>
             {uniqueRoles.map(role => (
               <SelectItem key={role} value={role}>{role}</SelectItem>
             ))}
