@@ -112,44 +112,130 @@ function HeroIllustration() {
 }
 
 function AssessmentOrbitIllustration() {
-  const skills = [
-    { label: "DSA", x: 420, y: 130, color: "#2563EB" },
-    { label: "SQL", x: 490, y: 200, color: "#3B82F6" },
-    { label: "CS", x: 455, y: 285, color: "#1D4ED8" },
-    { label: "React", x: 360, y: 330, color: "#2563EB" },
-    { label: "Python", x: 260, y: 340, color: "#3B82F6" },
-    { label: "DSA+", x: 175, y: 295, color: "#1D4ED8" },
-    { label: "Aptitude", x: 145, y: 200, color: "#2563EB" },
-    { label: "Comm.", x: 200, y: 115, color: "#3B82F6" },
-  ];
   return (
-    <svg viewBox="0 0 640 460" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-xl">
-      <ellipse cx="320" cy="230" rx="180" ry="155" stroke="#DBEAFE" strokeWidth="1.5" strokeDasharray="5 4" />
-      <ellipse cx="320" cy="230" rx="110" ry="95" stroke="#BFDBFE" strokeWidth="1.5" strokeDasharray="5 4" />
+    <svg viewBox="0 0 460 562" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full max-w-lg">
+      {/* Background */}
+      <rect width="460" height="562" rx="20" fill="#F0F5FF" />
 
-      {/* Central engineer figure */}
-      <circle cx="320" cy="230" r="52" fill="#EFF6FF" stroke="#DBEAFE" strokeWidth="2" />
-      <circle cx="320" cy="210" r="16" fill="#FDE68A" />
-      <circle cx="313" cy="207" r="2.5" fill="#1E293B" />
-      <circle cx="327" cy="207" r="2.5" fill="#1E293B" />
-      <path d="M314 216 Q320 221 326 216" stroke="#1E293B" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-      <rect x="305" y="228" width="30" height="36" rx="8" fill="#2563EB" />
-      <text x="320" y="252" textAnchor="middle" fill="white" fontSize="9" fontWeight="bold">IIT</text>
+      {/* Vertical dashed rail */}
+      <line x1="33" y1="58" x2="33" y2="506" stroke="#BFDBFE" strokeWidth="2" strokeDasharray="6 5" />
 
-      {/* Skill badges around orbit */}
-      {skills.map(({ label, x, y, color }) => (
+      {/* ══ STAGE 1: Offline-Monitored Exam ══ */}
+      <circle cx="33" cy="45" r="15" fill="#2563EB" />
+      <text x="33" y="50" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">1</text>
+
+      <rect x="60" y="16" width="384" height="144" rx="13" fill="white" stroke="#DBEAFE" strokeWidth="1.5" />
+      {/* shield icon */}
+      <path d="M76 32 l7-3.5 l7 3.5 v7c0 4.5-7 7.5-7 7.5s-7-3-7-7.5z" fill="#DBEAFE" />
+      <path d="M79 38 l2 2 l4-4" stroke="#2563EB" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <text x="96" y="33" fill="#0F172A" fontSize="11.5" fontWeight="bold">Offline-Monitored Exam</text>
+      <text x="96" y="46" fill="#64748B" fontSize="8.5">Online exam · NxtWave team present in-person</text>
+      {/* 1:25 badge */}
+      <rect x="74" y="52" width="112" height="17" rx="8.5" fill="#EFF6FF" />
+      <text x="130" y="64" textAnchor="middle" fill="#2563EB" fontSize="8.5" fontWeight="bold">🛡 1:25 Invigilation Ratio</text>
+
+      {/* Divider */}
+      <line x1="74" y1="76" x2="432" y2="76" stroke="#F1F5F9" strokeWidth="1.5" />
+      <text x="74" y="90" fill="#94A3B8" fontSize="7.5" fontWeight="bold" letterSpacing="0.8">SCORE BREAKDOWN</text>
+
+      {/* Score chips */}
+      <rect x="72" y="96" width="76" height="52" rx="9" fill="#EFF6FF" />
+      <text x="110" y="120" textAnchor="middle" fill="#1D4ED8" fontSize="18" fontWeight="bold">169</text>
+      <text x="110" y="137" textAnchor="middle" fill="#94A3B8" fontSize="7.5">Overall</text>
+
+      <rect x="154" y="96" width="86" height="52" rx="9" fill="#EFF6FF" />
+      <text x="197" y="120" textAnchor="middle" fill="#1D4ED8" fontSize="13" fontWeight="bold">120/120</text>
+      <text x="197" y="137" textAnchor="middle" fill="#94A3B8" fontSize="7.5">Coding Score</text>
+
+      <rect x="246" y="96" width="72" height="52" rx="9" fill="#EFF6FF" />
+      <text x="282" y="120" textAnchor="middle" fill="#1D4ED8" fontSize="15" fontWeight="bold">10/10</text>
+      <text x="282" y="137" textAnchor="middle" fill="#94A3B8" fontSize="7.5">DSA</text>
+
+      <rect x="324" y="96" width="108" height="52" rx="9" fill="#EFF6FF" />
+      <text x="378" y="120" textAnchor="middle" fill="#1D4ED8" fontSize="15" fontWeight="bold">39/40</text>
+      <text x="378" y="137" textAnchor="middle" fill="#94A3B8" fontSize="7.5">CS Fundamentals</text>
+
+      {/* ══ STAGE 2: Interview 1 — DSA ══ */}
+      <circle cx="33" cy="188" r="15" fill="#2563EB" />
+      <text x="33" y="193" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">2</text>
+
+      <rect x="60" y="163" width="384" height="120" rx="13" fill="white" stroke="#DBEAFE" strokeWidth="1.5" />
+      {/* interview icon */}
+      <rect x="72" y="175" width="14" height="14" rx="3" fill="#DBEAFE" />
+      <path d="M75 182 l2 2 l4-4" stroke="#2563EB" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+      <text x="93" y="184" fill="#0F172A" fontSize="11.5" fontWeight="bold">Interview 1: DSA</text>
+      <text x="93" y="197" fill="#64748B" fontSize="8.5">DSA & Problem Solving · 2 coding problems</text>
+      {/* Audited badge */}
+      <rect x="330" y="170" width="102" height="17" rx="8.5" fill="#DBEAFE" />
+      <text x="381" y="182" textAnchor="middle" fill="#1D4ED8" fontSize="8.5" fontWeight="bold">✓ Audited</text>
+
+      <line x1="72" y1="204" x2="432" y2="204" stroke="#F1F5F9" strokeWidth="1.5" />
+
+      {/* Score chips — 4 across */}
+      {[
+        { label: "Problem 1", score: "5/5", x: 72 },
+        { label: "Problem 2", score: "4/5", x: 160 },
+        { label: "DSA Theory", score: "5/5", x: 248 },
+        { label: "Core CS",   score: "5/5", x: 336 },
+      ].map(({ label, score, x }) => (
         <g key={label}>
-          <rect x={x - 26} y={y - 14} width="52" height="28" rx="8" fill="white" stroke="#DBEAFE" strokeWidth="1.5" />
-          <text x={x} y={y + 5} textAnchor="middle" fill={color} fontSize="9.5" fontWeight="bold">{label}</text>
+          <rect x={x} y="210" width="82" height="58" rx="9" fill="#EFF6FF" />
+          <text x={x + 41} y="237" textAnchor="middle" fill="#1D4ED8" fontSize="16" fontWeight="bold">{score}</text>
+          <text x={x + 41} y="256" textAnchor="middle" fill="#94A3B8" fontSize="7.5">{label}</text>
         </g>
       ))}
 
-      {/* Score badges inside orbit */}
-      <rect x="245" y="150" width="75" height="36" rx="10" fill="#2563EB" />
-      <text x="283" y="172" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">96 / 100</text>
+      {/* ══ STAGE 3: Interview 2 — Projects ══ */}
+      <circle cx="33" cy="315" r="15" fill="#2563EB" />
+      <text x="33" y="320" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">3</text>
 
-      <rect x="300" y="290" width="68" height="30" rx="8" fill="white" stroke="#DBEAFE" strokeWidth="1.5" />
-      <text x="334" y="309" textAnchor="middle" fill="#1D4ED8" fontSize="10" fontWeight="bold">1:25 ratio</text>
+      <rect x="60" y="290" width="384" height="118" rx="13" fill="white" stroke="#DBEAFE" strokeWidth="1.5" />
+      <rect x="72" y="302" width="14" height="14" rx="3" fill="#DBEAFE" />
+      <path d="M75 309 l2 2 l4-4" stroke="#2563EB" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+      <text x="93" y="311" fill="#0F172A" fontSize="11.5" fontWeight="bold">Interview 2: Projects</text>
+      <text x="93" y="324" fill="#64748B" fontSize="8.5">Full-stack project evaluation · Technical architecture</text>
+      <rect x="330" y="297" width="102" height="17" rx="8.5" fill="#DBEAFE" />
+      <text x="381" y="309" textAnchor="middle" fill="#1D4ED8" fontSize="8.5" fontWeight="bold">✓ Audited</text>
+
+      <line x1="72" y1="331" x2="432" y2="331" stroke="#F1F5F9" strokeWidth="1.5" />
+
+      {[
+        { label: "Frontend",       score: "40",  x: 72  },
+        { label: "Backend",        score: "20",  x: 160 },
+        { label: "Project Rating", score: "75",  x: 248 },
+        { label: "Overall",        score: "59",  x: 336 },
+      ].map(({ label, score, x }) => (
+        <g key={label}>
+          <rect x={x} y="337" width="82" height="56" rx="9" fill="#EFF6FF" />
+          <text x={x + 41} y="362" textAnchor="middle" fill="#1D4ED8" fontSize="16" fontWeight="bold">{score}</text>
+          <text x={x + 41} y="381" textAnchor="middle" fill="#94A3B8" fontSize="7.5">{label}</text>
+        </g>
+      ))}
+
+      {/* ══ FINAL SHORTLIST ══ */}
+      <circle cx="33" cy="435" r="15" fill="#1D4ED8" />
+      <path d="M27 435 l4 4 l8-8" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+
+      <rect x="60" y="410" width="384" height="132" rx="13" fill="#1D4ED8" />
+      <text x="280" y="430" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold" letterSpacing="1">FINAL SHORTLIST</text>
+
+      {/* Candidate card */}
+      <rect x="72" y="436" width="230" height="92" rx="10" fill="white" />
+      <circle cx="102" cy="476" r="22" fill="#EFF6FF" />
+      <text x="102" y="481" textAnchor="middle" fill="#1D4ED8" fontSize="11" fontWeight="bold">AP</text>
+      <text x="136" y="460" fill="#0F172A" fontSize="10" fontWeight="bold">Aditya Patidar</text>
+      <text x="136" y="473" fill="#64748B" fontSize="8.5">NIT Bhopal (MANIT)</text>
+      <text x="136" y="486" fill="#94A3B8" fontSize="7.5">NIRF Rank: #81</text>
+      <rect x="134" y="492" width="66" height="14" rx="7" fill="#DBEAFE" />
+      <text x="167" y="503" textAnchor="middle" fill="#1D4ED8" fontSize="7.5" fontWeight="bold">VERY STRONG</text>
+
+      {/* Best fit role */}
+      <rect x="314" y="438" width="118" height="84" rx="10" fill="white" fillOpacity="0.12" />
+      <text x="373" y="460" textAnchor="middle" fill="white" fillOpacity="0.7" fontSize="7.5" fontWeight="bold" letterSpacing="0.5">BEST FIT ROLE</text>
+      <text x="373" y="477" textAnchor="middle" fill="white" fontSize="10" fontWeight="bold">Frontend Dev</text>
+      <text x="373" y="491" textAnchor="middle" fill="white" fillOpacity="0.75" fontSize="8">(Entry Level)</text>
+      <circle cx="373" cy="507" r="8" fill="white" fillOpacity="0.15" />
+      <path d="M369 507 l3 3 l6-6" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
