@@ -89,7 +89,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await sgMail.send({
         to: toEmail,
         from: {
-          email: "leadgenplacements@gmail.com",
+          email: "hiring@nxtwave.tech",
           name: "NxtWave Edge",
         },
         subject: "Your NxtWave Edge access code",
