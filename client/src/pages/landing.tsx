@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
+import nxtWaveLogo from "@assets/image_1774348454567.png";
 import { ArrowRight, Star, CheckCircle, ChevronRight } from "lucide-react";
 
 const ROTATING_POINTS = [
@@ -157,13 +158,8 @@ export default function Landing() {
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100">
         <div className="container mx-auto px-6">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-extrabold text-sm">N</span>
-              </div>
-              <span className="text-lg font-extrabold text-slate-900 tracking-tight">
-                Nxt<span className="text-blue-600">Wave</span> <span className="font-semibold text-slate-500 text-base">Edge</span>
-              </span>
+            <div className="flex items-center">
+              <img src={nxtWaveLogo} alt="NxtWave" className="h-10 w-auto" />
             </div>
             <div className="hidden md:flex items-center gap-8">
               <button
@@ -555,11 +551,8 @@ export default function Landing() {
       {/* ── Footer strip ── */}
       <footer className="bg-slate-950 border-t border-white/5 py-6">
         <div className="container mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
-              <span className="text-white font-bold text-xs">N</span>
-            </div>
-            <span className="text-sm font-bold text-white">NxtWave Edge</span>
+          <div className="flex items-center">
+            <img src={nxtWaveLogo} alt="NxtWave" className="h-7 w-auto brightness-0 invert" />
           </div>
           <p className="text-xs text-slate-500">© 2025 NxtWave. Built for India's Best Engineers.</p>
           <div className="flex gap-6">
