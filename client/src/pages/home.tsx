@@ -40,230 +40,111 @@ function RecruiterDashboard({ user, shortlistCount }: { user: any; shortlistCoun
     : "Recruiter";
 
   const metrics = [
-    {
-      icon: Users,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
-      border: "border-blue-100",
-      value: "24",
-      label: "Profiles Viewed",
-      sub: "This week",
-      trend: "+8 vs last week",
-      trendUp: true,
-    },
-    {
-      icon: Clock,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
-      border: "border-blue-100",
-      value: "12",
-      label: "Avg. Days to Hire",
-      sub: "Platform avg. 14",
-      trend: "2 days faster",
-      trendUp: true,
-    },
-    {
-      icon: BarChart3,
-      color: "text-violet-600",
-      bg: "bg-violet-50",
-      border: "border-violet-100",
-      value: "87%",
-      label: "Response Rate",
-      sub: "Last 30 days",
-      trend: "+3% vs last month",
-      trendUp: true,
-    },
-    {
-      icon: TrendingUp,
-      color: "text-amber-600",
-      bg: "bg-amber-50",
-      border: "border-amber-100",
-      value: "₹45L",
-      label: "Hiring Cost Saved",
-      sub: "This quarter",
-      trend: "vs agency fees",
-      trendUp: true,
-    },
-  ];
-
-  const quickActions = [
-    {
-      href: "/browse",
-      icon: Search,
-      label: "Browse Talent",
-      desc: "Search 50k+ verified candidates",
-      color: "bg-slate-900 text-white hover:bg-slate-800",
-    },
-    {
-      href: "/company-profile",
-      icon: Briefcase,
-      label: "Upload JD",
-      desc: "AI-parse your job description",
-      color: "bg-blue-500 text-white hover:bg-blue-400",
-    },
-    {
-      href: "/talent-dashboard",
-      icon: BarChart3,
-      label: "Talent Analytics",
-      desc: "View market insights & benchmarks",
-      color: "bg-blue-600 text-white hover:bg-blue-500",
-    },
+    { icon: Users,     color: "text-blue-600",  bg: "bg-blue-50",  border: "border-blue-100",  value: "24",            label: "Profiles Viewed",  sub: "This week" },
+    { icon: Heart,     color: "text-rose-500",  bg: "bg-rose-50",  border: "border-rose-100",  value: String(shortlistCount || 0), label: "Shortlisted",      sub: "Candidates saved" },
+    { icon: Clock,     color: "text-blue-600",  bg: "bg-blue-50",  border: "border-blue-100",  value: "12",            label: "Avg. Days to Hire", sub: "Platform avg. 14" },
+    { icon: TrendingUp,color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-100", value: "₹45L",          label: "Cost Saved",        sub: "vs agency fees" },
   ];
 
   const recentActivity = [
-    { action: "Profile viewed", name: "Aryan Mehta", detail: "IIT Bombay · CSE", time: "2m ago", dot: "bg-blue-500" },
-    { action: "Added to shortlist", name: "Priya Nair", detail: "NIT Trichy · ECE", time: "14m ago", dot: "bg-rose-500" },
-    { action: "Profile viewed", name: "Rahul Singh", detail: "BITS Pilani · CS", time: "1h ago", dot: "bg-blue-500" },
-    { action: "Offer sent", name: "Sneha Iyer", detail: "IIT Madras · CS", time: "3h ago", dot: "bg-blue-500" },
-    { action: "Added to shortlist", name: "Karan Gupta", detail: "IIT Delhi · CSE", time: "5h ago", dot: "bg-rose-500" },
+    { action: "Profile viewed",    name: "Aryan Mehta",  detail: "IIT Bombay · CSE",  time: "2m ago",  dot: "bg-blue-500" },
+    { action: "Shortlisted",       name: "Priya Nair",   detail: "NIT Trichy · ECE",  time: "14m ago", dot: "bg-rose-500" },
+    { action: "Profile viewed",    name: "Rahul Singh",  detail: "BITS Pilani · CS",  time: "1h ago",  dot: "bg-blue-500" },
+    { action: "Offer sent",        name: "Sneha Iyer",   detail: "IIT Madras · CS",   time: "3h ago",  dot: "bg-blue-500" },
   ];
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      {/* Page Header */}
-      <div className="bg-white border-b border-slate-100 px-6 py-5">
+      {/* Lean page header */}
+      <div className="bg-white border-b border-slate-100 px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-0.5">
-              Welcome back
-            </p>
-            <h1 className="text-xl font-bold text-slate-900" data-testid="text-welcome">
-              {displayName}
-            </h1>
+            <p className="text-xs text-slate-400 font-medium mb-0.5">Welcome back</p>
+            <h1 className="text-xl font-bold text-slate-900" data-testid="text-welcome">{displayName}</h1>
           </div>
           <div className="flex items-center gap-3">
             <Link href="/company-profile">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-slate-200 text-slate-600 hover:bg-slate-50 text-sm"
-              >
+              <Button variant="outline" size="sm" className="border-slate-200 text-slate-600 text-sm">
                 <Briefcase className="w-3.5 h-3.5 mr-1.5" />
-                Upload JD
+                Post a Job
               </Button>
             </Link>
             <Link href="/browse">
-              <Button
-                size="sm"
-                className="bg-slate-900 hover:bg-slate-800 text-white text-sm"
-                data-testid="card-browse-candidates"
-              >
+              <Button size="sm" className="bg-slate-900 hover:bg-slate-800 text-white text-sm" data-testid="card-browse-candidates">
                 <Search className="w-3.5 h-3.5 mr-1.5" />
-                Browse Candidates
+                Browse Talent
               </Button>
             </Link>
           </div>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 py-6 space-y-6">
-        {/* KPI Cards */}
+      <div className="max-w-6xl mx-auto px-6 py-5 space-y-5">
+        {/* KPI row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {metrics.map((m) => (
-            <div
-              key={m.label}
-              className={`rounded-xl border ${m.border} bg-white p-5 shadow-sm hover:shadow-md transition-shadow`}
-            >
+            <div key={m.label} className={`rounded-xl border ${m.border} bg-white p-4 shadow-sm`}>
               <div className={`w-8 h-8 rounded-lg ${m.bg} flex items-center justify-center mb-3`}>
                 <m.icon className={`w-4 h-4 ${m.color}`} />
               </div>
               <div className={`text-2xl font-bold ${m.color} mb-0.5`}>{m.value}</div>
               <div className="text-sm font-semibold text-slate-700">{m.label}</div>
               <div className="text-xs text-slate-400 mt-0.5">{m.sub}</div>
-              <div className={`flex items-center gap-1 mt-2 text-[11px] font-medium ${m.trendUp ? "text-blue-600" : "text-red-500"}`}>
-                <ArrowUpRight className="w-3 h-3" />
-                {m.trend}
-              </div>
             </div>
           ))}
         </div>
 
-        {/* Main Content Grid */}
+        {/* Main 2-col layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {/* Quick Actions - 2/3 */}
-          <div className="lg:col-span-2 space-y-5">
-            {/* Quick Actions */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
-              <h2 className="text-sm font-semibold text-slate-800 mb-4">Quick Actions</h2>
-              <div className="grid grid-cols-3 gap-3">
-                {quickActions.map((a) => (
-                  <Link key={a.href} href={a.href}>
-                    <div className={`rounded-xl p-4 cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-md ${a.color}`}>
-                      <a.icon className="w-5 h-5 mb-2.5 opacity-90" />
-                      <div className="font-semibold text-sm mb-0.5">{a.label}</div>
-                      <div className="text-xs opacity-75 leading-snug">{a.desc}</div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
 
-            {/* Shortlist CTA */}
+          {/* LEFT — Market Intelligence (2/3) */}
+          <div className="lg:col-span-2 bg-white rounded-xl border border-slate-100 shadow-sm p-5">
+            <h2 className="text-sm font-semibold text-slate-800 mb-4">Market Intelligence</h2>
+            <MarketIntelligence compact />
+          </div>
+
+          {/* RIGHT — Actions + Activity (1/3) */}
+          <div className="space-y-4">
+
+            {/* Shortlist banner (only when items exist) */}
             {shortlistCount > 0 && (
               <Link href="/shortlist">
-                <div
-                  className="flex items-center justify-between rounded-xl border border-rose-100 bg-rose-50 px-5 py-4 cursor-pointer hover:border-rose-200 hover:shadow-sm transition-all"
-                  data-testid="card-your-shortlist"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-rose-100 rounded-xl flex items-center justify-center">
-                      <Heart className="w-4 h-4 text-rose-600 fill-rose-600" />
-                    </div>
+                <div className="flex items-center justify-between rounded-xl border border-rose-100 bg-rose-50 px-4 py-3.5 cursor-pointer hover:border-rose-200 transition-all" data-testid="card-your-shortlist">
+                  <div className="flex items-center gap-2.5">
+                    <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
                     <div>
-                      <p className="font-semibold text-slate-900 text-sm">Your Shortlist</p>
-                      <p className="text-xs text-slate-500">
-                        {shortlistCount} candidate{shortlistCount !== 1 ? "s" : ""} saved for review
-                      </p>
+                      <p className="text-sm font-semibold text-slate-900">Your Shortlist</p>
+                      <p className="text-xs text-slate-500">{shortlistCount} candidate{shortlistCount !== 1 ? "s" : ""} saved</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl font-bold text-rose-600">{shortlistCount}</span>
-                    <ChevronRight className="w-4 h-4 text-slate-400" />
-                  </div>
+                  <span className="text-lg font-bold text-rose-500">{shortlistCount}</span>
                 </div>
               </Link>
             )}
 
-            {/* Market Intelligence */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-sm font-semibold text-slate-800">Market Intelligence</h2>
-                <Link href="/talent-dashboard">
-                  <Button variant="ghost" size="sm" className="text-xs text-slate-500 hover:text-slate-900 h-7 px-2">
-                    View all <ArrowRight className="w-3 h-3 ml-1" />
-                  </Button>
-                </Link>
-              </div>
-              <MarketIntelligence compact />
-            </div>
-          </div>
-
-          {/* Right Column - 1/3 */}
-          <div className="space-y-5">
-            {/* Platform Stats */}
-            <div className="bg-slate-950 rounded-xl p-5 text-white">
-              <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-                <span className="text-xs font-semibold uppercase tracking-widest text-slate-400">
-                  Platform Stats
-                </span>
-              </div>
+            {/* Hiring Checklist */}
+            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4">
+              <h2 className="text-sm font-semibold text-slate-800 mb-3">Hiring Checklist</h2>
               {[
-                { label: "Verified Candidates", value: "50,000+", color: "text-blue-400" },
-                { label: "Hiring Companies", value: "500+", color: "text-blue-400" },
-                { label: "Avg. Time to Hire", value: "14 days", color: "text-amber-400" },
-                { label: "Offer Acceptance", value: "92%", color: "text-violet-400" },
-              ].map((s) => (
-                <div key={s.label} className="flex items-center justify-between py-2.5 border-b border-slate-800 last:border-0">
-                  <span className="text-xs text-slate-400">{s.label}</span>
-                  <span className={`text-sm font-bold ${s.color}`}>{s.value}</span>
-                </div>
+                { done: true,  label: "Company profile set up",   href: "/company-profile" },
+                { done: false, label: "Post your first job",       href: "/company-profile" },
+                { done: false, label: "Shortlist 5+ candidates",   href: "/browse" },
+                { done: false, label: "Schedule interviews",        href: "/shortlist" },
+              ].map((item, i) => (
+                <Link key={i} href={item.href}>
+                  <div className="flex items-center gap-2.5 py-2 border-b border-slate-50 last:border-0 hover:bg-slate-50 rounded px-1 -mx-1 transition-colors cursor-pointer">
+                    <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${item.done ? "bg-blue-500" : "border-2 border-slate-200"}`}>
+                      {item.done && <CheckCircle className="w-2.5 h-2.5 text-white" />}
+                    </div>
+                    <span className={`text-xs font-medium ${item.done ? "text-slate-400 line-through" : "text-slate-700"}`}>{item.label}</span>
+                  </div>
+                </Link>
               ))}
             </div>
 
             {/* Recent Activity */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
-              <h2 className="text-sm font-semibold text-slate-800 mb-4">Recent Activity</h2>
+            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4">
+              <h2 className="text-sm font-semibold text-slate-800 mb-3">Recent Activity</h2>
               <div className="space-y-3">
                 {recentActivity.map((a, i) => (
                   <div key={i} className="flex items-start gap-3">
@@ -280,25 +161,6 @@ function RecruiterDashboard({ user, shortlistCount }: { user: any; shortlistCoun
               </div>
             </div>
 
-            {/* Hire In Steps */}
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5">
-              <h2 className="text-sm font-semibold text-slate-800 mb-4">Hiring Checklist</h2>
-              {[
-                { done: true, label: "Set up company profile" },
-                { done: false, label: "Upload a Job Description" },
-                { done: false, label: "Shortlist 5+ candidates" },
-                { done: false, label: "Schedule interviews" },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-2.5 py-2 border-b border-slate-50 last:border-0">
-                  <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${item.done ? "bg-blue-500" : "border-2 border-slate-200"}`}>
-                    {item.done && <CheckCircle className="w-2.5 h-2.5 text-white" />}
-                  </div>
-                  <span className={`text-xs font-medium ${item.done ? "text-slate-400 line-through" : "text-slate-700"}`}>
-                    {item.label}
-                  </span>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
