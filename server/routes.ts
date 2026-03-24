@@ -53,6 +53,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     "msn.com", "pm.me",
   ]);
 
+  // ── In-memory OTP store ──────────────────────────────────────────────
+  interface OtpEntry {
+    otp: string;
+    name: string;
+    mobile: string;
+    expires: number;   // Unix ms
+    attempts: number;
+    lastSent: number;  // Unix ms — for resend throttle
+  }
+  const otpStore = new Map<string, OtpEntry>();
+
+  // Cleanup expired OTPs every 15 minutes
+  setInterval(() => {
+    const now = Date.now();
+    for (const [email, entry] of otpStore.entries()) {
+      if (entry.expires < now) otpStore.delete(email);
+    }
+  }, 15 * 60 * 1000);
+
+  // SendGrid email helper — falls back to console in dev
+  async function sendOtpEmail(toEmail: string, otp: string): Promise<void> {
+    const apiKey = process.env.SENDGRID_API_KEY;
+    if (!apiKey) {
+      // Development fallback — print OTP to server console
+      console.log(`\n╔══════════════════════════════════════════╗`);
+      console.log(`║  [DEV] OTP for ${toEmail.padEnd(26)}║`);
+      console.log(`║  Code: ${otp}                              ║`);
+      console.log(`╚══════════════════════════════════════════╝\n`);
+      return;
+    }
+    const sgMail = (await import("@sendgrid/mail")).default;
+    sgMail.setApiKey(apiKey);
+    await sgMail.send({
+      to: toEmail,
+      from: {
+        email: "noreply@nxtwave.tech",
+        name: "NxtWave Edge",
+      },
+      subject: "Your NxtWave Edge access code",
+      text: `Your NxtWave Edge verification code is: ${otp}\n\nThis code is valid for 10 minutes.\n\nIf you did not request this, please ignore this email.`,
+      html: `
+        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
+          <img src="https://nxtwave.tech/logo.png" alt="NxtWave Edge" style="height:32px;margin-bottom:24px" />
+          <h2 style="font-size:20px;font-weight:700;color:#0f172a;margin:0 0 8px">Your verification code</h2>
+          <p style="color:#64748b;font-size:14px;margin:0 0 24px">Enter this code to access NxtWave Edge. It expires in 10 minutes.</p>
+          <div style="background:#f1f5f9;border-radius:12px;padding:24px;text-align:center;letter-spacing:12px;font-size:32px;font-weight:800;color:#1e40af;margin-bottom:24px">
+            ${otp}
+          </div>
+          <p style="color:#94a3b8;font-size:12px;margin:0">If you didn't request this code, you can safely ignore this email.</p>
+        </div>
+      `,
+    });
+  }
+
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
@@ -65,8 +119,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Custom login — name + company email + mobile
-  app.post('/api/auth/login', async (req: any, res) => {
+  // Step 1 — validate details and send OTP
+  app.post('/api/auth/send-otp', async (req: any, res) => {
     try {
       const { name, email, mobile } = req.body;
 
@@ -90,28 +144,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Please enter a valid 10-digit mobile number." });
       }
 
-      const nameParts = name.trim().split(/\s+/);
+      // Resend throttle — 30 seconds between sends
+      const existing = otpStore.get(emailLower);
+      const now = Date.now();
+      if (existing && now - existing.lastSent < 30_000) {
+        const waitSec = Math.ceil((30_000 - (now - existing.lastSent)) / 1000);
+        return res.status(429).json({ message: `Please wait ${waitSec} seconds before requesting a new code.` });
+      }
+
+      // Generate 6-digit OTP
+      const otp = String(Math.floor(100000 + Math.random() * 900000));
+
+      otpStore.set(emailLower, {
+        otp,
+        name: name.trim(),
+        mobile: mobileClean,
+        expires: now + 10 * 60 * 1000, // 10 minutes
+        attempts: 0,
+        lastSent: now,
+      });
+
+      await sendOtpEmail(emailLower, otp);
+
+      res.json({ sent: true, email: emailLower });
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      res.status(500).json({ message: "Failed to send verification code. Please try again." });
+    }
+  });
+
+  // Step 2 — verify OTP and create session
+  app.post('/api/auth/verify-otp', async (req: any, res) => {
+    try {
+      const { email, otp } = req.body;
+
+      if (!email || !otp) {
+        return res.status(400).json({ message: "Email and verification code are required." });
+      }
+
+      const emailLower = email.trim().toLowerCase();
+      const entry = otpStore.get(emailLower);
+
+      if (!entry) {
+        return res.status(400).json({ message: "No verification code found for this email. Please request a new one." });
+      }
+
+      if (Date.now() > entry.expires) {
+        otpStore.delete(emailLower);
+        return res.status(400).json({ message: "Verification code has expired. Please request a new one." });
+      }
+
+      entry.attempts += 1;
+      if (entry.attempts > 5) {
+        otpStore.delete(emailLower);
+        return res.status(429).json({ message: "Too many incorrect attempts. Please request a new code." });
+      }
+
+      if (otp.trim() !== entry.otp) {
+        const remaining = 5 - entry.attempts;
+        return res.status(400).json({
+          message: remaining > 0
+            ? `Incorrect code. ${remaining} attempt${remaining === 1 ? "" : "s"} remaining.`
+            : "Incorrect code. Please request a new one.",
+        });
+      }
+
+      // OTP verified — create/update user and set session
+      otpStore.delete(emailLower);
+
+      const nameParts = entry.name.split(/\s+/);
       const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || "";
 
-      // Check if user already exists by email
       let user = await storage.getUserByEmail(emailLower);
-
       if (user) {
-        // Update mobile / name if changed
         user = await storage.updateUser(user.id, {
           firstName: firstName || user.firstName,
           lastName: lastName || user.lastName,
-          mobile: mobileClean,
+          mobile: entry.mobile,
+          emailVerified: true,
         });
       } else {
-        // Create new user
         user = await storage.upsertUser({
           email: emailLower,
           firstName,
           lastName,
-          mobile: mobileClean,
+          mobile: entry.mobile,
           role: "recruiter",
+          emailVerified: true,
           onboardingCompleted: true,
         });
       }
@@ -121,8 +241,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json({ user });
       });
     } catch (error) {
-      console.error("Error during login:", error);
-      res.status(500).json({ message: "Login failed. Please try again." });
+      console.error("Error verifying OTP:", error);
+      res.status(500).json({ message: "Verification failed. Please try again." });
+    }
+  });
+
+  // Resend OTP — reuses stored name/mobile, just regenerates and resends
+  app.post('/api/auth/resend-otp', async (req: any, res) => {
+    try {
+      const { email } = req.body;
+      if (!email) return res.status(400).json({ message: "Email is required." });
+
+      const emailLower = email.trim().toLowerCase();
+      const existing = otpStore.get(emailLower);
+
+      if (!existing) {
+        return res.status(400).json({ message: "Session expired. Please start over." });
+      }
+
+      const now = Date.now();
+      if (now - existing.lastSent < 30_000) {
+        const waitSec = Math.ceil((30_000 - (now - existing.lastSent)) / 1000);
+        return res.status(429).json({ message: `Please wait ${waitSec} seconds before requesting a new code.` });
+      }
+
+      const otp = String(Math.floor(100000 + Math.random() * 900000));
+      otpStore.set(emailLower, {
+        ...existing,
+        otp,
+        expires: now + 10 * 60 * 1000,
+        attempts: 0,
+        lastSent: now,
+      });
+
+      await sendOtpEmail(emailLower, otp);
+      res.json({ sent: true });
+    } catch (error) {
+      console.error("Error resending OTP:", error);
+      res.status(500).json({ message: "Failed to resend code. Please try again." });
     }
   });
 
