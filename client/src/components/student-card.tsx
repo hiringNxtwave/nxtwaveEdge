@@ -121,13 +121,9 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
 
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, i) => (
-      <Star 
+      <Star
         key={i}
-        className={`w-3 h-3 sm:w-4 sm:h-4 ${
-          i < rating 
-            ? "text-yellow-400 fill-current" 
-            : "text-gray-300"
-        }`}
+        className={`w-3 h-3 ${i < rating ? "text-amber-400 fill-current" : "text-slate-300"}`}
       />
     ));
   };
@@ -171,14 +167,14 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
                 <div className="flex-1 min-w-0">
                   <Link href={`/student/${student.id}`}>
-                    <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white hover:text-blue-600 cursor-pointer leading-tight truncate mb-1" data-testid={`text-student-name-${student.id}`}>
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 hover:text-blue-600 cursor-pointer leading-tight truncate mb-1" data-testid={`text-student-name-${student.id}`}>
                       {student.firstName} {student.lastName}
                     </h3>
                   </Link>
-                  <p className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 font-medium truncate mb-2" data-testid={`text-student-university-${student.id}`}>
+                  <p className="text-xs sm:text-sm text-blue-600 font-medium truncate mb-2" data-testid={`text-student-university-${student.id}`}>
                     {student.university} {student.nirfRanking && `(NIRF #${student.nirfRanking})`}
                   </p>
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-slate-500">
                     <span className="font-medium" data-testid={`text-student-cgpa-${student.id}`}>
                       CGPA: {displayCGPA}
                     </span>
@@ -190,11 +186,17 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
                 
                 {/* Match Percentage - Mobile: Below profile, Desktop: Right side */}
                 <div className="sm:flex-shrink-0">
-                  <div className={`inline-block text-sm sm:text-base font-bold px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg cursor-pointer whitespace-nowrap ${
-                    matchPercentage >= 85 ? 'text-green-800 bg-green-100' : matchPercentage >= 70 ? 'text-yellow-800 bg-yellow-100' : 'text-orange-800 bg-orange-100'
-                  }`}
-                       onClick={() => setShowRoleMatchRationale(true)}
-                       data-testid={`button-role-match-info-${student.id}`}>
+                  <div
+                    className={`inline-block text-sm font-bold px-3 py-1.5 rounded-lg cursor-pointer whitespace-nowrap ${
+                      matchPercentage >= 85
+                        ? "text-blue-700 bg-blue-50 border border-blue-100"
+                        : matchPercentage >= 70
+                        ? "text-slate-700 bg-slate-100 border border-slate-200"
+                        : "text-slate-600 bg-slate-50 border border-slate-200"
+                    }`}
+                    onClick={() => setShowRoleMatchRationale(true)}
+                    data-testid={`button-role-match-info-${student.id}`}
+                  >
                     {matchPercentage}% Match
                   </div>
                 </div>
@@ -210,13 +212,13 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
               </Button>
             </Link>
             
-            <Button 
+            <Button
               className={`w-full sm:w-auto font-medium text-sm px-4 py-3 sm:px-5 sm:py-2 min-h-[44px] sm:min-h-[36px] ${
-                isShortlisted(student.id) 
-                  ? 'bg-green-100 text-green-600 hover:bg-green-200' 
-                  : 'border border-green-500 text-green-600 hover:bg-green-50'
-              }`} 
-              variant={isShortlisted(student.id) ? "default" : "outline"}
+                isShortlisted(student.id)
+                  ? "bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200"
+                  : "border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-800"
+              }`}
+              variant="outline"
               onClick={() => {
                 isShortlisted(student.id) ? removeFromShortlist(student.id) : addToShortlist(student.id);
               }}
@@ -236,59 +238,59 @@ export default function StudentCard({ student, showFullInfo = false }: StudentCa
             </Button>
           </div>
 
-          {/* Assessment Grid - Responsive layout */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
-            <div 
-              className="flex flex-col items-center p-3 md:p-4 rounded-lg bg-blue-50 border border-blue-100 hover:bg-blue-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
-              onClick={() => setSelectedAssessment({type: 'DSA', score: dsaScore * 20, level: dsaScore >= 4 ? 'Excellent' : dsaScore >= 3 ? 'Good' : 'Average'})}
+          {/* Assessment Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+            <div
+              className="flex flex-col items-center p-3 rounded-lg bg-blue-50 border border-blue-100 hover:bg-blue-100 cursor-pointer transition-colors text-center"
+              onClick={() => setSelectedAssessment({ type: "DSA", score: dsaScore * 20, level: dsaScore >= 4 ? "Excellent" : dsaScore >= 3 ? "Good" : "Average" })}
               data-testid={`button-dsa-assessment-${student.id}`}
               title="Click to view detailed DSA assessment"
             >
-              <div className="flex mb-1 scale-90 sm:scale-100">{renderStars(dsaScore)}</div>
-              <span className="text-xs font-semibold text-blue-600">DSA</span>
+              <div className="flex mb-1">{renderStars(dsaScore)}</div>
+              <span className="text-xs font-semibold text-blue-700">DSA</span>
             </div>
-            
-            <div 
-              className="flex flex-col items-center p-3 md:p-4 rounded-lg bg-green-50 border border-green-100 hover:bg-green-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
-              onClick={() => setSelectedAssessment({type: 'Aptitude', score: aptitudeScore * 20, level: aptitudeScore >= 4 ? 'Excellent' : aptitudeScore >= 3 ? 'Good' : 'Average'})}
+
+            <div
+              className="flex flex-col items-center p-3 rounded-lg bg-slate-50 border border-slate-200 hover:bg-slate-100 cursor-pointer transition-colors text-center"
+              onClick={() => setSelectedAssessment({ type: "Aptitude", score: aptitudeScore * 20, level: aptitudeScore >= 4 ? "Excellent" : aptitudeScore >= 3 ? "Good" : "Average" })}
               data-testid={`button-aptitude-assessment-${student.id}`}
               title="Click to view detailed Aptitude assessment"
             >
-              <div className="flex mb-1 scale-90 sm:scale-100">{renderStars(aptitudeScore)}</div>
-              <span className="text-xs font-semibold text-green-600">Aptitude</span>
+              <div className="flex mb-1">{renderStars(aptitudeScore)}</div>
+              <span className="text-xs font-semibold text-slate-600">Aptitude</span>
             </div>
-            
-            <div 
-              className="flex flex-col items-center p-3 md:p-4 rounded-lg bg-purple-50 border border-purple-100 hover:bg-purple-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
-              onClick={() => setSelectedAssessment({type: 'Verbal Ability', score: communicationScore * 20, level: communicationScore >= 4 ? 'Excellent' : communicationScore >= 3 ? 'Good' : 'Average'})}
+
+            <div
+              className="flex flex-col items-center p-3 rounded-lg bg-blue-50 border border-blue-100 hover:bg-blue-100 cursor-pointer transition-colors text-center"
+              onClick={() => setSelectedAssessment({ type: "Verbal Ability", score: communicationScore * 20, level: communicationScore >= 4 ? "Excellent" : communicationScore >= 3 ? "Good" : "Average" })}
               data-testid={`button-communication-assessment-${student.id}`}
               title="Click to view detailed Verbal Ability assessment"
             >
-              <div className="flex mb-1 scale-90 sm:scale-100">{renderStars(communicationScore)}</div>
-              <span className="text-xs font-semibold text-purple-600">Verbal</span>
+              <div className="flex mb-1">{renderStars(communicationScore)}</div>
+              <span className="text-xs font-semibold text-blue-700">Verbal</span>
             </div>
-            
-            <div 
-              className="flex flex-col items-center p-3 md:p-4 rounded-lg bg-orange-50 border border-orange-100 hover:bg-orange-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto]"
-              onClick={() => setSelectedAssessment({type: 'CS Fundamentals', score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? 'Excellent' : csFundamentalsScore >= 3 ? 'Good' : 'Average'})}
+
+            <div
+              className="flex flex-col items-center p-3 rounded-lg bg-slate-50 border border-slate-200 hover:bg-slate-100 cursor-pointer transition-colors text-center"
+              onClick={() => setSelectedAssessment({ type: "CS Fundamentals", score: csFundamentalsScore * 20, level: csFundamentalsScore >= 4 ? "Excellent" : csFundamentalsScore >= 3 ? "Good" : "Average" })}
               data-testid={`button-cs-fundamentals-assessment-${student.id}`}
               title="Click to view detailed CS Fundamentals assessment"
             >
-              <div className="flex mb-1 scale-90 sm:scale-100">{renderStars(csFundamentalsScore)}</div>
-              <span className="text-xs font-semibold text-orange-600">CS Fundamentals</span>
+              <div className="flex mb-1">{renderStars(csFundamentalsScore)}</div>
+              <span className="text-xs font-semibold text-slate-600">CS Fundamentals</span>
             </div>
-            
-            <div 
-              className="flex flex-col items-center p-3 md:p-4 rounded-lg bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 cursor-pointer transition-colors text-center min-h-[60px] sm:min-h-[auto] col-span-2 sm:col-span-1"
+
+            <div
+              className="flex flex-col items-center p-3 rounded-lg bg-slate-900 border border-slate-800 hover:bg-slate-800 cursor-pointer transition-colors text-center col-span-2 sm:col-span-1"
               onClick={() => setShowInterviewPerformance(true)}
               data-testid={`performance-overall-${student.id}`}
               title="Click to view interview footage and performance analysis"
             >
-              <div className="flex justify-center items-center gap-1 mb-1 scale-90 sm:scale-100" data-testid={`text-student-rating-${student.id}`}>
+              <div className="flex justify-center items-center gap-1 mb-1" data-testid={`text-student-rating-${student.id}`}>
                 {renderStars(Math.round(averageSkillScore))}
-                <Video className="w-3 h-3 text-indigo-600" />
+                <Video className="w-3 h-3 text-slate-300" />
               </div>
-              <span className="text-xs font-semibold text-indigo-600">Interview</span>
+              <span className="text-xs font-semibold text-slate-300">Interview</span>
             </div>
           </div>
         </div>
