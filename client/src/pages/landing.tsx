@@ -193,9 +193,8 @@ export default function Landing() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left */}
             <div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-[1.1] mb-4">
-                India's <span className="text-blue-600">'Uber'</span> for Hiring<br />
-                Entry Level Talent
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-[1.15] mb-4">
+                India's <span className="text-blue-600">'Uber'</span> for Hiring Entry Level Talent
               </h1>
 
               <p className="text-base md:text-lg text-slate-500 mb-8 max-w-lg leading-relaxed">
