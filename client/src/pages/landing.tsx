@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { ArrowRight, Star, CheckCircle, ChevronRight } from "lucide-react";
 
@@ -167,7 +166,6 @@ export default function Landing() {
               </span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <Link href="/for-colleges" className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors">For Colleges</Link>
               <button
                 onClick={() => window.location.href = "/api/login"}
                 className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 h-9 rounded-lg transition-colors"
@@ -565,7 +563,7 @@ export default function Landing() {
           </div>
           <p className="text-xs text-slate-500">© 2025 NxtWave. Built for India's Best Engineers.</p>
           <div className="flex gap-6">
-            <Link href="/for-colleges" className="text-xs text-slate-500 hover:text-slate-300 transition-colors">For Colleges</Link>
+            <button onClick={() => window.location.href = "/api/login"} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">Login</button>
           </div>
         </div>
       </footer>
