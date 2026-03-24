@@ -200,7 +200,7 @@ export default function Landing() {
               </h1>
 
               <p className="text-base md:text-lg text-slate-500 mb-8 max-w-lg leading-relaxed">
-                Hire top <span className="font-semibold text-slate-700">0.1%</span> engineers — offline assessed, nationally ranked, delivered in 3 hours.
+                Hire top <span className="font-semibold text-slate-700">1%</span> engineers filtered through National Standard Assessment — Offline Assessed, nationally ranked under an hour.
               </p>
 
               {/* Rotating point */}
