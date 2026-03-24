@@ -107,7 +107,7 @@ export default function ShortlistedCandidates() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { icon: Users, color: "text-blue-600", bg: "bg-blue-50", value: shortlistCount, label: "Total Shortlisted" },
-            { icon: GraduationCap, color: "text-emerald-600", bg: "bg-emerald-50", value: avgCGPA, label: "Avg CGPA" },
+            { icon: GraduationCap, color: "text-blue-600", bg: "bg-blue-50", value: avgCGPA, label: "Avg CGPA" },
             { icon: Star, color: "text-violet-600", bg: "bg-violet-50", value: avgRating, label: "Avg Rating" },
             { icon: Building2, color: "text-amber-600", bg: "bg-amber-50", value: univCount, label: "Universities" },
           ].map((m) => (

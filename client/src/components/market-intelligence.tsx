@@ -61,7 +61,7 @@ export default function MarketIntelligence({ className, compact }: MarketIntelli
             <span className="text-xs text-slate-600 truncate flex-1">{row.level}</span>
             <div className="flex items-center gap-3 shrink-0 ml-2">
               <span className="text-xs font-semibold text-slate-800">₹{row.median}L</span>
-              <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">{row.change}</span>
+              <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{row.change}</span>
             </div>
           </div>
         ))}

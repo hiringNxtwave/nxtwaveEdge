@@ -76,7 +76,7 @@ export default function AppSidebar() {
             collapsed ? "px-0 justify-center" : "px-4 gap-3"
           )}
         >
-          <div className="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/20">
+          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20">
             <Handshake className="w-4 h-4 text-slate-950" />
           </div>
           {!collapsed && (
@@ -105,7 +105,7 @@ export default function AppSidebar() {
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium transition-all duration-150 cursor-pointer group relative",
                     active
-                      ? "bg-emerald-500/12 text-emerald-400"
+                      ? "bg-blue-500/12 text-blue-400"
                       : "text-slate-500 hover:text-slate-100 hover:bg-slate-800/70",
                     collapsed && "justify-center"
                   )}
@@ -114,7 +114,7 @@ export default function AppSidebar() {
                   <item.icon
                     className={cn(
                       "w-4 h-4 shrink-0 transition-colors",
-                      active ? "text-emerald-400" : "text-slate-500 group-hover:text-slate-300"
+                      active ? "text-blue-400" : "text-slate-500 group-hover:text-slate-300"
                     )}
                   />
                   {!collapsed && (
@@ -142,17 +142,17 @@ export default function AppSidebar() {
             className={cn(
               "w-full flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium transition-all duration-150 cursor-pointer",
               chatbotOpen
-                ? "bg-emerald-500/12 text-emerald-400"
+                ? "bg-blue-500/12 text-blue-400"
                 : "text-slate-500 hover:text-slate-100 hover:bg-slate-800/70",
               collapsed && "justify-center"
             )}
             title={collapsed ? "AI Assistant" : undefined}
           >
-            <MessageCircle className={cn("w-4 h-4 shrink-0", chatbotOpen ? "text-emerald-400" : "text-slate-500")} />
+            <MessageCircle className={cn("w-4 h-4 shrink-0", chatbotOpen ? "text-blue-400" : "text-slate-500")} />
             {!collapsed && (
               <>
                 <span className="flex-1 text-left">AI Assistant</span>
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
+                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full" />
               </>
             )}
           </button>
