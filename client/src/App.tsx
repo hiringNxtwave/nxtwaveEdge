@@ -22,6 +22,7 @@ import TalentDashboard from "./pages/talent-dashboard";
 import ShortlistingPage from "./pages/shortlisting";
 import { CompanyProfileManager } from "./components/company-profile-manager";
 import MarketIntelligencePage from "./pages/market-intelligence-page";
+import ExploreEdge from "./pages/explore-edge";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -40,6 +41,7 @@ function Router() {
             </Route>
             <Route path="/for-colleges" component={ForColleges} />
             <Route path="/for-students" component={ForStudents} />
+            <Route path="/explore-edge" component={ExploreEdge} />
           </>
         ) : (
           <>
@@ -54,6 +56,7 @@ function Router() {
             <Route path="/talent" component={() => <AppShell><TalentDashboard /></AppShell>} />
             <Route path="/shortlisting" component={() => <AppShell><ShortlistingPage /></AppShell>} />
             <Route path="/market-intelligence" component={() => <AppShell><MarketIntelligencePage /></AppShell>} />
+            <Route path="/explore-edge" component={ExploreEdge} />
             <Route path="/company-profile" component={() => (
               <AppShell>
                 <div className="min-h-screen bg-[#F8FAFC]">

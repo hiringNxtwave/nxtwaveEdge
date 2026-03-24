@@ -327,7 +327,7 @@ export default function Landing() {
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => window.location.href = "/api/login"}
+                  onClick={() => window.location.href = "/explore-edge"}
                   className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors"
                   data-testid="button-explore-edge"
                 >
@@ -615,7 +615,7 @@ export default function Landing() {
             ))}
           </div>
           <button
-            onClick={() => window.location.href = "/api/login"}
+            onClick={() => window.location.href = "/explore-edge"}
             className="inline-flex items-center gap-2 border border-slate-200 hover:border-slate-400 text-slate-800 font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
           >
             Explore Edge <ArrowRight className="w-4 h-4" />
@@ -697,7 +697,7 @@ export default function Landing() {
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
-              onClick={() => window.location.href = "/api/login"}
+              onClick={() => window.location.href = "/explore-edge"}
               className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-sm px-8 py-4 rounded-lg transition-colors"
               data-testid="button-book-demo"
             >
