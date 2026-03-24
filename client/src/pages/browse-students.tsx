@@ -8,8 +8,7 @@ import CandidateComparison from "@/components/candidate-comparison";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { Lock, Users, Star, GitCompare, TrendingUp, Shield, Heart, Clock, Briefcase } from "lucide-react";
-import { useShortlist } from "@/contexts/shortlist-context";
+import { Lock, Users, Star, GitCompare, TrendingUp, Shield, Briefcase } from "lucide-react";
 
 /**
  * Mirrors the match-percentage formula in StudentCard so we can sort before render.
@@ -39,18 +38,9 @@ export default function BrowseStudents() {
   useScrollToTop();
 
   const { isAuthenticated, user } = useAuth();
-  const { shortlistCount } = useShortlist();
-
   const displayName = user?.firstName
     ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`.trim()
     : "Recruiter";
-
-  const metrics = [
-    { icon: Users,      value: "24",                         label: "Profiles Viewed",   sub: "This week" },
-    { icon: Heart,      value: String(shortlistCount || 0),  label: "Shortlisted",        sub: "Candidates saved" },
-    { icon: Clock,      value: "12d",                        label: "Avg. Days to Hire",  sub: "Platform avg. 14d" },
-    { icon: TrendingUp, value: "₹45L",                       label: "Cost Saved",         sub: "vs. agency fees" },
-  ];
 
   const [filters, setFilters] = useState({
     skills: [] as string[],
@@ -131,18 +121,6 @@ export default function BrowseStudents() {
                   Post a Job
                 </button>
               </Link>
-            </div>
-
-            {/* KPI row */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-slate-100 rounded-xl overflow-hidden border border-slate-100">
-              {metrics.map((m) => (
-                <div key={m.label} className="bg-white px-5 py-4">
-                  <m.icon className="w-4 h-4 text-slate-300 mb-3" />
-                  <div className="text-2xl font-bold text-slate-900 tracking-tight leading-none mb-1">{m.value}</div>
-                  <div className="text-xs font-semibold text-slate-600 mb-0.5">{m.label}</div>
-                  <div className="text-xs text-slate-400">{m.sub}</div>
-                </div>
-              ))}
             </div>
 
           </div>
