@@ -63,6 +63,8 @@ async function upsertUser(
     firstName: claims["first_name"],
     lastName: claims["last_name"],
     profileImageUrl: claims["profile_image_url"],
+    // Mark onboarding complete immediately — we collect details later in Company Profile
+    onboardingCompleted: true,
   });
 }
 
@@ -110,7 +112,7 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/callback", (req, res, next) => {
     passport.authenticate(`replitauth:${req.hostname}`, {
-      successReturnToOrRedirect: "/",
+      successRedirect: "/browse",
       failureRedirect: "/api/login",
     })(req, res, next);
   });

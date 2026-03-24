@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ShortlistProvider } from "@/contexts/shortlist-context";
 import { useAuth } from "@/hooks/useAuth";
-import { RecruiterOnboarding } from "@/components/recruiter-onboarding";
 import AppShell from "@/components/app-shell";
 import NotFound from "./pages/not-found";
 import Landing from "./pages/landing";
@@ -24,20 +23,7 @@ import ShortlistingPage from "./pages/shortlisting";
 import { CompanyProfileManager } from "./components/company-profile-manager";
 
 function Router() {
-  const { isAuthenticated, isLoading, user } = useAuth();
-  const [showOnboarding, setShowOnboarding] = useState(false);
-
-  React.useEffect(() => {
-    if (isAuthenticated && user && !user.onboardingCompleted) {
-      setShowOnboarding(true);
-    } else {
-      setShowOnboarding(false);
-    }
-  }, [isAuthenticated, user]);
-
-  const handleOnboardingComplete = () => {
-    setShowOnboarding(false);
-  };
+  const { isAuthenticated, isLoading } = useAuth();
 
   return (
     <>
@@ -89,12 +75,6 @@ function Router() {
         <Route component={NotFound} />
       </Switch>
 
-      <RecruiterOnboarding
-        isOpen={showOnboarding}
-        onComplete={handleOnboardingComplete}
-        userEmail={user?.email || undefined}
-        userName={user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email || undefined}
-      />
     </>
   );
 }
