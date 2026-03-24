@@ -6,14 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import {
-  Users, TrendingUp, Clock, BarChart3,
+  Users, TrendingUp, Clock,
   ArrowRight, Shield, Target, Zap,
   Search, Heart, ChevronRight, CheckCircle,
   Globe2, Briefcase, Sparkles, Star, ArrowUpRight,
 } from "lucide-react";
 import { SiTata, SiInfosys, SiWipro, SiGoogle, SiAmazon, SiFlipkart } from "react-icons/si";
 import Header from "@/components/header";
-import MarketIntelligence from "@/components/market-intelligence";
 import { useShortlist } from "@/contexts/shortlist-context";
 
 export default function Home() {
@@ -44,13 +43,6 @@ function RecruiterDashboard({ user, shortlistCount }: { user: any; shortlistCoun
     { icon: Heart,     color: "text-rose-500",  bg: "bg-rose-50",  border: "border-rose-100",  value: String(shortlistCount || 0), label: "Shortlisted",      sub: "Candidates saved" },
     { icon: Clock,     color: "text-blue-600",  bg: "bg-blue-50",  border: "border-blue-100",  value: "12",            label: "Avg. Days to Hire", sub: "Platform avg. 14" },
     { icon: TrendingUp,color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-100", value: "₹45L",          label: "Cost Saved",        sub: "vs agency fees" },
-  ];
-
-  const recentActivity = [
-    { action: "Profile viewed",    name: "Aryan Mehta",  detail: "IIT Bombay · CSE",  time: "2m ago",  dot: "bg-blue-500" },
-    { action: "Shortlisted",       name: "Priya Nair",   detail: "NIT Trichy · ECE",  time: "14m ago", dot: "bg-rose-500" },
-    { action: "Profile viewed",    name: "Rahul Singh",  detail: "BITS Pilani · CS",  time: "1h ago",  dot: "bg-blue-500" },
-    { action: "Offer sent",        name: "Sneha Iyer",   detail: "IIT Madras · CS",   time: "3h ago",  dot: "bg-blue-500" },
   ];
 
   return (
@@ -94,80 +86,42 @@ function RecruiterDashboard({ user, shortlistCount }: { user: any; shortlistCoun
           ))}
         </div>
 
-        {/* Main 2-col layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-
-          {/* LEFT — Hiring Checklist */}
-          <div className="space-y-4">
-            {/* Shortlist banner (only when items exist) */}
-            {shortlistCount > 0 && (
-              <Link href="/shortlist">
-                <div className="flex items-center justify-between rounded-xl border border-blue-100 bg-blue-50 px-4 py-3.5 cursor-pointer hover:border-blue-200 transition-all" data-testid="card-your-shortlist">
-                  <div className="flex items-center gap-2.5">
-                    <Heart className="w-4 h-4 text-blue-600 fill-blue-600" />
-                    <div>
-                      <p className="text-sm font-semibold text-slate-900">Your Shortlist</p>
-                      <p className="text-xs text-slate-500">{shortlistCount} candidate{shortlistCount !== 1 ? "s" : ""} saved</p>
-                    </div>
+        {/* Hiring Checklist */}
+        <div className="max-w-lg">
+          {shortlistCount > 0 && (
+            <Link href="/shortlist">
+              <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 mb-4 cursor-pointer hover:border-slate-300 transition-all" data-testid="card-your-shortlist">
+                <div className="flex items-center gap-2.5">
+                  <Heart className="w-4 h-4 text-blue-600 fill-blue-600" />
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Your Shortlist</p>
+                    <p className="text-xs text-slate-500">{shortlistCount} candidate{shortlistCount !== 1 ? "s" : ""} saved</p>
                   </div>
-                  <span className="text-lg font-bold text-blue-600">{shortlistCount}</span>
                 </div>
-              </Link>
-            )}
-
-            <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4">
-              <h2 className="text-sm font-semibold text-slate-800 mb-3">Hiring Checklist</h2>
-              {[
-                { done: true,  label: "Company profile set up",   href: "/company-profile" },
-                { done: false, label: "Post your first job",       href: "/company-profile" },
-                { done: false, label: "Shortlist 5+ candidates",   href: "/browse" },
-                { done: false, label: "Schedule interviews",        href: "/shortlist" },
-              ].map((item, i) => (
-                <Link key={i} href={item.href}>
-                  <div className="flex items-center gap-2.5 py-2.5 border-b border-slate-50 last:border-0 hover:bg-slate-50 rounded px-1 -mx-1 transition-colors cursor-pointer">
-                    <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${item.done ? "bg-blue-500" : "border-2 border-slate-200"}`}>
-                      {item.done && <CheckCircle className="w-2.5 h-2.5 text-white" />}
-                    </div>
-                    <span className={`text-xs font-medium flex-1 ${item.done ? "text-slate-400 line-through" : "text-slate-700"}`}>{item.label}</span>
-                    <ChevronRight className="w-3 h-3 text-slate-300" />
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            {/* Market Intelligence teaser */}
-            <Link href="/market-intelligence">
-              <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4 cursor-pointer hover:border-blue-100 hover:shadow-md transition-all group">
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-sm font-semibold text-slate-800">Market Intelligence</h2>
-                  <span className="text-xs text-blue-600 font-medium group-hover:underline flex items-center gap-1">
-                    View full report <ChevronRight className="w-3 h-3" />
-                  </span>
-                </div>
-                <MarketIntelligence compact />
+                <span className="text-lg font-bold text-slate-800">{shortlistCount}</span>
               </div>
             </Link>
-          </div>
+          )}
 
-          {/* RIGHT — Recent Activity */}
           <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4">
-            <h2 className="text-sm font-semibold text-slate-800 mb-3">Recent Activity</h2>
-            <div className="space-y-3">
-              {recentActivity.map((a, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className={`w-1.5 h-1.5 rounded-full ${a.dot} mt-1.5 shrink-0`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-slate-700 truncate">
-                      {a.action} — <span className="text-slate-900">{a.name}</span>
-                    </p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">{a.detail}</p>
+            <h2 className="text-sm font-semibold text-slate-800 mb-3">Hiring Checklist</h2>
+            {[
+              { done: true,  label: "Company profile set up",   href: "/company-profile" },
+              { done: false, label: "Post your first job",       href: "/company-profile" },
+              { done: false, label: "Shortlist 5+ candidates",   href: "/browse" },
+              { done: false, label: "Schedule interviews",        href: "/shortlist" },
+            ].map((item, i) => (
+              <Link key={i} href={item.href}>
+                <div className="flex items-center gap-2.5 py-2.5 border-b border-slate-50 last:border-0 hover:bg-slate-50 rounded px-1 -mx-1 transition-colors cursor-pointer">
+                  <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${item.done ? "bg-blue-500" : "border-2 border-slate-200"}`}>
+                    {item.done && <CheckCircle className="w-2.5 h-2.5 text-white" />}
                   </div>
-                  <span className="text-[10px] text-slate-400 shrink-0">{a.time}</span>
+                  <span className={`text-xs font-medium flex-1 ${item.done ? "text-slate-400 line-through" : "text-slate-700"}`}>{item.label}</span>
+                  <ChevronRight className="w-3 h-3 text-slate-300" />
                 </div>
-              ))}
-            </div>
+              </Link>
+            ))}
           </div>
-
         </div>
       </div>
     </div>
