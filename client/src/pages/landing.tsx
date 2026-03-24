@@ -230,27 +230,31 @@ export default function Landing() {
                 </button>
               </div>
               <p className="text-xs text-slate-400">Shortlists delivered within 3 hours.</p>
-
-              {/* Social proof strip */}
-              <div className="mt-10 pt-8 border-t border-blue-100 grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {[
-                  { val: "2,300+", label: "Hiring Partners" },
-                  { val: "16,000+", label: "Engineers Placed" },
-                  { val: "WEF 2024", label: "Tech Pioneer" },
-                  { val: "$33M", label: "Series A" },
-                ].map(({ val, label }) => (
-                  <div key={val}>
-                    <div className="text-lg font-extrabold text-slate-900">{val}</div>
-                    <div className="text-xs text-slate-500 mt-0.5">{label}</div>
-                  </div>
-                ))}
-              </div>
             </div>
 
             {/* Right — Hero illustration */}
             <div className="hidden lg:flex justify-center items-center">
               <HeroIllustration />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Social Proof Strip ── */}
+      <section className="bg-white border-b border-slate-100 py-10">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+            {[
+              { val: "2,300+", label: "Hiring Partners" },
+              { val: "16,000+", label: "Engineers Placed" },
+              { val: "WEF 2024", label: "Tech Pioneer" },
+              { val: "$33M", label: "Series A" },
+            ].map(({ val, label }) => (
+              <div key={val}>
+                <div className="text-2xl font-extrabold text-slate-900">{val}</div>
+                <div className="text-sm text-slate-500 mt-1">{label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
