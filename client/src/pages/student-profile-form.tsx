@@ -12,7 +12,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import Header from "@/components/header";
 import { GraduationCap, User, Award, Code, Link as LinkIcon } from "lucide-react";
 
 const studentProfileSchema = z.object({
@@ -122,8 +121,8 @@ export default function StudentProfileForm() {
   const prevStep = () => setStep(step - 1);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
+    <div className="min-h-screen bg-[#F8FAFC]">
+      
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Create Your Student Profile</h1>

@@ -15,8 +15,8 @@ interface Message {
 }
 
 interface ChatbotProps {
-  isOpen: boolean;
-  onToggle: () => void;
+  isOpen?: boolean;
+  onToggle?: () => void;
   context?: any;
 }
 
@@ -113,7 +113,7 @@ export function Chatbot({ isOpen, onToggle, context }: ChatbotProps) {
     }
   };
 
-  if (!isOpen) {
+  if (isOpen === false) {
     return (
       <Button
         onClick={onToggle}

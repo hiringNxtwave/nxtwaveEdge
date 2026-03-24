@@ -1,18 +1,18 @@
-import { useParams } from "wouter";
+import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import Header from "@/components/header";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { MapPin, GraduationCap, Calendar, Github, ExternalLink, Mail, Phone, Star, Award, Target, TrendingUp } from "lucide-react";
+import { MapPin, GraduationCap, Calendar, Github, ExternalLink, Mail, Phone, Star, Award, Target, TrendingUp, ArrowLeft } from "lucide-react";
 
 export default function StudentProfile() {
   useScrollToTop();
   
   const { id } = useParams() as { id: string };
+  const [, navigate] = useLocation();
 
   // Calculate consistent skill scores (same logic as StudentCard)
   const calculateSkillScores = (student: any) => {
@@ -57,8 +57,8 @@ export default function StudentProfile() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Header />
+      <div className="min-h-screen bg-[#F8FAFC]">
+        
         <div className="container mx-auto px-4 py-8">
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
@@ -78,8 +78,8 @@ export default function StudentProfile() {
 
   if (error || !student) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Header />
+      <div className="min-h-screen bg-[#F8FAFC]">
+        
         <div className="container mx-auto px-4 py-8">
           <div className="text-center py-12" data-testid="text-error">
             <p className="text-gray-500 dark:text-gray-400 text-lg">
@@ -108,9 +108,30 @@ export default function StudentProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Header />
-      
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Page Header */}
+      <div className="bg-white border-b border-slate-100 px-6 py-4">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-slate-500 hover:text-slate-800 -ml-2"
+            onClick={() => navigate("/browse")}
+          >
+            <ArrowLeft className="w-4 h-4 mr-1.5" />
+            Back to Talent Pool
+          </Button>
+          {student && (
+            <span className="text-slate-300">|</span>
+          )}
+          {student && (
+            <span className="text-sm font-medium text-slate-700">
+              {student.firstName} {student.lastName}
+            </span>
+          )}
+        </div>
+      </div>
+
       <div className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
@@ -406,7 +427,7 @@ export default function StudentProfile() {
               <CardContent>
                 <div className="space-y-6">
                   {/* Interview Video */}
-                  <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
+                  <div className="bg-[#F8FAFC] rounded-lg p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Technical Interview Recording</h3>
                       <div className="flex items-center space-x-2">

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import Header from "@/components/header";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -161,8 +160,8 @@ export default function ComparisonView() {
 
   if (shortlistCount === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Header />
+      <div className="min-h-screen bg-[#F8FAFC]">
+        
         <div className="container mx-auto px-4 py-8">
           <div className="text-center py-20">
             <BarChart3 className="w-24 h-24 text-gray-300 mx-auto mb-6" />
@@ -216,8 +215,8 @@ export default function ComparisonView() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Header />
+    <div className="min-h-screen bg-[#F8FAFC]">
+      
       
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
@@ -451,7 +450,7 @@ export default function ComparisonView() {
                         <Button 
                           size="sm"
                           variant="outline"
-                          className="flex items-center gap-2 border-gray-200 text-gray-700 hover:bg-gray-50"
+                          className="flex items-center gap-2 border-gray-200 text-gray-700 hover:bg-[#F8FAFC]"
                           onClick={() => {
                             const phoneNumber = analysis.student.phone?.replace(/[^0-9]/g, '') || '919999999999';
                             window.open(`tel:+${phoneNumber}`, '_self');

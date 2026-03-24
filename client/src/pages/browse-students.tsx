@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
-import Header from "@/components/header";
 import StudentCard from "@/components/student-card";
 import StudentFilters from "@/components/student-filters";
 import FreshnessIndex from "@/components/freshness-index";
@@ -137,54 +136,34 @@ export default function BrowseStudents() {
   const totalStudentCount = totalCountData?.count || 1920;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Header />
-      
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        
-        {/* Clean Header with Responsive Layout */}
-        <div className="mb-6">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 flex items-center gap-2">
-                {isUsingSmartResults ? (
-                  <>
-                    <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
-                      <Brain className="w-4 h-4 text-white" />
-                    </div>
-                    AI-Curated Top Matches
-                  </>
-                ) : "Talent Database"}
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300">
-                {isLoading 
-                  ? "Loading students..." 
-                  : isAuthenticated 
-                    ? isUsingSmartResults
-                      ? `${students.length} candidates selected by AI from 1,900+ profiles based on your requirements`
-                      : `Browse verified talent pool of ${totalStudentCount.toLocaleString()}+ students`
-                    : `Preview of ${students.length} from 1,900+ students`
-                }
-              </p>
-            </div>
-            
-            {/* Filters & Actions - Responsive Layout */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4">
-            {/* Smart Discovery & Actions */}
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Page Header */}
+      <div className="bg-white border-b border-slate-100 px-6 py-5">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div>
+            <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+              {isUsingSmartResults ? (
+                <>
+                  <div className="w-7 h-7 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                    <Brain className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  AI-Curated Top Matches
+                </>
+              ) : "Browse Talent"}
+            </h1>
+            <p className="text-sm text-slate-500 mt-0.5">
+              {isLoading
+                ? "Loading candidates..."
+                : isAuthenticated
+                  ? isUsingSmartResults
+                    ? `${students.length} candidates matched by AI from ${totalStudentCount.toLocaleString()}+ profiles`
+                    : `${totalStudentCount.toLocaleString()}+ verified candidates available`
+                  : `Preview of ${students.length} from ${totalStudentCount.toLocaleString()}+ students`}
+            </p>
+          </div>
+          <div className="flex items-center gap-2.5">
             {isAuthenticated && (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Button
-                    onClick={() => setShowSmartDiscovery(true)}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold"
-                    data-testid="button-smart-discovery"
-                    title="AI-powered candidate matching based on your job requirements"
-                  >
-                    <Brain className="w-4 h-4 mr-2" />
-                    Smart Discovery
-                  </Button>
-                </div>
-                
+              <>
                 {isUsingSmartResults && (
                   <Button
                     onClick={() => {
@@ -194,86 +173,94 @@ export default function BrowseStudents() {
                       queryClient.invalidateQueries({ queryKey: ["/api/students"] });
                     }}
                     variant="outline"
-                    className="border-orange-500 text-orange-600 hover:bg-orange-50 font-medium"
+                    size="sm"
+                    className="border-slate-200 text-slate-600 text-sm"
                     data-testid="button-clear-smart-results"
                   >
-                    <Users className="w-4 h-4 mr-2" />
-                    Back to All {totalStudentCount.toLocaleString()} Students
+                    <Users className="w-3.5 h-3.5 mr-1.5" />
+                    All Students
                   </Button>
                 )}
-                
                 {compareList.length > 0 && (
                   <Button
                     onClick={() => setShowComparison(true)}
-                    className="bg-purple-500 hover:bg-purple-600 text-white font-semibold"
+                    size="sm"
+                    className="bg-violet-600 hover:bg-violet-700 text-white text-sm"
                     data-testid="button-compare-candidates"
                   >
-                    <GitCompare className="w-4 h-4 mr-2" />
+                    <GitCompare className="w-3.5 h-3.5 mr-1.5" />
                     Compare ({compareList.length})
                   </Button>
                 )}
-              </div>
+                <Button
+                  onClick={() => setShowSmartDiscovery(true)}
+                  size="sm"
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-sm"
+                  data-testid="button-smart-discovery"
+                >
+                  <Brain className="w-3.5 h-3.5 mr-1.5" />
+                  AI Smart Discovery
+                </Button>
+              </>
             )}
-
-            {/* Compact Filters */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-3 shadow-sm">
-              <StudentFilters
-                filters={{
-                  university: filters.university || "all",
-                  codingRating: filters.codingRating?.toString() || "all"
-                }}
-                onFiltersChange={(newFilters) => {
-                  setFilters({
-                    skills: [],
-                    location: "",
-                    university: newFilters.university === "all" ? "" : newFilters.university,
-                    minCgpa: undefined,
-                    maxCgpa: undefined,
-                    codingRating: newFilters.codingRating && newFilters.codingRating !== "all" ? parseInt(newFilters.codingRating) : undefined
-                  });
-                  setCurrentPage(1);
-                }}
-                skills={(skills as any) || []}
-                resultCount={students.length}
-                totalCount={totalCount}
-              />
-            </div>
-            </div>
           </div>
         </div>
+      </div>
 
-        {/* Limited Access Banner for Unauthenticated Users */}
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-5">
+
+        {/* Filters Bar */}
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-4 mb-5">
+          <StudentFilters
+            filters={{
+              university: filters.university || "all",
+              codingRating: filters.codingRating?.toString() || "all"
+            }}
+            onFiltersChange={(newFilters) => {
+              setFilters({
+                skills: [],
+                location: "",
+                university: newFilters.university === "all" ? "" : newFilters.university,
+                minCgpa: undefined,
+                maxCgpa: undefined,
+                codingRating: newFilters.codingRating && newFilters.codingRating !== "all" ? parseInt(newFilters.codingRating) : undefined
+              });
+              setCurrentPage(1);
+            }}
+            skills={(skills as any) || []}
+            resultCount={students.length}
+            totalCount={totalCount}
+          />
+        </div>
+
+        {/* Limited Access Banner */}
         {!isAuthenticated && (
-          <div className="mb-8">
-            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Lock className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg text-gray-900">Preview Mode - Limited Access</CardTitle>
-                      <p className="text-sm text-gray-600 mt-1">
-                        You're viewing a limited preview. Sign in to access full profiles, contact details, and hiring tools.
-                      </p>
-                    </div>
-                  </div>
-                  <Button 
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold"
-                    onClick={() => window.location.href = "/api/login"}
-                    data-testid="button-unlock-full-access"
-                  >
-                    Unlock Full Access
-                  </Button>
+          <div className="mb-5">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
+                  <Lock className="w-4 h-4 text-blue-600" />
                 </div>
-              </CardHeader>
-            </Card>
+                <div>
+                  <p className="font-semibold text-slate-800 text-sm">Preview Mode</p>
+                  <p className="text-xs text-slate-500">Sign in to access full profiles, contact details, and hiring tools.</p>
+                </div>
+              </div>
+              <Button
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm shrink-0"
+                onClick={() => (window.location.href = "/api/login")}
+                data-testid="button-unlock-full-access"
+              >
+                Unlock Full Access
+              </Button>
+            </div>
           </div>
         )}
 
-        {/* Student Profiles - Clean List */}
-        <div className="mb-8">
+        {/* Student Profiles */}
+        <div className="mb-5">
 
           {isLoading ? (
             <div className="space-y-4">

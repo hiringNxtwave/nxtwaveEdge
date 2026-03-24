@@ -5,6 +5,7 @@ import { TrendingUp, TrendingDown, DollarSign, Users, GraduationCap, Building, T
 
 interface MarketIntelligenceProps {
   className?: string;
+  compact?: boolean;
 }
 
 // Market data that would typically come from parsing the PDF report
@@ -51,9 +52,25 @@ const marketData = {
   ]
 };
 
-export default function MarketIntelligence({ className }: MarketIntelligenceProps) {
+export default function MarketIntelligence({ className, compact }: MarketIntelligenceProps) {
+  if (compact) {
+    return (
+      <div className={`space-y-2 ${className ?? ""}`}>
+        {marketData.salaryTrends.byExperience.map((row) => (
+          <div key={row.level} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+            <span className="text-xs text-slate-600 truncate flex-1">{row.level}</span>
+            <div className="flex items-center gap-3 shrink-0 ml-2">
+              <span className="text-xs font-semibold text-slate-800">₹{row.median}L</span>
+              <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">{row.change}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <div className={`space-y-6 px-4 md:px-0 ${className}`}>
+    <div className={`space-y-6 px-4 md:px-0 ${className ?? ""}`}>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 md:gap-4">
         <div className="flex-1">

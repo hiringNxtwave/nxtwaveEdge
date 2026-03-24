@@ -113,7 +113,7 @@ export default function ShortlistingPage() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col">
       {/* Header */}
       <div className="bg-white border-b flex-shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useAuth } from "@/hooks/useAuth";
-import Header from "@/components/header";
 import { 
   BookOpen, 
   TrendingUp, 
@@ -68,8 +67,8 @@ export default function StudentDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Header />
+    <div className="min-h-screen bg-[#F8FAFC]">
+      
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Header */}

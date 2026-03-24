@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
-import Header from "@/components/header";
 import AdvancedStudentsTable from "@/components/advanced-students-table";
 import InterviewScheduler from "@/components/interview-scheduler";
 import CodeSubmissionViewer from "@/components/code-submission-viewer";
@@ -92,8 +91,8 @@ export default function TalentDashboard() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Header />
+      <div className="min-h-screen bg-[#F8FAFC]">
+        
         <div className="container mx-auto px-4 py-8">
           <Card className="max-w-md mx-auto">
             <CardHeader>
@@ -117,8 +116,8 @@ export default function TalentDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Header />
+    <div className="min-h-screen bg-[#F8FAFC]">
+      
       
       <div className="container mx-auto px-4 py-8">
         {/* Header Section */}

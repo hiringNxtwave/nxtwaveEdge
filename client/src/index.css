@@ -495,3 +495,65 @@
 .space-y-clean-lg > * + * {
   margin-top: 2rem;
 }
+
+/* Enterprise App Shell */
+:root {
+  --sidebar-w: 220px;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(0, 0%, 82%);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(0, 0%, 70%);
+}
+
+/* Page header consistency */
+.page-header {
+  @apply bg-white border-b border-slate-100 px-6 py-5;
+}
+
+/* Enterprise card */
+.enterprise-card {
+  @apply bg-white rounded-xl border border-slate-100 shadow-sm;
+}
+
+/* Stat value */
+.stat-value {
+  @apply text-2xl font-bold;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background: hsl(142, 71%, 45%, 0.2);
+}
+
+/* Input focus improvements */
+input:focus, textarea:focus, select:focus {
+  outline-offset: 2px;
+}
+
+/* Table improvements */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* Page transition feel */
+.page-enter {
+  animation: fadeIn 0.2s ease-out;
+}

@@ -1,31 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
-import Header from "@/components/header";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import StudentCard from "@/components/student-card";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useShortlist } from "@/contexts/shortlist-context";
-import { Heart, Trash2, BarChart3 } from "lucide-react";
+import { Heart, Trash2, BarChart3, Users, GraduationCap, Star, Building2, Search } from "lucide-react";
 import { Link } from "wouter";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ShortlistedCandidates() {
   useScrollToTop();
-  
+
   const { shortlistedIds, clearShortlist, shortlistCount } = useShortlist();
 
   const { data: students, isLoading } = useQuery({
     queryKey: ["/api/students/bulk", Array.from(shortlistedIds)],
     queryFn: async () => {
       if (shortlistedIds.size === 0) return [];
-      
       const idsArray = Array.from(shortlistedIds);
-      const promises = idsArray.map(id => 
-        fetch(`/api/students/${id}`).then(res => {
+      const promises = idsArray.map((id) =>
+        fetch(`/api/students/${id}`).then((res) => {
           if (!res.ok) throw new Error("Failed to fetch student");
           return res.json();
         })
       );
-      
       return Promise.all(promises);
     },
     enabled: shortlistedIds.size > 0,
@@ -33,122 +30,120 @@ export default function ShortlistedCandidates() {
 
   if (shortlistCount === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Header />
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center py-20">
-            <Heart className="w-24 h-24 text-gray-300 mx-auto mb-6" />
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-              No candidates shortlisted yet
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
-              Start browsing through our talent pool and shortlist candidates that match your requirements.
-            </p>
-            <p className="text-sm text-gray-500">
-              Use <strong>Browse Candidates</strong> in the navigation above to start shortlisting
-            </p>
+      <div className="min-h-screen bg-[#F8FAFC]">
+        <div className="bg-white border-b border-slate-100 px-6 py-5">
+          <div className="max-w-5xl mx-auto">
+            <h1 className="text-xl font-bold text-slate-900">Shortlisted Candidates</h1>
+            <p className="text-sm text-slate-500 mt-0.5">Review and manage your saved candidates</p>
           </div>
+        </div>
+        <div className="max-w-5xl mx-auto px-6 py-16 text-center">
+          <div className="w-16 h-16 bg-rose-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
+            <Heart className="w-7 h-7 text-rose-300" />
+          </div>
+          <h2 className="text-lg font-semibold text-slate-800 mb-2">No candidates shortlisted yet</h2>
+          <p className="text-sm text-slate-500 mb-6 max-w-sm mx-auto">
+            Start browsing talent and save candidates that match your requirements.
+          </p>
+          <Link href="/browse">
+            <Button className="bg-slate-900 hover:bg-slate-800 text-white">
+              <Search className="w-4 h-4 mr-2" />
+              Browse Candidates
+            </Button>
+          </Link>
         </div>
       </div>
     );
   }
 
+  const avgCGPA =
+    students && students.length > 0
+      ? (students.reduce((sum: number, s: any) => sum + (parseFloat(s.cgpa) || 7.5), 0) / students.length).toFixed(1)
+      : "8.2";
+  const avgRating =
+    students && students.length > 0
+      ? (students.reduce((sum: number, s: any) => sum + (s.codingRating || 4), 0) / students.length).toFixed(1)
+      : "4.2";
+  const univCount = students ? new Set(students.map((s: any) => s.university)).size : 0;
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Header />
-      
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
-                <Heart className="w-8 h-8 text-red-500" />
-                Shortlisted Candidates
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300">
-                {shortlistCount} candidate{shortlistCount !== 1 ? 's' : ''} ready for your review
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <Link href="/shortlist/compare">
-                <Button className="bg-blue-600 hover:bg-blue-700" data-testid="button-compare-candidates">
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Compare & Analyze
-                </Button>
-              </Link>
-              <Button 
-                variant="outline" 
-                className="border-red-500 text-red-600 hover:bg-red-50"
-                onClick={clearShortlist}
-                data-testid="button-clear-shortlist"
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Page Header */}
+      <div className="bg-white border-b border-slate-100 px-6 py-5">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-slate-900">Shortlisted Candidates</h1>
+            <p className="text-sm text-slate-500 mt-0.5">
+              {shortlistCount} candidate{shortlistCount !== 1 ? "s" : ""} saved for review
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-slate-200 text-slate-600 hover:bg-slate-50 text-sm"
+              onClick={clearShortlist}
+              data-testid="button-clear-shortlist"
+            >
+              <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+              Clear All
+            </Button>
+            <Link href="/shortlist/compare">
+              <Button
+                size="sm"
+                className="bg-slate-900 hover:bg-slate-800 text-white text-sm"
+                data-testid="button-compare-candidates"
               >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Clear All
+                <BarChart3 className="w-3.5 h-3.5 mr-1.5" />
+                Compare & Analyze
               </Button>
-            </div>
+            </Link>
           </div>
         </div>
+      </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">{shortlistCount}</div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Total Shortlisted</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">
-                {students && students.length > 0 ? Math.round(students.reduce((sum, s) => sum + (s.cgpa || 7.5), 0) / students.length * 10) / 10 : '8.2'}
+      <div className="max-w-5xl mx-auto px-6 py-6 space-y-5">
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { icon: Users, color: "text-blue-600", bg: "bg-blue-50", value: shortlistCount, label: "Total Shortlisted" },
+            { icon: GraduationCap, color: "text-emerald-600", bg: "bg-emerald-50", value: avgCGPA, label: "Avg CGPA" },
+            { icon: Star, color: "text-violet-600", bg: "bg-violet-50", value: avgRating, label: "Avg Rating" },
+            { icon: Building2, color: "text-amber-600", bg: "bg-amber-50", value: univCount, label: "Universities" },
+          ].map((m) => (
+            <div key={m.label} className="bg-white rounded-xl border border-slate-100 shadow-sm p-4 flex items-center gap-3">
+              <div className={`w-9 h-9 ${m.bg} rounded-xl flex items-center justify-center shrink-0`}>
+                <m.icon className={`w-4 h-4 ${m.color}`} />
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Avg CGPA</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">
-                {students && students.length > 0 ? Math.round(students.reduce((sum, s) => sum + (s.codingRating || 4), 0) / students.length * 10) / 10 : '4.2'}
+              <div>
+                <div className={`text-xl font-bold ${m.color}`}>{m.value}</div>
+                <div className="text-xs text-slate-500">{m.label}</div>
               </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Avg Rating</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-orange-600 mb-2">
-                {students ? new Set(students.map(s => s.university)).size : 0}
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">Universities</div>
-            </CardContent>
-          </Card>
+            </div>
+          ))}
         </div>
 
-        {/* Student Results */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Your Shortlisted Candidates</CardTitle>
-            <CardDescription>
-              Review and compare your selected candidates
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {isLoading ? (
-                <div className="text-center py-8">
-                  <div className="text-gray-500">Loading shortlisted candidates...</div>
-                </div>
-              ) : (
-                students?.map((student: any) => (
-                  <StudentCard 
-                    key={student.id} 
-                    student={student} 
-                    showFullInfo={true}
-                  />
-                ))
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Candidate List */}
+        <div className="bg-white rounded-xl border border-slate-100 shadow-sm">
+          <div className="px-5 py-4 border-b border-slate-100">
+            <h2 className="text-sm font-semibold text-slate-800">Your Candidates</h2>
+          </div>
+          <div className="p-5">
+            {isLoading ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-32 w-full rounded-xl" />
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {students?.map((student: any) => (
+                  <StudentCard key={student.id} student={student} showFullInfo={true} />
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
