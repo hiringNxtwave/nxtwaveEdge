@@ -191,7 +191,7 @@ export default function Landing() {
               <p className="text-base md:text-lg text-slate-700 font-medium mb-8 max-w-lg leading-relaxed">
                 Hire Top <span className="text-blue-600 font-bold">1%</span> Engineers in{" "}
                 <span className="text-[#334155]">Under an Hour</span> — Filtered Through National Standard Assessments,{" "}
-                <span className="text-slate-900">Offline Assessed</span> &amp; Nationally Ranked.
+                <span className="text-[#334155]">Offline Assessed</span> &amp; Nationally Ranked.
               </p>
 
               {/* Rotating point */}
