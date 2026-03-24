@@ -194,11 +194,6 @@ export default function Landing() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left */}
             <div>
-              <div className="inline-flex items-center gap-2 bg-white border border-blue-100 shadow-sm rounded-full px-4 py-1.5 text-sm font-medium text-blue-700 mb-6">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block animate-pulse"></span>
-                India's First National Engineering Hiring Standard
-              </div>
-
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-[1.1] mb-4">
                 India's <span className="text-blue-600">'Uber'</span> for Hiring<br />
                 Entry Level Talent
