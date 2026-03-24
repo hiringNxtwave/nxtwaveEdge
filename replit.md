@@ -62,8 +62,9 @@ Preferred communication style: Simple, everyday language.
 - **connect-pg-simple**: PostgreSQL session store for Express
 
 ### Authentication Services
-- **Replit Auth**: OAuth provider integration for user authentication
-- **Passport.js**: Authentication middleware with OpenID Connect strategy
+- **Custom OTP Auth**: Two-step flow — Step 1 collects name, work email, mobile; Step 2 verifies a 6-digit OTP sent to the work email
+- **OTP Store**: In-memory Map with 10-min expiry, 5-attempt limit, 30-second resend cooldown, auto-cleanup every 15 min
+- **Email Delivery**: Uses `@sendgrid/mail`. Requires `SENDGRID_API_KEY` secret to be set for real email sending. Without it, OTPs are printed to the server console in a formatted dev box (safe for internal testing). NOTE: SendGrid Replit integration was dismissed by the user — to enable real emails, ask the user to provide a `SENDGRID_API_KEY` and store it via the environment secrets tool.
 
 ### UI and Styling
 - **Radix UI**: Headless component primitives for accessibility

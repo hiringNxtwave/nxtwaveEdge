@@ -131,18 +131,18 @@ export default function ExploreEdge() {
 
       {/* ── Nav ── */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200/60 shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
           <Link href="/">
-            <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-7 w-auto" />
+            <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-6 sm:h-7 w-auto shrink-0" />
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/explore-edge">
-              <span className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors cursor-pointer">
+              <span className="hidden sm:inline text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors cursor-pointer">
                 Explore Edge
               </span>
             </Link>
             <Link href="/">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-3 sm:px-5 py-2 rounded-lg transition-colors whitespace-nowrap">
                 View Shortlisted Profiles
               </button>
             </Link>
@@ -151,21 +151,77 @@ export default function ExploreEdge() {
       </header>
 
       {/* ── Hero ── */}
-      <section className="pt-16 pb-10 px-6 text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-5">
+      <section className="pt-12 pb-8 px-4 sm:px-6 text-center">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-4">
           End-to-End{" "}
           <span className="text-blue-600">Evaluation Process</span>
         </h1>
-        <p className="text-slate-500 text-base max-w-xl mx-auto leading-relaxed">
+        <p className="text-slate-500 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
           Our rigorous multi-stage process ensures only the top 0.1% talent makes it through. From
           AI-proctored assessments to deep-dive technical interviews, we validate every skill.
         </p>
       </section>
 
-      {/* ── Alternating Timeline ── */}
-      <section className="px-6 pb-20">
+      {/* ── Timeline ── */}
+      <section className="px-4 sm:px-6 pb-20">
         <div className="max-w-4xl mx-auto">
-          <div className="relative">
+
+          {/* ── Mobile: left-aligned vertical timeline (< md) ── */}
+          <div className="md:hidden relative">
+            {/* Vertical line along left */}
+            <div className="absolute left-5 top-0 bottom-0 w-[2px] bg-blue-200/60" />
+
+            <div className="space-y-4">
+              {STAGES.filter(s => s.kind !== "final").map((stage) => {
+                const isAudit = stage.kind === "audit";
+                return (
+                  <div key={stage.num} className="relative flex items-start gap-4 pl-14">
+                    {/* Circle pinned to the line */}
+                    <div
+                      className={`absolute left-0 top-4 z-10 w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md shrink-0 ${
+                        isAudit ? "bg-orange-400" : "bg-blue-600"
+                      }`}
+                    >
+                      {stage.num}
+                    </div>
+
+                    {/* Card */}
+                    <div className="flex-1 bg-white rounded-2xl shadow-sm border border-slate-100 p-5">
+                      <h3 className="text-base font-bold text-slate-900 leading-snug mb-1">
+                        {stage.title}
+                      </h3>
+                      <p className="text-sm text-slate-500 mb-3 leading-relaxed">
+                        {stage.tagline}
+                      </p>
+                      {stage.points.length > 0 && (
+                        <ul className="space-y-1.5">
+                          {stage.points.map((pt, pi) => (
+                            <li key={pi} className="flex items-start gap-2 text-sm text-slate-600">
+                              <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+                              <span>
+                                {pt.label && <span className="font-semibold">{pt.label} </span>}
+                                {pt.detail}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Final stage connector dot */}
+              <div className="relative flex items-center pl-0">
+                <div className="absolute left-0 z-10 w-10 h-10 rounded-full flex items-center justify-center bg-blue-600 shadow-md">
+                  <CheckCircle className="w-5 h-5 text-white" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Desktop: alternating left/right timeline (≥ md) ── */}
+          <div className="hidden md:block relative">
             {/* Vertical center line */}
             <div className="absolute left-1/2 top-0 bottom-0 w-[2px] -translate-x-1/2 bg-blue-200/60" />
 
@@ -174,50 +230,42 @@ export default function ExploreEdge() {
                 const isLeft = idx % 2 === 0;
                 const isAudit = stage.kind === "audit";
 
+                const Card = () => (
+                  <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+                          isAudit ? "bg-orange-100 text-orange-500" : "bg-blue-100 text-blue-600"
+                        }`}
+                      >
+                        {stage.num}
+                      </div>
+                      <h3 className="text-base font-bold text-slate-900 leading-snug">
+                        {stage.title}
+                      </h3>
+                    </div>
+                    <p className="text-sm text-slate-500 mb-3 leading-relaxed">{stage.tagline}</p>
+                    {stage.points.length > 0 && (
+                      <ul className="space-y-1.5">
+                        {stage.points.map((pt, pi) => (
+                          <li key={pi} className="flex items-start gap-2 text-sm text-slate-600">
+                            <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+                            <span>
+                              {pt.label && <span className="font-semibold">{pt.label} </span>}
+                              {pt.detail}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                );
+
                 return (
                   <div key={stage.num} className="relative flex items-center">
-                    {/* Left slot */}
                     <div className="w-[calc(50%-32px)] pr-8">
-                      {isLeft && (
-                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                          {/* Badge */}
-                          <div className="flex items-center gap-2 mb-3">
-                            <div
-                              className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                                isAudit
-                                  ? "bg-orange-100 text-orange-500"
-                                  : "bg-blue-100 text-blue-600"
-                              }`}
-                            >
-                              {stage.num}
-                            </div>
-                            <h3 className="text-base font-bold text-slate-900 leading-snug">
-                              {stage.title}
-                            </h3>
-                          </div>
-                          <p className="text-sm text-slate-500 mb-3 leading-relaxed">
-                            {stage.tagline}
-                          </p>
-                          {stage.points.length > 0 && (
-                            <ul className="space-y-1.5">
-                              {stage.points.map((pt, pi) => (
-                                <li key={pi} className="flex items-start gap-2 text-sm text-slate-600">
-                                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
-                                  <span>
-                                    {pt.label && (
-                                      <span className="font-semibold">{pt.label} </span>
-                                    )}
-                                    {pt.detail}
-                                  </span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      )}
+                      {isLeft && <Card />}
                     </div>
-
-                    {/* Center circle */}
                     <div className="relative z-10 w-16 h-16 flex items-center justify-center shrink-0">
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md ${
@@ -227,52 +275,14 @@ export default function ExploreEdge() {
                         {stage.num}
                       </div>
                     </div>
-
-                    {/* Right slot */}
                     <div className="w-[calc(50%-32px)] pl-8">
-                      {!isLeft && (
-                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                          {/* Badge */}
-                          <div className="flex items-center gap-2 mb-3">
-                            <div
-                              className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-                                isAudit
-                                  ? "bg-orange-100 text-orange-500"
-                                  : "bg-blue-100 text-blue-600"
-                              }`}
-                            >
-                              {stage.num}
-                            </div>
-                            <h3 className="text-base font-bold text-slate-900 leading-snug">
-                              {stage.title}
-                            </h3>
-                          </div>
-                          <p className="text-sm text-slate-500 mb-3 leading-relaxed">
-                            {stage.tagline}
-                          </p>
-                          {stage.points.length > 0 && (
-                            <ul className="space-y-1.5">
-                              {stage.points.map((pt, pi) => (
-                                <li key={pi} className="flex items-start gap-2 text-sm text-slate-600">
-                                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
-                                  <span>
-                                    {pt.label && (
-                                      <span className="font-semibold">{pt.label} </span>
-                                    )}
-                                    {pt.detail}
-                                  </span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                      )}
+                      {!isLeft && <Card />}
                     </div>
                   </div>
                 );
               })}
 
-              {/* Final stage — full width */}
+              {/* Final stage connector dot */}
               <div className="relative flex items-center">
                 <div className="w-[calc(50%-32px)]" />
                 <div className="relative z-10 w-16 h-16 flex items-center justify-center shrink-0">
@@ -286,8 +296,8 @@ export default function ExploreEdge() {
           </div>
 
           {/* Final shortlisting card — full width below timeline */}
-          <div className="mt-8 bg-blue-600 rounded-2xl p-8 text-white relative overflow-hidden">
-            <div className="absolute top-4 right-6 text-[120px] font-black text-white/5 leading-none select-none">
+          <div className="mt-8 bg-blue-600 rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden">
+            <div className="absolute top-4 right-6 text-[80px] sm:text-[120px] font-black text-white/5 leading-none select-none">
               7
             </div>
             <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -298,7 +308,7 @@ export default function ExploreEdge() {
                     Final Stage
                   </span>
                 </div>
-                <h3 className="text-2xl font-extrabold text-white mb-2">Final Shortlisting</h3>
+                <h3 className="text-xl sm:text-2xl font-extrabold text-white mb-2">Final Shortlisting</h3>
                 <p className="text-white/75 text-sm leading-relaxed max-w-xl">
                   Only candidates who clear every evaluation stage and pass all audit gates are added to the verified talent pool and shared with hiring companies.
                 </p>
