@@ -599,29 +599,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-      {/* ── Micro-Metric Strip ── */}
-      <section className="py-14 bg-white border-y border-slate-100">
-        <div className="container mx-auto px-6 text-center">
-          <div className="flex flex-col sm:flex-row justify-center gap-10 md:gap-20 mb-8">
-            {[
-              { val: "2,500+", label: "Companies hiring with NxtWave" },
-              { val: "16,000+", label: "Engineers placed in high-quality roles" },
-              { val: "WEF 2024", label: "Technology Pioneer" },
-            ].map(({ val, label }) => (
-              <div key={val}>
-                <div className="text-2xl font-extrabold text-slate-900">{val}</div>
-                <div className="text-sm text-slate-500 mt-0.5">{label}</div>
-              </div>
-            ))}
-          </div>
-          <button
-            onClick={() => window.location.href = "/explore-edge"}
-            className="inline-flex items-center gap-2 border border-slate-200 hover:border-slate-400 text-slate-800 font-semibold text-sm px-6 py-3 rounded-lg transition-colors"
-          >
-            Explore Edge <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
-      </section>
       {/* ── India's First National Engineering Hiring Standard ── */}
       <section className="py-24 bg-[#F0F5FF]">
         <div className="container mx-auto px-6">
