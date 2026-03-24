@@ -85,26 +85,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     const sgMail = (await import("@sendgrid/mail")).default;
     sgMail.setApiKey(apiKey);
-    await sgMail.send({
-      to: toEmail,
-      from: {
-        email: "noreply@nxtwave.tech",
-        name: "NxtWave Edge",
-      },
-      subject: "Your NxtWave Edge access code",
-      text: `Your NxtWave Edge verification code is: ${otp}\n\nThis code is valid for 10 minutes.\n\nIf you did not request this, please ignore this email.`,
-      html: `
-        <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
-          <img src="https://nxtwave.tech/logo.png" alt="NxtWave Edge" style="height:32px;margin-bottom:24px" />
-          <h2 style="font-size:20px;font-weight:700;color:#0f172a;margin:0 0 8px">Your verification code</h2>
-          <p style="color:#64748b;font-size:14px;margin:0 0 24px">Enter this code to access NxtWave Edge. It expires in 10 minutes.</p>
-          <div style="background:#f1f5f9;border-radius:12px;padding:24px;text-align:center;letter-spacing:12px;font-size:32px;font-weight:800;color:#1e40af;margin-bottom:24px">
-            ${otp}
+    try {
+      await sgMail.send({
+        to: toEmail,
+        from: {
+          email: "hiring@nxtwave.tech",
+          name: "NxtWave Edge",
+        },
+        subject: "Your NxtWave Edge access code",
+        text: `Your NxtWave Edge verification code is: ${otp}\n\nThis code is valid for 10 minutes.\n\nIf you did not request this, please ignore this email.`,
+        html: `
+          <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
+            <h2 style="font-size:20px;font-weight:700;color:#0f172a;margin:0 0 8px">Your NxtWave Edge verification code</h2>
+            <p style="color:#64748b;font-size:14px;margin:0 0 24px">Enter this code to access NxtWave Edge. It expires in 10 minutes.</p>
+            <div style="background:#f1f5f9;border-radius:12px;padding:24px;text-align:center;letter-spacing:12px;font-size:32px;font-weight:800;color:#1e40af;margin-bottom:24px">
+              ${otp}
+            </div>
+            <p style="color:#94a3b8;font-size:12px;margin:0">If you didn't request this code, you can safely ignore this email.</p>
           </div>
-          <p style="color:#94a3b8;font-size:12px;margin:0">If you didn't request this code, you can safely ignore this email.</p>
-        </div>
-      `,
-    });
+        `,
+      });
+    } catch (sgErr: any) {
+      const errBody = sgErr?.response?.body;
+      console.error("SendGrid error body:", JSON.stringify(errBody, null, 2));
+      throw sgErr;
+    }
   }
 
   // Auth routes
