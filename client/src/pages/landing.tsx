@@ -272,35 +272,81 @@ export default function Landing() {
             {[
               {
                 icon: (
-                  <svg viewBox="0 0 40 40" className="w-8 h-8"><rect width="40" height="40" rx="10" fill="#EFF6FF"/><path d="M13 20l5 5 9-10" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  <svg viewBox="0 0 56 56" className="w-14 h-14">
+                    <rect width="56" height="56" rx="14" fill="#EFF6FF"/>
+                    {/* clipboard body */}
+                    <rect x="14" y="16" width="28" height="30" rx="4" fill="#BFDBFE"/>
+                    <rect x="14" y="16" width="28" height="30" rx="4" fill="url(#clip-g1)"/>
+                    <defs><linearGradient id="clip-g1" x1="14" y1="16" x2="42" y2="46" gradientUnits="userSpaceOnUse"><stop stopColor="#BFDBFE"/><stop offset="1" stopColor="#93C5FD"/></linearGradient></defs>
+                    {/* clip top */}
+                    <rect x="22" y="13" width="12" height="7" rx="3" fill="#2563EB"/>
+                    {/* shield overlay */}
+                    <path d="M28 24 l7 3 v5 c0 4-7 7-7 7s-7-3-7-7v-5z" fill="#1D4ED8"/>
+                    {/* checkmark */}
+                    <path d="M24 33 l2.5 2.5 L32 30" stroke="#FFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                  </svg>
                 ),
                 title: "High-Integrity Offline Evaluation",
                 desc: "MAANG-standard assessment conducted fully offline with 1:25 invigilation.",
               },
               {
                 icon: (
-                  <svg viewBox="0 0 40 40" className="w-8 h-8"><rect width="40" height="40" rx="10" fill="#EFF6FF"/><rect x="11" y="22" width="5" height="8" rx="1.5" fill="#2563EB"/><rect x="18" y="16" width="5" height="14" rx="1.5" fill="#2563EB"/><rect x="25" y="10" width="5" height="20" rx="1.5" fill="#2563EB"/></svg>
+                  <svg viewBox="0 0 56 56" className="w-14 h-14">
+                    <rect width="56" height="56" rx="14" fill="#FEF3C7"/>
+                    {/* bars */}
+                    <rect x="12" y="32" width="8" height="12" rx="2.5" fill="#F59E0B"/>
+                    <rect x="24" y="24" width="8" height="20" rx="2.5" fill="#D97706"/>
+                    <rect x="36" y="16" width="8" height="28" rx="2.5" fill="#2563EB"/>
+                    {/* star on tallest bar */}
+                    <circle cx="40" cy="12" r="5" fill="#1D4ED8"/>
+                    <path d="M40 9.5 l0.7 1.4 1.6 0.2 -1.15 1.1 0.27 1.6 -1.42-0.75 -1.42 0.75 0.27-1.6 -1.15-1.1 1.6-0.2z" fill="#FFF"/>
+                    {/* baseline */}
+                    <rect x="10" y="44" width="36" height="2" rx="1" fill="#E2E8F0"/>
+                  </svg>
                 ),
                 title: "National Percentile Ranking",
-                desc: "Top 1% talent across India's top 300 NIRF-ranked campuses.",
+                desc: "Top 0.1% talent across India's top 300 NIRF-ranked campuses.",
               },
               {
                 icon: (
-                  <svg viewBox="0 0 40 40" className="w-8 h-8"><rect width="40" height="40" rx="10" fill="#EFF6FF"/><circle cx="20" cy="21" r="9" stroke="#2563EB" strokeWidth="2.5"/><path d="M20 14v7l4 3" stroke="#2563EB" strokeWidth="2.5" strokeLinecap="round"/></svg>
+                  <svg viewBox="0 0 56 56" className="w-14 h-14">
+                    <rect width="56" height="56" rx="14" fill="#F0FDF4"/>
+                    {/* clock face */}
+                    <circle cx="28" cy="30" r="14" fill="#BBF7D0"/>
+                    <circle cx="28" cy="30" r="10" fill="white"/>
+                    <path d="M28 22 v8 l5 3" stroke="#16A34A" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <circle cx="28" cy="30" r="1.5" fill="#16A34A"/>
+                    {/* lightning bolt */}
+                    <path d="M34 12 l-3 6 h3 l-3 6" stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                    {/* clock top knob */}
+                    <rect x="25" y="15" width="6" height="3" rx="1.5" fill="#6EE7B7"/>
+                  </svg>
                 ),
                 title: "Shortlists in 3 Hours",
                 desc: "Only benchmark-cleared, high-trust candidates make it to your shortlist.",
               },
               {
                 icon: (
-                  <svg viewBox="0 0 40 40" className="w-8 h-8"><rect width="40" height="40" rx="10" fill="#EFF6FF"/><circle cx="20" cy="20" r="8" stroke="#2563EB" strokeWidth="2.5"/><path d="M16 20h8M20 16v8" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"/></svg>
+                  <svg viewBox="0 0 56 56" className="w-14 h-14">
+                    <rect width="56" height="56" rx="14" fill="#FDF2F8"/>
+                    {/* target rings */}
+                    <circle cx="28" cy="30" r="14" fill="#FBCFE8"/>
+                    <circle cx="28" cy="30" r="9" fill="#F9A8D4"/>
+                    <circle cx="28" cy="30" r="4.5" fill="#EC4899"/>
+                    {/* arrow */}
+                    <line x1="14" y1="16" x2="25" y2="27" stroke="#1D4ED8" strokeWidth="2.5" strokeLinecap="round"/>
+                    <polygon points="12,12 18,14 14,20" fill="#2563EB"/>
+                    {/* person icon on centre */}
+                    <circle cx="28" cy="28.5" r="2" fill="white"/>
+                    <path d="M24.5 33 Q28 31 31.5 33" stroke="white" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+                  </svg>
                 ),
                 title: "Role-Aligned Talent Screening",
                 desc: "Precision-filtered shortlist mapping for high-end DSA bars.",
               },
             ].map(({ icon, title, desc }) => (
               <div key={title} className="bg-white border border-slate-100 rounded-2xl p-6 hover:border-blue-200 hover:shadow-md transition-all">
-                <div className="mb-4">{icon}</div>
+                <div className="mb-5">{icon}</div>
                 <h3 className="text-sm font-bold text-slate-900 mb-2">{title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
               </div>
