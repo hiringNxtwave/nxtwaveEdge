@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -86,6 +86,13 @@ export function CompanyProfileManager() {
   const { data: requirements = [], isLoading, refetch } = useQuery<CompanyRequirement[]>({
     queryKey: ['/api/company/requirements'],
   });
+
+  // Auto-open the form when there are no existing roles
+  useEffect(() => {
+    if (!isLoading && requirements.length === 0 && !editingId) {
+      setIsAdding(true);
+    }
+  }, [isLoading, requirements.length]);
 
   // Form setup
   const form = useForm<JobRequirementsForm>({
@@ -358,13 +365,15 @@ export function CompanyProfileManager() {
                 <p className="text-xs text-slate-400 mt-0.5">Upload a JD file or fill in the details below</p>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="text-slate-400 hover:text-slate-600 text-sm transition-colors"
-            >
-              Cancel
-            </button>
+            {(requirements.length > 0 || editingId) && (
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="text-slate-400 hover:text-slate-600 text-sm transition-colors"
+              >
+                Cancel
+              </button>
+            )}
           </div>
 
           <div className="p-6">
@@ -622,9 +631,11 @@ export function CompanyProfileManager() {
                       : <><CheckCircle className="w-4 h-4" /> {editingId ? 'Update Role' : 'Post Role'}</>
                     }
                   </Button>
-                  <Button type="button" variant="outline" onClick={handleCancel} className="border-slate-200 text-slate-600 hover:bg-slate-50" data-testid="button-cancel-requirement">
-                    Cancel
-                  </Button>
+                  {(requirements.length > 0 || editingId) && (
+                    <Button type="button" variant="outline" onClick={handleCancel} className="border-slate-200 text-slate-600 hover:bg-slate-50" data-testid="button-cancel-requirement">
+                      Cancel
+                    </Button>
+                  )}
                 </div>
               </form>
             </Form>
@@ -633,20 +644,9 @@ export function CompanyProfileManager() {
       )}
 
       {/* Requirements list */}
+      {requirements.length > 0 && (
       <div className="space-y-3">
-        {requirements.length === 0 ? (
-          <div className="bg-white border border-dashed border-slate-200 rounded-2xl py-16 text-center">
-            <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto mb-4">
-              <Building className="w-5 h-5 text-slate-300" />
-            </div>
-            <h3 className="text-base font-bold text-slate-900 mb-1">No open roles yet</h3>
-            <p className="text-sm text-slate-500 mb-5">Post your first role and we'll match pre-assessed candidates to it.</p>
-            <Button onClick={() => setIsAdding(true)} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 font-semibold text-sm">
-              <Plus className="w-4 h-4" /> Post a Role
-            </Button>
-          </div>
-        ) : (
-          requirements.map((req) => (
+        {requirements.map((req) => (
             <div key={req.id} className="bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-sm transition-shadow">
               {/* Blue accent line */}
               <div className="h-0.5 bg-blue-600" />
@@ -699,9 +699,9 @@ export function CompanyProfileManager() {
                 </div>
               </div>
             </div>
-          ))
-        )}
+          ))}
       </div>
+      )}
     </div>
   );
 }
