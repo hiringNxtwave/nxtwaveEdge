@@ -36,17 +36,24 @@ function HeroIllustration() {
       <circle cx="240" cy="200" r="170" fill="#EFF6FF" />
       <circle cx="240" cy="200" r="120" fill="#DBEAFE" />
 
-      {/* Central figure */}
-      <rect x="195" y="140" width="90" height="110" rx="16" fill="#1D4ED8" />
-      <circle cx="240" cy="120" r="28" fill="#1D4ED8" />
-      {/* Face */}
-      <circle cx="240" cy="120" r="24" fill="#FDE68A" />
-      <circle cx="231" cy="117" r="3" fill="#1E293B" />
-      <circle cx="249" cy="117" r="3" fill="#1E293B" />
-      <path d="M233 126 Q240 131 247 126" stroke="#1E293B" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-      {/* Shirt text */}
-      <text x="240" y="200" textAnchor="middle" fill="white" fontSize="11" fontWeight="bold">NIRF</text>
-      <text x="240" y="215" textAnchor="middle" fill="#BFDBFE" fontSize="9">Top 1%</text>
+      {/* Central figure — candidate card */}
+      <rect x="185" y="90" width="110" height="150" rx="18" fill="white" stroke="#DBEAFE" strokeWidth="2" />
+      {/* Avatar circle */}
+      <circle cx="240" cy="130" r="26" fill="#EFF6FF" />
+      {/* Code </> icon */}
+      <text x="240" y="136" textAnchor="middle" fill="#1D4ED8" fontSize="18" fontWeight="bold">&lt;/&gt;</text>
+      {/* Name bar */}
+      <rect x="203" y="163" width="74" height="7" rx="3.5" fill="#DBEAFE" />
+      {/* Role tag */}
+      <rect x="210" y="176" width="60" height="6" rx="3" fill="#EFF6FF" />
+      {/* Score row */}
+      <rect x="195" y="193" width="110" height="1.5" fill="#F1F5F9" />
+      <text x="210" y="213" fill="#1D4ED8" fontSize="13" fontWeight="bold">96</text>
+      <text x="225" y="213" fill="#94A3B8" fontSize="9">/100</text>
+      <text x="261" y="213" textAnchor="end" fill="#64748B" fontSize="8">MAANG</text>
+      {/* Verified tick bottom */}
+      <circle cx="240" cy="228" r="9" fill="#2563EB" />
+      <path d="M235.5 228 l3 3 l6-6" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
 
       {/* Verified badge — top right */}
       <rect x="320" y="80" width="110" height="52" rx="12" fill="white" stroke="#DBEAFE" strokeWidth="1.5" />
