@@ -29,9 +29,24 @@ const PARTNER_LOGOS = [
 ];
 
 const EDGE_CARDS = [
-  { problem: "Because online evaluation can't be trusted anymore", problemDesc: "Cheating and test inflation have made digital assessments unreliable.", solution: "With Edge: Reliable assessments built on proven offline integrity.", align: "left" },
-  { problem: "Because 'tier' doesn't tell you who can actually code", problemDesc: "Readiness varies drastically even inside top NIRF campuses.", solution: "With Edge: Consistent evaluation of engineering talent across campuses.", align: "right" },
-  { problem: "Because hiring teams don't need more resumes — they need answers", problemDesc: "Screening hundreds of profiles slows teams without improving quality.", solution: "With Edge: A clear way to identify truly job-ready freshers.", align: "left" },
+  {
+    num: "01",
+    problem: "Online evaluation can't be trusted anymore",
+    problemDesc: "Cheating and test inflation have made digital assessments unreliable. Scores no longer reflect real capability.",
+    solution: "Reliable assessments built on proven offline integrity — proctored at physical centers with zero digital compromise.",
+  },
+  {
+    num: "02",
+    problem: "'Tier' doesn't tell you who can actually code",
+    problemDesc: "Readiness varies drastically even inside top NIRF campuses. College name is not a hiring signal.",
+    solution: "Consistent evaluation of engineering talent across all campuses — ranked on a national standard, not a tier list.",
+  },
+  {
+    num: "03",
+    problem: "Hiring teams need answers, not more resumes",
+    problemDesc: "Screening hundreds of profiles slows teams without improving quality. The signal is buried in noise.",
+    solution: "A clear, pre-validated shortlist of truly job-ready freshers — delivered in under 1 hour.",
+  },
 ];
 
 /* ── SVG Illustrations ─────────────────────────────────── */
@@ -600,33 +615,49 @@ export default function Landing() {
         </div>
       </section>
       {/* ── India's First National Engineering Hiring Standard ── */}
-      <section className="py-24 bg-[#F0F5FF]">
+      <section className="py-24 bg-white">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <div className="inline-block text-xs font-bold text-blue-700 bg-blue-100 border border-blue-200 rounded-full px-4 py-1.5 mb-4 uppercase tracking-wider">
-              Need for NxtWave Edge
+
+          {/* Header */}
+          <div className="text-center mb-14">
+            <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-blue-600 bg-blue-50 border border-blue-100 rounded-full px-4 py-1.5 mb-5 uppercase tracking-widest">
+              Why NxtWave Edge
             </div>
-            <h2 className="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
-              India's First National<br />Engineering Hiring Standard
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight mb-4">
+              India's First National<br className="hidden sm:block" /> Engineering Hiring Standard
             </h2>
+            <p className="text-base text-slate-500 max-w-lg mx-auto leading-relaxed">
+              Traditional hiring is broken. Here's why — and how Edge fixes every part of it.
+            </p>
           </div>
 
-          <div className="max-w-2xl mx-auto space-y-5">
-            {EDGE_CARDS.map(({ problem, problemDesc, solution, align }, idx) => (
-              <div
-                key={idx}
-                className="bg-white border border-slate-100 rounded-2xl p-8 shadow-sm"
-                style={{ maxWidth: "520px", marginLeft: align === "right" ? "auto" : undefined }}
-              >
-                <p className="text-base font-bold text-slate-900 mb-2">{problem}</p>
-                <p className="text-sm text-slate-500 mb-5 leading-relaxed">{problemDesc}</p>
-                <div className="flex items-start gap-3 pt-4 border-t border-slate-50">
-                  <CheckCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                  <p className="text-sm font-semibold text-blue-700">{solution}</p>
+          {/* 3-column cards */}
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {EDGE_CARDS.map(({ num, problem, problemDesc, solution }) => (
+              <div key={num} className="relative bg-[#F8FAFC] rounded-2xl p-7 overflow-hidden flex flex-col">
+                {/* Large decorative number */}
+                <span className="absolute top-4 right-5 text-6xl font-black text-slate-900/[0.04] select-none leading-none">
+                  {num}
+                </span>
+
+                {/* Number pill */}
+                <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-[11px] font-bold flex items-center justify-center mb-5 shrink-0">
+                  {num}
+                </div>
+
+                {/* Problem */}
+                <h3 className="text-base font-bold text-slate-900 leading-snug mb-3 pr-8">{problem}</h3>
+                <p className="text-sm text-slate-500 leading-relaxed flex-1">{problemDesc}</p>
+
+                {/* Solution */}
+                <div className="flex items-start gap-2.5 mt-6 pt-5 border-t border-slate-200/60">
+                  <CheckCircle className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                  <p className="text-sm font-semibold text-blue-700 leading-snug">{solution}</p>
                 </div>
               </div>
             ))}
           </div>
+
         </div>
       </section>
       {/* ── Final CTA ── */}
