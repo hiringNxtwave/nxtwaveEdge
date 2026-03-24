@@ -300,7 +300,7 @@ export default function CandidateFullReport({ student, isOpen, onClose }: Candid
       <DialogContent className="max-w-6xl max-h-[95vh] overflow-hidden p-0">
         <div className="flex h-full">
           {/* Sidebar - Student Summary */}
-          <div className="w-80 bg-gradient-to-b from-blue-50 to-white p-6 border-r">
+          <div className="w-80 bg-slate-50 p-6 border-r">
             <div className="flex items-center gap-4 mb-6">
               <img 
                 src={student.profileImageUrl || `https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face`} 

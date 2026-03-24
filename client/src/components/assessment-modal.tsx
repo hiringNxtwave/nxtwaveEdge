@@ -693,7 +693,7 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
             <div className="space-y-6">
               {/* Score Summary */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card className="bg-gradient-to-br from-blue-50 to-blue-100">
+                <Card className="bg-blue-50">
                   <CardContent className="p-6 text-center">
                     <div className="text-3xl font-bold text-blue-600 mb-2">{assessment.score}%</div>
                     <div className="text-sm text-gray-600">Overall Score</div>
@@ -701,7 +701,7 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
                   </CardContent>
                 </Card>
                 
-                <Card className="bg-gradient-to-br from-green-50 to-green-100">
+                <Card className="bg-green-50">
                   <CardContent className="p-6 text-center">
                     <div className="text-3xl font-bold text-green-600 mb-2">{correctAnswers}/{totalQuestions}</div>
                     <div className="text-sm text-gray-600">Questions Correct</div>
@@ -711,7 +711,7 @@ export default function AssessmentModal({ assessment, student, onClose }: Assess
                   </CardContent>
                 </Card>
                 
-                <Card className="bg-gradient-to-br from-purple-50 to-purple-100">
+                <Card className="bg-purple-50">
                   <CardContent className="p-6 text-center">
                     <div className="text-3xl font-bold text-purple-600 mb-2">{totalTime}m</div>
                     <div className="text-sm text-gray-600">Total Time</div>

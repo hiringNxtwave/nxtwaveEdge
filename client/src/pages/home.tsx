@@ -332,7 +332,7 @@ function MarketingHome() {
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] tracking-tight mb-6">
               Hire India's{" "}
-              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="text-emerald-500">
                 Top 10% Talent
               </span>
               <br />
@@ -506,7 +506,7 @@ function MarketingHome() {
             </div>
             <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6 leading-tight">
               Ready to build your{" "}
-              <span className="bg-gradient-to-r from-emerald-500 to-cyan-500 bg-clip-text text-transparent">dream team?</span>
+              <span className="text-emerald-600">dream team?</span>
             </h2>
             <p className="text-slate-500 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
               Access 50,000+ pre-verified candidates from IITs, NITs, BITS, and India's top institutions. No placement fees.

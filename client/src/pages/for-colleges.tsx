@@ -63,7 +63,7 @@ export default function ForColleges() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-white">
       <Header />
       
       {/* Hero Section */}
@@ -147,7 +147,7 @@ export default function ForColleges() {
       </section>
 
       {/* Assessment Excellence Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      <section className="py-20 px-4 bg-blue-600 text-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">One Assessment. Diagnosis & Report.</h2>
@@ -206,7 +206,7 @@ export default function ForColleges() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-green-600 to-blue-600 text-white">
+      <section className="py-16 px-4 bg-emerald-600 text-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
@@ -428,7 +428,7 @@ export default function ForColleges() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-green-600 to-blue-600 text-white">
+      <section className="py-20 px-4 bg-emerald-600 text-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Transform Your Placements?

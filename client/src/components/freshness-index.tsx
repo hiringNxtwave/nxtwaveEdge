@@ -23,7 +23,7 @@ export default function FreshnessIndex({ totalCandidates }: FreshnessIndexProps)
   };
 
   return (
-    <Card className="border-l-4 border-l-green-500 bg-gradient-to-r from-white to-green-50 dark:from-gray-800 dark:to-gray-750">
+    <Card className="border-l-4 border-l-green-500 bg-white">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">

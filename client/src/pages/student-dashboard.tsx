@@ -283,7 +283,7 @@ export default function StudentDashboard() {
             </div>
 
             {/* Next Steps */}
-            <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+            <Card className="bg-blue-50">
               <CardHeader>
                 <CardTitle className="text-blue-900 dark:text-blue-100">🎯 What's Next?</CardTitle>
               </CardHeader>

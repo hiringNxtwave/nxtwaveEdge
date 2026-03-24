@@ -233,7 +233,7 @@ export default function AnalyticsDashboard() {
 
       {/* Key Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+        <Card className="bg-blue-50 border-blue-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -246,7 +246,7 @@ export default function AnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+        <Card className="bg-green-50 border-green-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -259,7 +259,7 @@ export default function AnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
+        <Card className="bg-yellow-50 border-yellow-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -272,7 +272,7 @@ export default function AnalyticsDashboard() {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+        <Card className="bg-purple-50 border-purple-200">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>

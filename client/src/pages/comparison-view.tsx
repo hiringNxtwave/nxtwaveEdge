@@ -281,7 +281,7 @@ export default function ComparisonView() {
             {/* Detailed Analysis */}
             {analyzedStudents.map((analysis: any, index: number) => (
               <Card key={analysis.student.id} className="overflow-hidden">
-                <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20">
+                <CardHeader className="bg-slate-50">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-3">
@@ -469,7 +469,7 @@ export default function ComparisonView() {
 
             {/* Final Selection Action */}
             {selectedCandidates.size > 0 && (
-              <Card className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border-2 border-green-200 dark:border-green-800">
+              <Card className="bg-emerald-50 border-2 border-emerald-200">
                 <CardHeader>
                   <CardTitle className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                     <Mail className="w-6 h-6 text-green-600" />

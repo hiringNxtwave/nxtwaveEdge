@@ -107,7 +107,7 @@ export default function SidePanelLayout({
               >
                 <CardContent className="p-4">
                   <div className="flex items-start space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                       {student.fullName.charAt(0)}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -137,7 +137,7 @@ export default function SidePanelLayout({
           <div className="p-6 border-b">
             <div className="flex items-start justify-between">
               <div className="flex items-start space-x-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-xl">
+                <div className="w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center text-white font-semibold text-xl">
                   {selectedStudent.fullName.charAt(0)}
                 </div>
                 <div>

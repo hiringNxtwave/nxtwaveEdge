@@ -60,7 +60,7 @@ export default function ForStudents() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-white">
       <Header />
       
       {/* Hero Section */}
@@ -104,7 +104,7 @@ export default function ForStudents() {
       </section>
 
       {/* Assessment Syllabus */}
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      <section className="py-20 px-4 bg-blue-600 text-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">What You'll Be Assessed On</h2>
@@ -244,7 +244,7 @@ export default function ForStudents() {
       </section>
 
       {/* Assessment Details */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      <section className="py-16 px-4 bg-blue-600 text-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
@@ -355,7 +355,7 @@ export default function ForStudents() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+      <section className="py-20 px-4 bg-blue-600 text-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to Launch Your Career?

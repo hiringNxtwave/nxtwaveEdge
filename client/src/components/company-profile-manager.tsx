@@ -776,7 +776,7 @@ export function CompanyProfileManager() {
                   <Button
                     type="submit"
                     disabled={saveMutation.isPending}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 md:px-8 py-3 text-base md:text-lg gap-2 w-full md:w-auto order-1 md:order-none"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-3 text-base md:text-lg gap-2 w-full md:w-auto order-1 md:order-none"
                     data-testid="button-save-requirement"
                   >
                     {saveMutation.isPending ? (
@@ -814,7 +814,7 @@ export function CompanyProfileManager() {
         {requirements.length === 0 ? (
           <Card className="text-center py-12 md:py-16 border-2 border-dashed border-gray-300 mx-4 sm:mx-0">
             <CardContent className="pt-6 px-4 md:px-6">
-              <div className="p-3 md:p-4 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 flex items-center justify-center">
+              <div className="p-3 md:p-4 bg-blue-100 rounded-full w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 flex items-center justify-center">
                 <Building className="w-8 h-8 md:w-10 md:h-10 text-blue-600" />
               </div>
               <h3 className="text-xl md:text-2xl font-semibold mb-3 text-gray-800">No job requirements yet</h3>
@@ -823,7 +823,7 @@ export function CompanyProfileManager() {
               </p>
               <Button 
                 onClick={() => setIsAdding(true)} 
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white gap-2 px-6 md:px-8 py-3 text-base md:text-lg w-full md:w-auto max-w-xs md:max-w-none"
+                className="bg-blue-600 hover:bg-blue-700 text-white gap-2 px-6 md:px-8 py-3 text-base md:text-lg w-full md:w-auto max-w-xs md:max-w-none"
               >
                 <Plus className="w-4 md:w-5 h-4 md:h-5" />
                 <span className="md:hidden">Create Requirement</span>
@@ -835,10 +835,10 @@ export function CompanyProfileManager() {
           requirements.map((req, index) => (
             <Card key={req.id} className="hover:shadow-lg transition-all duration-200 border border-gray-200 overflow-hidden mx-4 sm:mx-0">
               <CardContent className="p-0">
-                <div className={`h-1 bg-gradient-to-r ${
-                  index % 3 === 0 ? 'from-blue-500 to-purple-500' :
-                  index % 3 === 1 ? 'from-green-500 to-emerald-500' :
-                  'from-orange-500 to-red-500'
+                <div className={`h-1 ${
+                  index % 3 === 0 ? 'bg-blue-500' :
+                  index % 3 === 1 ? 'bg-emerald-500' :
+                  'bg-orange-500'
                 }`}></div>
                 <div className="p-4 md:p-6">
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">

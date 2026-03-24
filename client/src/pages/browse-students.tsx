@@ -144,7 +144,7 @@ export default function BrowseStudents() {
             <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
               {isUsingSmartResults ? (
                 <>
-                  <div className="w-7 h-7 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                  <div className="w-7 h-7 bg-violet-600 rounded-lg flex items-center justify-center">
                     <Brain className="w-3.5 h-3.5 text-white" />
                   </div>
                   AI-Curated Top Matches
@@ -195,7 +195,7 @@ export default function BrowseStudents() {
                 <Button
                   onClick={() => setShowSmartDiscovery(true)}
                   size="sm"
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-sm"
+                  className="bg-violet-600 hover:bg-violet-700 text-white text-sm"
                   data-testid="button-smart-discovery"
                 >
                   <Brain className="w-3.5 h-3.5 mr-1.5" />
@@ -237,7 +237,7 @@ export default function BrowseStudents() {
         {/* Limited Access Banner */}
         {!isAuthenticated && (
           <div className="mb-5">
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
                   <Lock className="w-4 h-4 text-blue-600" />
@@ -348,7 +348,7 @@ export default function BrowseStudents() {
         {/* Login Prompt for Non-Authenticated Users */}
         {!isAuthenticated && students && students.length > 0 && (
           <div className="mt-12">
-            <Card className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-2 border-blue-200 dark:border-blue-800">
+            <Card className="bg-slate-50 border-2 border-slate-200">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white mb-2 flex items-center justify-center gap-2">
                   <Lock className="w-6 h-6 text-blue-600" />

@@ -75,7 +75,7 @@ export default function ZeptoCandidateCard({
   ];
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 border hover:border-blue-300 bg-gradient-to-br from-white to-gray-50 relative overflow-hidden">
+    <Card className="group hover:shadow-xl transition-all duration-300 border hover:border-blue-300 bg-white relative overflow-hidden">
       {/* Priority Indicator */}
       <div className={`absolute top-0 left-0 w-full h-1 ${
         jdMatch >= 90 ? 'bg-green-500' : 
@@ -87,7 +87,7 @@ export default function ZeptoCandidateCard({
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-start space-x-3">
             {/* Avatar */}
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+            <div className="w-12 h-12 bg-slate-700 rounded-full flex items-center justify-center text-white font-bold text-lg">
               {student.fullName.charAt(0)}
             </div>
             

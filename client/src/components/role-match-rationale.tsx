@@ -129,10 +129,10 @@ export default function RoleMatchRationale({ student, matchPercentage, onClose }
 
   // Function to get gradient color based on score
   const getGradientClass = (score: number) => {
-    if (score >= 80) return "bg-gradient-to-r from-green-100 to-green-200 border-green-300 text-green-800";
-    if (score >= 60) return "bg-gradient-to-r from-yellow-100 to-green-100 border-yellow-300 text-yellow-800";
-    if (score >= 40) return "bg-gradient-to-r from-orange-100 to-yellow-100 border-orange-300 text-orange-800";
-    return "bg-gradient-to-r from-red-100 to-orange-100 border-red-300 text-red-800";
+    if (score >= 80) return "bg-green-100 border-green-300 text-green-800";
+    if (score >= 60) return "bg-yellow-100 border-yellow-300 text-yellow-800";
+    if (score >= 40) return "bg-orange-100 border-orange-300 text-orange-800";
+    return "bg-red-100 border-red-300 text-red-800";
   };
 
   const getScoreLevel = (score: number) => {
@@ -271,7 +271,7 @@ export default function RoleMatchRationale({ student, matchPercentage, onClose }
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border-2 border-green-200">
+                <div className="bg-emerald-50 p-4 rounded-lg border-2 border-green-200">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-semibold text-green-800">Market-Based Salary Range</h4>
                     <Badge className="bg-green-600 text-white">

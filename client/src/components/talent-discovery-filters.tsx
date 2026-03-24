@@ -304,7 +304,7 @@ export function TalentDiscoveryFilters({
 
 
             {/* Expected Matches Preview */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-4 border border-blue-200">
+            <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Target className="w-5 h-5 text-blue-600" />
@@ -334,7 +334,7 @@ export function TalentDiscoveryFilters({
               <Button
                 onClick={() => handleSubmit(onAutoSuggest)}
                 disabled={isLoading || !requirement.role.trim()}
-                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-violet-600 hover:bg-violet-700 text-white font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 data-testid="button-auto-suggest"
                 title={!requirement.role.trim() ? "Please enter a role first" : "Get AI-curated top 50 candidates"}
               >
