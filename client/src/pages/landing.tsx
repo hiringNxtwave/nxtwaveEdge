@@ -233,17 +233,67 @@ export default function Landing() {
       <section className="bg-white border-b border-slate-100 py-10">
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
-            {[
-              { val: "2,300+", label: "Hiring Partners" },
-              { val: "16,000+", label: "Engineers Placed" },
-              { val: "WEF 2024", label: "Tech Pioneer" },
-              { val: "$33M", label: "Series A" },
-            ].map(({ val, label }) => (
-              <div key={val}>
-                <div className="text-2xl font-extrabold text-slate-900">{val}</div>
-                <div className="text-sm text-slate-500 mt-1">{label}</div>
+            {/* Hiring Partners */}
+            <div>
+              <div className="flex justify-center mb-3">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <svg viewBox="0 0 28 28" className="w-6 h-6" fill="none">
+                    <path d="M4 20c0-3 2.5-5 6-5h8c3.5 0 6 2 6 5" stroke="#2563EB" strokeWidth="2" strokeLinecap="round"/>
+                    <circle cx="14" cy="9" r="4" stroke="#2563EB" strokeWidth="2"/>
+                    <path d="M19 14l2 2 4-4" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
               </div>
-            ))}
+              <div className="text-2xl font-extrabold text-slate-900">2,300+</div>
+              <div className="text-sm text-slate-500 mt-1">Hiring Partners</div>
+            </div>
+
+            {/* Engineers Placed */}
+            <div>
+              <div className="flex justify-center mb-3">
+                <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
+                  <svg viewBox="0 0 28 28" className="w-6 h-6" fill="none">
+                    <rect x="7" y="13" width="14" height="10" rx="2" stroke="#D97706" strokeWidth="2"/>
+                    <path d="M10 13V10a4 4 0 018 0v3" stroke="#D97706" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M11 18h6" stroke="#D97706" strokeWidth="2" strokeLinecap="round"/>
+                    <circle cx="20" cy="8" r="3" fill="#2563EB"/>
+                    <path d="M18.5 8l1 1 2-2" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div className="text-2xl font-extrabold text-slate-900">16,000+</div>
+              <div className="text-sm text-slate-500 mt-1">Engineers Placed</div>
+            </div>
+
+            {/* WEF 2024 */}
+            <div>
+              <div className="flex justify-center mb-3">
+                <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden p-1">
+                  <img
+                    src="https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/wo8138w5cb-world-economic-forum-logo-world-economic-forum-liblogo.png"
+                    alt="World Economic Forum"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              </div>
+              <div className="text-2xl font-extrabold text-slate-900">WEF 2024</div>
+              <div className="text-sm text-slate-500 mt-1">Tech Pioneer</div>
+            </div>
+
+            {/* Series A */}
+            <div>
+              <div className="flex justify-center mb-3">
+                <div className="w-12 h-12 rounded-xl bg-violet-50 flex items-center justify-center">
+                  <svg viewBox="0 0 28 28" className="w-6 h-6" fill="none">
+                    <path d="M14 4 L14 6M14 22 L14 24M4 14 L6 14M22 14 L24 14" stroke="#7C3AED" strokeWidth="2" strokeLinecap="round"/>
+                    <circle cx="14" cy="14" r="7" stroke="#7C3AED" strokeWidth="2"/>
+                    <path d="M11 14.5c0 1.5 1.3 2.5 3 2.5s3-1 3-2.5-1.3-2-3-2-3-1-3-2.5S12.3 8 14 8s3 1 3 2.5" stroke="#7C3AED" strokeWidth="1.8" strokeLinecap="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div className="text-2xl font-extrabold text-slate-900">$33M</div>
+              <div className="text-sm text-slate-500 mt-1">Series A</div>
+            </div>
           </div>
         </div>
       </section>
