@@ -1,107 +1,161 @@
 import { Link } from "wouter";
 import { useEffect } from "react";
-import { ArrowRight, Shield, CheckCircle, Video, Search, ClipboardCheck, BarChart3, Award } from "lucide-react";
+import {
+  ArrowRight,
+  Shield,
+  CheckCircle,
+  Video,
+  Search,
+  ClipboardCheck,
+  BarChart3,
+  Award,
+  Lock,
+  Eye,
+  Zap,
+} from "lucide-react";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
 
-const STAGES = [
+const PHASES = [
   {
-    num: 1,
-    icon: ClipboardCheck,
-    title: "Offline Proctored Assessment",
-    tagline: "Conducted at controlled campuses/centers to ensure 100% integrity.",
-    points: [
-      "4 Coding Problems — benchmarked vs CodeForces (800–1900 rating)",
-      "Security: AI-enabled Topin.Tech tool, no mobile phones allowed",
-      "Format: DSA Coding, MCQs, CS Fundamentals",
+    phase: "Phase 1",
+    label: "Initial Screening",
+    stages: [
+      {
+        num: 1,
+        icon: ClipboardCheck,
+        kind: "evaluation",
+        title: "Offline Proctored Assessment",
+        tagline: "Conducted at controlled campuses to ensure 100% integrity.",
+        points: [
+          "4 Coding Problems benchmarked vs CodeForces (800–1900 rating)",
+          "AI-enabled Topin.Tech proctoring — no phones, no external access",
+          "Format: DSA Coding, MCQs, CS Fundamentals",
+        ],
+      },
+      {
+        num: 2,
+        icon: Search,
+        kind: "audit",
+        title: "Assessment Audit",
+        tagline: "Integrity Quality Control to filter out any violations.",
+        points: [
+          "Manual & AI review of screen recordings",
+          "Plagiarism & AI-code detection",
+          "Remote access and tab-switch checks",
+        ],
+      },
     ],
-    audit: false,
   },
   {
-    num: 2,
-    icon: Search,
-    title: "Assessment Audit",
-    tagline: "Integrity Quality Control to filter out any violations.",
-    points: [
-      "Manual & AI review of screen recordings",
-      "Plagiarism & AI-code detection",
-      "Remote access checks",
+    phase: "Phase 2",
+    label: "Technical Depth",
+    stages: [
+      {
+        num: 3,
+        icon: Video,
+        kind: "evaluation",
+        title: "Technical Interview — Round 1",
+        tagline: "Live DSA problem-solving with MAANG+ industry experts.",
+        points: [
+          "Dual-camera monitoring: screen + room environment",
+          "Thought process & reasoning under pressure",
+          "Non-standard DSA questions (1300–1500 rating)",
+        ],
+      },
+      {
+        num: 4,
+        icon: Eye,
+        kind: "audit",
+        title: "TR1 Audit",
+        tagline: "Verification of interviewer scoring and process adherence.",
+        points: [
+          "Confirm questions met difficulty standards",
+          "Review of interview recordings & dual-camera feed",
+          "Calibration of candidate strengths / weaknesses",
+        ],
+      },
+      {
+        num: 5,
+        icon: BarChart3,
+        kind: "evaluation",
+        title: "Technical Interview — Round 2",
+        tagline: "60-minute real-world engineering readiness check.",
+        points: [
+          "Projects (40 min) — deployed systems, trade-offs, ownership",
+          "Core CS (20 min) — OOPS, DBMS, Networks, OS, Cloud / AI",
+          "Outcome: Skill Category & Readiness Level assigned",
+        ],
+      },
+      {
+        num: 6,
+        icon: Shield,
+        kind: "audit",
+        title: "TR2 Audit — Final QC",
+        tagline: "Final validation of skill category and readiness level.",
+        points: [
+          "Confirm all mandatory areas were covered",
+          "Validate interview evidence matches the rating",
+          "Final integrity check before shortlisting",
+        ],
+      },
     ],
-    audit: true,
   },
   {
-    num: 3,
-    icon: Video,
-    title: "Technical Interview — Round 1",
-    tagline: "Live DSA problem solving with industry experts (MAANG+ experience).",
-    points: [
-      "Setup: Dual-camera monitoring (Screen + Environment)",
-      "Thought process & reasoning focus",
-      "Non-standard DSA questions (1300–1500 rating)",
+    phase: "Phase 3",
+    label: "Verified",
+    stages: [
+      {
+        num: 7,
+        icon: Award,
+        kind: "final",
+        title: "Final Shortlisting",
+        tagline:
+          "Only candidates who clear every stage and every audit gate are shared with hiring companies.",
+        points: [],
+      },
     ],
-    audit: false,
+  },
+];
+
+const ALL_STAGES = PHASES.flatMap((p) => p.stages);
+
+const INTEGRITY_PILLARS = [
+  {
+    icon: Lock,
+    title: "Zero Digital Access",
+    body: "Assessments are fully offline. No internet, no phones, no screen tools — only real skill.",
   },
   {
-    num: 4,
-    icon: ClipboardCheck,
-    title: "TR1 Audit",
-    tagline: "Verification of interviewer scoring and process adherence.",
-    points: [
-      "Check if questions met difficulty standards",
-      "Review of interview recordings & dual-camera feed",
-      "Calibration of candidate strengths/weaknesses",
-    ],
-    audit: true,
+    icon: Eye,
+    title: "Triple Audit Gates",
+    body: "Three independent audit checkpoints verify every evaluation before a candidate can advance.",
   },
   {
-    num: 5,
-    icon: BarChart3,
-    title: "Technical Interview — Round 2",
-    tagline: "60-min real-world engineering readiness check.",
-    points: [
-      "Projects (40m) — deep dive into deployed systems, trade-offs, and ownership",
-      "Core CS (20m) — OOPS, DBMS, Networks, OS, & Cloud/AI exposure",
-      "Outcome: Skill Category (Frontend/Backend/Full-stack) & Readiness Level",
-    ],
-    audit: false,
-  },
-  {
-    num: 6,
-    icon: Shield,
-    title: "TR2 Audit — Final QC",
-    tagline: "Final validation of skill category and readiness level.",
-    points: [
-      "Confirm all mandatory areas were covered",
-      "Validate interview evidence matches rating",
-      "Final integrity check",
-    ],
-    audit: true,
-  },
-  {
-    num: 7,
-    icon: Award,
-    title: "Final Shortlisting",
-    tagline: "Only candidates who clear all stages and audit gates are shared with companies.",
-    points: [],
-    audit: false,
-    final: true,
+    icon: Zap,
+    title: "AI + Human Review",
+    body: "Recordings, code, and interview footage are analysed by both AI models and senior reviewers.",
   },
 ];
 
 export default function ExploreEdge() {
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
 
       {/* ── Nav ── */}
-      <header className="sticky top-0 z-50 bg-white border-b border-slate-100">
-        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-100">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link href="/">
-            <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto" />
+            <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-7 w-auto" />
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/">
-              <button className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors">← Back</button>
+              <button className="text-sm text-slate-500 hover:text-slate-900 font-medium transition-colors">
+                ← Back
+              </button>
             </Link>
             <a href="/api/login">
               <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
@@ -113,116 +167,94 @@ export default function ExploreEdge() {
       </header>
 
       {/* ── Hero ── */}
-      <section className="bg-slate-950 text-white px-6 py-20">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest px-4 py-1.5 rounded-full mb-8">
-            <Shield className="w-3 h-3" /> Verified Process
+      <section className="bg-slate-950 px-6 pt-20 pb-24 overflow-hidden relative">
+        {/* Subtle grid overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)",
+            backgroundSize: "48px 48px",
+          }}
+        />
+
+        <div className="relative max-w-5xl mx-auto">
+          {/* Pill badge */}
+          <div className="flex justify-center mb-8">
+            <span className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[11px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full">
+              <Shield className="w-3 h-3" /> India's First National Engineering Hiring Standard
+            </span>
           </div>
-          <h1 className="text-4xl md:text-5xl font-black text-white leading-tight mb-6">
-            End-to-End Evaluation<br />
-            <span className="text-blue-400">Process</span>
+
+          {/* Headline */}
+          <h1 className="text-center text-5xl md:text-6xl font-black text-white leading-tight mb-5">
+            7 Stages.{" "}
+            <span className="text-blue-400">Zero Compromise.</span>
           </h1>
-          <p className="text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto">
-            Our rigorous multi-stage process ensures only the top 0.1% talent makes it through. From AI-proctored assessments to deep-dive technical interviews, we validate every skill.
+          <p className="text-center text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed mb-12">
+            Every engineer in our talent pool has survived a rigorous
+            multi-stage gauntlet — offline proctored assessments, live
+            technical interviews, and three independent audit gates.
           </p>
 
           {/* Stats row */}
-          <div className="flex flex-wrap justify-center gap-8 mt-12">
+          <div className="flex flex-wrap justify-center gap-x-14 gap-y-6 mb-14">
             {[
               { value: "7", label: "Evaluation Stages" },
-              { value: "0.1%", label: "Pass Rate" },
-              { value: "100%", label: "Offline Verified" },
-            ].map(stat => (
-              <div key={stat.label} className="text-center">
-                <div className="text-3xl font-black text-white">{stat.value}</div>
-                <div className="text-sm text-slate-400 mt-1">{stat.label}</div>
+              { value: "3", label: "Independent Audit Gates" },
+              { value: "0.1%", label: "Overall Pass Rate" },
+              { value: "1,920+", label: "Verified Engineers" },
+            ].map((s) => (
+              <div key={s.label} className="text-center">
+                <div className="text-3xl font-black text-white tabular-nums">
+                  {s.value}
+                </div>
+                <div className="text-xs text-slate-500 mt-1 font-medium">
+                  {s.label}
+                </div>
               </div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ── Timeline ── */}
-      <section className="py-20 px-6">
-        <div className="max-w-3xl mx-auto">
-
-          <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-6 top-0 bottom-0 w-px bg-slate-100" />
-
-            <div className="space-y-0">
-              {STAGES.map((stage, idx) => {
+          {/* Pipeline strip — 7 steps */}
+          <div className="bg-slate-900/70 border border-slate-800 rounded-2xl p-5">
+            <p className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-5">
+              Candidate Journey
+            </p>
+            <div className="flex items-center justify-between gap-1 overflow-x-auto pb-1">
+              {ALL_STAGES.map((stage, idx) => {
+                const isAudit = stage.kind === "audit";
+                const isFinal = stage.kind === "final";
                 const Icon = stage.icon;
-                const isLast = idx === STAGES.length - 1;
-                const isAudit = stage.audit;
-
                 return (
-                  <div key={stage.num} className="relative flex gap-6">
-                    {/* Number bubble */}
-                    <div className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center shrink-0 border-2 font-black text-sm shadow-sm ${
-                      isLast
-                        ? "bg-blue-600 border-blue-600 text-white"
-                        : isAudit
-                        ? "bg-slate-800 border-slate-700 text-white"
-                        : "bg-white border-slate-200 text-slate-800"
-                    }`}>
-                      {isLast ? <CheckCircle className="w-5 h-5" /> : stage.num}
-                    </div>
-
-                    {/* Content card */}
-                    <div className={`flex-1 pb-10 ${isLast ? "pb-0" : ""}`}>
-                      <div className={`rounded-xl border p-5 ${
-                        isLast
-                          ? "bg-blue-600 border-blue-600 text-white"
-                          : isAudit
-                          ? "bg-slate-900 border-slate-800"
-                          : "bg-white border-slate-100 shadow-sm"
-                      }`}>
-                        {/* Stage label */}
-                        <div className={`flex items-center gap-2 mb-2`}>
-                          <Icon className={`w-4 h-4 shrink-0 ${isLast ? "text-white/80" : isAudit ? "text-slate-400" : "text-blue-600"}`} />
-                          <span className={`text-[10px] font-bold uppercase tracking-widest ${
-                            isLast ? "text-white/70" : isAudit ? "text-slate-500" : "text-blue-500"
-                          }`}>
-                            {isAudit ? "Audit Gate" : isLast ? "Final Stage" : `Stage ${stage.num}`}
-                          </span>
-                        </div>
-
-                        <h3 className={`text-lg font-bold mb-1 ${isLast ? "text-white" : isAudit ? "text-white" : "text-slate-900"}`}>
-                          {stage.title}
-                        </h3>
-                        <p className={`text-sm mb-0 ${isLast ? "text-white/80" : isAudit ? "text-slate-400" : "text-slate-500"}`}>
-                          {stage.tagline}
-                        </p>
-
-                        {stage.points.length > 0 && (
-                          <ul className="mt-3 space-y-1.5">
-                            {stage.points.map((point, pi) => (
-                              <li key={pi} className={`flex items-start gap-2 text-sm ${
-                                isAudit ? "text-slate-300" : "text-slate-600"
-                              }`}>
-                                <span className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isAudit ? "bg-slate-500" : "bg-blue-400"}`} />
-                                {point}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-
-                        {isLast && (
-                          <div className="mt-5 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                            <div className="flex items-center gap-2 bg-white/20 rounded-lg px-3 py-2">
-                              <Award className="w-4 h-4 text-white" />
-                              <span className="text-sm font-semibold text-white">Top 0.1% Talent Verified</span>
-                            </div>
-                            <Link href="/browse">
-                              <button className="inline-flex items-center gap-2 bg-white text-blue-700 hover:bg-blue-50 font-semibold text-sm px-5 py-2 rounded-lg transition-colors">
-                                View Shortlisted Profiles <ArrowRight className="w-4 h-4" />
-                              </button>
-                            </Link>
-                          </div>
-                        )}
+                  <div key={stage.num} className="flex items-center gap-1 shrink-0">
+                    <div className="flex flex-col items-center gap-1.5">
+                      <div
+                        className={`w-9 h-9 rounded-xl flex items-center justify-center text-xs font-black border ${
+                          isFinal
+                            ? "bg-blue-600 border-blue-500 text-white"
+                            : isAudit
+                            ? "bg-slate-800 border-slate-700 text-slate-400"
+                            : "bg-slate-900 border-slate-700 text-white"
+                        }`}
+                      >
+                        {isFinal ? <CheckCircle className="w-4 h-4" /> : stage.num}
                       </div>
+                      <span
+                        className={`text-[9px] font-semibold uppercase tracking-wide text-center leading-tight max-w-[56px] ${
+                          isFinal
+                            ? "text-blue-400"
+                            : isAudit
+                            ? "text-slate-600"
+                            : "text-slate-400"
+                        }`}
+                      >
+                        {isAudit ? "Audit" : isFinal ? "Verified" : `Stage ${stage.num}`}
+                      </span>
                     </div>
+                    {idx < ALL_STAGES.length - 1 && (
+                      <div className="w-5 h-px bg-slate-700 shrink-0 mt-[-12px]" />
+                    )}
                   </div>
                 );
               })}
@@ -231,23 +263,208 @@ export default function ExploreEdge() {
         </div>
       </section>
 
-      {/* ── Bottom CTA ── */}
-      <section className="bg-slate-950 py-16 px-6">
+      {/* ── Phase breakdown ── */}
+      <section className="bg-[#F8FAFC] px-6 py-20">
+        <div className="max-w-5xl mx-auto space-y-16">
+          {PHASES.map((phase) => (
+            <div key={phase.phase}>
+              {/* Phase header */}
+              <div className="flex items-center gap-4 mb-8">
+                <div className="shrink-0">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-blue-500">
+                    {phase.phase}
+                  </span>
+                  <h2 className="text-2xl font-black text-slate-900 mt-0.5">
+                    {phase.label}
+                  </h2>
+                </div>
+                <div className="flex-1 h-px bg-slate-200" />
+              </div>
+
+              {/* Stage cards */}
+              {phase.stages[0].kind === "final" ? (
+                /* Final stage — full width */
+                <div className="bg-blue-600 rounded-2xl p-8 text-white relative overflow-hidden">
+                  <div className="absolute top-4 right-6 text-[120px] font-black text-white/5 leading-none select-none">
+                    7
+                  </div>
+                  <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <CheckCircle className="w-5 h-5 text-white/70" />
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-white/60">
+                          Final Stage
+                        </span>
+                      </div>
+                      <h3 className="text-2xl font-black text-white mb-2">
+                        Final Shortlisting
+                      </h3>
+                      <p className="text-white/75 text-sm leading-relaxed max-w-xl">
+                        Only candidates who clear every evaluation stage and pass all three audit gates are added to the verified talent pool and shared with hiring companies.
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-3 shrink-0">
+                      <div className="flex items-center gap-2.5 bg-white/15 rounded-xl px-4 py-3">
+                        <Award className="w-4 h-4 text-white" />
+                        <span className="text-sm font-bold text-white">
+                          Top 0.1% Talent
+                        </span>
+                      </div>
+                      <Link href="/browse">
+                        <button className="inline-flex items-center justify-center gap-2 bg-white text-blue-700 hover:bg-blue-50 font-bold text-sm px-5 py-3 rounded-xl transition-colors w-full">
+                          Browse Verified Profiles{" "}
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* Evaluation + Audit grid */
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {phase.stages.map((stage) => {
+                    const Icon = stage.icon;
+                    const isAudit = stage.kind === "audit";
+                    return (
+                      <div
+                        key={stage.num}
+                        className={`relative rounded-2xl overflow-hidden border ${
+                          isAudit
+                            ? "bg-slate-900 border-slate-800"
+                            : "bg-white border-slate-100 shadow-sm"
+                        }`}
+                      >
+                        {/* Ghost number */}
+                        <div
+                          className={`absolute top-4 right-5 text-[72px] font-black leading-none select-none ${
+                            isAudit ? "text-white/5" : "text-slate-100"
+                          }`}
+                        >
+                          {stage.num}
+                        </div>
+
+                        <div className="relative p-6">
+                          {/* Kind badge */}
+                          <div className="flex items-center gap-2 mb-4">
+                            <div
+                              className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                                isAudit
+                                  ? "bg-slate-800"
+                                  : "bg-blue-50"
+                              }`}
+                            >
+                              <Icon
+                                className={`w-3.5 h-3.5 ${
+                                  isAudit ? "text-slate-400" : "text-blue-600"
+                                }`}
+                              />
+                            </div>
+                            <span
+                              className={`text-[10px] font-bold uppercase tracking-widest ${
+                                isAudit ? "text-slate-500" : "text-blue-500"
+                              }`}
+                            >
+                              {isAudit ? "Audit Gate" : `Stage ${stage.num}`}
+                            </span>
+                          </div>
+
+                          <h3
+                            className={`text-lg font-black mb-2 leading-snug ${
+                              isAudit ? "text-white" : "text-slate-900"
+                            }`}
+                          >
+                            {stage.title}
+                          </h3>
+                          <p
+                            className={`text-sm leading-relaxed mb-0 ${
+                              isAudit ? "text-slate-400" : "text-slate-500"
+                            }`}
+                          >
+                            {stage.tagline}
+                          </p>
+
+                          {stage.points.length > 0 && (
+                            <ul className="mt-4 space-y-2">
+                              {stage.points.map((pt, pi) => (
+                                <li
+                                  key={pi}
+                                  className={`flex items-start gap-2.5 text-sm ${
+                                    isAudit ? "text-slate-300" : "text-slate-600"
+                                  }`}
+                                >
+                                  <span
+                                    className={`w-1 h-1 rounded-full mt-2 shrink-0 ${
+                                      isAudit ? "bg-slate-600" : "bg-blue-400"
+                                    }`}
+                                  />
+                                  {pt}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Integrity pillars ── */}
+      <section className="bg-slate-950 px-6 py-20">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-3 block">
+              Why it matters
+            </span>
+            <h2 className="text-3xl font-black text-white">
+              Built on Uncompromising Integrity
+            </h2>
+            <p className="text-slate-400 mt-3 text-sm max-w-xl mx-auto">
+              Every layer of the process is designed to eliminate shortcuts, gaming, and misrepresentation.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {INTEGRITY_PILLARS.map((p) => {
+              const Icon = p.icon;
+              return (
+                <div
+                  key={p.title}
+                  className="bg-slate-900 border border-slate-800 rounded-2xl p-6"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center mb-4">
+                    <Icon className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <h3 className="text-base font-bold text-white mb-2">{p.title}</h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">{p.body}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="bg-slate-950 border-t border-slate-800/50 px-6 py-20">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-black text-white mb-3">
-            Ready to hire from the top 0.1%?
+          <h2 className="text-3xl font-black text-white mb-4">
+            Ready to Hire from the Top 0.1%?
           </h2>
-          <p className="text-slate-400 mb-8 text-sm">
-            Access 1,920+ pre-verified engineers who've cleared every stage of this process.
+          <p className="text-slate-400 text-sm mb-8 leading-relaxed">
+            Access 1,920+ pre-verified engineers who've cleared every stage of
+            this process — no screening required on your end.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="/api/login">
-              <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors">
-                Get Started Free <ArrowRight className="w-4 h-4" />
+              <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-colors">
+                Get Started <ArrowRight className="w-4 h-4" />
               </button>
             </a>
-            <Link href="/browse">
-              <button className="inline-flex items-center gap-2 border border-slate-700 hover:border-slate-500 text-slate-300 font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors">
+            <Link href="/">
+              <button className="inline-flex items-center gap-2 border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white font-semibold text-sm px-8 py-3.5 rounded-xl transition-colors">
                 Browse Talent
               </button>
             </Link>
