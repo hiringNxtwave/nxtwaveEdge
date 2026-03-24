@@ -138,7 +138,7 @@ export default function ExploreEdge() {
           <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/">
               <button className="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-3 sm:px-5 py-2 rounded-lg transition-colors whitespace-nowrap">
-                View Shortlisted Profiles
+                Request Top Candidates
               </button>
             </Link>
           </div>
