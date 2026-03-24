@@ -295,9 +295,9 @@ export default function Landing() {
       {/* ── Hero ── */}
       <section className="bg-[#F0F5FF] overflow-hidden">
         <div className="container mx-auto px-6 py-16 md:py-20">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Left */}
-            <div>
+            <div className="pt-4">
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-[1.15] mb-4">
                 India's <span className="text-blue-600">'Uber'</span> for Hiring Entry Level Talent
               </h1>
@@ -337,7 +337,7 @@ export default function Landing() {
             </div>
 
             {/* Right — Hero illustration */}
-            <div className="hidden lg:flex justify-center items-center">
+            <div className="hidden lg:flex justify-center items-start">
               <HeroIllustration />
             </div>
           </div>
