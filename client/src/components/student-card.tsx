@@ -52,27 +52,19 @@ function ScoreBox({
   onClick: () => void;
   testId: string;
 }) {
-  const isHigh = score >= 4;
-  const isMid = score === 3;
   return (
     <button
-      className={`flex flex-col items-center justify-center gap-0.5 rounded-xl border px-2 py-3 flex-1 min-w-0 cursor-pointer transition-all hover:shadow-sm ${
-        isHigh
-          ? "bg-blue-50 border-blue-200 hover:border-blue-300"
-          : isMid
-          ? "bg-slate-50 border-slate-200 hover:border-slate-300"
-          : "bg-slate-50 border-slate-100 hover:border-slate-200"
-      }`}
+      className="flex flex-col items-center justify-center gap-0.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 px-2 py-3 flex-1 min-w-0 cursor-pointer transition-all"
       onClick={onClick}
       data-testid={testId}
     >
-      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-tight text-center w-full truncate">
+      <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest leading-tight text-center w-full truncate">
         {label}
       </span>
-      <span className={`text-lg font-black leading-tight ${isHigh ? "text-blue-600" : "text-slate-700"}`}>
+      <span className="text-lg font-black leading-tight text-slate-800">
         {score}/5
       </span>
-      <span className={`text-[10px] font-semibold leading-tight ${isHigh ? "text-blue-500" : isMid ? "text-slate-500" : "text-slate-400"}`}>
+      <span className="text-[10px] font-medium leading-tight text-slate-500">
         {SCORE_LABEL[score]}
       </span>
     </button>
@@ -170,15 +162,15 @@ export default function StudentCard({ student }: StudentCardProps) {
                 {student.firstName} {student.lastName}
               </span>
             </Link>
-            <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-100 px-1.5 py-0.5 rounded-full shrink-0">
-              <Shield className="w-2 h-2" /> Offline Verified
+            <span className="inline-flex items-center gap-0.5 text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 px-1.5 py-0.5 rounded-full shrink-0">
+              <Shield className="w-2 h-2" /> Verified
             </span>
-            <span className="inline-flex items-center text-[10px] font-semibold bg-slate-50 text-slate-600 border border-slate-200 px-1.5 py-0.5 rounded-full shrink-0">
+            <span className="inline-flex items-center text-[10px] font-medium text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded-full shrink-0">
               {bestRole}
             </span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-2 flex-wrap">
-            <span className="text-blue-600 font-medium" data-testid={`text-student-university-${student.id}`}>{student.university}</span>
+            <span className="text-slate-700 font-medium" data-testid={`text-student-university-${student.id}`}>{student.university}</span>
             <span>·</span>
             <span>CGPA <strong className="text-slate-700" data-testid={`text-student-cgpa-${student.id}`}>{displayCGPA}</strong></span>
             {student.location && (
@@ -252,28 +244,24 @@ export default function StudentCard({ student }: StudentCardProps) {
 
         {/* JD Match — special 5th box */}
         <button
-          className={`flex flex-col items-center justify-center gap-0.5 rounded-xl border px-4 py-3 min-w-[88px] shrink-0 cursor-pointer transition-all hover:shadow-sm ${
-            isHighMatch
-              ? "bg-blue-600 border-blue-600 hover:bg-blue-700"
-              : "bg-slate-800 border-slate-800 hover:bg-slate-700"
-          }`}
+          className="flex flex-col items-center justify-center gap-0.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 px-4 py-3 min-w-[88px] shrink-0 cursor-pointer transition-all"
           onClick={() => setShowRoleMatchRationale(true)}
           data-testid={`button-role-match-info-${student.id}`}
         >
-          <span className="text-[9px] font-bold text-white/70 uppercase tracking-widest leading-tight">JD Match</span>
+          <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest leading-tight">JD Match</span>
           <span className="text-2xl font-black text-white leading-tight">{matchPct}%</span>
-          <span className="text-[10px] text-white/70 leading-tight">See why →</span>
+          <span className="text-[10px] text-slate-400 leading-tight">See why →</span>
         </button>
 
         {/* Interview Performance box */}
         <button
-          className="flex flex-col items-center justify-center gap-0.5 rounded-xl border border-slate-200 bg-slate-50 hover:border-slate-300 hover:shadow-sm px-2 py-3 min-w-[72px] shrink-0 cursor-pointer transition-all"
+          className="flex flex-col items-center justify-center gap-0.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 hover:border-slate-300 px-2 py-3 min-w-[72px] shrink-0 cursor-pointer transition-all"
           onClick={() => setShowInterviewPerformance(true)}
           data-testid={`performance-overall-${student.id}`}
         >
-          <Video className="w-4 h-4 text-slate-400 mb-0.5" />
-          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest leading-tight text-center">Interview</span>
-          <span className="text-[10px] font-semibold text-slate-600 leading-tight">{SCORE_LABEL[Math.round(avgSkill)]}</span>
+          <Video className="w-3.5 h-3.5 text-slate-400 mb-0.5" />
+          <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest leading-tight text-center">Interview</span>
+          <span className="text-[10px] font-medium text-slate-600 leading-tight">{SCORE_LABEL[Math.round(avgSkill)]}</span>
         </button>
       </div>
 
