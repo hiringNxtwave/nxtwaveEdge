@@ -24,6 +24,8 @@ const PARTNER_LOGOS = [
   { name: "Thoughtworks", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Thoughtworks_logo.png" },
   { name: "ADP", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/adp%20logo.png" },
   { name: "Arcon", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/arcon.png" },
+  { name: "LeadSquared", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/leadsquared_logo.png" },
+  { name: "Anand Rathi", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/anandrathi_logo.png" },
 ];
 
 const EDGE_CARDS = [
@@ -565,14 +567,18 @@ export default function Landing() {
             Trusted by India's Leading Engineering Hiring Teams
           </p>
 
-          <div className="flex flex-wrap justify-center items-center gap-x-14 gap-y-8 mb-16">
+          <div className="flex flex-wrap justify-center items-center gap-4 mb-16">
             {PARTNER_LOGOS.map(logo => (
-              <img
+              <div
                 key={logo.name}
-                src={logo.url}
-                alt={logo.name}
-                className="h-9 w-auto object-contain brightness-0 invert opacity-70 hover:opacity-100 transition-opacity"
-              />
+                className="bg-white rounded-lg px-5 py-3 flex items-center justify-center opacity-85 hover:opacity-100 transition-opacity"
+              >
+                <img
+                  src={logo.url}
+                  alt={logo.name}
+                  className="h-8 w-auto object-contain"
+                />
+              </div>
             ))}
           </div>
 
