@@ -286,7 +286,7 @@ export default function Landing() {
     <div className="min-h-screen bg-white">
       {/* ── Nav ── */}
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100">
-        <div className="container mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <img src={nxtWaveLogo} alt="NxtWave" className="h-10 w-auto" />
@@ -311,7 +311,7 @@ export default function Landing() {
       </div>
       {/* ── Hero ── */}
       <section className="bg-[#F0F5FF] overflow-hidden">
-        <div className="container mx-auto px-6 py-16 md:py-20">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-16 md:py-20">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Left */}
             <div className="pt-4">
@@ -362,7 +362,7 @@ export default function Landing() {
       </section>
       {/* ── Social Proof Strip ── */}
       <section className="bg-white border-b border-slate-100 py-10">
-        <div className="container mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
             {/* Hiring Partners */}
             <div>
@@ -430,7 +430,7 @@ export default function Landing() {
       </section>
       {/* ── Feature Cards ── */}
       <section className="py-20 bg-slate-50">
-        <div className="container mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">Why companies choose Edge</h2>
             <p className="text-slate-500 max-w-xl mx-auto">Every shortlist is pre-screened, offline-evaluated, and benchmark-cleared — before it reaches you.</p>
@@ -534,7 +534,7 @@ export default function Landing() {
       </section>
       {/* ── Assessment orbit illustration + stats ── */}
       <section className="py-20 bg-[#F0F5FF]">
-        <div className="container mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="grid lg:grid-cols-2 gap-14 items-center">
             {/* Illustration */}
             <div className="hidden lg:flex justify-center">
@@ -579,7 +579,7 @@ export default function Landing() {
       </section>
       {/* ── Trusted By ── */}
       <section className="py-20 bg-slate-900 text-white">
-        <div className="container mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
           <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-10">
             Trusted by India's Leading Engineering Hiring Teams
           </p>
@@ -614,7 +614,7 @@ export default function Landing() {
       </section>
       {/* ── India's First National Engineering Hiring Standard ── */}
       <section className="py-24 bg-white">
-        <div className="container mx-auto px-6">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
 
           {/* Header */}
           <div className="text-center mb-14">
@@ -660,7 +660,7 @@ export default function Landing() {
       </section>
       {/* ── Final CTA ── */}
       <section className="py-24 bg-slate-900 text-white">
-        <div className="container mx-auto px-6 text-center">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 text-center">
           {/* Illustration above CTA */}
           <div className="flex justify-center mb-8">
             <svg viewBox="0 0 280 120" fill="none" className="w-64 h-24">
@@ -715,7 +715,7 @@ export default function Landing() {
       </section>
       {/* ── Footer strip ── */}
       <footer className="bg-slate-950 border-t border-white/5 py-6">
-        <div className="container mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col sm:flex-row justify-between items-center gap-3">
           <div className="flex items-center">
             <img src={nxtWaveLogo} alt="NxtWave" className="h-7 w-auto brightness-0 invert" />
           </div>
