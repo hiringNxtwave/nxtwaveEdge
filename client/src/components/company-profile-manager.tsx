@@ -3,13 +3,6 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
   Form, 
@@ -28,9 +21,8 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { queryClient, apiRequest } from '@/lib/queryClient';
+import { apiRequest } from '@/lib/queryClient';
 import { 
   Plus, 
   Edit3, 
@@ -44,10 +36,7 @@ import {
   GraduationCap,
   Upload,
   FileText,
-  CheckCircle,
-  Zap,
-  Star,
-  Target
+  CheckCircle
 } from 'lucide-react';
 
 // Simplified form schema focusing on core fields
@@ -324,192 +313,137 @@ export function CompanyProfileManager() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12 px-4">
+      <div className="flex items-center justify-center py-16">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-6 md:h-8 w-6 md:w-8 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-600 text-sm md:text-base">Loading job requirements...</p>
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-3" />
+          <p className="text-slate-500 text-sm">Loading requirements...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-3 md:space-y-4 lg:space-y-6 px-4 sm:px-0">
-      {/* Header */}
-      <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 md:p-4 lg:p-5">
-        <div className="flex flex-col gap-3 md:gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="text-center md:text-left">
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-blue-600 mb-2">Job Requirements</h2>
-            <p className="text-gray-600 text-base md:text-lg">
-              Manage your hiring requirements and let our AI parse job descriptions
-            </p>
+    <div className="space-y-6">
+
+      {/* Action row */}
+      {!isAdding && (
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-slate-500">{requirements.length === 0 ? 'No open roles yet' : `${requirements.length} open role${requirements.length > 1 ? 's' : ''}`}</p>
           </div>
-          {!isAdding && (
-            <Button 
-              onClick={() => setIsAdding(true)} 
-              className="bg-blue-600 text-white hover:bg-blue-700 gap-2 px-4 md:px-6 py-3 md:py-2 text-sm md:text-base font-semibold w-full md:w-auto min-h-[44px]" 
-              data-testid="button-add-requirement"
-            >
-              <Plus className="w-4 md:w-5 h-4 md:h-5" />
-              <span className="md:hidden">Add Requirement</span>
-              <span className="hidden md:inline">Add New Requirement</span>
-            </Button>
-          )}
+          <Button
+            onClick={() => setIsAdding(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white gap-2 text-sm font-semibold"
+            data-testid="button-add-requirement"
+          >
+            <Plus className="w-4 h-4" />
+            Post a Role
+          </Button>
         </div>
-      </div>
+      )}
 
       {/* Add/Edit Form */}
       {isAdding && (
-        <Card className="bg-white border border-gray-200 shadow-lg overflow-hidden">
-          <CardHeader className="bg-blue-50 border-b border-blue-100 p-3 md:p-4 lg:p-6">
-            <CardTitle className="flex flex-col gap-2 md:gap-3 md:flex-row md:items-center text-lg md:text-xl">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Briefcase className="w-4 md:w-5 h-4 md:h-5 text-blue-600" />
-                </div>
-                <span className="text-gray-800 text-base md:text-xl">
-                  {editingId ? 'Edit Job Requirement' : 'Create New Job Requirement'}
-                </span>
+        <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
+          {/* Form header */}
+          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+                <Briefcase className="w-4 h-4 text-white" />
               </div>
-            </CardTitle>
-            <CardDescription className="text-gray-600 text-sm md:text-base mt-2">
-              Upload a JD file for instant parsing or fill in details manually
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-3 md:p-4 lg:p-6">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">
+                  {editingId ? 'Edit Role' : 'Post a New Role'}
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">Upload a JD file or fill in the details below</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="text-slate-400 hover:text-slate-600 text-sm transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+
+          <div className="p-6">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-6 lg:space-y-8">
-                
-                {/* File Upload Section - Primary Option */}
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+                {/* File upload */}
                 {!useManualEntry && (
-                  <div className="bg-green-50 border border-green-100 rounded-lg p-4 md:p-6">
-                    <div className="text-center space-y-4">
-                      <div className="flex justify-center">
-                        <div className="p-3 bg-green-100 rounded-lg">
-                          <Upload className="w-6 h-6 text-green-600" />
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <h3 className="text-base md:text-lg font-semibold text-green-600 mb-2">
-                          Upload Job Description File
-                        </h3>
-                        <p className="text-gray-600 mb-4 text-sm md:text-base px-2 md:px-0">
-                          Upload a PDF, Word document, or text file and let AI extract all details automatically
-                        </p>
-                      </div>
+                  <div className="border border-dashed border-slate-200 rounded-xl p-6 bg-slate-50 text-center">
+                    <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center mx-auto mb-3 shadow-sm">
+                      <Upload className="w-4 h-4 text-slate-400" />
+                    </div>
+                    <p className="text-sm font-semibold text-slate-700 mb-1">Upload Job Description</p>
+                    <p className="text-xs text-slate-400 mb-4">PDF, Word, or .txt — AI will fill the form automatically</p>
 
-                      {uploadedFile ? (
-                        <div className="bg-white rounded-lg p-4 border border-green-100 mx-2 md:mx-0">
-                          <div className="flex flex-col md:flex-row items-center gap-3 justify-center">
-                            <FileText className="w-5 h-5 text-green-600" />
-                            <span className="font-medium text-gray-700 text-sm md:text-base text-center md:text-left break-words">{uploadedFile.name}</span>
-                            <CheckCircle className="w-5 h-5 text-green-600" />
-                          </div>
-                          {isUploading && (
-                            <div className="mt-2 text-center">
-                              <div className="inline-flex items-center gap-2 text-blue-600 text-sm">
-                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                                <span>Parsing file...</span>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <>
-                          <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileUpload}
-                            accept=".pdf,.doc,.docx,.txt"
-                            className="hidden"
-                            data-testid="input-file-upload"
-                          />
-                          <Button
-                            type="button"
-                            onClick={() => fileInputRef.current?.click()}
-                            className="bg-green-600 hover:bg-green-700 text-white px-4 md:px-6 py-3 md:py-2 gap-2 text-sm md:text-base w-full md:w-auto max-w-xs md:max-w-none mx-auto"
-                            data-testid="button-upload-file"
-                          >
-                            <Upload className="w-4 h-4" />
-                            <span className="md:hidden">Choose File</span>
-                            <span className="hidden md:inline">Choose JD File to Upload</span>
-                          </Button>
-                        </>
-                      )}
-
-                      <div className="text-center pt-2">
+                    {uploadedFile ? (
+                      <div className="inline-flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-700">
+                        <FileText className="w-4 h-4 text-blue-600" />
+                        <span className="font-medium truncate max-w-[200px]">{uploadedFile.name}</span>
+                        {isUploading
+                          ? <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-blue-600 ml-1" />
+                          : <CheckCircle className="w-3.5 h-3.5 text-blue-600" />
+                        }
+                      </div>
+                    ) : (
+                      <>
+                        <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".pdf,.doc,.docx,.txt" className="hidden" data-testid="input-file-upload" />
                         <Button
                           type="button"
-                          variant="ghost"
-                          onClick={() => setUseManualEntry(true)}
-                          className="text-gray-600 hover:text-gray-800 text-xs md:text-sm px-2 py-1"
-                          data-testid="button-manual-entry"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="bg-blue-600 hover:bg-blue-700 text-white gap-2 text-sm"
+                          data-testid="button-upload-file"
                         >
-                          <span className="md:hidden">Fill manually →</span>
-                          <span className="hidden md:inline">Or fill in details manually instead →</span>
+                          <Upload className="w-4 h-4" /> Choose File
                         </Button>
-                      </div>
+                      </>
+                    )}
+
+                    <div className="mt-3">
+                      <button type="button" onClick={() => setUseManualEntry(true)} className="text-xs text-slate-400 hover:text-slate-600 transition-colors" data-testid="button-manual-entry">
+                        Fill in manually instead
+                      </button>
                     </div>
                   </div>
                 )}
 
-                {/* Job Description - Always Available */}
-                <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 md:p-6">
-                  <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3 mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-blue-100 rounded-lg">
-                        <FileText className="w-4 h-4 text-blue-600" />
-                      </div>
-                      <h3 className="text-base md:text-lg font-semibold text-blue-600">
-                        Job Description
-                      </h3>
-                    </div>
-                    {!useManualEntry && uploadedFile && (
-                      <span className="text-xs md:text-sm text-blue-500">(Auto-filled from file)</span>
+                {/* Section: Job Description */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+                      Job Description
+                      {!useManualEntry && uploadedFile && <span className="ml-2 text-blue-500 normal-case tracking-normal">Auto-filled</span>}
+                    </label>
+                    {useManualEntry && (
+                      <button type="button" onClick={() => setUseManualEntry(false)} className="text-xs text-slate-400 hover:text-slate-600 transition-colors">
+                        Switch to file upload
+                      </button>
                     )}
                   </div>
-
                   <FormField
                     control={form.control}
                     name="jobDescription"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 text-gray-700 font-medium">
-                          Job Description
-                          <Badge variant="secondary" className="bg-purple-100 text-purple-700 text-xs">
-                            <Sparkles className="w-3 h-3 mr-1" />
-                            AI Parsable
-                          </Badge>
-                        </FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder={uploadedFile && !useManualEntry 
-                              ? "Job description will be auto-filled from your uploaded file, or you can edit it manually here..." 
-                              : "Paste your full job description here. Our AI will automatically extract job title, salary, location, and requirements..."
-                            }
-                            className="min-h-[120px] border-blue-200 focus:border-blue-400"
+                            placeholder="Paste the full job description here — AI will extract title, salary, location, and requirements automatically..."
+                            className="min-h-[110px] border-slate-200 focus:border-blue-400 text-sm resize-none"
                             {...field}
                             data-testid="textarea-job-description"
                           />
                         </FormControl>
                         {useManualEntry && (
-                          <div className="flex flex-col md:flex-row gap-2 md:items-center">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={handleParseJD}
-                              disabled={isParsingJD}
-                              className="gap-2 border-purple-200 text-purple-700 hover:bg-purple-50 w-full md:w-auto"
-                              data-testid="button-parse-jd"
-                            >
-                              <Sparkles className="w-4 h-4" />
+                          <div className="flex items-center gap-2 pt-1">
+                            <Button type="button" variant="outline" size="sm" onClick={handleParseJD} disabled={isParsingJD} className="gap-2 border-slate-200 text-slate-600 hover:bg-slate-50 text-xs" data-testid="button-parse-jd">
+                              <Sparkles className="w-3.5 h-3.5 text-blue-500" />
                               {isParsingJD ? 'Parsing...' : 'Parse with AI'}
                             </Button>
-                            <span className="text-xs text-gray-500 text-center md:text-left">
-                              Auto-fill form fields from job description
-                            </span>
+                            <span className="text-xs text-slate-400">Auto-fill fields from the description above</span>
                           </div>
                         )}
                         <FormMessage />
@@ -518,167 +452,75 @@ export function CompanyProfileManager() {
                   />
                 </div>
 
-                {/* Manual Entry Toggle */}
-                {useManualEntry && (
-                  <div className="text-center">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={() => setUseManualEntry(false)}
-                      className="text-gray-600 hover:text-gray-800 text-sm px-2 py-1"
-                    >
-                      <span className="md:hidden">← Upload mode</span>
-                      <span className="hidden md:inline">← Switch back to file upload mode</span>
-                    </Button>
-                  </div>
-                )}
-
-                {/* Core Job Details */}
-                <div className="bg-white border border-gray-200 rounded-xl p-4 md:p-6 space-y-4 md:space-y-6">
-                  <h4 className="text-base md:text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    <Target className="w-4 md:w-5 h-4 md:h-5 text-blue-600" />
-                    Job Details
-                  </h4>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                {/* Section: Core details */}
+                <div className="space-y-4">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Role Details</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="jobTitle"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="flex items-center gap-2 text-gray-700 font-medium">
-                            <Briefcase className="w-4 h-4 text-blue-600" />
-                            Job Title
-                          </FormLabel>
+                          <FormLabel className="text-xs font-semibold text-slate-600">Job Title</FormLabel>
                           <FormControl>
-                            <Input 
-                              placeholder="e.g., Frontend Developer" 
-                              className="border-gray-300 focus:border-blue-400"
-                              {...field} 
-                              data-testid="input-job-title" 
-                            />
+                            <Input placeholder="e.g. Frontend Developer" className="border-slate-200 focus:border-blue-400 text-sm" {...field} data-testid="input-job-title" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-
                     <FormField
                       control={form.control}
                       name="experienceLevel"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-medium">Experience Level</FormLabel>
+                          <FormLabel className="text-xs font-semibold text-slate-600">Experience Level</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="border-gray-300 focus:border-blue-400" data-testid="select-experience-level">
-                                <SelectValue placeholder="Select experience level" />
+                              <SelectTrigger className="border-slate-200 focus:border-blue-400 text-sm" data-testid="select-experience-level">
+                                <SelectValue placeholder="Select level" />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="fresher">🎓 Fresher (0 years)</SelectItem>
-                              <SelectItem value="0-1">💼 0-1 years</SelectItem>
-                              <SelectItem value="1-3">🚀 1-3 years</SelectItem>
-                              <SelectItem value="3-5">⭐ 3-5 years</SelectItem>
+                              <SelectItem value="fresher">Fresher (0 years)</SelectItem>
+                              <SelectItem value="0-1">0–1 years</SelectItem>
+                              <SelectItem value="1-3">1–3 years</SelectItem>
+                              <SelectItem value="3-5">3–5 years</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                  </div>
-
-                  {/* Salary Range */}
-                  <div className="bg-green-50 border border-green-100 rounded-lg p-4">
-                    <FormLabel className="flex items-center gap-2 text-green-600 font-medium mb-3 text-sm md:text-base">
-                      <IndianRupee className="w-4 h-4 text-green-600" />
-                      Salary Range (in thousands)
-                    </FormLabel>
-                    <div className="grid grid-cols-2 gap-2 md:gap-4">
-                      <FormField
-                        control={form.control}
-                        name="salaryMin"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="300"
-                                className="border-gray-300 focus:border-green-600"
-                                {...field}
-                                onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                data-testid="input-salary-min"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="salaryMax"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="800"
-                                className="border-gray-300 focus:border-green-600"
-                                {...field}
-                                onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                                data-testid="input-salary-max"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <p className="text-xs text-green-700 mt-2">
-                      💰 Enter amounts in thousands (e.g., 300 for ₹3 LPA, 800 for ₹8 LPA)
-                    </p>
-                  </div>
-
-                  {/* Location & Work Mode */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <FormField
                       control={form.control}
                       name="jobLocation"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="flex items-center gap-2 text-gray-700 font-medium">
-                            <MapPin className="w-4 h-4 text-red-500" />
-                            Job Location
-                          </FormLabel>
+                          <FormLabel className="text-xs font-semibold text-slate-600">Location</FormLabel>
                           <FormControl>
-                            <Input 
-                              placeholder="e.g., Bangalore, Mumbai" 
-                              className="border-gray-300 focus:border-red-400"
-                              {...field} 
-                              data-testid="input-job-location" 
-                            />
+                            <Input placeholder="e.g. Bangalore, Mumbai" className="border-slate-200 focus:border-blue-400 text-sm" {...field} data-testid="input-job-location" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-
                     <FormField
                       control={form.control}
                       name="workMode"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-medium">Work Mode</FormLabel>
+                          <FormLabel className="text-xs font-semibold text-slate-600">Work Mode</FormLabel>
                           <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
-                              <SelectTrigger className="border-gray-300 focus:border-blue-400" data-testid="select-work-mode">
+                              <SelectTrigger className="border-slate-200 focus:border-blue-400 text-sm" data-testid="select-work-mode">
                                 <SelectValue />
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="onsite">🏢 On-site</SelectItem>
-                              <SelectItem value="hybrid">🌍 Hybrid</SelectItem>
-                              <SelectItem value="remote">💻 Remote</SelectItem>
+                              <SelectItem value="onsite">On-site</SelectItem>
+                              <SelectItem value="hybrid">Hybrid</SelectItem>
+                              <SelectItem value="remote">Remote</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -688,54 +530,31 @@ export function CompanyProfileManager() {
                   </div>
                 </div>
 
-                {/* College Requirements */}
-                <div className="bg-purple-50 border border-purple-100 rounded-lg p-4 md:p-6 space-y-4">
-                  <h4 className="text-base md:text-lg font-semibold text-purple-600 flex items-center gap-2">
-                    <GraduationCap className="w-4 md:w-5 h-4 md:h-5 text-purple-600" />
-                    College & Academic Requirements
-                  </h4>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                {/* Section: Salary */}
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Salary Range <span className="normal-case tracking-normal text-slate-300 font-normal">(in ₹ thousands — e.g. 300 = ₹3 LPA)</span></p>
+                  <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
-                      name="preferredColleges"
+                      name="salaryMin"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="flex items-center gap-2 text-gray-700 font-medium">
-                            <Star className="w-4 h-4 text-orange-600" />
-                            Preferred Colleges
-                          </FormLabel>
+                          <FormLabel className="text-xs font-semibold text-slate-600">Minimum</FormLabel>
                           <FormControl>
-                            <Input 
-                              placeholder="e.g., IIT, NIT, BITS (optional)" 
-                              className="border-gray-300 focus:border-purple-600"
-                              {...field} 
-                              data-testid="input-preferred-colleges" 
-                            />
+                            <Input type="number" placeholder="300" className="border-slate-200 focus:border-blue-400 text-sm" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} data-testid="input-salary-min" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-
                     <FormField
                       control={form.control}
-                      name="minimumCGPA"
+                      name="salaryMax"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="text-gray-700 font-medium">Minimum CGPA</FormLabel>
+                          <FormLabel className="text-xs font-semibold text-slate-600">Maximum</FormLabel>
                           <FormControl>
-                            <Input
-                              type="number"
-                              step="0.1"
-                              min="0"
-                              max="10"
-                              placeholder="7.0 (optional)"
-                              className="border-gray-300 focus:border-purple-600"
-                              {...field}
-                              onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)}
-                              data-testid="input-minimum-cgpa"
-                            />
+                            <Input type="number" placeholder="800" className="border-slate-200 focus:border-blue-400 text-sm" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} data-testid="input-salary-max" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -744,26 +563,50 @@ export function CompanyProfileManager() {
                   </div>
                 </div>
 
-                {/* Hiring Details */}
-                <div className="bg-orange-50 border border-orange-100 rounded-lg p-4 md:p-6">
+                {/* Section: Academic */}
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Academic Preferences <span className="normal-case tracking-normal text-slate-300 font-normal">(optional)</span></p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="preferredColleges"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-semibold text-slate-600">Preferred Colleges</FormLabel>
+                          <FormControl>
+                            <Input placeholder="e.g. IIT, NIT, BITS" className="border-slate-200 focus:border-blue-400 text-sm" {...field} data-testid="input-preferred-colleges" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="minimumCGPA"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-semibold text-slate-600">Minimum CGPA</FormLabel>
+                          <FormControl>
+                            <Input type="number" step="0.1" min="0" max="10" placeholder="7.0" className="border-slate-200 focus:border-blue-400 text-sm" {...field} onChange={(e) => field.onChange(e.target.value ? parseFloat(e.target.value) : undefined)} data-testid="input-minimum-cgpa" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
+                {/* Section: Hires */}
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">Headcount</p>
                   <FormField
                     control={form.control}
                     name="hiresExpected"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex items-center gap-2 text-orange-600 font-medium text-base md:text-lg">
-                          <Users className="w-4 md:w-5 h-4 md:h-5 text-orange-600" />
-                          Number of Hires Expected
-                        </FormLabel>
+                        <FormLabel className="text-xs font-semibold text-slate-600">Number of Hires Expected</FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            min="1"
-                            className="border-gray-300 focus:border-orange-600 w-full md:max-w-xs"
-                            {...field}
-                            onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
-                            data-testid="input-hires-expected"
-                          />
+                          <Input type="number" min="1" className="border-slate-200 focus:border-blue-400 text-sm max-w-[160px]" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 1)} data-testid="input-hires-expected" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -771,138 +614,91 @@ export function CompanyProfileManager() {
                   />
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex flex-col md:flex-row gap-3 md:gap-4 pt-4 md:pt-6 border-t border-gray-200">
-                  <Button
-                    type="submit"
-                    disabled={saveMutation.isPending}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-3 text-base md:text-lg gap-2 w-full md:w-auto order-1 md:order-none"
-                    data-testid="button-save-requirement"
-                  >
-                    {saveMutation.isPending ? (
-                      <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                        <span className="md:hidden">Saving...</span>
-                        <span className="hidden md:inline">Saving...</span>
-                      </>
-                    ) : (
-                      <>
-                        <CheckCircle className="w-4 md:w-5 h-4 md:h-5" />
-                        <span className="md:hidden">{editingId ? 'Update' : 'Create'}</span>
-                        <span className="hidden md:inline">{editingId ? 'Update Requirement' : 'Create Requirement'}</span>
-                      </>
-                    )}
+                {/* Submit */}
+                <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
+                  <Button type="submit" disabled={saveMutation.isPending} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 font-semibold" data-testid="button-save-requirement">
+                    {saveMutation.isPending
+                      ? <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" /> Saving...</>
+                      : <><CheckCircle className="w-4 h-4" /> {editingId ? 'Update Role' : 'Post Role'}</>
+                    }
                   </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleCancel}
-                    className="px-6 md:px-8 py-3 text-base md:text-lg border-gray-300 hover:bg-gray-50 w-full md:w-auto order-2 md:order-none"
-                    data-testid="button-cancel-requirement"
-                  >
+                  <Button type="button" variant="outline" onClick={handleCancel} className="border-slate-200 text-slate-600 hover:bg-slate-50" data-testid="button-cancel-requirement">
                     Cancel
                   </Button>
                 </div>
               </form>
             </Form>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      {/* Requirements List */}
-      <div className="space-y-4">
+      {/* Requirements list */}
+      <div className="space-y-3">
         {requirements.length === 0 ? (
-          <Card className="text-center py-12 md:py-16 border-2 border-dashed border-gray-300 mx-4 sm:mx-0">
-            <CardContent className="pt-6 px-4 md:px-6">
-              <div className="p-3 md:p-4 bg-blue-100 rounded-full w-16 h-16 md:w-20 md:h-20 mx-auto mb-4 md:mb-6 flex items-center justify-center">
-                <Building className="w-8 h-8 md:w-10 md:h-10 text-blue-600" />
-              </div>
-              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-gray-800">No job requirements yet</h3>
-              <p className="text-gray-600 mb-6 text-base md:text-lg px-2 md:px-0">
-                Create your first job requirement to start finding the right candidates
-              </p>
-              <Button 
-                onClick={() => setIsAdding(true)} 
-                className="bg-blue-600 hover:bg-blue-700 text-white gap-2 px-6 md:px-8 py-3 text-base md:text-lg w-full md:w-auto max-w-xs md:max-w-none"
-              >
-                <Plus className="w-4 md:w-5 h-4 md:h-5" />
-                <span className="md:hidden">Create Requirement</span>
-                <span className="hidden md:inline">Create First Requirement</span>
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="bg-white border border-dashed border-slate-200 rounded-2xl py-16 text-center">
+            <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center mx-auto mb-4">
+              <Building className="w-5 h-5 text-slate-300" />
+            </div>
+            <h3 className="text-base font-bold text-slate-900 mb-1">No open roles yet</h3>
+            <p className="text-sm text-slate-500 mb-5">Post your first role and we'll match pre-assessed candidates to it.</p>
+            <Button onClick={() => setIsAdding(true)} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 font-semibold text-sm">
+              <Plus className="w-4 h-4" /> Post a Role
+            </Button>
+          </div>
         ) : (
-          requirements.map((req, index) => (
-            <Card key={req.id} className="hover:shadow-lg transition-all duration-200 border border-gray-200 overflow-hidden mx-4 sm:mx-0">
-              <CardContent className="p-0">
-                <div className={`h-1 ${
-                  index % 3 === 0 ? 'bg-blue-500' :
-                  index % 3 === 1 ? 'bg-emerald-500' :
-                  'bg-orange-500'
-                }`}></div>
-                <div className="p-4 md:p-6">
-                  <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3 mb-3">
-                        <h3 className="text-lg md:text-xl font-semibold text-gray-800">{req.jobTitle}</h3>
-                        <Badge 
-                          variant={req.isActive ? 'default' : 'secondary'}
-                          className={`${req.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'} w-fit`}
-                        >
-                          {req.isActive ? '✅ Active' : '⏸️ Inactive'}
-                        </Badge>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 mb-4">
-                        <div className="flex items-center gap-2 text-xs md:text-sm bg-green-50 text-green-700 px-2 md:px-3 py-2 rounded-lg">
-                          <IndianRupee className="w-3 md:w-4 h-3 md:h-4 flex-shrink-0" />
-                          <span className="font-medium truncate">₹{req.salaryMin/100}L - ₹{req.salaryMax/100}L</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-xs md:text-sm bg-red-50 text-red-700 px-2 md:px-3 py-2 rounded-lg">
-                          <MapPin className="w-3 md:w-4 h-3 md:h-4 flex-shrink-0" />
-                          <span className="font-medium truncate">{req.jobLocation}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-xs md:text-sm bg-blue-50 text-blue-700 px-2 md:px-3 py-2 rounded-lg">
-                          <Users className="w-3 md:w-4 h-3 md:h-4 flex-shrink-0" />
-                          <span className="font-medium truncate">{req.hiresExpected} hire{req.hiresExpected > 1 ? 's' : ''}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-xs md:text-sm bg-purple-50 text-purple-700 px-2 md:px-3 py-2 rounded-lg">
-                          <GraduationCap className="w-3 md:w-4 h-3 md:h-4 flex-shrink-0" />
-                          <span className="font-medium truncate">{req.experienceLevel}</span>
-                        </div>
-                      </div>
-
-                      <p className="text-gray-600 line-clamp-2 text-xs md:text-sm">
-                        {req.jobDescription}
-                      </p>
+          requirements.map((req) => (
+            <div key={req.id} className="bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-sm transition-shadow">
+              {/* Blue accent line */}
+              <div className="h-0.5 bg-blue-600" />
+              <div className="p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    {/* Title + status */}
+                    <div className="flex items-center gap-2.5 mb-3 flex-wrap">
+                      <h3 className="text-base font-bold text-slate-900">{req.jobTitle}</h3>
+                      <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${req.isActive ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-500'}`}>
+                        {req.isActive ? 'Active' : 'Inactive'}
+                      </span>
                     </div>
 
-                    <div className="flex gap-2 md:ml-6 self-start">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(req)}
-                        className="gap-1 md:gap-2 border-blue-200 text-blue-700 hover:bg-blue-50 flex-1 md:flex-none"
-                        data-testid={`button-edit-${req.id}`}
-                      >
-                        <Edit3 className="w-3 md:w-4 h-3 md:h-4" />
-                        <span className="md:hidden text-xs">Edit</span>
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDelete(req.id)}
-                        className="gap-1 md:gap-2 border-red-200 text-red-600 hover:bg-red-50 flex-1 md:flex-none"
-                        data-testid={`button-delete-${req.id}`}
-                      >
-                        <Trash2 className="w-3 md:w-4 h-3 md:h-4" />
-                        <span className="md:hidden text-xs">Delete</span>
-                      </Button>
+                    {/* Meta tags — all neutral */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {[
+                        { icon: IndianRupee, text: `₹${req.salaryMin/100}L – ₹${req.salaryMax/100}L` },
+                        { icon: MapPin,      text: req.jobLocation },
+                        { icon: Users,       text: `${req.hiresExpected} hire${req.hiresExpected > 1 ? 's' : ''}` },
+                        { icon: GraduationCap, text: req.experienceLevel },
+                      ].map(({ icon: Icon, text }) => (
+                        <span key={text} className="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-100 text-slate-600 text-xs font-medium px-2.5 py-1.5 rounded-lg">
+                          <Icon className="w-3 h-3 text-slate-400 shrink-0" />
+                          {text}
+                        </span>
+                      ))}
                     </div>
+
+                    <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">{req.jobDescription}</p>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2 shrink-0">
+                    <button
+                      onClick={() => handleEdit(req)}
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-3 py-1.5 rounded-lg transition-colors"
+                      data-testid={`button-edit-${req.id}`}
+                    >
+                      <Edit3 className="w-3.5 h-3.5" /> Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(req.id)}
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-3 py-1.5 rounded-lg transition-colors"
+                      data-testid={`button-delete-${req.id}`}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))
         )}
       </div>

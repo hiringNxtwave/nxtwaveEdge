@@ -60,13 +60,12 @@ function Router() {
             <Route path="/company-profile" component={() => (
               <AppShell>
                 <div className="min-h-screen bg-[#F8FAFC]">
-                  {/* Page header */}
-                  <div className="bg-white border-b border-slate-100 px-6 py-4">
-                    <div className="max-w-5xl mx-auto">
-                      <h1 className="text-xl font-bold text-slate-900">Job Requirements</h1>
-                      <p className="text-slate-500 text-sm mt-0.5">
-                        Add and manage open roles. Our team will match pre-assessed candidates to each requirement.
-                      </p>
+                  <div className="bg-white border-b border-slate-100 px-6 py-6">
+                    <div className="max-w-5xl mx-auto flex items-center justify-between">
+                      <div>
+                        <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-1">Hiring</p>
+                        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Open Roles</h1>
+                      </div>
                     </div>
                   </div>
                   <div className="max-w-5xl mx-auto px-6 py-6">

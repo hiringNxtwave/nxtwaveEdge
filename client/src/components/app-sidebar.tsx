@@ -28,8 +28,8 @@ const SIDEBAR_MINI = 68;
 const navItems = [
   { href: "/", icon: Search, label: "Browse Talent", exact: false, aliases: ["/browse"] },
   { href: "/shortlist", icon: Heart, label: "Shortlisted", badge: true },
-  { href: "/market-intelligence", icon: BarChart3, label: "Market Intelligence" },
   { href: "/company-profile", icon: Building2, label: "Company Profile" },
+  { href: "/market-intelligence", icon: BarChart3, label: "Market Intelligence" },
 ];
 
 export default function AppSidebar() {
