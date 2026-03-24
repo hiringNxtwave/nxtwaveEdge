@@ -43,10 +43,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize database with sample data
   await storage.seedInitialData();
 
+  // Personal email domains to block (companies must use work email)
+  const PERSONAL_DOMAINS = new Set([
+    "gmail.com", "yahoo.com", "yahoo.in", "yahoo.co.in", "yahoo.co.uk",
+    "hotmail.com", "hotmail.in", "hotmail.co.in", "outlook.com", "live.com",
+    "live.in", "rediffmail.com", "aol.com", "icloud.com", "me.com",
+    "ymail.com", "protonmail.com", "tutanota.com", "rocketmail.com",
+    "inbox.com", "mail.com", "gmx.com", "gmx.in", "gmail.co.in",
+    "msn.com", "pm.me",
+  ]);
+
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const user = await storage.getUser(userId);
       res.json(user);
     } catch (error) {
@@ -55,10 +65,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Custom login — name + company email + mobile
+  app.post('/api/auth/login', async (req: any, res) => {
+    try {
+      const { name, email, mobile } = req.body;
+
+      if (!name || !email || !mobile) {
+        return res.status(400).json({ message: "Name, work email, and mobile are required." });
+      }
+
+      const emailLower = email.trim().toLowerCase();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailLower)) {
+        return res.status(400).json({ message: "Please enter a valid email address." });
+      }
+
+      const domain = emailLower.split("@")[1];
+      if (PERSONAL_DOMAINS.has(domain)) {
+        return res.status(400).json({ message: "Please use your company email address. Personal emails are not allowed." });
+      }
+
+      const mobileClean = mobile.replace(/\D/g, "");
+      if (mobileClean.length < 10) {
+        return res.status(400).json({ message: "Please enter a valid 10-digit mobile number." });
+      }
+
+      const nameParts = name.trim().split(/\s+/);
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+
+      // Check if user already exists by email
+      let user = await storage.getUserByEmail(emailLower);
+
+      if (user) {
+        // Update mobile / name if changed
+        user = await storage.updateUser(user.id, {
+          firstName: firstName || user.firstName,
+          lastName: lastName || user.lastName,
+          mobile: mobileClean,
+        });
+      } else {
+        // Create new user
+        user = await storage.upsertUser({
+          email: emailLower,
+          firstName,
+          lastName,
+          mobile: mobileClean,
+          role: "recruiter",
+          onboardingCompleted: true,
+        });
+      }
+
+      req.session.userId = user.id;
+      req.session.save(() => {
+        res.json({ user });
+      });
+    } catch (error) {
+      console.error("Error during login:", error);
+      res.status(500).json({ message: "Login failed. Please try again." });
+    }
+  });
+
+  // Logout
+  app.post('/api/auth/logout', (req: any, res) => {
+    req.session.destroy((err: any) => {
+      if (err) {
+        console.error("Error during logout:", err);
+      }
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+
   // Complete recruiter onboarding
   app.put('/api/auth/complete-onboarding', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const updateData = {
         collegesTier: req.body.collegesTier,
         annualFresherHires: req.body.annualFresherHires,
@@ -77,7 +158,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Company routes
   app.get('/api/company', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const company = await storage.getCompanyByUserId(userId);
       res.json(company);
     } catch (error) {
@@ -88,7 +169,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/company/profile', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const company = await storage.getCompanyByUserId(userId);
       res.json(company);
     } catch (error) {
@@ -99,7 +180,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/company/register', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const companyData = insertCompanySchema.parse({
         ...req.body,
         userId,
@@ -116,7 +197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Company Requirements routes
   app.get('/api/company/requirements', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const company = await storage.getCompanyByUserId(userId);
       
       if (!company) {
@@ -149,7 +230,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/company/requirements', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const company = await storage.getCompanyByUserId(userId);
       
       if (!company) {
@@ -176,7 +257,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put('/api/company/requirements/:id', isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const company = await storage.getCompanyByUserId(userId);
       
       if (!company) {
@@ -208,7 +289,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete('/api/company/requirements/:id', isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const company = await storage.getCompanyByUserId(userId);
       
       if (!company) {
@@ -543,7 +624,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Contact request routes
   app.post('/api/contact-requests', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const company = await storage.getCompanyByUserId(userId);
       
       if (!company) {
@@ -565,7 +646,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/contact-requests', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const company = await storage.getCompanyByUserId(userId);
       
       if (!company) {
@@ -582,7 +663,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/company/stats', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const company = await storage.getCompanyByUserId(userId);
       
       if (!company) {
@@ -607,7 +688,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Role matching route
   app.post('/api/role-match/:studentId', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const company = await storage.getCompanyByUserId(userId);
       
       if (!company) {
@@ -628,7 +709,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Email sending route for shortlist notifications
   app.post('/api/send-shortlist-email', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const company = await storage.getCompanyByUserId(userId);
       
       if (!company) {
@@ -687,7 +768,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Student assessment routes
   app.get('/api/student/assessment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const assessment = await storage.getUserAssessment(userId);
       res.json(assessment);
     } catch (error) {
@@ -698,7 +779,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/student/assessment', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const assessment = await storage.createAssessment({
         userId,
         status: 'in_progress'
@@ -725,7 +806,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Interview scheduling routes
   app.post("/api/interviews", isAuthenticated, async (req: any, res) => {
     try {
-      const companyId = req.user.claims.sub;
+      const companyId = req.session.userId;
       const { studentId, scheduledAt, duration, interviewType, notes, meetingLink } = req.body;
       
       const interview = await storage.createInterview({
@@ -748,7 +829,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/interviews", isAuthenticated, async (req: any, res) => {
     try {
-      const companyId = req.user.claims.sub;
+      const companyId = req.session.userId;
       const interviews = await storage.getInterviewsByCompany(companyId);
       res.json(interviews);
     } catch (error) {
@@ -760,7 +841,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Message routes
   app.post("/api/messages", isAuthenticated, async (req: any, res) => {
     try {
-      const senderId = req.user.claims.sub;
+      const senderId = req.session.userId;
       const { receiverId, messageType, content, conversationId } = req.body;
       
       const message = await storage.createMessage({
@@ -780,7 +861,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/messages", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.session.userId;
       const { conversationId } = req.query as any;
       
       const messages = await storage.getMessages(userId, conversationId);

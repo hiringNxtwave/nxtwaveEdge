@@ -176,7 +176,10 @@ export default function AppSidebar() {
             <DropdownMenuSeparator className="bg-slate-700 my-1" />
             <DropdownMenuItem
               className="text-red-400 focus:text-red-300 focus:bg-slate-800 cursor-pointer"
-              onClick={() => (window.location.href = "/api/logout")}
+              onClick={async () => {
+                await fetch("/api/auth/logout", { method: "POST" });
+                window.location.href = "/";
+              }}
             >
               <LogOut className="w-4 h-4 mr-2" />
               Sign Out

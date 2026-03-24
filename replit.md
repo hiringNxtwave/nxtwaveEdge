@@ -32,10 +32,11 @@ Preferred communication style: Simple, everyday language.
 - **Session Management**: Dedicated session storage table for authentication persistence
 
 ### Authentication System
-- **Replit Auth Integration**: OAuth-based authentication using OpenID Connect
-- **Passport.js Strategy**: Authentication middleware with session management
-- **User Management**: Automatic user creation and profile management
-- **Role-based Access**: Differentiated access for companies and general users
+- **Custom Auth (no OAuth)**: Session-based login — collects name, work email, and mobile number
+- **Business Email Validation**: Personal email domains (Gmail, Yahoo, Hotmail, Outlook, Rediffmail etc.) are blocked; only corporate/company emails are accepted
+- **Session Management**: Express sessions stored in PostgreSQL (connect-pg-simple), TTL 7 days
+- **User Management**: Automatic user creation (upsert by email) on first login; name/mobile updated on subsequent logins
+- **Role-based Access**: All authenticated users are set as "recruiter" role; B2B platform only
 
 ### State Management
 - **React Query**: Server state caching and synchronization
