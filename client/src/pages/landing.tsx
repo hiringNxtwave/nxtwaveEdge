@@ -153,7 +153,6 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-white">
-
       {/* ── Nav ── */}
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100">
         <div className="container mx-auto px-6">
@@ -173,14 +172,12 @@ export default function Landing() {
           </div>
         </div>
       </nav>
-
       {/* ── Announcement Bar ── */}
       <div className="bg-blue-600 text-white text-center text-xs font-medium py-2.5 px-4">
         <span className="bg-white text-blue-600 font-bold px-2 py-0.5 rounded text-[11px] mr-2">NEW</span>
         NxtWave Edge — India's First National Engineering Hiring Standard is live.{" "}
         <button onClick={() => window.location.href = "/api/login"} className="underline font-semibold ml-1">Get early access →</button>
       </div>
-
       {/* ── Hero ── */}
       <section className="bg-[#F0F5FF] overflow-hidden">
         <div className="container mx-auto px-6 py-16 md:py-20">
@@ -193,7 +190,7 @@ export default function Landing() {
 
               <p className="text-base md:text-lg text-slate-700 font-medium mb-8 max-w-lg leading-relaxed">
                 Hire Top <span className="text-blue-600 font-bold">1%</span> Engineers in{" "}
-                <span className="text-slate-900">Under an Hour</span> — Filtered Through National Standard Assessments,{" "}
+                <span className="text-[#334155]">Under an Hour</span> — Filtered Through National Standard Assessments,{" "}
                 <span className="text-slate-900">Offline Assessed</span> &amp; Nationally Ranked.
               </p>
 
@@ -232,7 +229,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* ── Social Proof Strip ── */}
       <section className="bg-white border-b border-slate-100 py-10">
         <div className="container mx-auto px-6">
@@ -251,7 +247,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* ── Feature Cards ── */}
       <section className="py-20 bg-slate-50">
         <div className="container mx-auto px-6">
@@ -356,7 +351,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* ── Assessment orbit illustration + stats ── */}
       <section className="py-20 bg-[#F0F5FF]">
         <div className="container mx-auto px-6">
@@ -402,7 +396,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* ── Trusted By ── */}
       <section className="py-20 bg-slate-900 text-white">
         <div className="container mx-auto px-6">
@@ -435,7 +428,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* ── Micro-Metric Strip ── */}
       <section className="py-14 bg-white border-y border-slate-100">
         <div className="container mx-auto px-6 text-center">
@@ -459,7 +451,6 @@ export default function Landing() {
           </button>
         </div>
       </section>
-
       {/* ── India's First National Engineering Hiring Standard ── */}
       <section className="py-24 bg-[#F0F5FF]">
         <div className="container mx-auto px-6">
@@ -490,7 +481,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* ── Final CTA ── */}
       <section className="py-24 bg-slate-900 text-white">
         <div className="container mx-auto px-6 text-center">
@@ -546,7 +536,6 @@ export default function Landing() {
           <p className="text-xs text-slate-500 mt-4">Delivered within 3 hours.</p>
         </div>
       </section>
-
       {/* ── Footer strip ── */}
       <footer className="bg-slate-950 border-t border-white/5 py-6">
         <div className="container mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
