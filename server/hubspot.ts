@@ -2,21 +2,27 @@ import { ReplitConnectors } from "@replit/connectors-sdk";
 
 const connectors = new ReplitConnectors();
 
+// Pre-configured fetch that routes through the Replit HubSpot proxy
+const hubFetch = connectors.createProxyFetch("hubspot");
+
 async function hubspotRequest(
   path: string,
   method: string = "GET",
   body?: unknown
 ): Promise<any> {
-  const options: RequestInit = { method };
-  if (body) {
+  const options: RequestInit = {
+    method,
+    headers: { "Content-Type": "application/json" },
+  };
+  if (body !== undefined) {
     options.body = JSON.stringify(body);
-    options.headers = { "Content-Type": "application/json" };
   }
-  const response = await connectors.proxy("hubspot", path, options);
+  const response = await hubFetch(path, options);
   if (!response.ok) {
     const text = await response.text();
     throw new Error(`HubSpot API error ${response.status}: ${text}`);
   }
+  if (response.status === 204) return {};
   return response.json();
 }
 
@@ -26,22 +32,16 @@ export async function upsertContact(
   lastName: string,
   phone?: string
 ): Promise<string> {
-  const searchBody = {
-    filterGroups: [
-      {
-        filters: [
-          { propertyName: "email", operator: "EQ", value: email },
-        ],
-      },
-    ],
-    properties: ["email", "firstname", "lastname", "phone"],
-    limit: 1,
-  };
-
   const searchResult = await hubspotRequest(
     "/crm/v3/objects/contacts/search",
     "POST",
-    searchBody
+    {
+      filterGroups: [
+        { filters: [{ propertyName: "email", operator: "EQ", value: email }] },
+      ],
+      properties: ["email", "firstname", "lastname", "phone"],
+      limit: 1,
+    }
   );
 
   const properties: Record<string, string> = {
@@ -53,14 +53,10 @@ export async function upsertContact(
 
   if (searchResult.results && searchResult.results.length > 0) {
     const contactId = searchResult.results[0].id;
-    await hubspotRequest(`/crm/v3/objects/contacts/${contactId}`, "PATCH", {
-      properties,
-    });
+    await hubspotRequest(`/crm/v3/objects/contacts/${contactId}`, "PATCH", { properties });
     return contactId;
   } else {
-    const created = await hubspotRequest("/crm/v3/objects/contacts", "POST", {
-      properties,
-    });
+    const created = await hubspotRequest("/crm/v3/objects/contacts", "POST", { properties });
     return created.id;
   }
 }
@@ -69,36 +65,26 @@ export async function upsertCompany(
   domain: string,
   name: string
 ): Promise<string> {
-  const searchBody = {
-    filterGroups: [
-      {
-        filters: [
-          { propertyName: "domain", operator: "EQ", value: domain },
-        ],
-      },
-    ],
-    properties: ["domain", "name"],
-    limit: 1,
-  };
-
   const searchResult = await hubspotRequest(
     "/crm/v3/objects/companies/search",
     "POST",
-    searchBody
+    {
+      filterGroups: [
+        { filters: [{ propertyName: "domain", operator: "EQ", value: domain }] },
+      ],
+      properties: ["domain", "name"],
+      limit: 1,
+    }
   );
 
   const properties: Record<string, string> = { domain, name };
 
   if (searchResult.results && searchResult.results.length > 0) {
     const companyId = searchResult.results[0].id;
-    await hubspotRequest(`/crm/v3/objects/companies/${companyId}`, "PATCH", {
-      properties,
-    });
+    await hubspotRequest(`/crm/v3/objects/companies/${companyId}`, "PATCH", { properties });
     return companyId;
   } else {
-    const created = await hubspotRequest("/crm/v3/objects/companies", "POST", {
-      properties,
-    });
+    const created = await hubspotRequest("/crm/v3/objects/companies", "POST", { properties });
     return created.id;
   }
 }
