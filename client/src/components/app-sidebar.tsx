@@ -27,7 +27,7 @@ const SIDEBAR_MINI = 68;
 const navItems = [
   { href: "/browse", icon: Search, label: "Browse Talent", exact: false },
   { href: "/shortlist", icon: Heart, label: "Shortlisted", badge: true },
-  { href: "/company-profile", icon: Building2, label: "Company Profile" },
+  { href: "/company-profile", icon: Building2, label: "Jobs" },
 ];
 
 export default function AppSidebar() {
@@ -198,7 +198,7 @@ export default function AppSidebar() {
             <DropdownMenuItem asChild className="mt-1 cursor-pointer focus:bg-slate-800 focus:text-white text-slate-300">
               <Link href="/company-profile" className="flex items-center gap-2">
                 <Building2 className="w-4 h-4" />
-                Company Profile
+                Jobs
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-slate-700 my-1" />

@@ -672,6 +672,71 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // Job match endpoint — scores all 327 students against a job posting
+  app.post('/api/students/job-match', isAuthenticated, async (req: any, res) => {
+    try {
+      const { role, location, salary } = req.body as { role: string; location: string; salary: number };
+      if (!role) return res.status(400).json({ message: "role is required" });
+
+      const allStudents = await storage.getStudents({ limit: 500, offset: 0 });
+
+      const roleTokens = role.toLowerCase().split(/[\s,/\-_]+/).filter(t => t.length > 1);
+      const salaryNum = Number(salary) || 0;
+
+      const scored = allStudents.map((s: any) => {
+        // 1. Assessment base score (0–40 pts)
+        const assessBase = Math.round((s.overallAssessmentScore ?? 50) * 0.4);
+
+        // 2. Recommendation tier (0–30 pts)
+        const recScore =
+          s.recommendation === "Strong Hire" ? 30 :
+          s.recommendation === "Hire"        ? 20 :
+          s.recommendation === "Weak Hire"   ? 10 : 5;
+
+        // 3. Salary tier adjustment (–15 to 0)
+        let salaryAdj = 0;
+        if (salaryNum >= 10) {
+          if (s.recommendation === "Weak Hire") salaryAdj = -15;
+          else if (s.recommendation === "Hire")  salaryAdj = -5;
+        } else if (salaryNum >= 6) {
+          if (s.recommendation === "Weak Hire") salaryAdj = -5;
+        }
+
+        // 4. Role keyword match against preferredRoles/strengths (0–20 pts)
+        let roleScore = 0;
+        try {
+          const pRoles: string[] = JSON.parse(s.preferredRoles || "[]");
+          const combined = pRoles.join(" ").toLowerCase();
+          const hits = roleTokens.filter(t => combined.includes(t));
+          roleScore = Math.min(20, hits.length * 6);
+        } catch { /* ignore */ }
+
+        // 5. Location match against preferredLocations/devAreas (0–10 pts)
+        let locScore = 0;
+        const locLower = (location || "").toLowerCase().trim();
+        if (locLower === "" || locLower === "remote" || locLower === "anywhere") {
+          locScore = 5; // no preference = neutral bonus
+        } else {
+          try {
+            const pLocs: string[] = JSON.parse(s.preferredLocations || "[]");
+            const combined = pLocs.join(" ").toLowerCase();
+            if (combined.includes(locLower) || locLower.includes("remote")) locScore = 10;
+            else if (combined.includes(locLower.split(" ")[0])) locScore = 5;
+          } catch { /* ignore */ }
+        }
+
+        const total = Math.max(0, Math.min(100, assessBase + recScore + salaryAdj + roleScore + locScore));
+        return { ...s, matchScore: total };
+      });
+
+      scored.sort((a: any, b: any) => b.matchScore - a.matchScore);
+      res.json(scored.slice(0, 60));
+    } catch (error) {
+      console.error("Job match error:", error);
+      res.status(500).json({ message: "Failed to match candidates" });
+    }
+  });
+
   // Smart talent discovery endpoint
   app.post('/api/students/smart-discovery', isAuthenticated, async (req, res) => {
     try {
