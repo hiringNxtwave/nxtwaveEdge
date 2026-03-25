@@ -3,6 +3,7 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import OpenAI from 'openai';
 import multer from 'multer';
+import { upsertContact, upsertCompany, associateContactWithCompany, createDeal } from "./hubspot";
 import { 
   insertCompanySchema,
   insertCompanyRequirementsSchema,
@@ -232,6 +233,23 @@ export async function registerRoutes(app: Express): Promise<void> {
         (req.session as any).companyName = company.trim();
         await new Promise<void>(r => req.session.save(() => r()));
       }
+
+      // Sync to HubSpot CRM — errors are logged but do not block the response
+      try {
+        const userRecord = await storage.getUser(userId);
+        if (userRecord?.email) {
+          const domain = userRecord.email.split("@")[1];
+          const companyName = company?.trim() || domain;
+          const [contactId, companyId] = await Promise.all([
+            upsertContact(userRecord.email, firstName || userRecord.firstName || "", lastName || userRecord.lastName || "", mobileClean || userRecord.mobile || undefined),
+            upsertCompany(domain, companyName),
+          ]);
+          await associateContactWithCompany(contactId, companyId);
+        }
+      } catch (hubspotErr) {
+        console.error("HubSpot profile sync error:", hubspotErr);
+      }
+
       res.json(updated);
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -465,6 +483,24 @@ export async function registerRoutes(app: Express): Promise<void> {
       });
       
       const requirements = await storage.createCompanyRequirements(requirementsData);
+
+      // Sync deal to HubSpot CRM — errors are logged but do not block the response
+      try {
+        const userRecord = await storage.getUser(userId);
+        if (userRecord?.email) {
+          const domain = userRecord.email.split("@")[1];
+          const companyName = company.name || domain;
+          const [contactId, companyId] = await Promise.all([
+            upsertContact(userRecord.email, userRecord.firstName || "", userRecord.lastName || "", userRecord.mobile || undefined),
+            upsertCompany(domain, companyName),
+          ]);
+          await associateContactWithCompany(contactId, companyId);
+          await createDeal(requirements.jobTitle, contactId, companyId);
+        }
+      } catch (hubspotErr) {
+        console.error("HubSpot deal sync error:", hubspotErr);
+      }
+
       res.json(requirements);
     } catch (error) {
       console.error("Error creating company requirements:", error);
