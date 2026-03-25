@@ -464,6 +464,9 @@ function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
         <p className="text-slate-500 text-sm mt-1.5">
           We sent a 6-digit code to <span className="font-semibold text-slate-700">{email}</span>
         </p>
+        <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2">
+          Don't see it? Check your <span className="font-semibold">Spam / Junk</span> folder — it may have been filtered there.
+        </p>
       </div>
 
       <form onSubmit={(e) => { e.preventDefault(); if (otp.trim().length === 6) verifyMutation.mutate(); else setError("Please enter the full 6-digit code."); }} className="space-y-4">

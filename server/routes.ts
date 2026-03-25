@@ -150,18 +150,64 @@ export async function registerRoutes(app: Express): Promise<void> {
           email: "girish@nxtwave.info",
           name: "NxtWave Edge",
         },
-        subject: "Your NxtWave Edge access code",
-        text: `Your NxtWave Edge verification code is: ${otp}\n\nThis code is valid for 10 minutes.\n\nIf you did not request this, please ignore this email.`,
-        html: `
-          <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px">
-            <h2 style="font-size:20px;font-weight:700;color:#0f172a;margin:0 0 8px">Your NxtWave Edge verification code</h2>
-            <p style="color:#64748b;font-size:14px;margin:0 0 24px">Enter this code to access NxtWave Edge. It expires in 10 minutes.</p>
-            <div style="background:#f1f5f9;border-radius:12px;padding:24px;text-align:center;letter-spacing:12px;font-size:32px;font-weight:800;color:#1e40af;margin-bottom:24px">
-              ${otp}
+        replyTo: {
+          email: "girish@nxtwave.info",
+          name: "NxtWave Edge Support",
+        },
+        subject: "Your NxtWave Edge verification code: " + otp,
+        headers: {
+          "X-Priority": "1",
+          "X-Mailer": "NxtWave Edge Mailer",
+          "List-Unsubscribe": "<mailto:girish@nxtwave.info?subject=unsubscribe>",
+        },
+        text: `Hi,\n\nYour NxtWave Edge verification code is: ${otp}\n\nThis code is valid for 10 minutes. Do not share it with anyone.\n\nIf you did not request this code, you can safely ignore this email.\n\n---\nNxtWave Edge — India's Pre-Assessed Talent Marketplace\nhttps://nxtwave.info`,
+        html: `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;padding:40px 0">
+    <tr><td align="center">
+      <table role="presentation" width="520" cellpadding="0" cellspacing="0" style="max-width:520px;width:100%;background:#ffffff;border-radius:12px;border:1px solid #e2e8f0;overflow:hidden">
+        <!-- Header -->
+        <tr>
+          <td style="background:#1d4ed8;padding:24px 32px">
+            <p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:-0.3px">NxtWave Edge</p>
+            <p style="margin:4px 0 0;color:#bfdbfe;font-size:12px">India's Pre-Assessed Talent Marketplace</p>
+          </td>
+        </tr>
+        <!-- Body -->
+        <tr>
+          <td style="padding:32px">
+            <p style="margin:0 0 8px;font-size:22px;font-weight:700;color:#0f172a">Verification Code</p>
+            <p style="margin:0 0 24px;font-size:14px;color:#64748b;line-height:1.6">
+              Use the code below to sign in to your NxtWave Edge account. This code expires in <strong>10 minutes</strong>.
+            </p>
+            <div style="background:#eff6ff;border:2px dashed #bfdbfe;border-radius:12px;padding:28px 24px;text-align:center;margin-bottom:24px">
+              <p style="margin:0 0 4px;font-size:11px;font-weight:600;color:#3b82f6;letter-spacing:1px;text-transform:uppercase">Your one-time code</p>
+              <p style="margin:0;font-size:40px;font-weight:800;color:#1d4ed8;letter-spacing:14px;font-variant-numeric:tabular-nums">${otp}</p>
             </div>
-            <p style="color:#94a3b8;font-size:12px;margin:0">If you didn't request this code, you can safely ignore this email.</p>
-          </div>
-        `,
+            <p style="margin:0 0 24px;font-size:13px;color:#64748b;line-height:1.6">
+              Enter this code on the NxtWave Edge sign-in page. Do not share this code with anyone.
+            </p>
+            <hr style="border:none;border-top:1px solid #e2e8f0;margin:0 0 20px">
+            <p style="margin:0;font-size:12px;color:#94a3b8;line-height:1.6">
+              If you didn't request this code, someone may have entered your email by mistake. You can safely ignore this email — your account remains secure.
+            </p>
+          </td>
+        </tr>
+        <!-- Footer -->
+        <tr>
+          <td style="background:#f8fafc;padding:16px 32px;border-top:1px solid #e2e8f0">
+            <p style="margin:0;font-size:11px;color:#94a3b8;text-align:center">
+              NxtWave Edge &bull; This is an automated transactional email &bull; Please do not reply
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`,
       });
     } catch (sgErr: any) {
       const errBody = sgErr?.response?.body;
