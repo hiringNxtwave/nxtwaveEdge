@@ -43,13 +43,12 @@ export default function BrowseStudents() {
   const [jobRole, setJobRole] = useState("");
   const [jobLocation, setJobLocation] = useState("");
   const [jobSalary, setJobSalary] = useState("");
+  const sessionKey = jobIdFromUrl ?? "inline";
   const [activeJob, setActiveJob] = useState<{ role: string; location: string; salary: string; jobTitle?: string } | null>(() => {
-    if (!jobIdFromUrl) return null;
-    try { return JSON.parse(sessionStorage.getItem(`activeJob:${jobIdFromUrl}`) || "null"); } catch { return null; }
+    try { return JSON.parse(sessionStorage.getItem(`activeJob:${sessionKey}`) || "null"); } catch { return null; }
   });
   const [matchedStudents, setMatchedStudents] = useState<any[] | null>(() => {
-    if (!jobIdFromUrl) return null;
-    try { return JSON.parse(sessionStorage.getItem(`jobMatch:${jobIdFromUrl}`) || "null"); } catch { return null; }
+    try { return JSON.parse(sessionStorage.getItem(`jobMatch:${sessionKey}`) || "null"); } catch { return null; }
   });
   const popupShownRef = useRef(false);
   const jobIdMatchTriggeredRef = useRef<string | null>(null);
@@ -77,16 +76,16 @@ export default function BrowseStudents() {
 
   // Persist matched students/job to sessionStorage so they survive navigation
   useEffect(() => {
-    if (matchedStudents && jobIdFromUrl) {
-      sessionStorage.setItem(`jobMatch:${jobIdFromUrl}`, JSON.stringify(matchedStudents));
+    if (matchedStudents) {
+      sessionStorage.setItem(`jobMatch:${sessionKey}`, JSON.stringify(matchedStudents));
     }
-  }, [matchedStudents, jobIdFromUrl]);
+  }, [matchedStudents, sessionKey]);
 
   useEffect(() => {
-    if (activeJob && jobIdFromUrl) {
-      sessionStorage.setItem(`activeJob:${jobIdFromUrl}`, JSON.stringify(activeJob));
+    if (activeJob) {
+      sessionStorage.setItem(`activeJob:${sessionKey}`, JSON.stringify(activeJob));
     }
-  }, [activeJob, jobIdFromUrl]);
+  }, [activeJob, sessionKey]);
 
   useEffect(() => {
     if (
@@ -170,10 +169,10 @@ export default function BrowseStudents() {
     setJobRole("");
     setJobLocation("");
     setJobSalary("");
-    // Clear sessionStorage cache and URL
+    // Clear sessionStorage cache for both keyed and inline sessions
+    sessionStorage.removeItem(`jobMatch:${sessionKey}`);
+    sessionStorage.removeItem(`activeJob:${sessionKey}`);
     if (jobIdFromUrl) {
-      sessionStorage.removeItem(`jobMatch:${jobIdFromUrl}`);
-      sessionStorage.removeItem(`activeJob:${jobIdFromUrl}`);
       window.history.replaceState({}, "", "/browse");
       jobIdMatchTriggeredRef.current = null;
     }
