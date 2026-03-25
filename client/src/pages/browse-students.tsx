@@ -9,21 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { Lock, Users, Star, GitCompare, Shield, Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
 
-const REC_PRIORITY: Record<string, number> = {
-  "Strong Hire": 3,
-  "Hire": 2,
-  "Weak Hire": 1,
-};
-
-function sortByRecommendation(arr: any[]): any[] {
-  return [...arr].sort((a, b) => {
-    const pa = REC_PRIORITY[a.recommendation] ?? 0;
-    const pb = REC_PRIORITY[b.recommendation] ?? 0;
-    if (pb !== pa) return pb - pa;
-    return (b.overallAssessmentScore ?? 0) - (a.overallAssessmentScore ?? 0);
-  });
-}
-
 export default function BrowseStudents() {
   const { isAuthenticated, user } = useAuth();
   const displayName = user?.firstName
@@ -67,7 +52,7 @@ export default function BrowseStudents() {
     },
   });
 
-  const students = sortByRecommendation(studentsData || []);
+  const students = studentsData || [];
   const totalCount = totalCountData?.count ?? students.length;
   const totalStudentCount = 327;
 
