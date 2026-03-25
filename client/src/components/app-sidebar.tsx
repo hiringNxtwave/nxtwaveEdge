@@ -145,21 +145,20 @@ export default function AppSidebar() {
         })}
       </nav>
 
-      {/* Contact Us */}
-      <div className="px-3 pb-3 shrink-0">
-        <a
-          href="mailto:leadgenplacements@gmail.com?subject=Hiring%20Enquiry%20-%20NxtWave%20Edge"
-          className={cn(
-            "w-full flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[12px] font-semibold px-3 py-2 transition-colors",
-            collapsed ? "justify-center px-2" : ""
-          )}
-          title="Contact NxtWave Edge"
-          data-testid="link-contact-us"
-        >
-          <Mail className="w-3.5 h-3.5 shrink-0" />
-          {!collapsed && <span>Contact Us</span>}
-        </a>
-      </div>
+      {/* Contact Us — only in expanded state */}
+      {!collapsed && (
+        <div className="px-3 pb-3 shrink-0">
+          <a
+            href="mailto:leadgenplacements@gmail.com?subject=Hiring%20Enquiry%20-%20NxtWave%20Edge"
+            className="w-full flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[12px] font-semibold px-3 py-2 transition-colors"
+            title="Contact NxtWave Edge"
+            data-testid="link-contact-us"
+          >
+            <Mail className="w-3.5 h-3.5 shrink-0" />
+            <span>Contact Us</span>
+          </a>
+        </div>
+      )}
 
       {/* Bottom Section */}
       <div className="border-t border-slate-800/80 p-2 space-y-0.5 shrink-0">

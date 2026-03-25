@@ -1,4 +1,4 @@
-import { Shield, ArrowRight } from "lucide-react";
+import { Shield, ArrowRight, Sparkles, Mail } from "lucide-react";
 import type { StudentWithAssessments } from "@shared/schema";
 import { Link } from "wouter";
 import { useState } from "react";
@@ -13,6 +13,7 @@ import InterviewPerformanceModal from "./interview-performance-modal";
 interface StudentCardProps {
   student: StudentWithAssessments;
   showFullInfo?: boolean;
+  matchScore?: number;
 }
 
 const AVATAR_COLORS = [
@@ -74,7 +75,7 @@ const VERDICT_STYLE: Record<string, string> = {
   "Weak Hire":   "bg-slate-50  text-slate-500 border border-slate-200",
 };
 
-export default function StudentCard({ student }: StudentCardProps) {
+export default function StudentCard({ student, matchScore }: StudentCardProps) {
   const [selectedAssessment, setSelectedAssessment] = useState<{type: string; score: number; level: string} | null>(null);
   const [showRoleMatchRationale, setShowRoleMatchRationale] = useState(false);
   const [showCandidateFullReport, setShowCandidateFullReport] = useState(false);
@@ -180,18 +181,38 @@ export default function StudentCard({ student }: StudentCardProps) {
           />
         </div>
 
-        {/* Bottom: Overall score + View Profile */}
-        <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100">
-          <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-slate-900 tabular-nums leading-none">{overall}</span>
-            <span className="text-[10px] text-slate-400 font-medium">/100</span>
+        {/* Match % badge — only when job match active */}
+        {matchScore !== undefined && (
+          <div className="mb-3">
+            <span className="inline-flex items-center gap-1 bg-blue-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
+              <Sparkles className="w-2.5 h-2.5" />
+              {matchScore}% match
+            </span>
           </div>
-          <div
-            className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 group-hover:gap-1.5 transition-all"
-            data-testid={`button-view-profile-${student.id}`}
+        )}
+
+        {/* Bottom: Overall score + actions */}
+        <div className="mt-auto pt-3 border-t border-slate-100 space-y-2.5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-baseline gap-1">
+              <span className="text-2xl font-black text-slate-900 tabular-nums leading-none">{overall}</span>
+              <span className="text-[10px] text-slate-400 font-medium">/100</span>
+            </div>
+            <div
+              className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 group-hover:gap-1.5 transition-all"
+              data-testid={`button-view-profile-${student.id}`}
+            >
+              View Profile <ArrowRight className="w-3.5 h-3.5" />
+            </div>
+          </div>
+          <a
+            href={`mailto:leadgenplacements@gmail.com?subject=${encodeURIComponent(`Interested in ${student.firstName} ${student.lastName} — NxtWave Edge`)}`}
+            onClick={e => e.stopPropagation()}
+            className="w-full flex items-center justify-center gap-1.5 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-100 px-3 py-1.5 rounded-lg transition-colors"
           >
-            View Profile <ArrowRight className="w-3.5 h-3.5" />
-          </div>
+            <Mail className="w-3 h-3" />
+            Interested? Contact Us
+          </a>
         </div>
       </div>
 

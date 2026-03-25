@@ -351,15 +351,11 @@ export default function BrowseStudents() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="grid-students">
                 {students.map((student: any) => (
-                  <div key={student.id} className="relative">
-                    {matchedStudents && student.matchScore !== undefined && (
-                      <div className="absolute top-3 right-3 z-10 flex items-center gap-1 bg-blue-600 text-white text-[11px] font-bold px-2 py-0.5 rounded-full shadow-sm">
-                        <Sparkles className="w-2.5 h-2.5" />
-                        {student.matchScore}% match
-                      </div>
-                    )}
-                    <StudentCard student={student} />
-                  </div>
+                  <StudentCard
+                    key={student.id}
+                    student={student}
+                    matchScore={matchedStudents && student.matchScore !== undefined ? student.matchScore : undefined}
+                  />
                 ))}
               </div>
             )
