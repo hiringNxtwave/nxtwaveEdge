@@ -439,19 +439,19 @@ export default function Landing() {
             {/* Content */}
             <div>
               <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 leading-tight">
-                Hire trained developers<br />
-                who create impact from day 1
+                Hire pre-assessed freshers<br />
+                who are ready from day 1
               </h2>
               <p className="text-slate-500 mb-10 leading-relaxed">
-                We recommend the best-fit candidates from our pool of rigorously trained and technically assessed developers.
+                Every candidate on Edge has cleared a rigorous offline assessment — scored, ranked, and recommended before they ever reach your shortlist.
               </p>
 
               <div className="grid grid-cols-2 gap-x-10 gap-y-8 mb-10">
                 {[
-                  { val: "3,00,000+", label: "Freshers evaluated offline" },
-                  { val: "750+ Hrs", label: "Developer curriculum" },
-                  { val: "250+", label: "NIRF campuses covered" },
-                  { val: "MAANG", label: "Standard assessment bar" },
+                  { val: "327", label: "Pre-assessed freshers in the pool" },
+                  { val: "72+", label: "Universities represented" },
+                  { val: "170 pts", label: "Offline assessment benchmark" },
+                  { val: "2,500+", label: "Companies hiring via Edge" },
                 ].map(({ val, label }) => (
                   <div key={val}>
                     <div className="text-2xl font-extrabold text-slate-900">{val}</div>
@@ -464,10 +464,10 @@ export default function Landing() {
                 onClick={() => window.location.href = "/login"}
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
               >
-                Get in touch
+                Browse Talent
                 <ArrowRight className="w-4 h-4" />
               </button>
-              <p className="text-xs text-slate-400 mt-3">300+ trained developers ready for hire</p>
+              <p className="text-xs text-slate-400 mt-3">327 pre-assessed freshers — shortlisted &amp; ready to hire.</p>
             </div>
           </div>
         </div>
