@@ -123,13 +123,13 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Step 1 — validate details and send OTP
+  // Step 1 — validate email and send OTP (name/mobile optional; captured post-login)
   app.post('/api/auth/send-otp', async (req: any, res) => {
     try {
       const { name, email, mobile } = req.body;
 
-      if (!name || !email || !mobile) {
-        return res.status(400).json({ message: "Name, work email, and mobile are required." });
+      if (!email) {
+        return res.status(400).json({ message: "Work email is required." });
       }
 
       const emailLower = email.trim().toLowerCase();
@@ -143,10 +143,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         return res.status(400).json({ message: "Please use your company email address. Personal emails are not allowed." });
       }
 
-      const mobileClean = mobile.replace(/\D/g, "");
-      if (mobileClean.length < 10) {
-        return res.status(400).json({ message: "Please enter a valid 10-digit mobile number." });
-      }
+      const mobileClean = mobile ? mobile.replace(/\D/g, "") : "";
 
       // Resend throttle — 30 seconds between sends
       const existing = otpStore.get(emailLower);
@@ -161,9 +158,9 @@ export async function registerRoutes(app: Express): Promise<void> {
 
       otpStore.set(emailLower, {
         otp,
-        name: name.trim(),
+        name: (name || "").trim(),
         mobile: mobileClean,
-        expires: now + 10 * 60 * 1000, // 10 minutes
+        expires: now + 10 * 60 * 1000,
         attempts: 0,
         lastSent: now,
       });
@@ -174,6 +171,33 @@ export async function registerRoutes(app: Express): Promise<void> {
     } catch (error) {
       console.error("Error sending OTP:", error);
       res.status(500).json({ message: "Failed to send verification code. Please try again." });
+    }
+  });
+
+  // Profile update — called after OTP verification to capture name/company/mobile
+  app.patch('/api/auth/profile', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { name, mobile, company } = req.body;
+      const nameParts = (name || "").trim().split(/\s+/);
+      const firstName = nameParts[0] || "";
+      const lastName = nameParts.slice(1).join(" ") || "";
+      const mobileClean = mobile ? mobile.replace(/\D/g, "") : undefined;
+      const updated = await storage.updateUser(userId, {
+        ...(firstName && { firstName }),
+        ...(lastName && { lastName }),
+        ...(mobileClean && { mobile: mobileClean }),
+        onboardingCompleted: true,
+      });
+      // Store company name in session for display
+      if (company) {
+        (req.session as any).companyName = company.trim();
+        await new Promise<void>(r => req.session.save(() => r()));
+      }
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ message: "Failed to save profile." });
     }
   });
 

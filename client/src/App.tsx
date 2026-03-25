@@ -33,6 +33,7 @@ function Router() {
       <Switch>
         {/* Always-public routes */}
         <Route path="/login" component={LoginPage} />
+        <Route path="/login/profile" component={LoginPage} />
         <Route path="/for-colleges" component={ForColleges} />
         <Route path="/for-students" component={ForStudents} />
         <Route path="/explore-edge" component={ExploreEdge} />
