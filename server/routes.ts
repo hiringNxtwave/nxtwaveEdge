@@ -3,6 +3,7 @@ import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import OpenAI from 'openai';
 import multer from 'multer';
+import { createRequire } from 'module';
 import { upsertContact, upsertCompany, associateContactWithCompany, createDeal } from "./hubspot";
 import { 
   insertCompanySchema,
@@ -12,6 +13,9 @@ import {
   type StudentWithAssessments,
 } from "@shared/schema";
 import { z } from "zod";
+
+const _require = createRequire(import.meta.url);
+const pdfParse = _require('pdf-parse') as (buffer: Buffer) => Promise<{ text: string }>;
 
 export async function registerRoutes(app: Express): Promise<void> {
   // Configure multer for file uploads
@@ -599,19 +603,19 @@ export async function registerRoutes(app: Express): Promise<void> {
         // Plain text file
         jobDescription = req.file.buffer.toString('utf8');
       } else if (req.file.mimetype === 'application/pdf') {
-        // For PDF files, we'd need a PDF parser (like pdf-parse)
-        // For now, return an error suggesting text upload
-        return res.status(400).json({ 
-          message: "PDF parsing not yet implemented. Please copy the text content and use the manual entry option." 
-        });
+        try {
+          const pdfData = await pdfParse(req.file.buffer);
+          jobDescription = pdfData.text;
+        } catch (pdfErr) {
+          console.error("PDF parse error:", pdfErr);
+          return res.status(400).json({ message: "Could not read the PDF. Please ensure it is a text-based PDF (not scanned) or paste the JD manually." });
+        }
       } else if (
         req.file.mimetype === 'application/msword' || 
         req.file.mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       ) {
-        // For Word docs, we'd need a doc parser (like mammoth)
-        // For now, return an error suggesting text upload
         return res.status(400).json({ 
-          message: "Word document parsing not yet implemented. Please copy the text content and use the manual entry option." 
+          message: "Word documents are not supported yet. Please upload a PDF or paste the JD text manually." 
         });
       }
 
