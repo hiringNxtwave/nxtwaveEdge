@@ -125,7 +125,14 @@ function CandidateCarousel() {
 
 function SampleProfileModal({ onClose }: { onClose: () => void }) {
   const { data: student, isLoading } = useQuery<any>({
-    queryKey: ["/api/public/sample-student"],
+    queryKey: ["sample-student-public"],
+    queryFn: async () => {
+      const res = await fetch("/api/public/sample-student", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
+    },
+    staleTime: Infinity,
+    retry: false,
   });
 
   useEffect(() => {
