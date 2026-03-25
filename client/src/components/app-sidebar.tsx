@@ -34,13 +34,16 @@ export default function AppSidebar() {
   const [location] = useLocation();
   const { user } = useAuth();
   const { shortlistCount } = useShortlist();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => {
+    try { return localStorage.getItem("sidebar-collapsed") === "1"; } catch { return false; }
+  });
 
   useEffect(() => {
     document.documentElement.style.setProperty(
       "--sidebar-w",
       `${collapsed ? SIDEBAR_MINI : SIDEBAR_FULL}px`
     );
+    try { localStorage.setItem("sidebar-collapsed", collapsed ? "1" : "0"); } catch {}
   }, [collapsed]);
 
   const isActive = (item: typeof navItems[0]) => {
