@@ -156,9 +156,19 @@ export default function AppSidebar() {
         })}
       </nav>
 
-      {/* Contact Us — only in expanded state */}
-      {!collapsed && (
-        <div className="px-3 pb-3 shrink-0">
+      {/* Contact Us */}
+      <div className={cn("shrink-0", collapsed ? "px-2 pb-3" : "px-3 pb-3")}>
+        {collapsed ? (
+          <button
+            onClick={handleContactUs}
+            disabled={contactSending || contactSent}
+            className="w-full flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed text-white p-2 transition-colors"
+            title={contactSent ? "Message Sent ✓" : "Contact Us"}
+            data-testid="button-contact-us"
+          >
+            <Mail className="w-4 h-4" />
+          </button>
+        ) : (
           <button
             onClick={handleContactUs}
             disabled={contactSending || contactSent}
@@ -169,8 +179,8 @@ export default function AppSidebar() {
             <Mail className="w-3.5 h-3.5 shrink-0" />
             <span>{contactSent ? "Message Sent ✓" : contactSending ? "Sending…" : "Contact Us"}</span>
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Bottom Section */}
       <div className="border-t border-slate-800/80 p-2 space-y-0.5 shrink-0">
