@@ -114,6 +114,18 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   }, 15 * 60 * 1000);
 
+  // SendGrid suppression cleaner — removes an email from bounce/block lists before sending
+  async function clearSendGridSuppression(email: string, apiKey: string): Promise<void> {
+    const headers = { Authorization: `Bearer ${apiKey}` };
+    const encoded = encodeURIComponent(email);
+    // Clear bounces and blocks in parallel; 404 = not suppressed, which is fine
+    await Promise.allSettled([
+      fetch(`https://api.sendgrid.com/v3/suppression/bounces/${encoded}`, { method: "DELETE", headers }),
+      fetch(`https://api.sendgrid.com/v3/suppression/blocks/${encoded}`,  { method: "DELETE", headers }),
+      fetch(`https://api.sendgrid.com/v3/suppression/invalid_emails/${encoded}`, { method: "DELETE", headers }),
+    ]);
+  }
+
   // SendGrid email helper — falls back to console in dev
   async function sendOtpEmail(toEmail: string, otp: string): Promise<void> {
     const apiKey = process.env.SENDGRID_API_KEY;
@@ -125,6 +137,10 @@ export async function registerRoutes(app: Express): Promise<void> {
       console.log(`╚══════════════════════════════════════════╝\n`);
       return;
     }
+
+    // Clear any prior bounce/block suppression so the email can be delivered
+    await clearSendGridSuppression(toEmail, apiKey);
+
     const sgMail = (await import("@sendgrid/mail")).default;
     sgMail.setApiKey(apiKey);
     try {
