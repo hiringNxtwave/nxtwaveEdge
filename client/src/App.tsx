@@ -1,6 +1,7 @@
-import React from "react";
-import { Switch, Route } from "wouter";
+import React, { useEffect } from "react";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
+import { captureUtm, appendUtmToSearch } from "./lib/utm";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,7 +26,30 @@ import MarketIntelligencePage from "./pages/market-intelligence-page";
 import ExploreEdge from "./pages/explore-edge";
 import LoginPage from "./pages/login";
 
+function useUtmPreservation() {
+  const [location] = useLocation();
+
+  // Capture on first load
+  useEffect(() => {
+    captureUtm();
+  }, []);
+
+  // Rehydrate on every route change — silently inject stored UTMs into the URL
+  useEffect(() => {
+    const currentSearch = window.location.search.slice(1);
+    const enriched = appendUtmToSearch(currentSearch);
+    if (enriched !== currentSearch) {
+      const newUrl =
+        window.location.pathname +
+        (enriched ? `?${enriched}` : "") +
+        window.location.hash;
+      history.replaceState(null, "", newUrl);
+    }
+  }, [location]);
+}
+
 function Router() {
+  useUtmPreservation();
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
