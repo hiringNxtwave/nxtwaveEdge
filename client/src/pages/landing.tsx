@@ -428,6 +428,51 @@ export default function Landing() {
           </div>
         </div>
       </section>
+      {/* ── Assessment orbit illustration + stats ── */}
+      <section className="py-20 bg-[#F0F5FF]">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
+          <div className="grid lg:grid-cols-2 gap-14 items-center">
+            {/* Illustration */}
+            <div className="hidden lg:flex justify-center">
+              <AssessmentOrbitIllustration />
+            </div>
+
+            {/* Content */}
+            <div>
+              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 leading-tight">
+                Hire trained developers<br />
+                who create impact from day 1
+              </h2>
+              <p className="text-slate-500 mb-10 leading-relaxed">
+                We recommend the best-fit candidates from our pool of rigorously trained and technically assessed developers.
+              </p>
+
+              <div className="grid grid-cols-2 gap-x-10 gap-y-8 mb-10">
+                {[
+                  { val: "3,00,000+", label: "Freshers evaluated offline" },
+                  { val: "750+ Hrs", label: "Developer curriculum" },
+                  { val: "250+", label: "NIRF campuses covered" },
+                  { val: "MAANG", label: "Standard assessment bar" },
+                ].map(({ val, label }) => (
+                  <div key={val}>
+                    <div className="text-2xl font-extrabold text-slate-900">{val}</div>
+                    <div className="text-sm text-slate-500 mt-1">{label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => window.location.href = "/login"}
+                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
+              >
+                Get in touch
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              <p className="text-xs text-slate-400 mt-3">300+ trained developers ready for hire</p>
+            </div>
+          </div>
+        </div>
+      </section>
       {/* ── Feature Cards ── */}
       <section className="py-20 bg-slate-50">
         <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
@@ -529,51 +574,6 @@ export default function Landing() {
               Get Top Candidates
               <ArrowRight className="w-4 h-4" />
             </button>
-          </div>
-        </div>
-      </section>
-      {/* ── Assessment orbit illustration + stats ── */}
-      <section className="py-20 bg-[#F0F5FF]">
-        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
-          <div className="grid lg:grid-cols-2 gap-14 items-center">
-            {/* Illustration */}
-            <div className="hidden lg:flex justify-center">
-              <AssessmentOrbitIllustration />
-            </div>
-
-            {/* Content */}
-            <div>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 leading-tight">
-                Hire trained developers<br />
-                who create impact from day 1
-              </h2>
-              <p className="text-slate-500 mb-10 leading-relaxed">
-                We recommend the best-fit candidates from our pool of rigorously trained and technically assessed developers.
-              </p>
-
-              <div className="grid grid-cols-2 gap-x-10 gap-y-8 mb-10">
-                {[
-                  { val: "3,00,000+", label: "Freshers evaluated offline" },
-                  { val: "750+ Hrs", label: "Developer curriculum" },
-                  { val: "250+", label: "NIRF campuses covered" },
-                  { val: "MAANG", label: "Standard assessment bar" },
-                ].map(({ val, label }) => (
-                  <div key={val}>
-                    <div className="text-2xl font-extrabold text-slate-900">{val}</div>
-                    <div className="text-sm text-slate-500 mt-1">{label}</div>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                onClick={() => window.location.href = "/login"}
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
-              >
-                Get in touch
-                <ArrowRight className="w-4 h-4" />
-              </button>
-              <p className="text-xs text-slate-400 mt-3">300+ trained developers ready for hire</p>
-            </div>
           </div>
         </div>
       </section>
