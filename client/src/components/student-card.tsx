@@ -55,17 +55,10 @@ function ScorePill({
   onClick: () => void;
   testId: string;
 }) {
-  const colorClass =
-    value >= 80
-      ? "text-blue-700 bg-blue-50 border-blue-200"
-      : value >= 60
-      ? "text-slate-700 bg-slate-50 border-slate-200"
-      : "text-slate-500 bg-white border-slate-200";
-
   return (
     <button
       onClick={(e) => { e.preventDefault(); onClick(); }}
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[11px] font-medium transition-colors hover:bg-slate-100 ${colorClass}`}
+      className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-slate-200 bg-slate-50 text-slate-600 text-[11px] font-medium transition-colors hover:bg-slate-100"
       data-testid={testId}
       title={`${label}: ${value}/100`}
     >

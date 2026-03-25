@@ -180,8 +180,6 @@ export default function BrowseStudents() {
                 <Shield className="w-3.5 h-3.5 text-blue-500" />
                 All offline-verified
               </span>
-              <span className="h-3 w-px bg-slate-200" />
-              <span>Sorted: Strong Hire → Hire → Weak Hire</span>
               {currentPage > 1 && (
                 <>
                   <span className="h-3 w-px bg-slate-200" />

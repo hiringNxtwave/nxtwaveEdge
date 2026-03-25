@@ -143,17 +143,17 @@ export default function AppSidebar() {
       </nav>
 
       {/* Contact Us */}
-      <div className="px-2 pb-2 shrink-0">
+      <div className="px-3 pb-3 shrink-0">
         <a
           href="mailto:leadgenplacements@gmail.com?subject=Hiring%20Enquiry%20-%20NxtWave%20Edge"
           className={cn(
-            "w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium text-slate-400 hover:text-blue-400 hover:bg-slate-800/60 transition-all duration-150",
-            collapsed && "justify-center"
+            "w-full flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[12px] font-semibold px-3 py-2 transition-colors",
+            collapsed ? "justify-center px-2" : ""
           )}
           title="Contact NxtWave Edge"
           data-testid="link-contact-us"
         >
-          <Mail className="w-4 h-4 shrink-0" />
+          <Mail className="w-3.5 h-3.5 shrink-0" />
           {!collapsed && <span>Contact Us</span>}
         </a>
       </div>
