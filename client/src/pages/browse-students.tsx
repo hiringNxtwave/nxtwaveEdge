@@ -29,6 +29,10 @@ export default function BrowseStudents() {
     ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`.trim()
     : "Recruiter";
 
+  // Extract jobId from URL query params
+  const searchParams = new URLSearchParams(window.location.search);
+  const jobIdFromUrl = searchParams.get("jobId");
+
   const [filters, setFilters] = useState({ university: "all", recommendation: "all" });
   const [currentPage, setCurrentPage] = useState(1);
   const [compareList, setCompareList] = useState<any[]>([]);
@@ -39,15 +43,46 @@ export default function BrowseStudents() {
   const [jobRole, setJobRole] = useState("");
   const [jobLocation, setJobLocation] = useState("");
   const [jobSalary, setJobSalary] = useState("");
-  const [activeJob, setActiveJob] = useState<{ role: string; location: string; salary: string } | null>(null);
+  const [activeJob, setActiveJob] = useState<{ role: string; location: string; salary: string; jobTitle?: string } | null>(null);
   const [matchedStudents, setMatchedStudents] = useState<any[] | null>(null);
   const popupShownRef = useRef(false);
+  const jobIdMatchTriggeredRef = useRef<string | null>(null);
 
   const studentsPerPage = isAuthenticated ? 48 : 12;
 
-  // 15-second popup trigger — once per session, authenticated users only
+  // Auto-trigger job match when jobId is in URL (once per jobId)
+  const jobMatchByIdMutation = useMutation({
+    mutationFn: async (jobId: string) =>
+      apiRequest("POST", "/api/students/job-match-by-id", { jobId }).then(r => r.json()),
+    onSuccess: (data) => {
+      setMatchedStudents(data.students ?? data);
+      setShowJobPopup(false);
+      const job = data.job;
+      if (job) {
+        setActiveJob({
+          role: job.jobTitle,
+          location: job.jobLocation,
+          salary: job.salaryMax ? String(Math.round(Number(job.salaryMax) / 100)) : "",
+          jobTitle: job.jobTitle,
+        });
+      }
+    },
+  });
+
   useEffect(() => {
-    if (!isAuthenticated || popupShownRef.current) return;
+    if (
+      jobIdFromUrl &&
+      isAuthenticated &&
+      jobIdMatchTriggeredRef.current !== jobIdFromUrl
+    ) {
+      jobIdMatchTriggeredRef.current = jobIdFromUrl;
+      jobMatchByIdMutation.mutate(jobIdFromUrl);
+    }
+  }, [jobIdFromUrl, isAuthenticated]);
+
+  // 15-second popup trigger — once per session, authenticated users only, skip if job context exists
+  useEffect(() => {
+    if (!isAuthenticated || popupShownRef.current || jobIdFromUrl) return;
     const alreadyShown = sessionStorage.getItem("jobPopupShown");
     if (alreadyShown) return;
     const timer = setTimeout(() => {
@@ -56,7 +91,7 @@ export default function BrowseStudents() {
       setShowJobPopup(true);
     }, 15000);
     return () => clearTimeout(timer);
-  }, [isAuthenticated]);
+  }, [isAuthenticated, jobIdFromUrl]);
 
   const { data: studentsData, isLoading } = useQuery({
     queryKey: ["/api/students", filters, currentPage],
@@ -112,12 +147,18 @@ export default function BrowseStudents() {
     setJobRole("");
     setJobLocation("");
     setJobSalary("");
+    // Remove jobId from URL without reload
+    if (jobIdFromUrl) {
+      window.history.replaceState({}, "", "/browse");
+      jobIdMatchTriggeredRef.current = null;
+    }
   }
 
   function openJobDialog() {
     setShowJobPopup(true);
   }
 
+  const isPendingMatch = matchMutation.isPending || jobMatchByIdMutation.isPending;
   const students = matchedStudents ?? studentsData ?? [];
   const totalCount = matchedStudents ? matchedStudents.length : (totalCountData?.count ?? students.length);
   const totalStudentCount = 327;
@@ -252,7 +293,7 @@ export default function BrowseStudents() {
           )}
 
           {/* Match loading state */}
-          {matchMutation.isPending && (
+          {isPendingMatch && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {Array.from({ length: 9 }).map((_, i) => (
                 <div key={i} className="bg-white rounded-xl border border-slate-100 p-5 flex flex-col gap-4">
@@ -276,7 +317,7 @@ export default function BrowseStudents() {
           )}
 
           {/* Student Cards */}
-          {!matchMutation.isPending && (
+          {!isPendingMatch && (
             isLoading && !matchedStudents ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                 {Array.from({ length: 9 }).map((_, i) => (

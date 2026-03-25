@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import { useLocation } from 'wouter';
 import { 
   Plus, 
   Edit3, 
@@ -74,6 +75,7 @@ interface CompanyRequirement {
 
 export function CompanyProfileManager() {
   const { toast } = useToast();
+  const [, navigate] = useLocation();
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isParsingJD, setIsParsingJD] = useState(false);
@@ -207,13 +209,20 @@ export function CompanyProfileManager() {
         return await response.json();
       }
     },
-    onSuccess: () => {
+    onSuccess: (savedReq) => {
+      const wasEditing = !!editingId;
       toast({
         title: "🎉 Success!",
-        description: editingId ? "Job requirement updated" : "Job requirement created",
+        description: wasEditing ? "Job updated — showing matched candidates" : "Job posted — showing matched candidates",
       });
       handleCancel();
       refetch();
+      // Redirect to Browse page with job ID so it auto-triggers job match
+      if (savedReq?.id) {
+        navigate(`/browse?jobId=${savedReq.id}`);
+      } else {
+        navigate('/browse');
+      }
     },
     onError: () => {
       toast({
@@ -344,7 +353,7 @@ export function CompanyProfileManager() {
             data-testid="button-add-requirement"
           >
             <Plus className="w-4 h-4" />
-            Post a Role
+            Post a Job
           </Button>
         </div>
       )}
@@ -360,7 +369,7 @@ export function CompanyProfileManager() {
               </div>
               <div>
                 <h3 className="text-base font-bold text-slate-900">
-                  {editingId ? 'Edit Role' : 'Post a New Role'}
+                  {editingId ? 'Edit Job' : 'Post a New Job'}
                 </h3>
                 <p className="text-xs text-slate-400 mt-0.5">Upload a JD file or fill in the details below</p>
               </div>
@@ -628,7 +637,7 @@ export function CompanyProfileManager() {
                   <Button type="submit" disabled={saveMutation.isPending} className="bg-blue-600 hover:bg-blue-700 text-white gap-2 font-semibold" data-testid="button-save-requirement">
                     {saveMutation.isPending
                       ? <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" /> Saving...</>
-                      : <><CheckCircle className="w-4 h-4" /> {editingId ? 'Update Role' : 'Post Role'}</>
+                      : <><CheckCircle className="w-4 h-4" /> {editingId ? 'Update Job' : 'Post Job'}</>
                     }
                   </Button>
                   {(requirements.length > 0 || editingId) && (

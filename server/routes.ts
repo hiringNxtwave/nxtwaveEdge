@@ -824,6 +824,148 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // Job match by job requirement ID — extends the existing job-match scoring engine
+  // with the full requirement fields (skills, minCGPA, preferredColleges, experienceLevel).
+  app.post('/api/students/job-match-by-id', isAuthenticated, async (req: any, res) => {
+    try {
+      const { jobId } = req.body as { jobId: string };
+      if (!jobId) return res.status(400).json({ message: "jobId is required" });
+
+      const jobReq = await storage.getCompanyRequirementById(jobId);
+      if (!jobReq) return res.status(404).json({ message: "Job requirement not found" });
+
+      // Verify that the job requirement belongs to the authenticated recruiter's company
+      const userId = req.session.userId;
+      const company = await storage.getCompanyByUserId(userId);
+      if (!company || jobReq.companyId !== company.id) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+
+      const allStudents = await storage.getStudents({ limit: 500, offset: 0 });
+
+      // Build the same role/location/salary inputs used by the existing job-match engine
+      const role = jobReq.jobTitle || "";
+      const location = jobReq.jobLocation || "";
+      // salaryMax is stored in thousands (e.g. 800 = 8 LPA); existing engine expects LPA
+      const salary = jobReq.salaryMax ? Number(jobReq.salaryMax) / 100 : 0;
+
+      // Extended fields — additional to the basic job-match engine
+      let requiredSkills: string[] = [];
+      try { requiredSkills = JSON.parse(jobReq.requiredSkills || "[]"); } catch { /* ignore */ }
+
+      let preferredColleges: string[] = [];
+      try {
+        const raw = jobReq.preferredColleges || "";
+        if (raw.startsWith("[")) {
+          preferredColleges = JSON.parse(raw);
+        } else if (raw.trim()) {
+          preferredColleges = raw.split(/[,;]+/).map((s: string) => s.trim().toLowerCase()).filter(Boolean);
+        }
+      } catch { /* ignore */ }
+
+      const minCGPA = jobReq.minimumCGPA ? Number(jobReq.minimumCGPA) : 0;
+      const experienceLevel = jobReq.experienceLevel || "fresher";
+
+      // ── Reuse the same scoring algorithm as /api/students/job-match ──
+      const roleTokens = role.toLowerCase().split(/[\s,/\-_]+/).filter((t: string) => t.length > 1);
+      // Extend role tokens with required skills for keyword matching
+      const skillTokens = requiredSkills.map((s: string) => s.toLowerCase());
+      const allRoleTokens = [...new Set([...roleTokens, ...skillTokens])];
+      const salaryNum = Number(salary) || 0;
+      const locLower = location.toLowerCase().trim();
+
+      const scored = allStudents.map((s: any) => {
+        // 1. Assessment base score (0–40 pts) — same as existing job-match
+        const assessBase = Math.round((s.overallAssessmentScore ?? 50) * 0.4);
+
+        // 2. Recommendation tier (0–30 pts) — same as existing job-match
+        const recScore =
+          s.recommendation === "Strong Hire" ? 30 :
+          s.recommendation === "Hire"        ? 20 :
+          s.recommendation === "Weak Hire"   ? 10 : 5;
+
+        // 3. Salary tier adjustment (–15 to 0) — same as existing job-match
+        let salaryAdj = 0;
+        if (salaryNum >= 10) {
+          if (s.recommendation === "Weak Hire") salaryAdj = -15;
+          else if (s.recommendation === "Hire")  salaryAdj = -5;
+        } else if (salaryNum >= 6) {
+          if (s.recommendation === "Weak Hire") salaryAdj = -5;
+        }
+
+        // 4. Role + skills keyword match against preferredRoles (0–20 pts)
+        // Extended: includes requiredSkills tokens alongside role name tokens
+        let roleScore = 0;
+        try {
+          const pRoles: string[] = JSON.parse(s.preferredRoles || "[]");
+          const combined = pRoles.join(" ").toLowerCase();
+          const hits = allRoleTokens.filter((t: string) => combined.includes(t));
+          roleScore = Math.min(20, hits.length * 6);
+        } catch { /* ignore */ }
+
+        // 5. Location match against preferredLocations (0–10 pts) — same as existing job-match
+        let locScore = 0;
+        if (locLower === "" || locLower === "remote" || locLower === "anywhere") {
+          locScore = 5;
+        } else {
+          try {
+            const pLocs: string[] = JSON.parse(s.preferredLocations || "[]");
+            const combined = pLocs.join(" ").toLowerCase();
+            if (combined.includes(locLower) || locLower.includes("remote")) locScore = 10;
+            else if (combined.includes(locLower.split(" ")[0])) locScore = 5;
+          } catch { /* ignore */ }
+        }
+
+        // Extended: CGPA filter — applied as a bonus/penalty on top of existing score
+        let cgpaAdj = 0;
+        if (minCGPA > 0 && s.cgpa) {
+          const studentCgpa = Number(s.cgpa);
+          if (studentCgpa < minCGPA) {
+            cgpaAdj = -15; // penalty for not meeting minimum CGPA
+          } else if (studentCgpa >= minCGPA + 0.5) {
+            cgpaAdj = 3; // small bonus for exceeding threshold
+          }
+        }
+
+        // Extended: Preferred colleges match — additional bonus
+        let collegeAdj = 0;
+        if (preferredColleges.length > 0 && s.university) {
+          const univLower = s.university.toLowerCase();
+          if (preferredColleges.some((c: string) => univLower.includes(c) || c.includes(univLower.split(" ")[0]))) {
+            collegeAdj = 5;
+          }
+        }
+
+        // Extended: Experience level — bonus for fresher roles since students are fresh grads
+        let expAdj = 0;
+        if (experienceLevel === "fresher" || experienceLevel === "0-1") {
+          expAdj = 2;
+        }
+
+        const total = Math.max(0, Math.min(100,
+          assessBase + recScore + salaryAdj + roleScore + locScore + cgpaAdj + collegeAdj + expAdj
+        ));
+        return { ...s, matchScore: total };
+      });
+
+      scored.sort((a: any, b: any) => b.matchScore - a.matchScore);
+      res.json({
+        students: scored.slice(0, 60),
+        job: {
+          id: jobReq.id,
+          jobTitle: jobReq.jobTitle,
+          jobLocation: jobReq.jobLocation,
+          salaryMin: jobReq.salaryMin,
+          salaryMax: jobReq.salaryMax,
+          experienceLevel: jobReq.experienceLevel,
+        },
+      });
+    } catch (error) {
+      console.error("Job match by ID error:", error);
+      res.status(500).json({ message: "Failed to match candidates" });
+    }
+  });
+
   // Smart talent discovery endpoint
   app.post('/api/students/smart-discovery', isAuthenticated, async (req, res) => {
     try {
