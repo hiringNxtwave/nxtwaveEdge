@@ -62,15 +62,18 @@ function Router() {
         <Route path="/for-students" component={ForStudents} />
         <Route path="/explore-edge" component={ExploreEdge} />
 
-        {isLoading || !isAuthenticated ? (
+        {!isAuthenticated ? (
           <>
             <Route path="/" component={Landing} />
-            <Route path="/for-companies">
-              {() => {
-                window.location.href = "/";
-                return null;
-              }}
-            </Route>
+            {/* Any protected route visited while logged-out → redirect to landing */}
+            {!isLoading && (
+              <Route>
+                {() => {
+                  window.location.replace("/");
+                  return null;
+                }}
+              </Route>
+            )}
           </>
         ) : (
           <>
