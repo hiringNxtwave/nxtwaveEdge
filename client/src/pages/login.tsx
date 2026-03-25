@@ -277,7 +277,7 @@ function SampleProfileModal({ onClose }: { onClose: () => void }) {
 
             {/* CTA */}
             <p className="text-xs text-slate-500 text-center">
-              This is a live profile from our pool of <span className="font-semibold text-slate-700">327+ pre-assessed freshers</span>. Log in to see full contact details and assessment reports.
+              This is a live profile from our pre-assessed talent pool. Log in to see full contact details and assessment reports.
             </p>
           </div>
         ) : (

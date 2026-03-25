@@ -374,7 +374,7 @@ export default function Landing() {
                   </svg>
                 </div>
               </div>
-              <div className="text-2xl font-extrabold text-slate-900">2,300+</div>
+              <div className="text-2xl font-extrabold text-slate-900">2,500+</div>
               <div className="text-sm text-slate-500 mt-1">Hiring Partners</div>
             </div>
 
@@ -448,10 +448,10 @@ export default function Landing() {
 
               <div className="grid grid-cols-2 gap-x-10 gap-y-8 mb-10">
                 {[
-                  { val: "327", label: "Pre-assessed freshers in the pool" },
-                  { val: "72+", label: "Universities represented" },
-                  { val: "170 pts", label: "Offline assessment benchmark" },
-                  { val: "2,500+", label: "Companies hiring via Edge" },
+                  { val: "3,00,000+", label: "Freshers evaluated offline" },
+                  { val: "250+", label: "NIRF campuses covered" },
+                  { val: "MAANG", label: "Standard assessment bar" },
+                  { val: "2,500+", label: "Hiring partners on Edge" },
                 ].map(({ val, label }) => (
                   <div key={val}>
                     <div className="text-2xl font-extrabold text-slate-900">{val}</div>
@@ -467,7 +467,7 @@ export default function Landing() {
                 Browse Talent
                 <ArrowRight className="w-4 h-4" />
               </button>
-              <p className="text-xs text-slate-400 mt-3">327 pre-assessed freshers — shortlisted &amp; ready to hire.</p>
+              <p className="text-xs text-slate-400 mt-3">Pre-assessed, offline-evaluated, ready to deploy.</p>
             </div>
           </div>
         </div>

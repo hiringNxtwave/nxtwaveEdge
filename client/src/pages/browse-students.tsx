@@ -472,7 +472,7 @@ export default function BrowseStudents() {
                   Find matching candidates
                 </DialogTitle>
                 <DialogDescription className="text-blue-100 text-sm mt-0.5">
-                  Tell us about the role and we'll rank the best-fit engineers from 327 assessed candidates.
+                  Tell us about the role and we'll rank the best-fit engineers from our pre-assessed talent pool.
                 </DialogDescription>
               </DialogHeader>
             </div>
