@@ -95,6 +95,7 @@ export interface IStorage {
     location?: string;
     university?: string;
     minCgpa?: number;
+    recommendation?: string;
     limit?: number;
     offset?: number;
   }): Promise<StudentWithAssessments[]>;
@@ -546,6 +547,7 @@ export class DatabaseStorage implements IStorage {
     location?: string;
     university?: string;
     minCgpa?: number;
+    recommendation?: string;
     limit?: number;
     offset?: number;
   }): Promise<StudentWithAssessments[]> {
@@ -559,6 +561,10 @@ export class DatabaseStorage implements IStorage {
     
     if (filters?.university) {
       whereConditions.push(ilike(students.university, `%${filters.university}%`));
+    }
+
+    if (filters?.recommendation) {
+      whereConditions.push(eq(students.recommendation, filters.recommendation));
     }
     
     // TODO: Re-enable minCgpa filter with proper casting
@@ -687,6 +693,7 @@ export class DatabaseStorage implements IStorage {
     location?: string;
     university?: string;
     minCgpa?: number;
+    recommendation?: string;
   }): Promise<number> {
     try {
       console.log("🔍 getStudentCount called with filters:", JSON.stringify(filters, null, 2));
@@ -699,6 +706,10 @@ export class DatabaseStorage implements IStorage {
       
       if (filters?.university) {
         whereConditions.push(ilike(students.university, `%${filters.university}%`));
+      }
+
+      if (filters?.recommendation) {
+        whereConditions.push(eq(students.recommendation, filters.recommendation));
       }
       
       // Add skills filtering by joining with studentSkills table
@@ -1114,7 +1125,7 @@ export class DatabaseStorage implements IStorage {
     // Seed real students if not already loaded (or if recording URLs are missing)
     const FIRST_REAL_ID = "48309455-3700-4cf1-8356-9cf43477fcdf";
     const existingReal = await db.select().from(students).where(eq(students.id, FIRST_REAL_ID)).limit(1);
-    if (existingReal.length > 0 && existingReal[0].linkedinUrl) return; // already seeded with full data
+    if (existingReal.length > 0 && existingReal[0].linkedinUrl && existingReal[0].recommendation) return; // already seeded with full data
 
     // Clear any existing fake students (cascade to studentSkills + projects)
     await db.delete(studentSkills);
@@ -1156,6 +1167,7 @@ export class DatabaseStorage implements IStorage {
         githubUrl: s.githubUrl || null,
         preferredRoles: s.preferredRoles || null,
         preferredLocations: s.preferredLocations || null,
+        recommendation: s.recommendation || null,
         noticePeriod: 0,
         workMode: "hybrid",
         expectedSalaryMin: 600,

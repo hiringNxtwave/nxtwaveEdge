@@ -1,173 +1,130 @@
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
-import { useScrollToTop } from "@/hooks/useScrollToTop";
 import StudentCard from "@/components/student-card";
 import StudentFilters from "@/components/student-filters";
 import CandidateComparison from "@/components/candidate-comparison";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { Lock, Users, Star, GitCompare, TrendingUp, Shield, Briefcase } from "lucide-react";
+import { Lock, Users, Star, GitCompare, Shield, Briefcase, ChevronLeft, ChevronRight } from "lucide-react";
 
-/**
- * Mirrors the match-percentage formula in StudentCard so we can sort before render.
- * Higher score = better match → appears at the top of the list.
- */
-function calcMatchScore(student: any): number {
-  const seed = parseInt(student.id.slice(-8), 16);
-  const overallRating = 4;
+const REC_PRIORITY: Record<string, number> = {
+  "Strong Hire": 3,
+  "Hire": 2,
+  "Weak Hire": 1,
+};
 
-  const skillScore = (offset: number) => {
-    const variation = ((seed * 37 + offset) % 3) - 1; // -1 | 0 | +1
-    return Math.max(1, Math.min(5, overallRating + variation));
-  };
-
-  const avg =
-    (skillScore(1) + skillScore(2) + skillScore(3) + skillScore(4)) / 4;
-
-  const cgpaRaw =
-    typeof student.cgpa === "string" ? parseFloat(student.cgpa) : student.cgpa;
-  const cgpaScore = ((cgpaRaw || 7.5) / 10) * 5;
-
-  const raw = avg * 0.4 + cgpaScore * 0.3 + overallRating * 0.3;
-  return Math.min(95, Math.max(60, Math.round(raw * 20) || 75));
+function sortByRecommendation(arr: any[]): any[] {
+  return [...arr].sort((a, b) => {
+    const pa = REC_PRIORITY[a.recommendation] ?? 0;
+    const pb = REC_PRIORITY[b.recommendation] ?? 0;
+    if (pb !== pa) return pb - pa;
+    return (b.overallAssessmentScore ?? 0) - (a.overallAssessmentScore ?? 0);
+  });
 }
 
 export default function BrowseStudents() {
-  useScrollToTop();
-
   const { isAuthenticated, user } = useAuth();
   const displayName = user?.firstName
     ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`.trim()
     : "Recruiter";
 
   const [filters, setFilters] = useState({
-    skills: [] as string[],
-    location: "",
-    university: "",
-    minCgpa: undefined as number | undefined,
-    maxCgpa: undefined as number | undefined,
-    codingRating: undefined as number | undefined,
+    university: "all",
+    recommendation: "all",
   });
 
   const [currentPage, setCurrentPage] = useState(1);
   const [compareList, setCompareList] = useState<any[]>([]);
   const [showComparison, setShowComparison] = useState(false);
 
-  const queryClient = useQueryClient();
   const studentsPerPage = isAuthenticated ? 48 : 12;
 
   const { data: studentsData, isLoading } = useQuery({
     queryKey: ["/api/students", filters, currentPage],
     queryFn: async () => {
       const params = new URLSearchParams();
-      if (filters.skills.length > 0) params.append("skills", filters.skills.join(","));
-      if (filters.location) params.append("location", filters.location);
-      if (filters.university) params.append("university", filters.university);
-      if (filters.minCgpa) params.append("minCgpa", filters.minCgpa.toString());
-      if (filters.maxCgpa) params.append("maxCgpa", filters.maxCgpa.toString());
-      if (filters.codingRating) params.append("codingRating", filters.codingRating.toString());
+      if (filters.university && filters.university !== "all") params.append("university", filters.university);
+      if (filters.recommendation && filters.recommendation !== "all") params.append("recommendation", filters.recommendation);
       params.append("limit", studentsPerPage.toString());
       params.append("offset", ((currentPage - 1) * studentsPerPage).toString());
       const response = await fetch(`/api/students?${params}`, { credentials: "include" });
-      if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      return response.json();
-    },
-  });
-
-  const { data: skills } = useQuery({
-    queryKey: ["/api/skills"],
-    queryFn: async () => {
-      const response = await fetch("/api/skills", { credentials: "include" });
-      if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return response.json();
     },
   });
 
   const { data: totalCountData } = useQuery({
-    queryKey: ["/api/students/count"],
+    queryKey: ["/api/students/count", filters],
     queryFn: async () => {
-      const response = await fetch("/api/students/count", { credentials: "include" });
-      if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      const params = new URLSearchParams();
+      if (filters.university && filters.university !== "all") params.append("university", filters.university);
+      if (filters.recommendation && filters.recommendation !== "all") params.append("recommendation", filters.recommendation);
+      const response = await fetch(`/api/students/count?${params}`, { credentials: "include" });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return response.json();
     },
   });
 
-  // Sort by match score descending so the highest-match candidates appear first
-  const students = [...(studentsData || [])].sort(
-    (a, b) => calcMatchScore(b) - calcMatchScore(a)
-  );
-  const totalStudentCount = totalCountData?.count || 1920;
-  const totalCount = totalCountData?.count || students.length;
+  const students = sortByRecommendation(studentsData || []);
+  const totalCount = totalCountData?.count ?? students.length;
+  const totalStudentCount = 327;
+
+  const totalPages = Math.ceil(totalCount / studentsPerPage);
+  const showPagination = isAuthenticated && totalPages > 1;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
-
-      {/* ── Welcome header + KPIs (authenticated only) ── */}
+    <div
+      className="flex flex-col bg-[#F8FAFC]"
+      style={{ height: "100vh", overflow: "hidden" }}
+    >
+      {/* ── Sticky top: Welcome header (auth only) ── */}
       {isAuthenticated && (
-        <div className="bg-white border-b border-slate-100 px-6 py-6">
-          <div className="max-w-7xl mx-auto">
-
-            {/* Top row: greeting + CTA */}
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-1">Welcome back</p>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight" data-testid="text-welcome">{displayName}</h1>
-              </div>
-              <Link href="/company-profile">
-                <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-colors">
-                  <Briefcase className="w-3.5 h-3.5" />
-                  Post a Job
-                </button>
-              </Link>
+        <div className="shrink-0 bg-white border-b border-slate-100 px-6 py-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div>
+              <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-0.5">
+                Welcome back
+              </p>
+              <h1 className="text-xl font-bold text-slate-900 tracking-tight" data-testid="text-welcome">
+                {displayName}
+              </h1>
             </div>
-
+            <Link href="/company-profile">
+              <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+                <Briefcase className="w-3.5 h-3.5" />
+                Post a Job
+              </button>
+            </Link>
           </div>
         </div>
       )}
 
-      {/* ── Filter bar ── */}
-      <div className="bg-white border-b border-slate-100 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      {/* ── Sticky: Filter bar ── */}
+      <div className="shrink-0 bg-white border-b border-slate-100 px-6 py-3">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 flex-wrap">
           {/* Left: title + count */}
           <div>
-            <h1 className={`font-bold text-slate-900 ${isAuthenticated ? "text-base" : "text-xl"}`}>
-              {isAuthenticated ? "Talent Directory" : "Browse Talent"}
-            </h1>
-            <p className="text-sm text-slate-500 mt-0.5">
+            <h2 className="text-sm font-bold text-slate-800">Talent Directory</h2>
+            <p className="text-xs text-slate-400 mt-0.5">
               {isLoading
-                ? "Loading candidates..."
-                : isAuthenticated
-                  ? `${totalStudentCount.toLocaleString()}+ verified candidates available`
-                  : `Preview of ${students.length} from ${totalStudentCount.toLocaleString()}+ students`}
+                ? "Loading..."
+                : `${totalCount.toLocaleString()} candidates`}
+              {!filters.recommendation || filters.recommendation === "all"
+                ? ""
+                : ` · ${filters.recommendation}`}
             </p>
           </div>
 
-          {/* Right: filters + compare button */}
-          <div className="flex items-center gap-4">
+          {/* Right: filters + compare */}
+          <div className="flex items-center gap-3">
             <StudentFilters
-              filters={{
-                university: filters.university || "all",
-                codingRating: filters.codingRating?.toString() || "all",
-              }}
+              filters={filters}
               onFiltersChange={(newFilters) => {
-                setFilters({
-                  skills: [],
-                  location: "",
-                  university: newFilters.university === "all" ? "" : newFilters.university,
-                  minCgpa: undefined,
-                  maxCgpa: undefined,
-                  codingRating:
-                    newFilters.codingRating && newFilters.codingRating !== "all"
-                      ? parseInt(newFilters.codingRating)
-                      : undefined,
-                });
+                setFilters(newFilters);
                 setCurrentPage(1);
               }}
-              skills={(skills as any) || []}
-              resultCount={students.length}
-              totalCount={totalCount}
             />
             {isAuthenticated && compareList.length > 0 && (
               <>
@@ -187,168 +144,195 @@ export default function BrowseStudents() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-5">
+      {/* ── Scrollable student list ── */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-7xl mx-auto px-6 py-4">
 
-        {/* Limited Access Banner */}
-        {!isAuthenticated && (
-          <div className="mb-4 bg-blue-600 rounded-xl p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
-                <Lock className="w-4 h-4 text-white" />
+          {/* Limited Access Banner */}
+          {!isAuthenticated && (
+            <div className="mb-4 bg-blue-600 rounded-xl p-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
+                  <Lock className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p className="font-semibold text-white text-sm">
+                    Preview Mode — {students.length} of {totalStudentCount.toLocaleString()}+ candidates shown
+                  </p>
+                  <p className="text-xs text-blue-200">Sign in to unlock full profiles, assessment details, and hiring tools.</p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-white text-sm">Preview Mode — {students.length} of {totalStudentCount.toLocaleString()}+ candidates shown</p>
-                <p className="text-xs text-blue-200">Sign in to unlock full profiles, assessment details, and hiring tools.</p>
-              </div>
+              <Button
+                size="sm"
+                className="bg-white text-blue-700 hover:bg-blue-50 font-semibold text-sm shrink-0 border-0"
+                onClick={() => (window.location.href = "/api/login")}
+                data-testid="button-unlock-full-access"
+              >
+                Sign In Free →
+              </Button>
             </div>
-            <Button
-              size="sm"
-              className="bg-white text-blue-700 hover:bg-blue-50 font-semibold text-sm shrink-0 border-0"
-              onClick={() => (window.location.href = "/api/login")}
-              data-testid="button-unlock-full-access"
-            >
-              Sign In Free →
-            </Button>
-          </div>
-        )}
+          )}
 
-        {/* Results bar */}
-        {!isLoading && students.length > 0 && (
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3 text-xs text-slate-500">
-              <span className="flex items-center gap-1.5">
-                <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
-                <span>
-                  Showing <strong className="text-slate-700">{students.length}</strong> candidates
-                  {isAuthenticated && <> of <strong className="text-slate-700">{totalStudentCount.toLocaleString()}</strong></>}
-                </span>
-              </span>
-              <span className="h-3 w-px bg-slate-200" />
+          {/* Results info row */}
+          {!isLoading && students.length > 0 && (
+            <div className="flex items-center gap-3 text-xs text-slate-500 mb-3">
               <span className="flex items-center gap-1">
                 <Shield className="w-3.5 h-3.5 text-blue-500" />
                 All offline-verified
               </span>
               <span className="h-3 w-px bg-slate-200" />
-              <span>Sorted by best match</span>
+              <span>Sorted: Strong Hire → Hire → Weak Hire</span>
+              {currentPage > 1 && (
+                <>
+                  <span className="h-3 w-px bg-slate-200" />
+                  <span>Page {currentPage} of {totalPages}</span>
+                </>
+              )}
             </div>
-            {currentPage > 1 && (
-              <span className="text-xs text-slate-400">Page {currentPage}</span>
-            )}
-          </div>
-        )}
+          )}
 
-        {/* Student Profiles */}
-        <div className="mb-6">
+          {/* Student Cards */}
           {isLoading ? (
             <div className="space-y-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl border border-slate-100 p-5 flex gap-5">
-                  <div className="flex flex-col gap-3 w-[220px]">
-                    <div className="flex items-center gap-3">
-                      <Skeleton className="w-12 h-12 rounded-full shrink-0" />
-                      <div className="flex-1 space-y-1.5">
-                        <Skeleton className="h-4 w-28" />
-                        <Skeleton className="h-3 w-20" />
-                      </div>
-                    </div>
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-xl border border-slate-100 p-4 flex gap-4 items-start">
+                  <Skeleton className="w-12 h-12 rounded-xl shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-4 w-36" />
                     <Skeleton className="h-3 w-24" />
-                    <Skeleton className="h-3 w-16" />
+                    <Skeleton className="h-3 w-48" />
+                    <div className="flex gap-2 pt-1">
+                      <Skeleton className="h-6 w-16 rounded-full" />
+                      <Skeleton className="h-6 w-14 rounded-full" />
+                      <Skeleton className="h-6 w-16 rounded-full" />
+                    </div>
                   </div>
-                  <div className="flex-1 border-l border-slate-100 pl-5 space-y-3 pt-5">
-                    {[...Array(4)].map((_, j) => (
-                      <div key={j} className="space-y-1">
-                        <Skeleton className="h-3 w-full" />
-                        <Skeleton className="h-1.5 w-full rounded-full" />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="w-[160px] border-l border-slate-100 pl-5 space-y-3">
-                    <Skeleton className="h-10 w-16" />
-                    <Skeleton className="h-1.5 w-full rounded-full" />
-                    <Skeleton className="h-8 w-full mt-auto" />
-                    <Skeleton className="h-8 w-full" />
-                  </div>
+                  <Skeleton className="h-8 w-8 rounded" />
                 </div>
               ))}
             </div>
-          ) : students?.length === 0 ? (
+          ) : students.length === 0 ? (
             <div
               className="text-center py-16 bg-white rounded-xl border border-slate-100"
               data-testid="text-no-students"
             >
               <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
               <p className="text-slate-600 text-base font-semibold">No candidates match your criteria</p>
-              <p className="text-slate-400 text-sm mt-1">Try adjusting the university or rating filter above.</p>
+              <p className="text-slate-400 text-sm mt-1">Try adjusting the university or verdict filter above.</p>
             </div>
           ) : (
-            <div className="space-y-3" data-testid="grid-students">
-              {students?.map((student: any) => (
+            <div className="space-y-2.5" data-testid="grid-students">
+              {students.map((student: any) => (
                 <StudentCard key={student.id} student={student} />
               ))}
             </div>
           )}
 
-          {/* Pagination */}
-          {students && students.length > 0 && (isAuthenticated ? students.length === studentsPerPage || currentPage > 1 : false) && (
-            <div className="mt-6 flex items-center justify-center gap-2" data-testid="pagination-controls">
-              {currentPage > 1 && (
-                <button
-                  onClick={() => setCurrentPage(currentPage - 1)}
-                  className="px-4 py-2 text-sm bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium transition-colors"
-                  data-testid="button-prev-page"
-                >
-                  ← Previous
-                </button>
-              )}
-              <span className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg" data-testid="text-page-info">
-                Page {currentPage}
-              </span>
-              {students.length === studentsPerPage && (
-                <button
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  className="px-4 py-2 text-sm bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium transition-colors"
-                  data-testid="button-next-page"
-                >
-                  Next →
-                </button>
-              )}
+          {/* Login CTA at bottom for unauthenticated */}
+          {!isAuthenticated && students.length > 0 && (
+            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center mt-4">
+              <Lock className="w-8 h-8 text-blue-600 mx-auto mb-3" />
+              <h3 className="text-lg font-bold text-slate-900 mb-1">
+                Access {totalStudentCount.toLocaleString()}+ Verified Engineers
+              </h3>
+              <p className="text-slate-500 text-sm mb-5">
+                Sign in to view full assessment reports, contact details, and hiring tools.
+              </p>
+              <div className="flex justify-center gap-6 mb-5 text-sm text-slate-600">
+                <span className="flex items-center gap-2"><Users className="w-4 h-4 text-blue-500" /> Full profile access</span>
+                <span className="flex items-center gap-2"><Star className="w-4 h-4 text-blue-500" /> Shortlist & compare</span>
+                <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-blue-500" /> Verified assessments</span>
+              </div>
+              <Button
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8"
+                onClick={() => (window.location.href = "/api/login")}
+                data-testid="button-sign-in-to-continue"
+              >
+                Sign In Free →
+              </Button>
             </div>
           )}
+
+          {/* Bottom spacer so cards don't hide behind pagination bar */}
+          {showPagination && <div className="h-4" />}
         </div>
-
-        {/* Login CTA at bottom for unauthenticated */}
-        {!isAuthenticated && students && students.length > 0 && (
-          <div className="bg-white border border-slate-200 rounded-xl p-6 text-center">
-            <Lock className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-            <h3 className="text-lg font-bold text-slate-900 mb-1">Access {totalStudentCount.toLocaleString()}+ Verified Engineers</h3>
-            <p className="text-slate-500 text-sm mb-5">Sign in to view full assessment reports, contact details, and shortlisting tools.</p>
-            <div className="flex justify-center gap-6 mb-5 text-sm text-slate-600">
-              <span className="flex items-center gap-2"><Users className="w-4 h-4 text-blue-500" /> Full profile access</span>
-              <span className="flex items-center gap-2"><Star className="w-4 h-4 text-blue-500" /> Shortlist & compare</span>
-              <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-blue-500" /> Verified assessments</span>
-            </div>
-            <Button
-              className="bg-blue-600 hover:bg-blue-700 text-white px-8"
-              onClick={() => (window.location.href = "/api/login")}
-              data-testid="button-sign-in-to-continue"
-            >
-              Sign In Free →
-            </Button>
-          </div>
-        )}
-
-        {/* Comparison Modal */}
-        {showComparison && (
-          <CandidateComparison
-            candidates={compareList}
-            onRemove={(candidateId) => {
-              setCompareList(compareList.filter((c) => c.id !== candidateId));
-            }}
-            onClose={() => setShowComparison(false)}
-          />
-        )}
       </div>
+
+      {/* ── Sticky bottom: Pagination ── */}
+      {showPagination && (
+        <div className="shrink-0 bg-white border-t border-slate-100 px-6 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between" data-testid="pagination-controls">
+            <span className="text-xs text-slate-500">
+              {students.length > 0
+                ? `Showing ${((currentPage - 1) * studentsPerPage) + 1}–${Math.min(currentPage * studentsPerPage, totalCount)} of ${totalCount}`
+                : "No results"}
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                data-testid="button-prev-page"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                Prev
+              </button>
+
+              {/* Page pills */}
+              <div className="flex items-center gap-1">
+                {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                  let page: number;
+                  if (totalPages <= 7) {
+                    page = i + 1;
+                  } else if (currentPage <= 4) {
+                    page = i + 1;
+                  } else if (currentPage >= totalPages - 3) {
+                    page = totalPages - 6 + i;
+                  } else {
+                    page = currentPage - 3 + i;
+                  }
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-7 h-7 text-xs rounded font-medium transition-colors ${
+                        page === currentPage
+                          ? "bg-blue-600 text-white"
+                          : "text-slate-600 hover:bg-slate-100"
+                      }`}
+                      data-testid={page === currentPage ? "text-page-info" : undefined}
+                    >
+                      {page}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+                className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                data-testid="button-next-page"
+              >
+                Next
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+            <span className="text-xs text-slate-400">
+              Page {currentPage} of {totalPages}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Comparison Modal */}
+      {showComparison && (
+        <CandidateComparison
+          candidates={compareList}
+          onRemove={(candidateId) => setCompareList(compareList.filter((c) => c.id !== candidateId))}
+          onClose={() => setShowComparison(false)}
+        />
+      )}
     </div>
   );
 }

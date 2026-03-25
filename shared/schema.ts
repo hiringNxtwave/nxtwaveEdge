@@ -218,6 +218,7 @@ export const students = pgTable("students", {
   workMode: varchar("work_mode").default("hybrid"), // remote, hybrid, onsite
   noticePeriod: integer("notice_period").default(0), // in days
   availableFrom: timestamp("available_from"),
+  recommendation: varchar("recommendation"), // 'Strong Hire', 'Hire', 'Weak Hire'
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

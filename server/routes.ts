@@ -575,7 +575,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         skills, 
         location, 
         university, 
-        minCgpa, 
+        minCgpa,
+        recommendation,
         limit = 20, 
         offset = 0 
       } = req.query;
@@ -585,6 +586,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         location: location as string,
         university: university as string,
         minCgpa: minCgpa ? parseFloat(minCgpa as string) : undefined,
+        recommendation: recommendation as string || undefined,
         limit: parseInt(limit as string),
         offset: parseInt(offset as string),
       };
@@ -625,13 +627,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get('/api/students/count', async (req, res) => {
     try {
-      const { skills, location, university, minCgpa } = req.query;
+      const { skills, location, university, minCgpa, recommendation } = req.query;
 
       const filters = {
         skills: skills ? (skills as string).split(',') : undefined,
         location: location as string,
         university: university as string,
         minCgpa: minCgpa ? parseFloat(minCgpa as string) : undefined,
+        recommendation: recommendation as string || undefined,
       };
 
       console.log("🔍 Count API called with filters:", JSON.stringify(filters, null, 2));
@@ -651,6 +654,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         res.status(500).json({ message: "Failed to count students" });
       }
+    }
+  });
+
+  // Universities list for filter dropdown
+  app.get('/api/universities', async (req, res) => {
+    try {
+      const { db } = await import('./db');
+      const { students: studentsTable } = await import('@shared/schema');
+      const results = await db
+        .selectDistinct({ university: studentsTable.university })
+        .from(studentsTable)
+        .orderBy(studentsTable.university);
+      const unis = results.map(r => r.university).filter(Boolean).sort();
+      res.json(unis);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch universities' });
     }
   });
 
