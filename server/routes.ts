@@ -1,5 +1,4 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import OpenAI from 'openai';
@@ -13,7 +12,7 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 
-export async function registerRoutes(app: Express): Promise<Server> {
+export async function registerRoutes(app: Express): Promise<void> {
   // Configure multer for file uploads
   const upload = multer({
     storage: multer.memoryStorage(),
@@ -1173,6 +1172,4 @@ Be helpful, professional, and focus on recruitment and talent discovery assistan
     }
   });
 
-  const httpServer = createServer(app);
-  return httpServer;
 }

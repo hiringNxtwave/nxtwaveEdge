@@ -1,13 +1,12 @@
 import express, { type Request, Response, NextFunction } from "express";
+import http from "http";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
+import { registerRoutes } from "./routes";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-import { registerRoutes } from "./routes";
-import { createServer as createViteServer } from "vite";
-import fs from "fs";
 
-// Local logger to avoid importing from broken server/vite.ts
 const log = (message: string) => {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -18,73 +17,20 @@ const log = (message: string) => {
   console.log(`${formattedTime} [express] ${message}`);
 };
 
-// Local Vite development middleware to bypass broken server/vite.ts
-async function mountDevVite(app: express.Express, server: any) {
-  try {
-    const vite = await createViteServer({
-      server: {
-        middlewareMode: true,
-        hmr: { server },
-        allowedHosts: true as const,
-      },
-      appType: "custom",
-    });
-
-    app.use(vite.middlewares);
-    app.use("*", async (req, res, next) => {
-      const url = req.originalUrl;
-
-      try {
-        const clientTemplate = path.resolve(
-          __dirname,
-          "..",
-          "client",
-          "index.html",
-        );
-
-        let template = await fs.promises.readFile(clientTemplate, "utf-8");
-        const page = await vite.transformIndexHtml(url, template);
-        res.status(200).set({ "Content-Type": "text/html" }).end(page);
-      } catch (e) {
-        vite.ssrFixStacktrace(e as Error);
-        next(e);
-      }
-    });
-  } catch (error) {
-    log(`Failed to setup Vite dev server: ${error}. Falling back to static serving.`);
-    mountStatic(app);
-  }
-}
-
-// Local static file serving to bypass broken server/vite.ts
-function mountStatic(app: express.Express) {
-  const distPath = path.resolve(__dirname, "..", "dist", "public");
-
-  if (!fs.existsSync(distPath)) {
-    log(`Build directory not found at ${distPath}. Serving client directly.`);
-    // Fallback to serve client directly for development
-    const clientPath = path.resolve(__dirname, "..", "client");
-    app.use(express.static(clientPath));
-    app.use("*", (_req, res) => {
-      res.sendFile(path.resolve(clientPath, "index.html"));
-    });
-    log("Serving client directly from source directory");
-    return;
-  }
-
-  app.use(express.static(distPath));
-  app.use("*", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
-  });
-}
-
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Health check — registered first so Cloud Run can verify the app is up
+// even while the rest of initialisation (DB seed, route setup) is still running
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
+// Request logger
 app.use((req, res, next) => {
   const start = Date.now();
-  const path = req.path;
+  const reqPath = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
   const originalResJson = res.json;
@@ -95,16 +41,12 @@ app.use((req, res, next) => {
 
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
+    if (reqPath.startsWith("/api")) {
+      let logLine = `${req.method} ${reqPath} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
+      if (logLine.length > 80) logLine = logLine.slice(0, 79) + "…";
       log(logLine);
     }
   });
@@ -112,32 +54,74 @@ app.use((req, res, next) => {
   next();
 });
 
+// Create HTTP server and start listening IMMEDIATELY so health checks pass
+// before the (potentially slow) route/seed initialisation completes.
+const port = parseInt(process.env.PORT || "5000", 10);
+const server = http.createServer(app);
+
+server.listen(port, "0.0.0.0", () => {
+  log(`serving on port ${port}`);
+});
+
+// Async initialisation — runs after the server is already accepting requests
 (async () => {
-  const server = await registerRoutes(app);
+  try {
+    await registerRoutes(app);
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-    
-    log(`${status} ${message}`);
-    res.status(status).json({ message });
-  });
+    // Global error handler — must be added after routes
+    app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+      const status = err.status || err.statusCode || 500;
+      const message = err.message || "Internal Server Error";
+      log(`Error ${status}: ${message}`);
+      res.status(status).json({ message });
+    });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
-    await mountDevVite(app, server);
-  } else {
-    mountStatic(app);
+    if (app.get("env") === "development") {
+      // Vite dev middleware (import kept dynamic so it's never evaluated in prod)
+      const { createServer: createViteServer } = await import("vite");
+      try {
+        const vite = await createViteServer({
+          server: { middlewareMode: true, hmr: { server }, allowedHosts: true as const },
+          appType: "custom",
+        });
+        app.use(vite.middlewares);
+        app.use("*", async (req, res, next) => {
+          try {
+            const clientTemplate = path.resolve(__dirname, "..", "client", "index.html");
+            let template = await fs.promises.readFile(clientTemplate, "utf-8");
+            const page = await vite.transformIndexHtml(req.originalUrl, template);
+            res.status(200).set({ "Content-Type": "text/html" }).end(page);
+          } catch (e) {
+            vite.ssrFixStacktrace(e as Error);
+            next(e);
+          }
+        });
+      } catch (viteErr) {
+        log(`Vite setup failed: ${viteErr} — falling back to static serving`);
+        mountStatic(app);
+      }
+    } else {
+      mountStatic(app);
+    }
+
+    log("Server fully initialised");
+  } catch (err) {
+    log(`Fatal startup error: ${err}`);
+    console.error(err);
+    process.exit(1);
+  }
+})();
+
+function mountStatic(app: express.Express) {
+  const distPath = path.resolve(__dirname, "public");
+
+  if (!fs.existsSync(distPath)) {
+    log(`Static build not found at ${distPath}`);
+    return;
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = parseInt(process.env.PORT || '5000', 10);
-  server.listen(port, "0.0.0.0", () => {
-    log(`serving on port ${port}`);
+  app.use(express.static(distPath));
+  app.use("*", (_req, res) => {
+    res.sendFile(path.resolve(distPath, "index.html"));
   });
-})();
+}
