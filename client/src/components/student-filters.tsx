@@ -162,9 +162,9 @@ export default function StudentFilters({ filters, onFiltersChange }: StudentFilt
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Verdicts</SelectItem>
-            <SelectItem value="Strong Hire">⭐ Strong Hire</SelectItem>
-            <SelectItem value="Hire">✓ Hire</SelectItem>
-            <SelectItem value="Weak Hire">~ Weak Hire</SelectItem>
+            <SelectItem value="Strong Hire">Strong Hire</SelectItem>
+            <SelectItem value="Hire">Hire</SelectItem>
+            <SelectItem value="Weak Hire">Weak Hire</SelectItem>
           </SelectContent>
         </Select>
       </div>

@@ -1,4 +1,4 @@
-import { Shield, MapPin, ArrowRight, Mail } from "lucide-react";
+import { Shield, MapPin, ArrowRight } from "lucide-react";
 import type { StudentWithAssessments } from "@shared/schema";
 import { Link } from "wouter";
 import { useState } from "react";
@@ -15,29 +15,27 @@ interface StudentCardProps {
   showFullInfo?: boolean;
 }
 
-const generateCSSAvatar = (firstName: string, studentId: string) => {
-  const seed = parseInt(studentId.slice(-8), 16);
-  const colors = ["#2563EB","#1D4ED8","#3B82F6","#4F46E5","#0369A1","#7C3AED","#0284C7","#6366F1","#1E40AF","#3730A3"];
-  return {
-    initials: `${firstName.charAt(0)}`.toUpperCase(),
-    backgroundColor: colors[seed % colors.length],
-  };
-};
+const AVATAR_COLORS = [
+  "#1D4ED8","#1E40AF","#2563EB","#0369A1","#0284C7",
+  "#4F46E5","#3730A3","#6366F1","#7C3AED","#0F172A",
+];
+
+const generateAvatar = (firstName: string, studentId: string) => ({
+  initials: firstName.charAt(0).toUpperCase(),
+  backgroundColor: AVATAR_COLORS[parseInt(studentId.slice(-8), 16) % AVATAR_COLORS.length],
+});
 
 function inferBestRole(dsa: number, comm: number, cs: number): string {
   if (dsa >= 80 && cs >= 70) return "Backend / Systems";
   if (dsa >= 70 && cs >= 70) return "Full-Stack";
   if (comm >= 70 && dsa >= 60) return "Full-Stack / Product";
-  if (dsa >= 70) return "Software Eng.";
-  return "Full-Stack";
+  if (dsa >= 70) return "Software Engineer";
+  return "Full-Stack Engineer";
 }
 
-// Resolve real scores (0-100 from DB) or fall back to computed
 function resolveScores(student: StudentWithAssessments, seed: number) {
-  const compute = (offset: number) => {
-    const variation = ((seed * 37 + offset) % 3) - 1;
-    return Math.max(1, Math.min(5, 4 + variation)) * 20;
-  };
+  const compute = (offset: number) =>
+    Math.max(1, Math.min(5, 4 + ((seed * 37 + offset) % 3) - 1)) * 20;
   return {
     dsa: student.dsaScore ?? compute(1),
     aptitude: student.aptitudeScore ?? compute(2),
@@ -57,25 +55,30 @@ function ScorePill({
   onClick: () => void;
   testId: string;
 }) {
-  const getColor = (v: number) =>
-    v >= 80
+  const colorClass =
+    value >= 80
       ? "text-blue-700 bg-blue-50 border-blue-200"
-      : v >= 60
+      : value >= 60
       ? "text-slate-700 bg-slate-50 border-slate-200"
       : "text-slate-500 bg-white border-slate-200";
 
   return (
     <button
       onClick={(e) => { e.preventDefault(); onClick(); }}
-      className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] font-semibold transition-all hover:scale-105 ${getColor(value)}`}
+      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded border text-[11px] font-medium transition-colors hover:bg-slate-100 ${colorClass}`}
       data-testid={testId}
       title={`${label}: ${value}/100`}
     >
-      {label}
-      <span className="font-bold">{value}</span>
+      {label} <span className="font-bold tabular-nums">{value}</span>
     </button>
   );
 }
+
+const VERDICT_STYLE: Record<string, string> = {
+  "Strong Hire": "bg-blue-600 text-white",
+  "Hire":        "bg-slate-100 text-slate-700 border border-slate-200",
+  "Weak Hire":   "bg-slate-50  text-slate-500 border border-slate-200",
+};
 
 export default function StudentCard({ student }: StudentCardProps) {
   const [selectedAssessment, setSelectedAssessment] = useState<{type: string; score: number; level: string} | null>(null);
@@ -90,12 +93,11 @@ export default function StudentCard({ student }: StudentCardProps) {
   const scores = resolveScores(student, seed);
   const avg = Math.round((scores.dsa + scores.aptitude + scores.verbal + scores.csFund) / 4);
   const overall = student.overallAssessmentScore ?? avg;
-  const cssAvatar = generateCSSAvatar(student.firstName, student.id);
+  const avatar = generateAvatar(student.firstName, student.id);
   const bestRole = inferBestRole(scores.dsa, scores.verbal, scores.csFund);
 
-  // University abbreviation — use up to 3 words max
   const uniShort = (student.university || "")
-    .replace(/\s*-\s*[A-Za-z\s,]+$/, "")  // strip city suffix
+    .replace(/\s*-\s*[A-Za-z\s,]+$/, "")
     .split(" ")
     .slice(0, 5)
     .join(" ");
@@ -103,132 +105,123 @@ export default function StudentCard({ student }: StudentCardProps) {
   const scoreLabel = (v: number) =>
     v >= 80 ? "Excellent" : v >= 65 ? "Good" : v >= 50 ? "Fair" : "Basic";
 
+  const verdict = student.recommendation as string | undefined;
+
   return (
     <Link href={`/student/${student.id}`}>
       <div
-        className="group bg-white border border-slate-100 rounded-xl shadow-sm hover:shadow-lg hover:border-blue-200 transition-all duration-200 cursor-pointer overflow-hidden"
+        className="group bg-white border border-slate-100 rounded-lg hover:border-blue-200 hover:shadow-md transition-all duration-150 cursor-pointer"
         data-testid={`card-student-${student.id}`}
       >
-        <div className="p-4">
-          <div className="flex items-start gap-3">
-            {/* Avatar */}
-            <div className="relative shrink-0">
+        <div className="px-4 py-3 flex items-center gap-4">
+
+          {/* Avatar */}
+          <div className="relative shrink-0">
+            <div
+              className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-base"
+              style={{ backgroundColor: avatar.backgroundColor }}
+              data-testid={`div-student-avatar-fallback-${student.id}`}
+            >
+              {avatar.initials}
+            </div>
+            {student.verified && (
               <div
-                className="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black text-lg"
-                style={{ backgroundColor: cssAvatar.backgroundColor }}
-                data-testid={`div-student-avatar-fallback-${student.id}`}
+                className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white"
+                title="NxtWave Edge Verified"
               >
-                {cssAvatar.initials}
+                <Shield className="w-2 h-2 text-white" />
               </div>
-              {student.verified && (
-                <div
-                  className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center border-2 border-white"
-                  title="NxtWave Edge Verified"
-                >
-                  <Shield className="w-2 h-2 text-white" />
-                </div>
+            )}
+          </div>
+
+          {/* Main content */}
+          <div className="flex-1 min-w-0">
+            {/* Row 1: Name + verdict + score */}
+            <div className="flex items-center gap-2">
+              <span
+                className="font-semibold text-slate-900 text-sm leading-tight group-hover:text-blue-700 transition-colors truncate"
+                data-testid={`text-student-name-${student.id}`}
+              >
+                {student.firstName} {student.lastName}
+              </span>
+              {verdict && VERDICT_STYLE[verdict] && (
+                <span className={`shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full ${VERDICT_STYLE[verdict]}`}>
+                  {verdict}
+                </span>
               )}
             </div>
 
-            {/* Identity */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <p
-                    className="font-bold text-slate-900 text-sm leading-tight group-hover:text-blue-600 transition-colors truncate"
-                    data-testid={`text-student-name-${student.id}`}
+            {/* Row 2: Role · University · Location */}
+            <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-slate-400 flex-wrap">
+              <span className="text-blue-600 font-medium">{bestRole}</span>
+              <span>·</span>
+              <span
+                className="truncate max-w-[180px]"
+                data-testid={`text-student-university-${student.id}`}
+              >
+                {uniShort}
+              </span>
+              {student.location && (
+                <>
+                  <span>·</span>
+                  <span
+                    className="flex items-center gap-0.5"
+                    data-testid={`text-student-location-${student.id}`}
                   >
-                    {student.firstName} {student.lastName}
-                  </p>
-                  <p className="text-[11px] text-blue-600 font-semibold mt-0.5">{bestRole}</p>
-                </div>
+                    <MapPin className="w-2.5 h-2.5" />
+                    {student.location.split(",")[0]}
+                  </span>
+                </>
+              )}
+            </div>
 
-                {/* Overall score badge */}
-                <div className="shrink-0 text-right">
-                  <div className="text-2xl font-black text-slate-900 leading-none">{overall}</div>
-                  <div className="text-[9px] font-semibold text-slate-400 uppercase tracking-wide mt-0.5">
-                    {scoreLabel(overall)}
-                  </div>
-                </div>
-              </div>
-
-              {/* Meta */}
-              <div className="flex items-center gap-2 mt-1.5 text-[11px] text-slate-400 flex-wrap">
-                <span
-                  className="truncate max-w-[160px]"
-                  data-testid={`text-student-university-${student.id}`}
-                >
-                  {uniShort}
-                </span>
-                {student.location && (
-                  <>
-                    <span>·</span>
-                    <span
-                      className="flex items-center gap-0.5"
-                      data-testid={`text-student-location-${student.id}`}
-                    >
-                      <MapPin className="w-2.5 h-2.5" />
-                      {student.location.split(",")[0]}
-                    </span>
-                  </>
-                )}
-              </div>
+            {/* Row 3: Score pills */}
+            <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+              <ScorePill
+                label="DSA"
+                value={scores.dsa}
+                onClick={() => setSelectedAssessment({ type: "DSA", score: scores.dsa, level: scoreLabel(scores.dsa) })}
+                testId={`button-dsa-assessment-${student.id}`}
+              />
+              <ScorePill
+                label="CS"
+                value={scores.csFund}
+                onClick={() => setSelectedAssessment({ type: "CS Fundamentals", score: scores.csFund, level: scoreLabel(scores.csFund) })}
+                testId={`button-cs-fundamentals-assessment-${student.id}`}
+              />
+              <ScorePill
+                label="Verbal"
+                value={scores.verbal}
+                onClick={() => setSelectedAssessment({ type: "Verbal Ability", score: scores.verbal, level: scoreLabel(scores.verbal) })}
+                testId={`button-communication-assessment-${student.id}`}
+              />
+              <ScorePill
+                label="Coding"
+                value={scores.aptitude}
+                onClick={() => setSelectedAssessment({ type: "Aptitude", score: scores.aptitude, level: scoreLabel(scores.aptitude) })}
+                testId={`button-aptitude-assessment-${student.id}`}
+              />
             </div>
           </div>
 
-          {/* Score pills row */}
-          <div className="flex items-center gap-1.5 mt-3 flex-wrap">
-            <ScorePill
-              label="DSA"
-              value={scores.dsa}
-              onClick={() => setSelectedAssessment({ type: "DSA", score: scores.dsa, level: scoreLabel(scores.dsa) })}
-              testId={`button-dsa-assessment-${student.id}`}
-            />
-            <ScorePill
-              label="CS"
-              value={scores.csFund}
-              onClick={() => setSelectedAssessment({ type: "CS Fundamentals", score: scores.csFund, level: scoreLabel(scores.csFund) })}
-              testId={`button-cs-fundamentals-assessment-${student.id}`}
-            />
-            <ScorePill
-              label="Verbal"
-              value={scores.verbal}
-              onClick={() => setSelectedAssessment({ type: "Verbal Ability", score: scores.verbal, level: scoreLabel(scores.verbal) })}
-              testId={`button-communication-assessment-${student.id}`}
-            />
-            <ScorePill
-              label="Coding"
-              value={scores.aptitude}
-              onClick={() => setSelectedAssessment({ type: "Aptitude", score: scores.aptitude, level: scoreLabel(scores.aptitude) })}
-              testId={`button-aptitude-assessment-${student.id}`}
-            />
-
-            {/* View Profile CTA — pushes to right */}
-            <div className="ml-auto flex items-center gap-1">
-              <button
-                onClick={(e) => { e.preventDefault(); }}
-                className="p-1.5 rounded-full text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
-                title="Contact team"
-                data-testid={`button-contact-team-${student.id}`}
-              >
-                <Mail className="w-3.5 h-3.5" />
-              </button>
-              <div
-                className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 group-hover:translate-x-0.5 transition-transform"
-                data-testid={`button-view-profile-${student.id}`}
-              >
-                View Profile
-                <ArrowRight className="w-3.5 h-3.5" />
-              </div>
+          {/* Right: Overall score + View Profile */}
+          <div className="shrink-0 flex flex-col items-end gap-2">
+            <div className="text-right">
+              <div className="text-xl font-black text-slate-900 leading-none tabular-nums">{overall}</div>
+              <div className="text-[9px] font-medium text-slate-400 uppercase tracking-wide mt-0.5">Score</div>
+            </div>
+            <div
+              className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 group-hover:gap-1.5 transition-all"
+              data-testid={`button-view-profile-${student.id}`}
+            >
+              View Profile <ArrowRight className="w-3.5 h-3.5" />
             </div>
           </div>
+
         </div>
-
-        {/* Bottom accent bar on hover */}
-        <div className="h-0.5 bg-blue-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
       </div>
 
-      {/* Modals — outside the card Link to avoid nested anchors */}
+      {/* Modals — outside Link to avoid nested anchors */}
       {selectedAssessment && (
         <AssessmentModal assessment={selectedAssessment} student={student} onClose={() => setSelectedAssessment(null)} />
       )}

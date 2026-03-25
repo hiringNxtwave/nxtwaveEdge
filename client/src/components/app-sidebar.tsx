@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   User,
   LogOut,
+  Mail,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -140,6 +141,22 @@ export default function AppSidebar() {
           );
         })}
       </nav>
+
+      {/* Contact Us */}
+      <div className="px-2 pb-2 shrink-0">
+        <a
+          href="mailto:leadgenplacements@gmail.com?subject=Hiring%20Enquiry%20-%20NxtWave%20Edge"
+          className={cn(
+            "w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium text-slate-400 hover:text-blue-400 hover:bg-slate-800/60 transition-all duration-150",
+            collapsed && "justify-center"
+          )}
+          title="Contact NxtWave Edge"
+          data-testid="link-contact-us"
+        >
+          <Mail className="w-4 h-4 shrink-0" />
+          {!collapsed && <span>Contact Us</span>}
+        </a>
+      </div>
 
       {/* Bottom Section */}
       <div className="border-t border-slate-800/80 p-2 space-y-0.5 shrink-0">
