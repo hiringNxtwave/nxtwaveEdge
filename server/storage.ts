@@ -43,6 +43,7 @@ import {
 import { db } from "./db";
 import { eq, and, ilike, gte, desc, asc, sql, inArray, lt } from "drizzle-orm";
 import bcrypt from "bcrypt";
+import seedDataJson from "./student-seed-data.json";
 
 export interface IStorage {
   // User operations
@@ -1134,10 +1135,8 @@ export class DatabaseStorage implements IStorage {
     await db.delete(projects);
     await db.delete(students);
 
-    // Load real student data
-    const { createRequire } = await import("module");
-    const require = createRequire(import.meta.url);
-    const realStudents: any[] = require("./student-seed-data.json");
+    // Load real student data (bundled at compile time via top-level import)
+    const realStudents: any[] = seedDataJson as any[];
 
     // Insert in batches of 50 to avoid payload limits
     const BATCH = 50;

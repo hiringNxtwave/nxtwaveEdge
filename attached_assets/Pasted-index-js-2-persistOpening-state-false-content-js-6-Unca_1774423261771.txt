@@ -1,0 +1,21 @@
+index.js:2 persistOpening (state) false
+content.js:6 Uncaught TypeError: Cannot redefine property: __s@3s'"A213D+3
+    at Object.defineProperty (<anonymous>)
+    at content.js:6:21009
+    at content.js:6:21075
+    at content.js:6:25460
+    at content.js:6:25464
+content.883ade9e.js:1 D 0 
+content.883ade9e.js:1 Data: Array(0)
+index.js:2 Fetched persistOpening false
+(index):1 Unchecked runtime.lastError: The message port closed before a response was received.
+chunk-mgcl-Q2SRVQS5.js:16 @import rules are not allowed here. See https://github.com/WICG/construct-stylesheets/issues/119#issuecomment-588352418.
+(anonymous) @ chunk-mgcl-Q2SRVQS5.js:16
+about:srcdoc:5 Applying inline style violates the following Content Security Policy directive 'default-src 'none''. Either the 'unsafe-inline' keyword, a hash ('sha256-J2EWUq7kOe94LzxOnAX8zTo3ihJp1i/3BJpfLu5YPBc='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. Note also that 'style-src' was not explicitly set, so 'default-src' is used as a fallback. The action has been blocked.
+contentScript.js:29 no
+index.js:2 Fetched persistOpening false
+index.js:2 Fetched persistOpening false
+(index):1 Loading the stylesheet 'https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap' violates the following Content Security Policy directive: "default-src 'none'". Note that 'style-src-elem' was not explicitly set, so 'default-src' is used as a fallback. The action has been blocked.
+(index):1 Loading the stylesheet 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap' violates the following Content Security Policy directive: "default-src 'none'". Note that 'style-src-elem' was not explicitly set, so 'default-src' is used as a fallback. The action has been blocked.
+(index):1 Loading the stylesheet 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap' violates the following Content Security Policy directive: "default-src 'none'". Note that 'style-src-elem' was not explicitly set, so 'default-src' is used as a fallback. The action has been blocked.
+(index):1 Loading the stylesheet 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap' violates the following Content Security Policy directive: "default-src 'none'". Note that 'style-src-elem' was not explicitly set, so 'default-src' is used as a fallback. The action has been blocked.
