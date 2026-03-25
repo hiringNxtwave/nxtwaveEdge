@@ -42,15 +42,53 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Initialize database with sample data
   await storage.seedInitialData();
 
-  // Personal email domains to block (companies must use work email)
-  const PERSONAL_DOMAINS = new Set([
-    "gmail.com", "yahoo.com", "yahoo.in", "yahoo.co.in", "yahoo.co.uk",
-    "hotmail.com", "hotmail.in", "hotmail.co.in", "outlook.com", "live.com",
-    "live.in", "rediffmail.com", "aol.com", "icloud.com", "me.com",
-    "ymail.com", "protonmail.com", "tutanota.com", "rocketmail.com",
-    "inbox.com", "mail.com", "gmx.com", "gmx.in", "gmail.co.in",
-    "msn.com", "pm.me",
+  // Personal / free / academic email domains to block
+  const BLOCKED_DOMAINS = new Set([
+    // Gmail — exact + common typos
+    "gmail.com", "gmail.co", "gmail.net", "gmail.co.in",
+    "gmai.com", "gmal.com", "gmial.com", "gmali.com", "gmall.com",
+    "gmeil.com", "gemail.com", "googmail.com", "googlemail.com",
+    // Yahoo — exact + common typos
+    "yahoo.com", "yahoo.in", "yahoo.co.in", "yahoo.co.uk",
+    "yaho.com", "yahooo.com", "yahoomail.com", "yahoo.com.in",
+    "ymail.com", "rocketmail.com",
+    // Outlook / Hotmail / Live / MSN / Windows
+    "outlook.com", "outlook.in", "outlook.co.in",
+    "hotmail.com", "hotmail.in", "hotmail.co.in", "hotmail.co.uk",
+    "live.com", "live.in", "live.co.in", "live.co.uk",
+    "msn.com", "windowslive.com",
+    // Other major free providers
+    "rediffmail.com", "rediff.com",
+    "aol.com", "aim.com",
+    "icloud.com", "me.com", "mac.com",
+    "protonmail.com", "protonmail.ch", "pm.me",
+    "tutanota.com", "tutanota.de", "tutamail.com", "tuta.io",
+    "inbox.com", "mail.com", "gmx.com", "gmx.in", "gmx.net", "gmx.de",
+    "zohomail.com", "zoho.com",
+    "yandex.com", "yandex.ru",
+    "fastmail.com", "fastmail.fm",
+    "guerrillamail.com", "tempmail.com", "throwam.com",
   ]);
+
+  // Academic + government TLD suffixes to block
+  const BLOCKED_SUFFIXES = [
+    ".edu", ".ac.in", ".edu.in", ".ac.uk", ".edu.au",
+    ".ac.nz", ".edu.sg", ".ac.id", ".edu.pk", ".ac.za",
+    ".gov.in", ".gov.com", ".nic.in",
+  ];
+
+  function isBlockedEmail(email: string): string | null {
+    const d = email.trim().toLowerCase().split("@")[1] || "";
+    if (BLOCKED_DOMAINS.has(d)) {
+      return "Personal email addresses are not accepted. Please use your company email.";
+    }
+    for (const suffix of BLOCKED_SUFFIXES) {
+      if (d === suffix.slice(1) || d.endsWith(suffix)) {
+        return "Academic and government email addresses are not accepted. Please use your company email.";
+      }
+    }
+    return null;
+  }
 
   // ── In-memory OTP store ──────────────────────────────────────────────
   interface OtpEntry {
@@ -138,9 +176,9 @@ export async function registerRoutes(app: Express): Promise<void> {
         return res.status(400).json({ message: "Please enter a valid email address." });
       }
 
-      const domain = emailLower.split("@")[1];
-      if (PERSONAL_DOMAINS.has(domain)) {
-        return res.status(400).json({ message: "Please use your company email address. Personal emails are not allowed." });
+      const emailError = isBlockedEmail(emailLower);
+      if (emailError) {
+        return res.status(400).json({ message: emailError });
       }
 
       const mobileClean = mobile ? mobile.replace(/\D/g, "") : "";
