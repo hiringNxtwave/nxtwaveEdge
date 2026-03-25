@@ -445,7 +445,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       const company = await storage.getCompanyByUserId(userId);
       
       if (!company) {
-        return res.status(404).json({ message: "Company not found" });
+        return res.json([]);
       }
       
       const requirements = await storage.getCompanyRequirements(company.id);
@@ -475,10 +475,15 @@ export async function registerRoutes(app: Express): Promise<void> {
   app.post('/api/company/requirements', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.session.userId;
-      const company = await storage.getCompanyByUserId(userId);
+      let company = await storage.getCompanyByUserId(userId);
       
       if (!company) {
-        return res.status(404).json({ message: "Company not found" });
+        const user = await storage.getUser(userId);
+        const email = user?.email || '';
+        const domain = email.split('@')[1] || 'unknown.com';
+        const domainRoot = domain.split('.')[0] || 'Company';
+        const companyName = domainRoot.charAt(0).toUpperCase() + domainRoot.slice(1);
+        company = await storage.createCompany({ userId, name: companyName });
       }
 
       const requirementsData = insertCompanyRequirementsSchema.parse({
@@ -569,6 +574,85 @@ export async function registerRoutes(app: Express): Promise<void> {
     } catch (error) {
       console.error("Error deleting company requirements:", error);
       res.status(500).json({ message: "Failed to delete company requirements" });
+    }
+  });
+
+  // Contact inquiry — send notification email to NxtWave team
+  app.post('/api/contact-inquiry', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { studentId, jobContext } = req.body;
+
+      const [user, student] = await Promise.all([
+        storage.getUser(userId),
+        studentId ? storage.getStudentById(studentId) : Promise.resolve(null),
+      ]);
+
+      const recruiterName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email : 'Unknown';
+      const recruiterEmail = user?.email || 'Unknown';
+      const recruiterPhone = user?.mobile || 'Not provided';
+      const recruiterCompany = recruiterEmail.includes('@') ? recruiterEmail.split('@')[1] : 'Unknown';
+      const candidateName = student ? `${student.firstName} ${student.lastName}` : `Student #${studentId}`;
+      const candidateUniversity = (student as any)?.university || 'N/A';
+      const candidateRecommendation = (student as any)?.recommendation || 'N/A';
+      const candidateScore = (student as any)?.overallAssessmentScore ?? 'N/A';
+
+      const subject = `NxtWave Edge: Interest in ${candidateName}`;
+      const html = `
+        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:32px 24px;color:#0f172a">
+          <h2 style="font-size:20px;font-weight:700;margin:0 0 4px">New Candidate Interest — NxtWave Edge</h2>
+          <p style="color:#64748b;font-size:14px;margin:0 0 24px">A recruiter has expressed interest in a candidate on the platform.</p>
+
+          <div style="background:#f8fafc;border-radius:10px;padding:18px;margin-bottom:16px">
+            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#94a3b8;margin:0 0 12px">Recruiter</p>
+            <table style="width:100%;border-collapse:collapse;font-size:14px">
+              <tr><td style="padding:3px 0;color:#64748b;width:130px">Name</td><td style="padding:3px 0;font-weight:600">${recruiterName}</td></tr>
+              <tr><td style="padding:3px 0;color:#64748b">Email</td><td style="padding:3px 0;font-weight:600">${recruiterEmail}</td></tr>
+              <tr><td style="padding:3px 0;color:#64748b">Phone</td><td style="padding:3px 0;font-weight:600">${recruiterPhone}</td></tr>
+              <tr><td style="padding:3px 0;color:#64748b">Company</td><td style="padding:3px 0;font-weight:600">${recruiterCompany}</td></tr>
+            </table>
+          </div>
+
+          <div style="background:#eff6ff;border-radius:10px;padding:18px;margin-bottom:16px">
+            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#93c5fd;margin:0 0 12px">Candidate</p>
+            <table style="width:100%;border-collapse:collapse;font-size:14px">
+              <tr><td style="padding:3px 0;color:#64748b;width:130px">Name</td><td style="padding:3px 0;font-weight:600">${candidateName}</td></tr>
+              <tr><td style="padding:3px 0;color:#64748b">University</td><td style="padding:3px 0;font-weight:600">${candidateUniversity}</td></tr>
+              <tr><td style="padding:3px 0;color:#64748b">Recommendation</td><td style="padding:3px 0;font-weight:600">${candidateRecommendation}</td></tr>
+              <tr><td style="padding:3px 0;color:#64748b">Score</td><td style="padding:3px 0;font-weight:600">${candidateScore}/100</td></tr>
+            </table>
+          </div>
+
+          ${jobContext ? `
+          <div style="background:#f0fdf4;border-radius:10px;padding:18px;margin-bottom:16px">
+            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#86efac;margin:0 0 8px">Job</p>
+            <p style="font-size:14px;margin:0;font-weight:600">${jobContext}</p>
+          </div>
+          ` : ''}
+
+          <p style="color:#94a3b8;font-size:12px;margin:24px 0 0">Sent from NxtWave Edge · ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</p>
+        </div>
+      `;
+
+      const apiKey = process.env.SENDGRID_API_KEY;
+      if (apiKey) {
+        const sgMail = (await import("@sendgrid/mail")).default;
+        sgMail.setApiKey(apiKey);
+        await sgMail.send({
+          to: 'sagar.mood@nxtwave.co.in',
+          from: { email: 'girish@nxtwave.info', name: 'NxtWave Edge' },
+          subject,
+          html,
+          text: `Recruiter ${recruiterName} (${recruiterEmail}, ${recruiterPhone}) is interested in ${candidateName} from ${candidateUniversity}. Recommendation: ${candidateRecommendation}. Score: ${candidateScore}/100.${jobContext ? ` Job: ${jobContext}` : ''}`,
+        });
+      } else {
+        console.log(`[DEV] Contact inquiry: ${recruiterName} (${recruiterEmail}) → ${candidateName}`);
+      }
+
+      res.json({ sent: true });
+    } catch (error) {
+      console.error("Error sending contact inquiry:", error);
+      res.status(500).json({ message: "Failed to send inquiry" });
     }
   });
 

@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useParams } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   GraduationCap, ExternalLink, ArrowLeft, Video,
-  FileText, CheckCircle2, Star, Mail,
+  FileText, CheckCircle2, Star, Mail, Check,
 } from "lucide-react";
 
 type Tab = "assessment" | "interview1" | "interview2" | "verdict";
@@ -26,7 +27,29 @@ export default function StudentProfile() {
   useScrollToTop();
 
   const { id } = useParams() as { id: string };
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<Tab>("assessment");
+  const [isSendingContact, setIsSendingContact] = useState(false);
+  const [contactSent, setContactSent] = useState(false);
+
+  async function handleContactUs() {
+    if (isSendingContact || contactSent) return;
+    setIsSendingContact(true);
+    try {
+      const res = await fetch("/api/contact-inquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId: id }),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setContactSent(true);
+      toast({ title: "Request sent!", description: "Our team will reach out to you shortly." });
+    } catch {
+      toast({ title: "Error", description: "Could not send request. Please try again.", variant: "destructive" });
+    } finally {
+      setIsSendingContact(false);
+    }
+  }
 
   const { data: student, isLoading, error } = useQuery({
     queryKey: ["/api/students", id],
@@ -94,9 +117,6 @@ export default function StudentProfile() {
     { label: "Communication",   value: student.verbalCommunicationScore != null ? `${student.verbalCommunicationScore}/100` : null },
   ].filter(r => r.value != null) as { label: string; value: string }[];
 
-  const contactSubject = encodeURIComponent(
-    `Interested in ${student.firstName} ${student.lastName} — NxtWave Edge`
-  );
 
   return (
     <div className="min-h-screen bg-[#F4F6F8]">
@@ -215,13 +235,19 @@ export default function StudentProfile() {
             )}
 
             {/* Contact CTA */}
-            <a
-              href={`mailto:leadgenplacements@gmail.com?subject=${contactSubject}`}
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-3 rounded-xl transition-colors shadow-sm"
+            <button
+              onClick={handleContactUs}
+              disabled={isSendingContact || contactSent}
+              className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold px-4 py-3 rounded-xl transition-colors shadow-sm"
             >
-              <Mail className="w-4 h-4" />
-              Interested? Contact NxtWave
-            </a>
+              {contactSent ? (
+                <><Check className="w-4 h-4" /> Request Sent</>
+              ) : isSendingContact ? (
+                <><Mail className="w-4 h-4 animate-pulse" /> Sending…</>
+              ) : (
+                <><Mail className="w-4 h-4" /> Interested? Contact Us</>
+              )}
+            </button>
           </div>
 
           {/* ── RIGHT PANEL ── */}

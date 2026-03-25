@@ -43,8 +43,14 @@ export default function BrowseStudents() {
   const [jobRole, setJobRole] = useState("");
   const [jobLocation, setJobLocation] = useState("");
   const [jobSalary, setJobSalary] = useState("");
-  const [activeJob, setActiveJob] = useState<{ role: string; location: string; salary: string; jobTitle?: string } | null>(null);
-  const [matchedStudents, setMatchedStudents] = useState<any[] | null>(null);
+  const [activeJob, setActiveJob] = useState<{ role: string; location: string; salary: string; jobTitle?: string } | null>(() => {
+    if (!jobIdFromUrl) return null;
+    try { return JSON.parse(sessionStorage.getItem(`activeJob:${jobIdFromUrl}`) || "null"); } catch { return null; }
+  });
+  const [matchedStudents, setMatchedStudents] = useState<any[] | null>(() => {
+    if (!jobIdFromUrl) return null;
+    try { return JSON.parse(sessionStorage.getItem(`jobMatch:${jobIdFromUrl}`) || "null"); } catch { return null; }
+  });
   const popupShownRef = useRef(false);
   const jobIdMatchTriggeredRef = useRef<string | null>(null);
 
@@ -69,14 +75,31 @@ export default function BrowseStudents() {
     },
   });
 
+  // Persist matched students/job to sessionStorage so they survive navigation
+  useEffect(() => {
+    if (matchedStudents && jobIdFromUrl) {
+      sessionStorage.setItem(`jobMatch:${jobIdFromUrl}`, JSON.stringify(matchedStudents));
+    }
+  }, [matchedStudents, jobIdFromUrl]);
+
+  useEffect(() => {
+    if (activeJob && jobIdFromUrl) {
+      sessionStorage.setItem(`activeJob:${jobIdFromUrl}`, JSON.stringify(activeJob));
+    }
+  }, [activeJob, jobIdFromUrl]);
+
   useEffect(() => {
     if (
       jobIdFromUrl &&
       isAuthenticated &&
-      jobIdMatchTriggeredRef.current !== jobIdFromUrl
+      jobIdMatchTriggeredRef.current !== jobIdFromUrl &&
+      !matchedStudents
     ) {
       jobIdMatchTriggeredRef.current = jobIdFromUrl;
       jobMatchByIdMutation.mutate(jobIdFromUrl);
+    } else if (jobIdFromUrl && matchedStudents) {
+      // Data already restored from sessionStorage — mark as triggered
+      jobIdMatchTriggeredRef.current = jobIdFromUrl;
     }
   }, [jobIdFromUrl, isAuthenticated]);
 
@@ -147,8 +170,10 @@ export default function BrowseStudents() {
     setJobRole("");
     setJobLocation("");
     setJobSalary("");
-    // Remove jobId from URL without reload
+    // Clear sessionStorage cache and URL
     if (jobIdFromUrl) {
+      sessionStorage.removeItem(`jobMatch:${jobIdFromUrl}`);
+      sessionStorage.removeItem(`activeJob:${jobIdFromUrl}`);
       window.history.replaceState({}, "", "/browse");
       jobIdMatchTriggeredRef.current = null;
     }

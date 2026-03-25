@@ -85,7 +85,7 @@ function Router() {
             <Route path="/talent" component={() => <AppShell><TalentDashboard /></AppShell>} />
             <Route path="/shortlisting" component={() => <AppShell><ShortlistingPage /></AppShell>} />
             <Route path="/market-intelligence" component={() => <AppShell><MarketIntelligencePage /></AppShell>} />
-            <Route path="/company-profile" component={() => (
+            <Route path="/jobs" component={() => (
               <AppShell>
                 <div className="min-h-screen bg-[#F8FAFC]">
                   <div className="bg-white border-b border-slate-100 px-6 py-6">
