@@ -591,6 +591,31 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // Public sample student endpoint — no auth required
+  app.get('/api/public/sample-student', async (req, res) => {
+    try {
+      const results = await storage.getStudents({ recommendation: 'Strong Hire', limit: 1, offset: 0 });
+      const student = results[0] ?? null;
+      if (!student) return res.status(404).json({ message: "No sample available" });
+      // Return a curated subset — no contact info
+      res.json({
+        id: student.id,
+        fullName: `${student.firstName} ${student.lastName}`,
+        university: student.university,
+        recommendation: student.recommendation,
+        overallAssessmentScore: student.overallAssessmentScore,
+        preferredRoles: student.preferredRoles,
+        preferredLocations: student.preferredLocations,
+        cgpa: student.cgpa,
+        graduationYear: student.graduationYear,
+        branch: student.branch,
+      });
+    } catch (error) {
+      console.error("Error fetching sample student:", error);
+      res.status(500).json({ message: "Failed to fetch sample student" });
+    }
+  });
+
   // Student routes (public for preview, protected for full access)
   app.get('/api/students', async (req, res) => {
     try {

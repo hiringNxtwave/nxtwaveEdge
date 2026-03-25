@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, type ChangeEvent } from "react";
 import { useLocation } from "wouter";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Mail, RotateCcw, ShieldCheck, Eye } from "lucide-react";
+import { Mail, RotateCcw, ShieldCheck, Eye, X, MapPin, GraduationCap, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
 
 /* ── helpers ─────────────────────────────────────────────── */
@@ -28,14 +28,238 @@ function parseServerError(err: any): string {
   return "Something went wrong. Please try again.";
 }
 
+/* ── Sliding candidates ──────────────────────────────────── */
+
+const slidingCandidates = [
+  { name: "Arjun S.", college: "IIT Kharagpur", role: "Full Stack Developer", score: 156, verdict: "Very Strong", initials: "A", avatarBg: "bg-blue-100 text-blue-700" },
+  { name: "Priya M.", college: "NIT Trichy", role: "Backend Engineer", score: 148, verdict: "Strong", initials: "P", avatarBg: "bg-indigo-100 text-indigo-700" },
+  { name: "Rahul K.", college: "BITS Pilani", role: "Frontend Developer", score: 162, verdict: "Very Strong", initials: "R", avatarBg: "bg-sky-100 text-sky-700" },
+  { name: "Sneha R.", college: "IIT Madras", role: "SDE", score: 151, verdict: "Strong", initials: "S", avatarBg: "bg-blue-100 text-blue-700" },
+  { name: "Vikram D.", college: "IIIT Hyderabad", role: "Backend Developer", score: 159, verdict: "Very Strong", initials: "V", avatarBg: "bg-indigo-100 text-indigo-700" },
+];
+
+const hiringLogos = [
+  { name: "Persistent", logo: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/persistent%20logo.avif" },
+  { name: "[x]cube Labs", logo: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/xcube-logo-black.png" },
+];
+
+function CandidateCarousel() {
+  const [current, setCurrent] = useState(0);
+  const [animating, setAnimating] = useState(false);
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setAnimating(true);
+      setTimeout(() => {
+        setCurrent(c => (c + 1) % slidingCandidates.length);
+        setAnimating(false);
+      }, 300);
+    }, 3500);
+    return () => clearInterval(t);
+  }, []);
+
+  const c = slidingCandidates[current];
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 max-w-sm">
+      {/* Header row */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className="w-5 h-5 rounded bg-blue-100 flex items-center justify-center">
+            <div className="w-2.5 h-2.5 grid grid-cols-2 gap-0.5">
+              {[...Array(4)].map((_,i)=><div key={i} className="bg-blue-500 rounded-[1px]"/>)}
+            </div>
+          </div>
+          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+            Shortlisted Profiles
+          </span>
+        </div>
+        {/* Dots indicator */}
+        <div className="flex items-center gap-1">
+          {slidingCandidates.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`transition-all duration-300 rounded-full ${i === current ? "w-5 h-1.5 bg-blue-600" : "w-1.5 h-1.5 bg-slate-200 hover:bg-slate-300"}`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Candidate — slides in/out */}
+      <div
+        className={`transition-all duration-300 ${animating ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0"}`}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${c.avatarBg}`}>
+            {c.initials}
+          </div>
+          <div>
+            <p className="text-sm font-bold text-slate-900">{c.name}</p>
+            <p className="text-xs text-slate-400">{c.college}</p>
+          </div>
+        </div>
+
+        <div className="h-px bg-slate-100 mb-4" />
+
+        <div className="grid grid-cols-3 gap-3">
+          <div>
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Role Fit</p>
+            <p className="text-[12px] font-bold text-slate-800 leading-tight">{c.role}</p>
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Score</p>
+            <p className="text-[13px] font-bold text-slate-800">{c.score}/170</p>
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Verdict</p>
+            <p className="text-[13px] font-bold text-blue-600">{c.verdict}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Sample profile modal ────────────────────────────────── */
+
+function SampleProfileModal({ onClose }: { onClose: () => void }) {
+  const { data: student, isLoading } = useQuery<any>({
+    queryKey: ["/api/public/sample-student"],
+  });
+
+  useEffect(() => {
+    const esc = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", esc);
+    return () => document.removeEventListener("keydown", esc);
+  }, [onClose]);
+
+  function parseJson(val: any): string[] {
+    if (!val) return [];
+    try { const p = JSON.parse(val); return Array.isArray(p) ? p : Object.values(p); } catch { return []; }
+  }
+
+  const roles = parseJson(student?.preferredRoles);
+  const locations = parseJson(student?.preferredLocations);
+
+  const verdictColor =
+    student?.recommendation === "Strong Hire" ? "bg-blue-50 text-blue-700 border-blue-200" :
+    student?.recommendation === "Hire"        ? "bg-slate-50 text-slate-700 border-slate-200" :
+    "bg-slate-50 text-slate-600 border-slate-200";
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      onClick={e => { if (e.target === e.currentTarget) onClose(); }}
+    >
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden">
+        {/* Header bar */}
+        <div className="bg-[#EEF4FF] px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Star className="w-4 h-4 text-blue-600 fill-blue-600" />
+            <span className="text-sm font-bold text-blue-700 uppercase tracking-widest">Sample Profile</span>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-full hover:bg-blue-100 flex items-center justify-center transition-colors">
+            <X className="w-4 h-4 text-slate-500" />
+          </button>
+        </div>
+
+        {isLoading ? (
+          <div className="px-6 py-10 flex items-center justify-center">
+            <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          </div>
+        ) : student ? (
+          <div className="px-6 py-6 space-y-5">
+            {/* Identity */}
+            <div className="flex items-start gap-4">
+              <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-extrabold text-xl shrink-0">
+                {student.fullName?.charAt(0) ?? "?"}
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-extrabold text-slate-900 tracking-tight">{student.fullName}</h3>
+                <div className="flex items-center gap-1.5 mt-1 text-slate-500 text-sm">
+                  <GraduationCap className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">{student.university}</span>
+                </div>
+                {student.branch && (
+                  <p className="text-xs text-slate-400 mt-0.5">{student.branch} · {student.graduationYear}</p>
+                )}
+              </div>
+              <span className={`shrink-0 text-xs font-bold px-2.5 py-1 rounded-lg border ${verdictColor}`}>
+                {student.recommendation}
+              </span>
+            </div>
+
+            <div className="h-px bg-slate-100" />
+
+            {/* Score */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-slate-50 rounded-xl px-4 py-3">
+                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Assessment Score</p>
+                <p className="text-2xl font-extrabold text-slate-900">
+                  {student.overallAssessmentScore ?? "—"}<span className="text-sm font-semibold text-slate-400">/170</span>
+                </p>
+              </div>
+              {student.cgpa && (
+                <div className="bg-slate-50 rounded-xl px-4 py-3">
+                  <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">CGPA</p>
+                  <p className="text-2xl font-extrabold text-slate-900">{parseFloat(student.cgpa).toFixed(1)}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Roles */}
+            {roles.length > 0 && (
+              <div>
+                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Role Strengths</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {roles.slice(0, 4).map((r: string) => (
+                    <span key={r} className="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-lg">{r}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Locations */}
+            {locations.length > 0 && (
+              <div>
+                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Open to Locations</p>
+                <div className="flex flex-wrap gap-2 items-center">
+                  <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                  {locations.slice(0, 4).map((l: string) => (
+                    <span key={l} className="text-sm text-slate-600 font-medium">{l}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="h-px bg-slate-100" />
+
+            {/* CTA */}
+            <p className="text-xs text-slate-500 text-center">
+              This is a live profile from our pool of <span className="font-semibold text-slate-700">327+ pre-assessed freshers</span>. Log in to see full contact details and assessment reports.
+            </p>
+          </div>
+        ) : (
+          <div className="px-6 py-8 text-center text-slate-400 text-sm">Could not load profile. Please try again.</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* ── Left marketing panel ────────────────────────────────── */
 
-function LeftPanel() {
+function LeftPanel({ onPreview }: { onPreview: () => void }) {
+  const [, navigate] = useLocation();
+
   return (
     <div className="hidden lg:flex flex-col justify-between bg-[#EEF4FF] px-10 py-10 h-full min-h-screen">
-      {/* Logo */}
+      {/* Logo — click goes to landing */}
       <div>
-        <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto" />
+        <button onClick={() => navigate("/")} className="focus:outline-none">
+          <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto hover:opacity-80 transition-opacity" />
+        </button>
       </div>
 
       {/* Main copy */}
@@ -46,76 +270,36 @@ function LeftPanel() {
             Shortlist is Ready.
           </h1>
           <p className="text-slate-600 text-base mt-4 leading-relaxed max-w-sm">
-            2,500+ companies use Edge to hire top 0.1% freshers, pre-vetted,
+            2,500+ companies use Edge to hire top freshers, pre-vetted,
             benchmark-verified, and ready to deploy.
           </p>
         </div>
 
-        {/* Sample profile card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 max-w-sm">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded bg-blue-100 flex items-center justify-center">
-                <div className="w-2.5 h-2.5 grid grid-cols-2 gap-0.5">
-                  {[...Array(4)].map((_,i)=><div key={i} className="bg-blue-500 rounded-[1px]"/>)}
-                </div>
-              </div>
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
-                Shortlisted Profiles
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <div className="w-5 h-1.5 rounded-full bg-blue-600" />
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
-              <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
-            </div>
-          </div>
-
-          {/* Candidate row */}
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm shrink-0">
-              A
-            </div>
-            <div>
-              <p className="text-sm font-bold text-slate-900">Arjun S.</p>
-              <p className="text-xs text-slate-400">IIT Kharagpur</p>
-            </div>
-          </div>
-
-          <div className="h-px bg-slate-100 mb-4" />
-
-          {/* Stats row */}
-          <div className="grid grid-cols-3 gap-3">
-            <div>
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Role Fit</p>
-              <p className="text-[13px] font-bold text-slate-800">Full Stack Developer</p>
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Score</p>
-              <p className="text-[13px] font-bold text-slate-800">156/170</p>
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Verdict</p>
-              <p className="text-[13px] font-bold text-blue-600">Very Strong</p>
-            </div>
-          </div>
-        </div>
+        {/* Sliding candidate card */}
+        <CandidateCarousel />
 
         {/* Preview link */}
-        <button className="flex items-center gap-2 text-blue-600 text-sm font-semibold hover:text-blue-700 transition-colors w-fit">
+        <button
+          onClick={onPreview}
+          className="flex items-center gap-2 text-blue-600 text-sm font-semibold hover:text-blue-700 transition-colors w-fit"
+        >
           <Eye className="w-4 h-4" />
           Preview a Sample Profile
         </button>
 
-        {/* Trusted by */}
+        {/* Trusted by with real logos */}
         <div>
           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Trusted By</p>
-          <div className="flex items-center gap-4 flex-wrap">
-            {["Persistent", "[x]cube Labs", "Infosys BPM", "LTIMindtree"].map(c => (
-              <span key={c} className="text-[13px] font-semibold text-slate-500">{c}</span>
+          <div className="flex items-center gap-5 flex-wrap">
+            {hiringLogos.map(p => (
+              <img
+                key={p.name}
+                src={p.logo}
+                alt={p.name}
+                className="h-6 w-auto object-contain grayscale opacity-60"
+              />
             ))}
-            <span className="text-[13px] text-slate-400">and 2,500+ more companies</span>
+            <span className="text-[13px] text-slate-400 font-medium">and 2,500+ more companies</span>
           </div>
         </div>
       </div>
@@ -150,13 +334,6 @@ function EmailStep({ onSent }: { onSent: (email: string) => void }) {
       <div>
         <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Get Started</h2>
         <p className="text-slate-500 text-sm mt-1.5">Enter your work email to access the platform.</p>
-      </div>
-
-      {/* Progress */}
-      <div className="flex gap-1">
-        <div className="h-1 flex-1 rounded-full bg-blue-600" />
-        <div className="h-1 flex-1 rounded-full bg-slate-200" />
-        <div className="h-1 flex-1 rounded-full bg-slate-200" />
       </div>
 
       <form onSubmit={(e) => { e.preventDefault(); if (validate()) sendOtpMutation.mutate(); }} noValidate className="space-y-4">
@@ -246,13 +423,6 @@ function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
         <p className="text-slate-500 text-sm mt-1.5">
           We sent a 6-digit code to <span className="font-semibold text-slate-700">{email}</span>
         </p>
-      </div>
-
-      {/* Progress */}
-      <div className="flex gap-1">
-        <div className="h-1 flex-1 rounded-full bg-blue-600" />
-        <div className="h-1 flex-1 rounded-full bg-blue-600" />
-        <div className="h-1 flex-1 rounded-full bg-slate-200" />
       </div>
 
       <form onSubmit={(e) => { e.preventDefault(); if (otp.trim().length === 6) verifyMutation.mutate(); else setError("Please enter the full 6-digit code."); }} className="space-y-4">
@@ -361,18 +531,10 @@ function ProfileStep() {
           <Mail className="w-5 h-5 text-blue-600" />
         </div>
         <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Almost there!</h2>
-        <p className="text-slate-500 text-sm mt-1.5">Tell us a bit about yourself to set up your recruiter profile.</p>
-      </div>
-
-      {/* Progress */}
-      <div className="flex gap-1">
-        <div className="h-1 flex-1 rounded-full bg-blue-600" />
-        <div className="h-1 flex-1 rounded-full bg-blue-600" />
-        <div className="h-1 flex-1 rounded-full bg-blue-600" />
+        <p className="text-slate-500 text-sm mt-1.5">One quick step — tell us about yourself to set up your account.</p>
       </div>
 
       <form onSubmit={(e) => { e.preventDefault(); if (validate()) profileMutation.mutate(); }} noValidate className="space-y-4">
-        {/* Full Name */}
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
           <input
@@ -387,7 +549,6 @@ function ProfileStep() {
           {errors.name && <p className="mt-1.5 text-xs text-red-500">{errors.name}</p>}
         </div>
 
-        {/* Company */}
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-2">Company Name</label>
           <input
@@ -401,7 +562,6 @@ function ProfileStep() {
           {errors.company && <p className="mt-1.5 text-xs text-red-500">{errors.company}</p>}
         </div>
 
-        {/* Mobile */}
         <div>
           <label className="block text-sm font-semibold text-slate-700 mb-2">Mobile Number</label>
           <div className="flex gap-2">
@@ -442,9 +602,10 @@ function ProfileStep() {
 /* ── Main login page ─────────────────────────────────────── */
 
 export default function LoginPage() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [step, setStep] = useState<"email" | "otp">("email");
   const [sentEmail, setSentEmail] = useState("");
+  const [showSampleProfile, setShowSampleProfile] = useState(false);
 
   const isProfileRoute = location === "/login/profile";
 
@@ -460,21 +621,25 @@ export default function LoginPage() {
     <div className="min-h-screen bg-white flex">
       {/* Left panel — hidden on mobile */}
       <div className="flex-1">
-        <LeftPanel />
+        <LeftPanel onPreview={() => setShowSampleProfile(true)} />
       </div>
 
       {/* Right panel — form */}
       <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col">
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center h-14 border-b border-slate-100 px-6">
-          <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-7 w-auto" />
+          <button onClick={() => navigate("/")} className="focus:outline-none">
+            <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-7 w-auto" />
+          </button>
         </div>
 
         <div className="flex-1 flex items-center justify-center px-8 py-12">
           <div className="w-full max-w-sm">
             {/* Desktop logo */}
             <div className="hidden lg:block mb-8">
-              <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto" />
+              <button onClick={() => navigate("/")} className="focus:outline-none">
+                <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto hover:opacity-80 transition-opacity" />
+              </button>
             </div>
 
             {isProfileRoute ? (
@@ -496,6 +661,9 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+
+      {/* Sample profile modal */}
+      {showSampleProfile && <SampleProfileModal onClose={() => setShowSampleProfile(false)} />}
     </div>
   );
 }
