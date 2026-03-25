@@ -25,7 +25,7 @@ const SIDEBAR_FULL = 220;
 const SIDEBAR_MINI = 68;
 
 const navItems = [
-  { href: "/", icon: Search, label: "Browse Talent", exact: false, aliases: ["/browse"] },
+  { href: "/browse", icon: Search, label: "Browse Talent", exact: false },
   { href: "/shortlist", icon: Heart, label: "Shortlisted", badge: true },
   { href: "/company-profile", icon: Building2, label: "Company Profile" },
 ];

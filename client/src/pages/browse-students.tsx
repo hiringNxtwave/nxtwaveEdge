@@ -176,21 +176,28 @@ export default function BrowseStudents() {
 
           {/* Student Cards */}
           {isLoading ? (
-            <div className="space-y-3">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl border border-slate-100 p-4 flex gap-4 items-start">
-                  <Skeleton className="w-12 h-12 rounded-xl shrink-0" />
-                  <div className="flex-1 space-y-2">
-                    <Skeleton className="h-4 w-36" />
-                    <Skeleton className="h-3 w-24" />
-                    <Skeleton className="h-3 w-48" />
-                    <div className="flex gap-2 pt-1">
-                      <Skeleton className="h-6 w-16 rounded-full" />
-                      <Skeleton className="h-6 w-14 rounded-full" />
-                      <Skeleton className="h-6 w-16 rounded-full" />
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {Array.from({ length: 9 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-xl border border-slate-100 p-5 flex flex-col gap-4">
+                  <div className="flex items-start gap-3">
+                    <Skeleton className="w-11 h-11 rounded-xl shrink-0" />
+                    <div className="flex-1 space-y-1.5">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-24" />
+                      <Skeleton className="h-3 w-40" />
                     </div>
+                    <Skeleton className="h-5 w-20 rounded-full shrink-0" />
                   </div>
-                  <Skeleton className="h-8 w-8 rounded" />
+                  <div className="flex gap-1.5 flex-wrap">
+                    <Skeleton className="h-5 w-16 rounded" />
+                    <Skeleton className="h-5 w-14 rounded" />
+                    <Skeleton className="h-5 w-16 rounded" />
+                    <Skeleton className="h-5 w-16 rounded" />
+                  </div>
+                  <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                    <Skeleton className="h-7 w-12" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
                 </div>
               ))}
             </div>
@@ -204,7 +211,7 @@ export default function BrowseStudents() {
               <p className="text-slate-400 text-sm mt-1">Try adjusting the university or verdict filter above.</p>
             </div>
           ) : (
-            <div className="space-y-2.5" data-testid="grid-students">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="grid-students">
               {students.map((student: any) => (
                 <StudentCard key={student.id} student={student} />
               ))}

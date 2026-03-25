@@ -7,10 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  MapPin,
   GraduationCap,
-  Mail,
-  Phone,
   ExternalLink,
   ArrowLeft,
   Video,
@@ -154,24 +151,6 @@ export default function StudentProfile() {
                       {student.university}
                     </div>
                   )}
-                  {student.location && (
-                    <div className="flex items-center gap-1.5" data-testid="text-student-location">
-                      <MapPin className="h-3.5 w-3.5 shrink-0" />
-                      {student.location}
-                    </div>
-                  )}
-                  {student.email && (
-                    <div className="flex items-center gap-1.5">
-                      <Mail className="h-3.5 w-3.5 shrink-0" />
-                      {student.email}
-                    </div>
-                  )}
-                  {student.phone && (
-                    <div className="flex items-center gap-1.5">
-                      <Phone className="h-3.5 w-3.5 shrink-0" />
-                      {student.phone}
-                    </div>
-                  )}
                 </div>
 
                 {student.assessmentCompleted && (
@@ -179,31 +158,6 @@ export default function StudentProfile() {
                     <CheckCircle2 className="w-3 h-3 mr-1.5" />
                     NxtWave Edge Assessed
                   </Badge>
-                )}
-              </div>
-
-              {/* Action buttons */}
-              <div className="flex sm:flex-col gap-2 shrink-0">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-blue-200 text-blue-700 hover:bg-blue-50"
-                  data-testid="button-contact-student"
-                >
-                  <Mail className="w-4 h-4 mr-1.5" />
-                  Contact
-                </Button>
-                {hasReport && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-slate-200 text-slate-700 hover:bg-slate-50"
-                    onClick={() => window.open(student.resumeUrl, "_blank")}
-                    data-testid="button-view-resume"
-                  >
-                    <FileText className="w-4 h-4 mr-1.5" />
-                    Report
-                  </Button>
                 )}
               </div>
             </div>

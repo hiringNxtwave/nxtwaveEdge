@@ -49,7 +49,7 @@ function Router() {
           </>
         ) : (
           <>
-            <Route path="/" component={() => <AppShell><BrowseStudents /></AppShell>} />
+            <Route path="/" component={Landing} />
             <Route path="/browse" component={() => <AppShell><BrowseStudents /></AppShell>} />
             <Route path="/student-dashboard" component={() => <AppShell><StudentDashboard /></AppShell>} />
             <Route path="/student/:id" component={() => <AppShell><StudentProfile /></AppShell>} />

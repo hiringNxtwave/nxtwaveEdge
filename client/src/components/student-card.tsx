@@ -1,4 +1,4 @@
-import { Shield, MapPin, ArrowRight } from "lucide-react";
+import { Shield, ArrowRight } from "lucide-react";
 import type { StudentWithAssessments } from "@shared/schema";
 import { Link } from "wouter";
 import { useState } from "react";
@@ -62,7 +62,8 @@ function ScorePill({
       data-testid={testId}
       title={`${label}: ${value}/100`}
     >
-      {label} <span className="font-bold tabular-nums">{value}</span><span className="opacity-40 font-normal">/100</span>
+      {label} <span className="font-bold tabular-nums">{value}</span>
+      <span className="opacity-40 font-normal">/100</span>
     </button>
   );
 }
@@ -103,15 +104,14 @@ export default function StudentCard({ student }: StudentCardProps) {
   return (
     <Link href={`/student/${student.id}`}>
       <div
-        className="group bg-white border border-slate-100 rounded-lg hover:border-blue-200 hover:shadow-md transition-all duration-150 cursor-pointer"
+        className="group bg-white border border-slate-100 rounded-xl hover:border-blue-200 hover:shadow-md transition-all duration-150 cursor-pointer p-5 flex flex-col h-full"
         data-testid={`card-student-${student.id}`}
       >
-        <div className="px-4 py-3 flex items-center gap-4">
-
-          {/* Avatar */}
+        {/* Top: Avatar + Name + Verdict */}
+        <div className="flex items-start gap-3 mb-4">
           <div className="relative shrink-0">
             <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-base"
+              className="w-11 h-11 rounded-xl flex items-center justify-center text-white font-bold text-base"
               style={{ backgroundColor: avatar.backgroundColor }}
               data-testid={`div-student-avatar-fallback-${student.id}`}
             >
@@ -127,90 +127,71 @@ export default function StudentCard({ student }: StudentCardProps) {
             )}
           </div>
 
-          {/* Main content */}
           <div className="flex-1 min-w-0">
-            {/* Row 1: Name + verdict + score */}
-            <div className="flex items-center gap-2">
-              <span
-                className="font-semibold text-slate-900 text-sm leading-tight group-hover:text-blue-700 transition-colors truncate"
-                data-testid={`text-student-name-${student.id}`}
-              >
-                {student.firstName} {student.lastName}
-              </span>
-              {verdict && VERDICT_STYLE[verdict] && (
-                <span className={`shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full ${VERDICT_STYLE[verdict]}`}>
-                  {verdict}
-                </span>
-              )}
+            <div
+              className="font-semibold text-slate-900 text-sm leading-tight group-hover:text-blue-700 transition-colors truncate"
+              data-testid={`text-student-name-${student.id}`}
+            >
+              {student.firstName} {student.lastName}
             </div>
-
-            {/* Row 2: Role · University · Location */}
-            <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-slate-400 flex-wrap">
-              <span className="text-blue-600 font-medium">{bestRole}</span>
-              <span>·</span>
-              <span
-                className="truncate max-w-[180px]"
-                data-testid={`text-student-university-${student.id}`}
-              >
-                {uniShort}
-              </span>
-              {student.location && (
-                <>
-                  <span>·</span>
-                  <span
-                    className="flex items-center gap-0.5"
-                    data-testid={`text-student-location-${student.id}`}
-                  >
-                    <MapPin className="w-2.5 h-2.5" />
-                    {student.location.split(",")[0]}
-                  </span>
-                </>
-              )}
-            </div>
-
-            {/* Row 3: Score pills */}
-            <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-              <ScorePill
-                label="DSA"
-                value={scores.dsa}
-                onClick={() => setSelectedAssessment({ type: "DSA", score: scores.dsa, level: scoreLabel(scores.dsa) })}
-                testId={`button-dsa-assessment-${student.id}`}
-              />
-              <ScorePill
-                label="CS"
-                value={scores.csFund}
-                onClick={() => setSelectedAssessment({ type: "CS Fundamentals", score: scores.csFund, level: scoreLabel(scores.csFund) })}
-                testId={`button-cs-fundamentals-assessment-${student.id}`}
-              />
-              <ScorePill
-                label="Verbal"
-                value={scores.verbal}
-                onClick={() => setSelectedAssessment({ type: "Verbal Ability", score: scores.verbal, level: scoreLabel(scores.verbal) })}
-                testId={`button-communication-assessment-${student.id}`}
-              />
-              <ScorePill
-                label="Coding"
-                value={scores.aptitude}
-                onClick={() => setSelectedAssessment({ type: "Aptitude", score: scores.aptitude, level: scoreLabel(scores.aptitude) })}
-                testId={`button-aptitude-assessment-${student.id}`}
-              />
-            </div>
-          </div>
-
-          {/* Right: Overall score + View Profile */}
-          <div className="shrink-0 flex flex-col items-end gap-2">
-            <div className="text-right">
-              <div className="text-xl font-black text-slate-900 leading-none tabular-nums">{overall}</div>
-              <div className="text-[9px] font-medium text-slate-400 uppercase tracking-wide mt-0.5">Score</div>
+            <div className="text-[11px] text-blue-600 font-medium mt-0.5 truncate">
+              {bestRole}
             </div>
             <div
-              className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 group-hover:gap-1.5 transition-all"
-              data-testid={`button-view-profile-${student.id}`}
+              className="text-[11px] text-slate-400 mt-0.5 truncate"
+              data-testid={`text-student-university-${student.id}`}
             >
-              View Profile <ArrowRight className="w-3.5 h-3.5" />
+              {uniShort}
             </div>
           </div>
 
+          {verdict && VERDICT_STYLE[verdict] && (
+            <span className={`shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${VERDICT_STYLE[verdict]}`}>
+              {verdict}
+            </span>
+          )}
+        </div>
+
+        {/* Score pills */}
+        <div className="flex flex-wrap gap-1.5 mb-4">
+          <ScorePill
+            label="DSA"
+            value={scores.dsa}
+            onClick={() => setSelectedAssessment({ type: "DSA", score: scores.dsa, level: scoreLabel(scores.dsa) })}
+            testId={`button-dsa-assessment-${student.id}`}
+          />
+          <ScorePill
+            label="CS"
+            value={scores.csFund}
+            onClick={() => setSelectedAssessment({ type: "CS Fundamentals", score: scores.csFund, level: scoreLabel(scores.csFund) })}
+            testId={`button-cs-fundamentals-assessment-${student.id}`}
+          />
+          <ScorePill
+            label="Verbal"
+            value={scores.verbal}
+            onClick={() => setSelectedAssessment({ type: "Verbal Ability", score: scores.verbal, level: scoreLabel(scores.verbal) })}
+            testId={`button-communication-assessment-${student.id}`}
+          />
+          <ScorePill
+            label="Coding"
+            value={scores.aptitude}
+            onClick={() => setSelectedAssessment({ type: "Aptitude", score: scores.aptitude, level: scoreLabel(scores.aptitude) })}
+            testId={`button-aptitude-assessment-${student.id}`}
+          />
+        </div>
+
+        {/* Bottom: Overall score + View Profile */}
+        <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100">
+          <div className="flex items-baseline gap-1">
+            <span className="text-2xl font-black text-slate-900 tabular-nums leading-none">{overall}</span>
+            <span className="text-[10px] text-slate-400 font-medium">/100</span>
+          </div>
+          <div
+            className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 group-hover:gap-1.5 transition-all"
+            data-testid={`button-view-profile-${student.id}`}
+          >
+            View Profile <ArrowRight className="w-3.5 h-3.5" />
+          </div>
         </div>
       </div>
 

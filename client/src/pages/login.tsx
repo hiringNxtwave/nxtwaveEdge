@@ -221,7 +221,7 @@ function OtpStep({
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      navigate("/");
+      navigate("/browse");
     },
     onError: (err: any) => {
       setError(parseServerError(err));
