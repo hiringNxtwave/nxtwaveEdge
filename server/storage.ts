@@ -1111,10 +1111,10 @@ export class DatabaseStorage implements IStorage {
       await db.insert(skills).values(skillData);
     } // end skills seeding
 
-    // Seed real students if not already loaded
+    // Seed real students if not already loaded (or if recording URLs are missing)
     const FIRST_REAL_ID = "48309455-3700-4cf1-8356-9cf43477fcdf";
     const existingReal = await db.select().from(students).where(eq(students.id, FIRST_REAL_ID)).limit(1);
-    if (existingReal.length > 0) return; // already seeded
+    if (existingReal.length > 0 && existingReal[0].linkedinUrl) return; // already seeded with full data
 
     // Clear any existing fake students (cascade to studentSkills + projects)
     await db.delete(studentSkills);
@@ -1152,6 +1152,10 @@ export class DatabaseStorage implements IStorage {
         assessmentDate: s.assessmentDate ? new Date(s.assessmentDate) : null,
         resumeUrl: s.resumeUrl || null,
         portfolioUrl: s.portfolioUrl || null,
+        linkedinUrl: s.linkedinUrl || null,
+        githubUrl: s.githubUrl || null,
+        preferredRoles: s.preferredRoles || null,
+        preferredLocations: s.preferredLocations || null,
         noticePeriod: 0,
         workMode: "hybrid",
         expectedSalaryMin: 600,
