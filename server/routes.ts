@@ -728,6 +728,57 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
+  // General "Contact Us" from sidebar — sends recruiter info to Sagar automatically
+  app.post('/api/contact-general', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+
+      const recruiterName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email : 'Unknown';
+      const recruiterEmail = user?.email || 'Unknown';
+      const recruiterPhone = user?.mobile || 'Not provided';
+      const recruiterCompany = recruiterEmail.includes('@') ? recruiterEmail.split('@')[1] : 'Unknown';
+
+      const subject = `NxtWave Edge: General Enquiry from ${recruiterName}`;
+      const html = `
+        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:32px 24px;color:#0f172a">
+          <h2 style="font-size:20px;font-weight:700;margin:0 0 4px">General Enquiry — NxtWave Edge</h2>
+          <p style="color:#64748b;font-size:14px;margin:0 0 24px">A recruiter has clicked <strong>Contact Us</strong> on the platform and wants to get in touch.</p>
+          <div style="background:#f8fafc;border-radius:10px;padding:18px;margin-bottom:16px">
+            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#94a3b8;margin:0 0 12px">Recruiter Details</p>
+            <table style="width:100%;border-collapse:collapse;font-size:14px">
+              <tr><td style="padding:4px 0;color:#64748b;width:130px">Name</td><td style="padding:4px 0;font-weight:600">${recruiterName}</td></tr>
+              <tr><td style="padding:4px 0;color:#64748b">Email</td><td style="padding:4px 0;font-weight:600">${recruiterEmail}</td></tr>
+              <tr><td style="padding:4px 0;color:#64748b">Phone</td><td style="padding:4px 0;font-weight:600">${recruiterPhone}</td></tr>
+              <tr><td style="padding:4px 0;color:#64748b">Company Domain</td><td style="padding:4px 0;font-weight:600">${recruiterCompany}</td></tr>
+            </table>
+          </div>
+          <p style="color:#94a3b8;font-size:12px;margin:24px 0 0">Sent from NxtWave Edge · ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</p>
+        </div>
+      `;
+
+      const apiKey = process.env.SENDGRID_API_KEY;
+      if (apiKey) {
+        const sgMail = (await import("@sendgrid/mail")).default;
+        sgMail.setApiKey(apiKey);
+        await sgMail.send({
+          to: 'sagar.mood@nxtwave.co.in',
+          from: { email: 'girish@nxtwave.info', name: 'NxtWave Edge' },
+          subject,
+          html,
+          text: `General enquiry from ${recruiterName} (${recruiterEmail}, ${recruiterPhone}) at ${recruiterCompany}. Please follow up.`,
+        });
+      } else {
+        console.log(`[DEV] General contact: ${recruiterName} (${recruiterEmail})`);
+      }
+
+      res.json({ sent: true });
+    } catch (error) {
+      console.error("Error sending general contact inquiry:", error);
+      res.status(500).json({ message: "Failed to send enquiry" });
+    }
+  });
+
   // JD Parsing endpoint
   app.post('/api/company/parse-jd', isAuthenticated, async (req: any, res) => {
     try {

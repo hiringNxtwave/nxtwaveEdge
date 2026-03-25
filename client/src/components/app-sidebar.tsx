@@ -2,7 +2,8 @@ import { Link, useLocation } from "wouter";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useToast } from "@/hooks/use-toast";
 import {
   Search,
   Building2,
@@ -30,6 +31,29 @@ const navItems = [
 export default function AppSidebar() {
   const [location] = useLocation();
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [contactSending, setContactSending] = useState(false);
+  const [contactSent, setContactSent] = useState(false);
+
+  const handleContactUs = useCallback(async () => {
+    if (contactSending || contactSent) return;
+    setContactSending(true);
+    try {
+      const res = await fetch("/api/contact-general", { method: "POST", credentials: "include" });
+      if (res.ok) {
+        setContactSent(true);
+        toast({ title: "Message sent!", description: "Our team will reach out to you shortly." });
+        setTimeout(() => setContactSent(false), 5000);
+      } else {
+        toast({ title: "Failed to send", description: "Please try again.", variant: "destructive" });
+      }
+    } catch {
+      toast({ title: "Failed to send", description: "Please try again.", variant: "destructive" });
+    } finally {
+      setContactSending(false);
+    }
+  }, [contactSending, contactSent, toast]);
+
   const [collapsed, setCollapsed] = useState(() => {
     try { return localStorage.getItem("sidebar-collapsed") === "1"; } catch { return false; }
   });
@@ -135,15 +159,16 @@ export default function AppSidebar() {
       {/* Contact Us — only in expanded state */}
       {!collapsed && (
         <div className="px-3 pb-3 shrink-0">
-          <a
-            href="mailto:leadgenplacements@gmail.com?subject=Hiring%20Enquiry%20-%20NxtWave%20Edge"
-            className="w-full flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-[12px] font-semibold px-3 py-2 transition-colors"
+          <button
+            onClick={handleContactUs}
+            disabled={contactSending || contactSent}
+            className="w-full flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed text-white text-[12px] font-semibold px-3 py-2 transition-colors"
             title="Contact NxtWave Edge"
-            data-testid="link-contact-us"
+            data-testid="button-contact-us"
           >
             <Mail className="w-3.5 h-3.5 shrink-0" />
-            <span>Contact Us</span>
-          </a>
+            <span>{contactSent ? "Message Sent ✓" : contactSending ? "Sending…" : "Contact Us"}</span>
+          </button>
         </div>
       )}
 
