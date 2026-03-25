@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { Check, Plus, Shield, Video, ChevronRight, MapPin } from "lucide-react";
+import { Shield, Video, MapPin, Mail } from "lucide-react";
 import type { StudentWithAssessments } from "@shared/schema";
 import { Link } from "wouter";
-import { useShortlist } from "@/contexts/shortlist-context";
 import { useState } from "react";
 import AssessmentModal from "@/components/assessment-modal";
 import RoleMatchRationale from "@/components/role-match-rationale";
@@ -80,7 +79,6 @@ function inferBestRole(dsa: number, comm: number, cs: number): string {
 }
 
 export default function StudentCard({ student }: StudentCardProps) {
-  const { isShortlisted, addToShortlist, removeFromShortlist } = useShortlist();
   const [selectedAssessment, setSelectedAssessment] = useState<{type: string; score: number; level: string} | null>(null);
   const [showRoleMatchRationale, setShowRoleMatchRationale] = useState(false);
   const [showCandidateFullReport, setShowCandidateFullReport] = useState(false);
@@ -111,7 +109,6 @@ export default function StudentCard({ student }: StudentCardProps) {
   const matchPct = Math.min(95, Math.max(60, Math.round(rawMatch * 20) || 75));
 
   const bestRole = inferBestRole(dsaScore, communicationScore, csFundamentalsScore);
-  const shortlisted = isShortlisted(student.id);
   const cssAvatar = generateCSSAvatar(student.firstName, student.id);
 
   const isHighMatch = matchPct >= 85;
@@ -189,19 +186,10 @@ export default function StudentCard({ student }: StudentCardProps) {
           <Button
             size="sm"
             variant="outline"
-            className={`text-xs h-8 px-3 ${
-              shortlisted
-                ? "bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100"
-                : "border-slate-200 text-slate-600 hover:bg-slate-50"
-            }`}
-            onClick={() => shortlisted ? removeFromShortlist(student.id) : addToShortlist(student.id)}
-            data-testid={`button-shortlist-${student.id}`}
+            className="text-xs h-8 px-3 border-slate-200 text-slate-600 hover:bg-slate-50"
+            data-testid={`button-contact-team-${student.id}`}
           >
-            {shortlisted ? (
-              <><Check className="w-3 h-3 mr-1" />Shortlisted</>
-            ) : (
-              <><Plus className="w-3 h-3 mr-1" />Shortlist</>
-            )}
+            <Mail className="w-3 h-3 mr-1" />Contact team
           </Button>
           <Link href={`/student/${student.id}`}>
             <Button
