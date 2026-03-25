@@ -62,7 +62,7 @@ function ScorePill({
       data-testid={testId}
       title={`${label}: ${value}/100`}
     >
-      {label} <span className="font-bold tabular-nums">{value}</span>
+      {label} <span className="font-bold tabular-nums">{value}</span><span className="opacity-40 font-normal">/100</span>
     </button>
   );
 }
