@@ -576,26 +576,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-      {/* ── Trusted By (company name strip) ── */}
-      <section className="py-10 bg-white border-y border-slate-100">
-        <p className="text-center text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-7">
-          Trusted by India's Leading Engineering Hiring Teams
-        </p>
-        <div className="overflow-hidden relative">
-          <div className="flex gap-10 w-max animate-marquee">
-            {[...PARTNER_COMPANIES, ...PARTNER_COMPANIES].map((name, i) => (
-              <span
-                key={i}
-                className="shrink-0 text-slate-400 font-semibold text-sm tracking-wide whitespace-nowrap px-4 py-1.5 rounded-full border border-slate-100"
-              >
-                {name}
-              </span>
-            ))}
-          </div>
-          <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white to-transparent pointer-events-none" />
-          <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white to-transparent pointer-events-none" />
-        </div>
-      </section>
 
       {/* ── Testimonials Carousel ── */}
       <section className="py-24 overflow-hidden bg-slate-50">
