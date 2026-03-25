@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
-import { ArrowRight, Star, CheckCircle, ChevronRight } from "lucide-react";
+import { ArrowRight, CheckCircle, ChevronRight } from "lucide-react";
 
 const ROTATING_POINTS = [
   "Verified shortlists delivered within minutes",
@@ -11,23 +11,30 @@ const ROTATING_POINTS = [
 ];
 
 const TESTIMONIALS = [
-  { quote: "We haven't seen such quality in fresher hiring before — exceptional pool and coordination.", author: "Hiring Manager", company: "Anand Rathi" },
-  { quote: "We highly appreciate the streamlined Tier-2 delivery model. It helped us meet our volume hiring goals faster than expected.", author: "Hiring Team", company: "One of the Big4 Firms" },
-  { quote: "Your team saved us significant time and cost while delivering Tier-1 quality faster than any agency.", author: "HR Team", company: "Kotak Mahindra Bank" },
-  { quote: "I've never seen such high-quality fresher talent from any vendor.", author: "Ansh", company: "Exotel" },
-  { quote: "We appreciate the coordination and quality. We will continue to trust you for all our fresher hiring needs.", author: "Hiring Team", company: "LeadSquared" },
-  { quote: "We're very happy with the quality of candidates shared and would love to receive more profiles from you.", author: "Hiring Manager", company: "Hyperfin" },
+  { quote: "They are solving the entry level developers problems in India. Thanks NxtWave for the support", author: "Arnab", company: "Zivame", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Arnab_Zivame.jpg" },
+  { quote: "It was a great experience to work with NxtWave as they helped us to scale up to meet our talent needs. Looking forward to a long term collaboration with this team.", author: "Kalpana Kudlingar", company: "Persistent", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/KalpanaKudlinagar_Persistent.jpg" },
+  { quote: "NxtWave came across as a super good option to hire the fresher programmers and I've offered at least 50% from the set of candidates interviewed every time.", author: "Rama Rao Gaika", company: "[x]cube LABS", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/RamaRaoGaika_XCubeLabs.jpg" },
+  { quote: "Have been in touch with NxtWave since past 3 months. I have been seeing quality candidates for critical positions in our organisation. Would like to thank NxtWave for the support.", author: "Rajan Kushwaha", company: "ADP", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/RajanKushwaha_ADP.jpg" },
+  { quote: "Quality of candidates has been good. Since we understand the background of the trainers and the credentials of your team, we aren't surprised.", author: "Gopalan Raman", company: "Applied Data Finance", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/GopalanRaman_ADF.jpg" },
+  { quote: "As an emerging space tech company, our requirements and expectations from the hires are very specific. NxtWave could rightly match these expectations and we found candidates with a good grasp of technology.", author: "Naushad Rahman", company: "DeltaVRobo", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/NaushadRahman_DeltaVRobo.jpg" },
+  { quote: "Initially took one intern from outside, took me 2-3 months to train him. But here from NxtWave, directly starting working on project within 10-15 days after hiring. Happy to hire from NxtWave!", author: "Annem Vikram Reddy", company: "KDM Engineers", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/AnnemVikramReddy_KDMEngineers.jpg" },
+  { quote: "Got end-to-end assistance in the complete recruitment process. Resources are well trained and could be able to perform with minimal training. I suggest NxtWave when you are looking for trained resources.", author: "Chaitanya Arikati", company: "abjayon", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/ChaitanyaArikati_Abjayon.jpg" },
+  { quote: "Best institute for us, where we got specialized and best-trained professional students, and these professional students easily adapt to the working environment. Working with NxtWave made our hiring process easier.", author: "Ravi Ranjan", company: "PeopleLink", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/RaviRanjan_PeopleLink.jpg" },
+  { quote: "Hired from NxtWave and we are super duper happy with them. Will definitely recommend others to give it a shot.", author: "Deepak Kumar Malladi", company: "ENLUME", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/DeepakKumarMalladi_Enlume.jpg" },
+  { quote: "We are impressed with the depth of knowledge and the problem-solving skills of the candidates from NxtWave. They have become an integral part of our team.", author: "Kishore Ravi", company: "QualiTLabs", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/KishoreRavi_QualiTLabs.jpg" },
+  { quote: "The candidates are technically sound and have a great attitude towards learning. We are very happy with the hiring experience.", author: "Mahima Singh", company: "NeoSOFT", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/MahimaSingh_NeoSOFT.jpg" },
+  { quote: "NxtWave made our hiring process seamless and efficient. The quality of talent is top-notch.", author: "Muralidhar Nayak", company: "Paymatrix", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/MuralidharNayak_Paymatrix.jpg" },
+  { quote: "We found the perfect match for our requirements. The candidates were well-prepared and ready to contribute from day one.", author: "Priyanka", company: "Ideyalabs", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Priyanka_Ideyalabs.jpg" },
+  { quote: "The candidates from NxtWave have shown excellent coding skills and logical thinking. We look forward to hiring more.", author: "Ravi Kiran", company: "Ashv", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/RaviKiran_Ashv.jpg" },
+  { quote: "NxtWave provided us with highly skilled candidates who fit our company culture perfectly. Great job!", author: "Rishi Shukla", company: "Ascent Academy", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/RishiShukla_AscentAcademy.jpg" },
+  { quote: "We are extremely satisfied with the quality of hires from NxtWave. They have exceeded our expectations.", author: "Thiraviasankar", company: "BlackBoard", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Thiraviasankar_BlackBoard.jpg" },
+  { quote: "The recruitment process was smooth and hassle-free. The candidates were well-trained and professional.", author: "Vikram", company: "Needl.ai", img: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Vikram_Needl.ai.jpg" },
 ];
 
-const PARTNER_LOGOS = [
-  { name: "Lloyds Bank", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Lloyds-Bank-Logo-New.png" },
-  { name: "Thoughtworks", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Thoughtworks_logo.png" },
-  { name: "Uber", url: "https://logo.clearbit.com/uber.com" },
-  { name: "FedEx", url: "https://logo.clearbit.com/fedex.com" },
-  { name: "ADP", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/adp%20logo.png" },
-  { name: "Arcon", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/arcon.png" },
-  { name: "LeadSquared", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/leadsquared_logo.png" },
-  { name: "Anand Rathi", url: "https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/anandrathi_logo.png" },
+const PARTNER_COMPANIES = [
+  "Lloyds Bank", "Thoughtworks", "ADP", "Arcon", "LeadSquared",
+  "Anand Rathi", "Zivame", "Persistent", "[x]cube LABS", "NeoSOFT",
+  "PeopleLink", "Paymatrix", "QualiTLabs", "abjayon", "ENLUME",
 ];
 
 const EDGE_CARDS = [
@@ -264,7 +271,6 @@ export default function Landing() {
   useScrollToTop();
 
   const [rotatingIdx, setRotatingIdx] = useState(0);
-  const [testimonialIdx, setTestimonialIdx] = useState(0);
   const [fade, setFade] = useState(true);
 
   useEffect(() => {
@@ -274,13 +280,6 @@ export default function Landing() {
     }, 2800);
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => { setTestimonialIdx(i => (i + 1) % TESTIMONIALS.length); }, 4500);
-    return () => clearInterval(interval);
-  }, []);
-
-  const t = TESTIMONIALS[testimonialIdx];
 
   return (
     <div className="min-h-screen bg-white">
@@ -577,39 +576,66 @@ export default function Landing() {
           </div>
         </div>
       </section>
-      {/* ── Trusted By ── */}
-      <section className="py-20 bg-slate-900 text-white">
-        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
-          <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-10">
-            Trusted by India's Leading Engineering Hiring Teams
-          </p>
-
-          <div className="flex flex-wrap justify-center items-center gap-8 mb-16">
-            {PARTNER_LOGOS.map(logo => (
-              <img
-                key={logo.name}
-                src={logo.url}
-                alt={logo.name}
-                className="h-7 w-auto object-contain brightness-0 invert opacity-50 hover:opacity-80 transition-opacity"
-              />
+      {/* ── Trusted By (company name strip) ── */}
+      <section className="py-10 bg-white border-y border-slate-100">
+        <p className="text-center text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-7">
+          Trusted by India's Leading Engineering Hiring Teams
+        </p>
+        <div className="overflow-hidden relative">
+          <div className="flex gap-10 w-max animate-marquee">
+            {[...PARTNER_COMPANIES, ...PARTNER_COMPANIES].map((name, i) => (
+              <span
+                key={i}
+                className="shrink-0 text-slate-400 font-semibold text-sm tracking-wide whitespace-nowrap px-4 py-1.5 rounded-full border border-slate-100"
+              >
+                {name}
+              </span>
             ))}
           </div>
+          <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white to-transparent pointer-events-none" />
+        </div>
+      </section>
 
-          {/* Rotating testimonial */}
-          <div className="max-w-2xl mx-auto text-center min-h-[130px]">
-            <div className="flex justify-center gap-1 mb-5">
-              {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />)}
-            </div>
-            <p className="text-lg text-slate-200 leading-relaxed mb-5 italic">"{t.quote}"</p>
-            <div className="text-sm text-slate-400">
-              — {t.author}, <span className="text-blue-400 font-semibold">{t.company}</span>
-            </div>
-            <div className="flex justify-center gap-1.5 mt-6">
-              {TESTIMONIALS.map((_, i) => (
-                <button key={i} onClick={() => setTestimonialIdx(i)} className={`w-1.5 h-1.5 rounded-full transition-colors ${i === testimonialIdx ? "bg-blue-400" : "bg-slate-600"}`} />
-              ))}
-            </div>
+      {/* ── Testimonials Carousel ── */}
+      <section className="py-24 overflow-hidden bg-slate-50">
+        <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 mb-14 text-center">
+          <h2 className="text-4xl font-extrabold mb-3 text-slate-900">What Our Hiring Partners Say</h2>
+          <p className="text-slate-500 text-base">Join 2,500+ engineering leaders who hire through the EDGE standard.</p>
+        </div>
+
+        <div className="relative overflow-hidden pb-10">
+          <div className="flex gap-6 w-max animate-marquee">
+            {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
+              <div key={i} className="w-[340px] shrink-0 flex flex-col items-center">
+                {/* Quote card */}
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-7 w-full min-h-[180px] flex items-center justify-center text-center">
+                  <p className="text-slate-600 text-sm leading-relaxed">{t.quote}</p>
+                </div>
+                {/* Avatar — overlapping both cards */}
+                <div className="-my-5 relative z-10">
+                  <div className="w-14 h-14 rounded-full bg-white border-4 border-white shadow-md overflow-hidden">
+                    <img
+                      src={t.img}
+                      alt={t.author}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </div>
+                </div>
+                {/* Name + company card */}
+                <div className="w-[90%] bg-blue-50 pt-8 pb-5 rounded-2xl text-center">
+                  <p className="font-bold text-slate-900 text-sm">{t.author}</p>
+                  <p className="text-slate-500 text-xs font-semibold mt-0.5">{t.company}</p>
+                </div>
+              </div>
+            ))}
           </div>
+          {/* Edge fade masks */}
+          <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none" />
+          <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none" />
         </div>
       </section>
       {/* ── India's First National Engineering Hiring Standard ── */}

@@ -3,6 +3,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-scroll 50s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
 :root {
   /* Apple/Microsoft Inspired Minimal Palette */
   --background: hsl(0, 0%, 98%);
