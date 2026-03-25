@@ -9,7 +9,6 @@ import {
   Heart,
   Building2,
   ChevronLeft,
-  ChevronRight,
   User,
   LogOut,
 } from "lucide-react";
@@ -63,18 +62,32 @@ export default function AppSidebar() {
         collapsed ? "w-[68px]" : "w-[220px]"
       )}
     >
-      {/* Logo */}
+      {/* Logo + Collapse toggle */}
       <div
         className={cn(
           "flex items-center h-14 border-b border-slate-800/80 shrink-0 select-none",
           collapsed ? "px-0 justify-center" : "px-4 gap-3"
         )}
       >
-        {!collapsed && (
-          <img src={nxtWaveLogo} alt="NxtWave" className="h-8 w-auto brightness-0 invert" />
-        )}
-        {collapsed && (
-          <img src={nxtWaveLogo} alt="NxtWave" className="h-6 w-auto brightness-0 invert" />
+        {collapsed ? (
+          <button
+            onClick={() => setCollapsed(false)}
+            className="flex items-center justify-center w-full h-full text-slate-600 hover:text-slate-300 transition-colors"
+            title="Expand sidebar"
+          >
+            <img src={nxtWaveLogo} alt="NxtWave" className="h-6 w-auto brightness-0 invert" />
+          </button>
+        ) : (
+          <>
+            <img src={nxtWaveLogo} alt="NxtWave" className="h-8 w-auto brightness-0 invert flex-1 min-w-0" />
+            <button
+              onClick={() => setCollapsed(true)}
+              className="ml-auto p-1 rounded-md text-slate-600 hover:text-slate-300 hover:bg-slate-800/70 transition-all shrink-0"
+              title="Collapse sidebar"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+          </>
         )}
       </div>
 
@@ -185,24 +198,6 @@ export default function AppSidebar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Collapse Toggle */}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className={cn(
-            "w-full flex items-center rounded-lg px-2.5 py-2 text-slate-700 hover:text-slate-400 hover:bg-slate-800/70 transition-all duration-150",
-            collapsed ? "justify-center" : "justify-end"
-          )}
-          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        >
-          {collapsed ? (
-            <ChevronRight className="w-3.5 h-3.5" />
-          ) : (
-            <>
-              <span className="text-[11px] mr-1.5 text-slate-700">Collapse</span>
-              <ChevronLeft className="w-3.5 h-3.5" />
-            </>
-          )}
-        </button>
       </div>
     </aside>
   );
