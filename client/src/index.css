@@ -3,6 +3,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global placeholder colour — lighter so it's clearly not filled-in text */
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8; /* slate-400 */
+  opacity: 1;
+}
+
 @keyframes marquee-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }

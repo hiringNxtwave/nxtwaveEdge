@@ -548,8 +548,13 @@ export async function registerRoutes(app: Express): Promise<void> {
         company = await storage.createCompany({ userId, name: companyName });
       }
 
-      // Coerce minimumCGPA to string for decimal column (drizzle-zod expects string)
-      const rawBody = { ...req.body, companyId: company.id };
+      // Auto-fill required fields that the simplified form does not collect
+      const rawBody = {
+        jobDescription: req.body.jobTitle || 'Open position',
+        hiresExpected: 1,
+        ...req.body,
+        companyId: company.id,
+      };
       if (rawBody.minimumCGPA != null && rawBody.minimumCGPA !== "") {
         rawBody.minimumCGPA = String(rawBody.minimumCGPA);
       } else {
