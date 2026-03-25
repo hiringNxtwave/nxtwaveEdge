@@ -2,11 +2,9 @@ import { Link, useLocation } from "wouter";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { useShortlist } from "@/contexts/shortlist-context";
 import { useState, useEffect } from "react";
 import {
   Search,
-  Heart,
   Building2,
   ChevronLeft,
   User,
@@ -26,14 +24,12 @@ const SIDEBAR_MINI = 68;
 
 const navItems = [
   { href: "/browse", icon: Search, label: "Browse Talent", exact: false },
-  { href: "/shortlist", icon: Heart, label: "Shortlisted", badge: true },
   { href: "/jobs", icon: Building2, label: "Jobs" },
 ];
 
 export default function AppSidebar() {
   const [location] = useLocation();
   const { user } = useAuth();
-  const { shortlistCount } = useShortlist();
   const [collapsed, setCollapsed] = useState(() => {
     try { return localStorage.getItem("sidebar-collapsed") === "1"; } catch { return false; }
   });
@@ -108,7 +104,6 @@ export default function AppSidebar() {
       <nav className={cn("flex-1 overflow-y-auto space-y-0.5", collapsed ? "px-2 pt-4" : "px-2")}>
         {navItems.map((item) => {
           const active = isActive(item);
-          const showBadge = item.badge && shortlistCount > 0;
 
           return (
             <Link key={item.href} href={item.href}>
@@ -130,14 +125,6 @@ export default function AppSidebar() {
                 />
                 {!collapsed && (
                   <span className="flex-1 truncate">{item.label}</span>
-                )}
-                {!collapsed && showBadge && (
-                  <span className="ml-auto bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[20px] text-center leading-none">
-                    {shortlistCount}
-                  </span>
-                )}
-                {collapsed && showBadge && (
-                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-rose-500 rounded-full" />
                 )}
               </div>
             </Link>

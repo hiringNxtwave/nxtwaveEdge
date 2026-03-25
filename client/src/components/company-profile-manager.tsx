@@ -43,7 +43,7 @@ import {
 // Simplified form schema focusing on core fields
 const jobRequirementsSchema = z.object({
   jobTitle: z.string().min(1, 'Job title is required'),
-  jobDescription: z.string().min(50, 'Job description must be at least 50 characters'),
+  jobDescription: z.string().min(1, 'Job description is required'),
   experienceLevel: z.string().default('fresher'),
   hiresExpected: z.coerce.number().int().min(1, 'At least 1 hire expected'),
   jobLocation: z.string().min(1, 'Job location is required'),
@@ -224,10 +224,11 @@ export function CompanyProfileManager() {
         navigate('/browse');
       }
     },
-    onError: () => {
+    onError: (err: any) => {
+      const msg = err?.message || "Could not save the job requirement. Please try again.";
       toast({
-        title: "Error",
-        description: "Could not save the job requirement. Please try again.",
+        title: "Error saving job",
+        description: msg.length < 200 ? msg : "Validation failed — please check all required fields.",
         variant: "destructive",
       });
     },
@@ -276,10 +277,10 @@ export function CompanyProfileManager() {
 
   const handleParseJD = () => {
     const jobDescription = form.getValues('jobDescription');
-    if (!jobDescription || jobDescription.length < 50) {
+    if (!jobDescription || jobDescription.length < 20) {
       toast({
         title: "JD Too Short",
-        description: "Please enter a detailed job description (at least 50 characters) to parse.",
+        description: "Please enter more details in the job description to use AI parsing.",
         variant: "destructive",
       });
       return;

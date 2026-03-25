@@ -548,10 +548,14 @@ export async function registerRoutes(app: Express): Promise<void> {
         company = await storage.createCompany({ userId, name: companyName });
       }
 
-      const requirementsData = insertCompanyRequirementsSchema.parse({
-        ...req.body,
-        companyId: company.id,
-      });
+      // Coerce minimumCGPA to string for decimal column (drizzle-zod expects string)
+      const rawBody = { ...req.body, companyId: company.id };
+      if (rawBody.minimumCGPA != null && rawBody.minimumCGPA !== "") {
+        rawBody.minimumCGPA = String(rawBody.minimumCGPA);
+      } else {
+        delete rawBody.minimumCGPA;
+      }
+      const requirementsData = insertCompanyRequirementsSchema.parse(rawBody);
       
       const requirements = await storage.createCompanyRequirements(requirementsData);
 
@@ -601,7 +605,13 @@ export async function registerRoutes(app: Express): Promise<void> {
 
       // Validate the update data using partial schema
       const updateSchema = insertCompanyRequirementsSchema.omit({ companyId: true }).partial();
-      const updateData = updateSchema.parse(req.body);
+      const rawUpdate = { ...req.body };
+      if (rawUpdate.minimumCGPA != null && rawUpdate.minimumCGPA !== "") {
+        rawUpdate.minimumCGPA = String(rawUpdate.minimumCGPA);
+      } else {
+        delete rawUpdate.minimumCGPA;
+      }
+      const updateData = updateSchema.parse(rawUpdate);
       
       const updatedRequirements = await storage.updateCompanyRequirements(id, updateData);
       res.json(updatedRequirements);
