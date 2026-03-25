@@ -8,7 +8,7 @@
   to   { transform: translateX(-50%); }
 }
 .animate-marquee {
-  animation: marquee-scroll 50s linear infinite;
+  animation: marquee-scroll 25s linear infinite;
 }
 .animate-marquee:hover {
   animation-play-state: paused;
@@ -403,7 +403,7 @@
 }
 
 .marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee 15s linear infinite;
 }
 
 .counter-animate {
