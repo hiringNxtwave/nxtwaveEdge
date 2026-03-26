@@ -519,7 +519,7 @@ export default function BrowseStudents() {
                 placeholder="e.g. Python Developer, Data Analyst"
                 value={jobRole}
                 onChange={e => setJobRole(e.target.value)}
-                className="border-slate-200 focus:border-blue-400 focus:ring-blue-400/20 text-sm"
+                className="border-slate-200 focus:border-blue-400 focus:ring-blue-400/20 text-sm placeholder:text-slate-400"
                 autoFocus
               />
             </div>
@@ -534,7 +534,7 @@ export default function BrowseStudents() {
                 placeholder="e.g. Hyderabad, Bangalore, Remote"
                 value={jobLocation}
                 onChange={e => setJobLocation(e.target.value)}
-                className="border-slate-200 focus:border-blue-400 focus:ring-blue-400/20 text-sm"
+                className="border-slate-200 focus:border-blue-400 focus:ring-blue-400/20 text-sm placeholder:text-slate-400"
               />
             </div>
 
@@ -551,7 +551,7 @@ export default function BrowseStudents() {
                 placeholder="e.g. 8"
                 value={jobSalary}
                 onChange={e => setJobSalary(e.target.value)}
-                className="border-slate-200 focus:border-blue-400 focus:ring-blue-400/20 text-sm"
+                className="border-slate-200 focus:border-blue-400 focus:ring-blue-400/20 text-sm placeholder:text-slate-400"
               />
             </div>
 
