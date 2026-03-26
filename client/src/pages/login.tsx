@@ -441,9 +441,13 @@ function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
       const res = await apiRequest("POST", "/api/auth/verify-otp", { email, otp: otp.trim() });
       return res.json();
     },
-    onSuccess: async () => {
+    onSuccess: async (data: any) => {
       await queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
-      navigate("/login/profile");
+      if (data?.user?.onboardingCompleted) {
+        navigate("/browse");
+      } else {
+        navigate("/login/profile");
+      }
     },
     onError: (err: any) => setError(parseServerError(err)),
   });
@@ -624,7 +628,7 @@ function ProfileStep() {
               type="tel"
               value={form.mobile}
               onChange={field("mobile")}
-              placeholder="98765 43210"
+              placeholder="9876543210"
               autoComplete="tel"
               maxLength={10}
               className={`flex-1 border rounded-xl px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 ${errors.mobile ? "border-red-400 bg-red-50" : "border-slate-200 bg-white"}`}

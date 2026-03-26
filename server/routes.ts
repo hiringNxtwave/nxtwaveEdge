@@ -382,7 +382,7 @@ export async function registerRoutes(app: Express): Promise<void> {
           mobile: entry.mobile,
           role: "recruiter",
           emailVerified: true,
-          onboardingCompleted: true,
+          onboardingCompleted: false,
         });
       }
 
