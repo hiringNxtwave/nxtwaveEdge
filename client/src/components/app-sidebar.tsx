@@ -30,7 +30,7 @@ const navItems = [
 ];
 
 export default function AppSidebar() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
   const [contactSending, setContactSending] = useState(false);
@@ -234,7 +234,7 @@ export default function AppSidebar() {
               className="text-red-400 focus:text-red-300 focus:bg-slate-800 cursor-pointer"
               onClick={async () => {
                 await fetch("/api/auth/logout", { method: "POST" });
-                window.location.href = "/";
+                navigate("/");
               }}
             >
               <LogOut className="w-4 h-4 mr-2" />

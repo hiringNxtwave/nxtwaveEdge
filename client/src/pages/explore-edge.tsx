@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -102,6 +102,8 @@ function BadgeColors(kind: string) {
 }
 
 export default function ExploreEdge() {
+  const [, navigate] = useLocation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -113,7 +115,7 @@ export default function ExploreEdge() {
   });
 
   function goToApp() {
-    window.location.href = authUser?.id ? "/browse" : "/login";
+    navigate(authUser?.id ? "/browse" : "/login");
   }
 
   return (
