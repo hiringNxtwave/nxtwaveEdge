@@ -64,11 +64,11 @@ function parseServerError(err: any): string {
 /* ── Sliding candidates ──────────────────────────────────── */
 
 const slidingCandidates = [
-  { name: "Arjun S.", college: "IIT Kharagpur", role: "Full Stack Developer", score: 156, verdict: "Very Strong", initials: "A", avatarBg: "bg-blue-100 text-blue-700" },
-  { name: "Priya M.", college: "NIT Trichy", role: "Backend Engineer", score: 148, verdict: "Strong", initials: "P", avatarBg: "bg-indigo-100 text-indigo-700" },
-  { name: "Rahul K.", college: "BITS Pilani", role: "Frontend Developer", score: 162, verdict: "Very Strong", initials: "R", avatarBg: "bg-sky-100 text-sky-700" },
-  { name: "Sneha R.", college: "IIT Madras", role: "SDE", score: 151, verdict: "Strong", initials: "S", avatarBg: "bg-blue-100 text-blue-700" },
-  { name: "Vikram D.", college: "IIIT Hyderabad", role: "Backend Developer", score: 159, verdict: "Very Strong", initials: "V", avatarBg: "bg-indigo-100 text-indigo-700" },
+  { name: "Aditya P.", college: "NIT Bhopal (MANIT)", role: "Full Stack Developer", score: 99, verdict: "Strong Hire", initials: "A", avatarBg: "bg-blue-100 text-blue-700" },
+  { name: "Aman M.", college: "NIT Bhopal (MANIT)", role: "Backend Developer", score: 98, verdict: "Strong Hire", initials: "A", avatarBg: "bg-indigo-100 text-indigo-700" },
+  { name: "Rajveer S.", college: "HBTU, Uttar Pradesh", role: "Full Stack Developer", score: 99, verdict: "Strong Hire", initials: "R", avatarBg: "bg-sky-100 text-sky-700" },
+  { name: "Aditi R.", college: "NIT Uttarakhand", role: "Full Stack Developer", score: 98, verdict: "Strong Hire", initials: "A", avatarBg: "bg-blue-100 text-blue-700" },
+  { name: "Devansh G.", college: "HBTU, Kanpur", role: "Backend Developer", score: 94, verdict: "Strong Hire", initials: "D", avatarBg: "bg-indigo-100 text-indigo-700" },
 ];
 
 const hiringLogos = [
@@ -142,7 +142,7 @@ function CandidateCarousel() {
           </div>
           <div>
             <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Score</p>
-            <p className="text-[13px] font-bold text-slate-800">{c.score}/170</p>
+            <p className="text-[13px] font-bold text-slate-800">{c.score}/100</p>
           </div>
           <div>
             <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Verdict</p>
@@ -179,8 +179,7 @@ function SampleProfileModal({ onClose }: { onClose: () => void }) {
     try { const p = JSON.parse(val); return Array.isArray(p) ? p : Object.values(p); } catch { return []; }
   }
 
-  const roles = parseJson(student?.preferredRoles);
-  const locations = parseJson(student?.preferredLocations);
+  const strengths = parseJson(student?.preferredRoles);
 
   const verdictColor =
     student?.recommendation === "Strong Hire" ? "bg-blue-50 text-blue-700 border-blue-200" :
@@ -221,9 +220,15 @@ function SampleProfileModal({ onClose }: { onClose: () => void }) {
                   <GraduationCap className="w-3.5 h-3.5 shrink-0" />
                   <span className="truncate">{student.university}</span>
                 </div>
-                {student.branch && (
-                  <p className="text-xs text-slate-400 mt-0.5">{student.branch} · {student.graduationYear}</p>
-                )}
+                <div className="flex items-center gap-3 mt-0.5">
+                  {student.major && <p className="text-xs text-slate-400">{student.major} · {student.graduationYear}</p>}
+                  {student.location && student.location !== "India" && (
+                    <div className="flex items-center gap-1 text-xs text-slate-400">
+                      <MapPin className="w-3 h-3" />
+                      {student.location}
+                    </div>
+                  )}
+                </div>
               </div>
               <span className={`shrink-0 text-xs font-bold px-2.5 py-1 rounded-lg border ${verdictColor}`}>
                 {student.recommendation}
@@ -232,44 +237,45 @@ function SampleProfileModal({ onClose }: { onClose: () => void }) {
 
             <div className="h-px bg-slate-100" />
 
-            {/* Score */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-50 rounded-xl px-4 py-3">
-                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Assessment Score</p>
-                <p className="text-2xl font-extrabold text-slate-900">
-                  {student.overallAssessmentScore ?? "—"}<span className="text-sm font-semibold text-slate-400">/170</span>
-                </p>
-              </div>
-              {student.cgpa && (
-                <div className="bg-slate-50 rounded-xl px-4 py-3">
-                  <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">CGPA</p>
-                  <p className="text-2xl font-extrabold text-slate-900">{parseFloat(student.cgpa).toFixed(1)}</p>
+            {/* Scores */}
+            <div>
+              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Assessment Scores</p>
+              <div className="grid grid-cols-4 gap-2">
+                <div className="bg-blue-50 rounded-xl px-3 py-2.5 text-center">
+                  <p className="text-[9px] font-semibold text-blue-400 uppercase tracking-wider mb-1">Overall</p>
+                  <p className="text-lg font-extrabold text-blue-700">{student.overallAssessmentScore ?? "—"}</p>
+                  <p className="text-[9px] text-blue-400">/ 100</p>
                 </div>
-              )}
+                <div className="bg-slate-50 rounded-xl px-3 py-2.5 text-center">
+                  <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-1">DSA</p>
+                  <p className="text-lg font-extrabold text-slate-800">{student.dsaScore ?? "—"}</p>
+                  <p className="text-[9px] text-slate-400">/ 100</p>
+                </div>
+                <div className="bg-slate-50 rounded-xl px-3 py-2.5 text-center">
+                  <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-1">CS Fund.</p>
+                  <p className="text-lg font-extrabold text-slate-800">{student.csFundamentalsScore ?? "—"}</p>
+                  <p className="text-[9px] text-slate-400">/ 100</p>
+                </div>
+                <div className="bg-slate-50 rounded-xl px-3 py-2.5 text-center">
+                  <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Aptitude</p>
+                  <p className="text-lg font-extrabold text-slate-800">{student.aptitudeScore ?? "—"}</p>
+                  <p className="text-[9px] text-slate-400">/ 100</p>
+                </div>
+              </div>
             </div>
 
-            {/* Roles */}
-            {roles.length > 0 && (
+            {/* Strengths */}
+            {strengths.length > 0 && (
               <div>
-                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Role Strengths</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {roles.slice(0, 4).map((r: string) => (
-                    <span key={r} className="bg-blue-50 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-lg">{r}</span>
+                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Assessor Highlights</p>
+                <ul className="space-y-1.5">
+                  {strengths.slice(0, 4).map((s: string, i: number) => (
+                    <li key={i} className="flex items-start gap-2 text-xs text-slate-600 leading-relaxed">
+                      <span className="mt-1 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+                      {s}
+                    </li>
                   ))}
-                </div>
-              </div>
-            )}
-
-            {/* Locations */}
-            {locations.length > 0 && (
-              <div>
-                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Open to Locations</p>
-                <div className="flex flex-wrap gap-2 items-center">
-                  <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                  {locations.slice(0, 4).map((l: string) => (
-                    <span key={l} className="text-sm text-slate-600 font-medium">{l}</span>
-                  ))}
-                </div>
+                </ul>
               </div>
             )}
 

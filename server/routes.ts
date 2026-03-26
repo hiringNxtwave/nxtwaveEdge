@@ -884,21 +884,29 @@ export async function registerRoutes(app: Express): Promise<void> {
   // Public sample student endpoint — no auth required
   app.get('/api/public/sample-student', async (req, res) => {
     try {
-      const results = await storage.getStudents({ recommendation: 'Strong Hire', limit: 1, offset: 0 });
-      const student = results[0] ?? null;
+      // Pin to a specific top-scoring student for a consistent, high-quality preview
+      const SAMPLE_ID = '44fcef27-f630-4430-a126-1356916b97c3';
+      let student = await storage.getStudentById(SAMPLE_ID);
+      if (!student) {
+        const results = await storage.getStudents({ recommendation: 'Strong Hire', limit: 1, offset: 0 });
+        student = results[0] ?? null;
+      }
       if (!student) return res.status(404).json({ message: "No sample available" });
       // Return a curated subset — no contact info
       res.json({
         id: student.id,
-        fullName: `${student.firstName} ${student.lastName}`,
+        fullName: `${student.firstName} ${student.lastName.charAt(0)}.`,
         university: student.university,
+        location: student.location,
+        major: student.major,
         recommendation: student.recommendation,
         overallAssessmentScore: student.overallAssessmentScore,
+        dsaScore: student.dsaScore,
+        csFundamentalsScore: student.csFundamentalsScore,
+        aptitudeScore: student.aptitudeScore,
         preferredRoles: student.preferredRoles,
-        preferredLocations: student.preferredLocations,
         cgpa: student.cgpa,
         graduationYear: student.graduationYear,
-        branch: student.branch,
       });
     } catch (error) {
       console.error("Error fetching sample student:", error);
