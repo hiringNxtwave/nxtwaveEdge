@@ -1,5 +1,6 @@
 import { Link, useLocation } from "wouter";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
+import { EdgeBadge } from "@/components/edge-badge";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect, useCallback } from "react";
@@ -103,8 +104,9 @@ export default function AppSidebar() {
           </button>
         ) : (
           <>
-            <Link href="/" className="flex items-center shrink-0">
-              <img src={nxtWaveLogo} alt="NxtWave" className="h-8 w-auto brightness-0 invert max-w-[130px] hover:opacity-80 transition-opacity" />
+            <Link href="/" className="flex items-center gap-1.5 shrink-0 hover:opacity-80 transition-opacity">
+              <img src={nxtWaveLogo} alt="NxtWave" className="h-8 w-auto brightness-0 invert max-w-[130px]" />
+              <EdgeBadge className="mt-0.5" />
             </Link>
             <button
               onClick={() => setCollapsed(true)}

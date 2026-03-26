@@ -3,6 +3,7 @@ import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useQuery } from "@tanstack/react-query";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
 import { ArrowRight, CheckCircle, ChevronRight } from "lucide-react";
+import { EdgeBadge } from "@/components/edge-badge";
 
 const ROTATING_POINTS = [
   "Verified shortlists delivered within minutes",
@@ -298,12 +299,9 @@ export default function Landing() {
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100">
         <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               <img src={nxtWaveLogo} alt="NxtWave" className="h-10 w-auto" />
-              <div className="flex items-center">
-                <span className="w-px h-5 bg-slate-200 mx-0.5" />
-                <span className="text-[13px] font-extrabold tracking-widest text-blue-600 uppercase ml-2">Edge</span>
-              </div>
+              <EdgeBadge className="mt-0.5" />
             </div>
             <div className="hidden md:flex items-center gap-8">
               <button
@@ -738,8 +736,9 @@ export default function Landing() {
       {/* ── Footer strip ── */}
       <footer className="bg-slate-950 border-t border-white/5 py-6">
         <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 flex flex-col sm:flex-row justify-between items-center gap-3">
-          <div className="flex items-center">
+          <div className="flex items-center gap-1.5">
             <img src={nxtWaveLogo} alt="NxtWave" className="h-7 w-auto brightness-0 invert" />
+            <EdgeBadge className="mt-0.5" />
           </div>
           <p className="text-xs text-slate-500">© 2025 NxtWave. Built for India's Best Engineers.</p>
           <div className="flex gap-6">
