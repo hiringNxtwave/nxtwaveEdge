@@ -672,6 +672,18 @@ export default function LoginPage() {
 
   const isProfileRoute = location === "/login/profile";
 
+  // Redirect already-authenticated users straight to the app
+  const { data: authUser } = useQuery<any>({
+    queryKey: ["/api/auth/user"],
+    staleTime: 30_000,
+    retry: false,
+  });
+  useEffect(() => {
+    if (authUser?.id && authUser?.onboardingCompleted && !isProfileRoute) {
+      navigate("/browse");
+    }
+  }, [authUser, isProfileRoute]);
+
   // Prevent accidental page leave during OTP step
   useEffect(() => {
     if (step !== "otp") return;
