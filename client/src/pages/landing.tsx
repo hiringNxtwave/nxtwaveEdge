@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
+import { useQuery } from "@tanstack/react-query";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
 import { ArrowRight, CheckCircle, ChevronRight } from "lucide-react";
 
@@ -270,6 +271,16 @@ function AssessmentOrbitIllustration() {
 export default function Landing() {
   useScrollToTop();
 
+  const { data: authUser } = useQuery<any>({
+    queryKey: ["/api/auth/user"],
+    staleTime: 30_000,
+    retry: false,
+  });
+
+  function goToApp() {
+    window.location.href = authUser?.id ? "/browse" : "/login";
+  }
+
   const [rotatingIdx, setRotatingIdx] = useState(0);
   const [fade, setFade] = useState(true);
 
@@ -292,7 +303,7 @@ export default function Landing() {
             </div>
             <div className="hidden md:flex items-center gap-8">
               <button
-                onClick={() => window.location.href = "/login"}
+                onClick={() => goToApp()}
                 className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 h-9 rounded-lg transition-colors"
                 data-testid="button-login"
               >
@@ -306,7 +317,7 @@ export default function Landing() {
       <div className="bg-blue-600 text-white text-center text-xs font-medium py-2.5 px-4">
         <span className="bg-white text-blue-600 font-bold px-2 py-0.5 rounded text-[11px] mr-2">NEW</span>
         NxtWave Edge: India's First National Engineering Hiring Standard is live.{" "}
-        <button onClick={() => window.location.href = "/login"} className="underline font-semibold ml-1">Get early access →</button>
+        <button onClick={() => goToApp()} className="underline font-semibold ml-1">Get early access →</button>
       </div>
       {/* ── Hero ── */}
       <section className="bg-[#F0F5FF] overflow-hidden">
@@ -335,7 +346,7 @@ export default function Landing() {
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-3 mb-6">
                 <button
-                  onClick={() => window.location.href = "/login"}
+                  onClick={() => goToApp()}
                   className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
                   data-testid="button-explore-talent"
                 >
@@ -462,7 +473,7 @@ export default function Landing() {
               </div>
 
               <button
-                onClick={() => window.location.href = "/login"}
+                onClick={() => goToApp()}
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
               >
                 Browse Talent
@@ -568,7 +579,7 @@ export default function Landing() {
 
           <div className="text-center">
             <button
-              onClick={() => window.location.href = "/login"}
+              onClick={() => goToApp()}
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-8 py-3.5 rounded-lg transition-colors shadow-sm"
             >
               Get Top Candidates
@@ -702,7 +713,7 @@ export default function Landing() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => window.location.href = "/login"}
+              onClick={() => goToApp()}
               className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-8 py-4 rounded-lg transition-colors shadow-lg"
               data-testid="button-start-free-trial"
             >
@@ -728,7 +739,7 @@ export default function Landing() {
           </div>
           <p className="text-xs text-slate-500">© 2025 NxtWave. Built for India's Best Engineers.</p>
           <div className="flex gap-6">
-            <button onClick={() => window.location.href = "/login"} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">Login</button>
+            <button onClick={() => goToApp()} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">Login</button>
           </div>
         </div>
       </footer>

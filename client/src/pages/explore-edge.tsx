@@ -1,5 +1,6 @@
 import { Link } from "wouter";
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   Shield,
@@ -104,6 +105,16 @@ export default function ExploreEdge() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const { data: authUser } = useQuery<any>({
+    queryKey: ["/api/auth/user"],
+    staleTime: 30_000,
+    retry: false,
+  });
+
+  function goToApp() {
+    window.location.href = authUser?.id ? "/browse" : "/login";
+  }
 
   return (
     <div className="min-h-screen bg-[#EEF2F7]">
@@ -292,11 +303,9 @@ export default function ExploreEdge() {
                   <Award className="w-4 h-4 text-white" />
                   <span className="text-sm font-bold text-white">Top 1% Talent</span>
                 </div>
-                <Link href="/">
-                  <button className="inline-flex items-center justify-center gap-2 bg-white text-blue-700 hover:bg-blue-50 font-bold text-sm px-5 py-3 rounded-xl transition-colors w-full">
-                    Browse Verified Profiles <ArrowRight className="w-4 h-4" />
-                  </button>
-                </Link>
+                <button onClick={goToApp} className="inline-flex items-center justify-center gap-2 bg-white text-blue-700 hover:bg-blue-50 font-bold text-sm px-5 py-3 rounded-xl transition-colors w-full">
+                  Browse Verified Profiles <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>
@@ -314,11 +323,9 @@ export default function ExploreEdge() {
             this process, no screening required on your end.
           </p>
           <div className="flex items-center justify-center">
-            <Link href="/">
-              <button className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-colors">
-                Browse Talent
-              </button>
-            </Link>
+            <button onClick={goToApp} className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-colors">
+              Browse Talent
+            </button>
           </div>
         </div>
       </section>
