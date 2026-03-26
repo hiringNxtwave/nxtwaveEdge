@@ -448,6 +448,7 @@ function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
       return res.json();
     },
     onSuccess: async (data: any) => {
+      (window as any).lintrk?.("track", { conversion_id: 23414812 });
       await queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
       if (data?.user?.onboardingCompleted) {
         navigate("/browse");
