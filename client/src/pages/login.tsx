@@ -465,7 +465,7 @@ function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
           We sent a 6-digit code to <span className="font-semibold text-slate-700">{email}</span>
         </p>
         <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2">
-          Don't see it? Check your <span className="font-semibold">Spam / Junk</span> folder — it may have been filtered there.
+          Don't see it? Check your <span className="font-semibold">Spam / Junk</span> folder. It may have been filtered there.
         </p>
       </div>
 
@@ -575,7 +575,7 @@ function ProfileStep() {
           <Mail className="w-5 h-5 text-blue-600" />
         </div>
         <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Almost there!</h2>
-        <p className="text-slate-500 text-sm mt-1.5">One quick step — tell us about yourself to set up your account.</p>
+        <p className="text-slate-500 text-sm mt-1.5">One quick step: tell us about yourself to set up your account.</p>
       </div>
 
       <form onSubmit={(e) => { e.preventDefault(); if (validate()) profileMutation.mutate(); }} noValidate className="space-y-4">

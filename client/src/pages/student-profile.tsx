@@ -357,7 +357,7 @@ export default function StudentProfile() {
                 {activeTab === "interview1" && (
                   <div>
                     <h2 className="text-base font-bold text-slate-900 mb-1">Interview 1: DSA</h2>
-                    <p className="text-sm text-slate-500 mb-6">Technical Round 1 — Communication & Problem Solving</p>
+                    <p className="text-sm text-slate-500 mb-6">Technical Round 1: Communication & Problem Solving</p>
                     {student.linkedinUrl ? (
                       <a
                         href={student.linkedinUrl}
@@ -382,7 +382,7 @@ export default function StudentProfile() {
                 {activeTab === "interview2" && (
                   <div>
                     <h2 className="text-base font-bold text-slate-900 mb-1">Interview 2: Projects</h2>
-                    <p className="text-sm text-slate-500 mb-6">Technical Round 2 — Deep Technical & Domain Skills</p>
+                    <p className="text-sm text-slate-500 mb-6">Technical Round 2: Deep Technical & Domain Skills</p>
                     {student.githubUrl ? (
                       <a
                         href={student.githubUrl}

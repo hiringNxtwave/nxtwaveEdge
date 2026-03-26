@@ -232,7 +232,7 @@ export default function BrowseStudents() {
               <span className="font-medium">{activeJob.role}</span>
               {activeJob.location && <><span className="opacity-60">·</span><span>{activeJob.location}</span></>}
               {activeJob.salary && <><span className="opacity-60">·</span><span>₹{activeJob.salary} LPA</span></>}
-              <span className="opacity-70 text-xs ml-1">— showing top {matchedStudents.length} matches</span>
+              <span className="opacity-70 text-xs ml-1">(top {matchedStudents.length} matches)</span>
             </div>
             <button
               onClick={clearJobMatch}
@@ -293,7 +293,7 @@ export default function BrowseStudents() {
                 </div>
                 <div>
                   <p className="font-semibold text-white text-sm">
-                    Preview Mode — {students.length} of {totalStudentCount.toLocaleString()}+ candidates shown
+                    Preview Mode: {students.length} of {totalStudentCount.toLocaleString()}+ candidates shown
                   </p>
                   <p className="text-xs text-blue-200">Sign in to unlock full profiles, assessment details, and hiring tools.</p>
                 </div>

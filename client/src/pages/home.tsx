@@ -162,7 +162,7 @@ function MarketingHome() {
             </h1>
 
             <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-              Pre-assessed engineers, analysts, and professionals from India's premier institutions — ready to contribute from day one.
+              Pre-assessed engineers, analysts, and professionals from India's premier institutions, ready to contribute from day one.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
@@ -273,7 +273,7 @@ function MarketingHome() {
             {[
               { step: "01", icon: Briefcase, title: "Upload Your JD", desc: "Paste your Job Description or upload a PDF. Our AI parses requirements instantly." },
               { step: "02", icon: Search, title: "Browse Matched Talent", desc: "See ranked candidates with match scores, NIRF rankings, skills, and salary expectations." },
-              { step: "03", icon: CheckCircle, title: "Shortlist & Hire", desc: "Save favourites, schedule interviews, and extend offers — all from your dashboard." },
+              { step: "03", icon: CheckCircle, title: "Shortlist & Hire", desc: "Save favourites, schedule interviews, and extend offers, all from your dashboard." },
             ].map((s) => (
               <div key={s.step} className="text-center">
                 <div className="w-14 h-14 bg-white border-2 border-slate-200 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm">

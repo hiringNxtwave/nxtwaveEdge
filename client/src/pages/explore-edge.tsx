@@ -41,7 +41,7 @@ const STAGES = [
   {
     num: 3,
     kind: "evaluation",
-    title: "Technical Interview — Round 1",
+    title: "Technical Interview: Round 1",
     tagline: "Live DSA problem-solving with MAANG+ industry experts.",
     points: [
       { label: "Monitoring:", detail: "Dual-camera: screen + room environment." },
@@ -63,7 +63,7 @@ const STAGES = [
   {
     num: 5,
     kind: "evaluation",
-    title: "Technical Interview — Round 2",
+    title: "Technical Interview: Round 2",
     tagline: "60-minute real-world engineering readiness check.",
     points: [
       { label: "Projects (40 min):", detail: "Deployed systems, trade-offs, ownership." },
@@ -74,7 +74,7 @@ const STAGES = [
   {
     num: 6,
     kind: "audit",
-    title: "TR2 Audit — Final QC",
+    title: "TR2 Audit: Final QC",
     tagline: "Final validation of skill category and readiness level.",
     points: [
       { label: "", detail: "Confirm all mandatory areas were covered." },
@@ -95,7 +95,7 @@ const INTEGRITY_PILLARS = [
   {
     icon: Lock,
     title: "Zero Digital Access",
-    body: "Assessments are fully offline. No internet, no phones, no screen tools — only real skill.",
+    body: "Assessments are fully offline. No internet, no phones, no screen tools. Only real skill.",
   },
   {
     icon: Eye,
@@ -152,7 +152,7 @@ export default function ExploreEdge() {
           <span className="text-blue-600">Evaluation Process</span>
         </h1>
         <p className="text-slate-500 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-          Our rigorous multi-stage process ensures only the top 0.1% talent makes it through. From
+          Our rigorous multi-stage process ensures only the top 1% talent makes it through. From
           AI-proctored assessments to deep-dive technical interviews, we validate every skill.
         </p>
       </section>
@@ -311,7 +311,7 @@ export default function ExploreEdge() {
               <div className="flex flex-col gap-3 shrink-0">
                 <div className="flex items-center gap-2.5 bg-white/15 rounded-xl px-4 py-3">
                   <Award className="w-4 h-4 text-white" />
-                  <span className="text-sm font-bold text-white">Top 0.1% Talent</span>
+                  <span className="text-sm font-bold text-white">Top 1% Talent</span>
                 </div>
                 <Link href="/">
                   <button className="inline-flex items-center justify-center gap-2 bg-white text-blue-700 hover:bg-blue-50 font-bold text-sm px-5 py-3 rounded-xl transition-colors w-full">
@@ -359,11 +359,11 @@ export default function ExploreEdge() {
       <section className="bg-slate-950 border-t border-slate-800/50 px-6 py-20">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-extrabold text-white mb-4">
-            Ready to Hire from the Top 0.1%?
+            Ready to Hire from the Top 1%?
           </h2>
           <p className="text-slate-400 text-sm mb-8 leading-relaxed">
             Access 1,920+ pre-verified engineers who've cleared every stage of
-            this process — no screening required on your end.
+            this process, no screening required on your end.
           </p>
           <div className="flex items-center justify-center">
             <Link href="/">

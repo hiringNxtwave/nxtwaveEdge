@@ -42,19 +42,19 @@ const EDGE_CARDS = [
     num: "01",
     problem: "Online evaluation can't be trusted anymore",
     problemDesc: "Cheating and test inflation have made digital assessments unreliable. Scores no longer reflect real capability.",
-    solution: "Reliable assessments built on proven offline integrity — proctored at physical centers with zero digital compromise.",
+    solution: "Reliable assessments built on proven offline integrity, proctored at physical centers with zero digital compromise.",
   },
   {
     num: "02",
     problem: "'Tier' doesn't tell you who can actually code",
     problemDesc: "Readiness varies drastically even inside top NIRF campuses. College name is not a hiring signal.",
-    solution: "Consistent evaluation of engineering talent across all campuses — ranked on a national standard, not a tier list.",
+    solution: "Consistent evaluation of engineering talent across all campuses, ranked on a national standard, not a tier list.",
   },
   {
     num: "03",
     problem: "Hiring teams need answers, not more resumes",
     problemDesc: "Screening hundreds of profiles slows teams without improving quality. The signal is buried in noise.",
-    solution: "A clear, pre-validated shortlist of truly job-ready freshers — delivered in under 1 hour.",
+    solution: "A clear, pre-validated shortlist of truly job-ready freshers, delivered in under 1 hour.",
   },
 ];
 
@@ -305,7 +305,7 @@ export default function Landing() {
       {/* ── Announcement Bar ── */}
       <div className="bg-blue-600 text-white text-center text-xs font-medium py-2.5 px-4">
         <span className="bg-white text-blue-600 font-bold px-2 py-0.5 rounded text-[11px] mr-2">NEW</span>
-        NxtWave Edge — India's First National Engineering Hiring Standard is live.{" "}
+        NxtWave Edge: India's First National Engineering Hiring Standard is live.{" "}
         <button onClick={() => window.location.href = "/login"} className="underline font-semibold ml-1">Get early access →</button>
       </div>
       {/* ── Hero ── */}
@@ -320,7 +320,7 @@ export default function Landing() {
 
               <p className="text-base md:text-lg text-slate-700 font-medium mb-8 max-w-lg leading-relaxed">
                 Hire Top <span className="text-blue-600 font-bold">1%</span> Engineers in{" "}
-                <span className="text-[#334155]">Under an Hour</span> — Filtered Through National Standard Assessments,{" "}
+                <span className="text-[#334155]">Under an Hour</span>, Filtered Through National Standard Assessments,{" "}
                 <span className="text-[#334155]">Offline Assessed</span> &amp; Nationally Ranked.
               </p>
 
@@ -443,7 +443,7 @@ export default function Landing() {
                 who are ready from day 1
               </h2>
               <p className="text-slate-500 mb-10 leading-relaxed">
-                Every candidate on Edge has cleared a rigorous offline assessment — scored, ranked, and recommended before they ever reach your shortlist.
+                Every candidate on Edge has cleared a rigorous offline assessment, scored, ranked, and recommended before they ever reach your shortlist.
               </p>
 
               <div className="grid grid-cols-2 gap-x-10 gap-y-8 mb-10">
@@ -477,7 +477,7 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">Why companies choose Edge</h2>
-            <p className="text-slate-500 max-w-xl mx-auto">Every shortlist is pre-screened, offline-evaluated, and benchmark-cleared — before it reaches you.</p>
+            <p className="text-slate-500 max-w-xl mx-auto">Every shortlist is pre-screened, offline-evaluated, and benchmark-cleared before it reaches you.</p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
@@ -517,7 +517,7 @@ export default function Landing() {
                   </svg>
                 ),
                 title: "National Percentile Ranking",
-                desc: "Top 0.1% talent across India's top 300 NIRF-ranked campuses.",
+                desc: "Top 1% talent across India's top 300 NIRF-ranked campuses.",
               },
               {
                 icon: (
@@ -631,7 +631,7 @@ export default function Landing() {
               India's First National<br className="hidden sm:block" /> Engineering Hiring Standard
             </h2>
             <p className="text-base text-slate-500 max-w-lg mx-auto leading-relaxed">
-              Traditional hiring is broken. Here's why — and how Edge fixes every part of it.
+              Traditional hiring is broken. Here's why and how Edge fixes every part of it.
             </p>
           </div>
 

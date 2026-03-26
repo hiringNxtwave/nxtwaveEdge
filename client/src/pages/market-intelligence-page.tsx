@@ -16,7 +16,7 @@ export default function MarketIntelligencePage() {
           <div>
             <h1 className="text-xl font-bold text-slate-900">Market Intelligence</h1>
             <p className="text-sm text-slate-500 mt-0.5">
-              Salary benchmarks, competitor hiring trends, and skill demand — based on 2025 Talent Report
+              Salary benchmarks, competitor hiring trends, and skill demand, based on 2025 Talent Report
             </p>
           </div>
         </div>
