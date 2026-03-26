@@ -40,7 +40,7 @@ textarea::placeholder {
   
   /* Muted: Light Gray System */
   --muted: hsl(0, 0%, 96%);
-  --muted-foreground: hsl(0, 0%, 45%);
+  --muted-foreground: hsl(0, 0%, 62%);
   
   /* Accent: Success Green */
   --accent: hsl(142, 71%, 45%);

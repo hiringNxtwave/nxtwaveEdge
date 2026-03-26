@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import StudentCard from "@/components/student-card";
 import StudentFilters from "@/components/student-filters";
@@ -146,9 +147,17 @@ export default function BrowseStudents() {
   const matchMutation = useMutation({
     mutationFn: async (data: { role: string; location: string; salary: number }) =>
       apiRequest("POST", "/api/students/job-match", data).then(r => r.json()),
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       setMatchedStudents(data);
       setShowJobPopup(false);
+      // Also persist the job to the DB so it shows in the Jobs section
+      apiRequest("POST", "/api/company/requirements", {
+        jobTitle: variables.role,
+        jobLocation: variables.location,
+        salaryMax: Math.round(variables.salary * 100),
+      }).then(() => {
+        queryClient.invalidateQueries({ queryKey: ["/api/company/requirements"] });
+      }).catch(() => { /* non-blocking — match results already shown */ });
     },
   });
 
