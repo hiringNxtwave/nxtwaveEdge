@@ -54,7 +54,7 @@ export default function BrowseStudents() {
   const popupShownRef = useRef(false);
   const jobIdMatchTriggeredRef = useRef<string | null>(null);
 
-  const studentsPerPage = isAuthenticated ? 48 : 12;
+  const studentsPerPage = isAuthenticated ? 25 : 12;
 
   // Auto-trigger job match when jobId is in URL (once per jobId)
   const jobMatchByIdMutation = useMutation({

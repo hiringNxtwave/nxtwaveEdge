@@ -289,7 +289,7 @@ export default function Landing() {
     queryClient.prefetchQuery({
       queryKey: ["/api/students", defaultFilters, 1],
       queryFn: () =>
-        fetch("/api/students?limit=10&offset=0", { credentials: "include" }).then(r => r.json()),
+        fetch("/api/students?limit=25&offset=0", { credentials: "include" }).then(r => r.json()),
       staleTime: 60_000,
     });
     queryClient.prefetchQuery({
