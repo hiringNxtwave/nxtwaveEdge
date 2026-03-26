@@ -103,7 +103,9 @@ export default function AppSidebar() {
           </button>
         ) : (
           <>
-            <img src={nxtWaveLogo} alt="NxtWave" className="h-8 w-auto brightness-0 invert max-w-[130px]" />
+            <Link href="/" className="flex items-center shrink-0">
+              <img src={nxtWaveLogo} alt="NxtWave" className="h-8 w-auto brightness-0 invert max-w-[130px] hover:opacity-80 transition-opacity" />
+            </Link>
             <button
               onClick={() => setCollapsed(true)}
               className="ml-auto p-1 rounded-md text-slate-600 hover:text-slate-300 hover:bg-slate-800/70 transition-all shrink-0"
