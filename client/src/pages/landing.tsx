@@ -449,13 +449,14 @@ export default function Landing() {
               <div className="grid grid-cols-2 gap-x-10 gap-y-8 mb-10">
                 {[
                   { val: "3,00,000+", label: "Freshers evaluated offline" },
-                  { val: "250+", label: "NIRF campuses covered" },
+                  { val: "250+", label: "NIRF campuses covered", sublabel: "IITs, NITs, IIITs & top regional colleges" },
                   { val: "MAANG", label: "Standard assessment bar" },
                   { val: "2,500+", label: "Hiring partners on Edge" },
-                ].map(({ val, label }) => (
+                ].map(({ val, label, sublabel }) => (
                   <div key={val}>
                     <div className="text-2xl font-extrabold text-slate-900">{val}</div>
                     <div className="text-sm text-slate-500 mt-1">{label}</div>
+                    {sublabel && <div className="text-xs text-slate-400 mt-0.5">{sublabel}</div>}
                   </div>
                 ))}
               </div>
