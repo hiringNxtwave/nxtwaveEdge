@@ -539,7 +539,7 @@ function ProfileStep() {
       const res = await apiRequest("PATCH", "/api/auth/profile", {
         name: form.name.trim(),
         company: form.company.trim(),
-        mobile: form.mobile.trim(),
+        mobile: form.mobile.replace(/\D/g, "").slice(0, 10),
       });
       return res.json();
     },
@@ -556,14 +556,22 @@ function ProfileStep() {
     if (!form.company.trim()) e.company = "Company name is required.";
     const digits = form.mobile.replace(/\D/g, "");
     if (!form.mobile.trim()) e.mobile = "Mobile number is required.";
-    else if (digits.length < 10) e.mobile = "Please enter a valid 10-digit mobile number.";
+    else if (digits.length !== 10) e.mobile = "Please enter a valid 10-digit mobile number.";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
 
   function field(k: keyof typeof form) {
     return (e: ChangeEvent<HTMLInputElement>) => {
-      setForm(p => ({ ...p, [k]: e.target.value }));
+      let val = e.target.value;
+      if (k === "mobile") {
+        // Strip +91 / 91 / 0 country/trunk prefix then keep only digits, max 10
+        val = val.replace(/\D/g, "");
+        if (val.startsWith("91") && val.length > 10) val = val.slice(2);
+        if (val.startsWith("0") && val.length > 10) val = val.slice(1);
+        val = val.slice(0, 10);
+      }
+      setForm(p => ({ ...p, [k]: val }));
       setErrors(p => ({ ...p, [k]: "", server: "" }));
     };
   }
@@ -618,7 +626,7 @@ function ProfileStep() {
               onChange={field("mobile")}
               placeholder="98765 43210"
               autoComplete="tel"
-              maxLength={15}
+              maxLength={10}
               className={`flex-1 border rounded-xl px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 ${errors.mobile ? "border-red-400 bg-red-50" : "border-slate-200 bg-white"}`}
             />
           </div>
