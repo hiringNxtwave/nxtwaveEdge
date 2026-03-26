@@ -9,9 +9,6 @@ import {
   ClipboardCheck,
   BarChart3,
   Award,
-  Lock,
-  Eye,
-  Zap,
 } from "lucide-react";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
 
@@ -88,24 +85,6 @@ const STAGES = [
     title: "Final Shortlisting",
     tagline: "Only candidates who clear every stage and every audit gate are shared with hiring companies.",
     points: [],
-  },
-];
-
-const INTEGRITY_PILLARS = [
-  {
-    icon: Lock,
-    title: "Zero Digital Access",
-    body: "Assessments are fully offline. No internet, no phones, no screen tools. Only real skill.",
-  },
-  {
-    icon: Eye,
-    title: "Triple Audit Gates",
-    body: "Three independent audit checkpoints verify every evaluation before a candidate can advance.",
-  },
-  {
-    icon: Zap,
-    title: "AI + Human Review",
-    body: "Recordings, code, and interview footage are analysed by both AI models and senior reviewers.",
   },
 ];
 
@@ -320,37 +299,6 @@ export default function ExploreEdge() {
                 </Link>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Integrity pillars ── */}
-      <section className="bg-slate-950 px-6 py-20">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-3 block">
-              Why it matters
-            </span>
-            <h2 className="text-3xl font-extrabold text-white">
-              Built on Uncompromising Integrity
-            </h2>
-            <p className="text-slate-400 mt-3 text-sm max-w-xl mx-auto">
-              Every layer of the process is designed to eliminate shortcuts, gaming, and misrepresentation.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {INTEGRITY_PILLARS.map((p) => {
-              const Icon = p.icon;
-              return (
-                <div key={p.title} className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-                  <div className="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/20 flex items-center justify-center mb-4">
-                    <Icon className="w-4 h-4 text-blue-400" />
-                  </div>
-                  <h3 className="text-base font-bold text-white mb-2">{p.title}</h3>
-                  <p className="text-sm text-slate-400 leading-relaxed">{p.body}</p>
-                </div>
-              );
-            })}
           </div>
         </div>
       </section>
