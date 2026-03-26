@@ -61,6 +61,7 @@ function Router() {
         <Route path="/for-colleges" component={ForColleges} />
         <Route path="/for-students" component={ForStudents} />
         <Route path="/explore-edge" component={ExploreEdge} />
+        <Route path="/candidate-evaluation-process">{() => { window.location.replace("/explore-edge"); return null; }}</Route>
 
         {!isAuthenticated ? (
           <>
