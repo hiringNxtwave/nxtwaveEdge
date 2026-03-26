@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
+import { queryClient } from "@/lib/queryClient";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
 import { ArrowRight, CheckCircle, ChevronRight } from "lucide-react";
 import { EdgeBadge } from "@/components/edge-badge";
@@ -271,6 +273,7 @@ function AssessmentOrbitIllustration() {
 
 export default function Landing() {
   useScrollToTop();
+  const [, navigate] = useLocation();
 
   const { data: authUser } = useQuery<any>({
     queryKey: ["/api/auth/user"],
@@ -278,8 +281,31 @@ export default function Landing() {
     retry: false,
   });
 
+  // Prefetch the first page of students while user is on landing so
+  // browse renders instantly when they click Login / Enter platform
+  useEffect(() => {
+    if (!authUser?.id) return;
+    const defaultFilters = { university: "all", recommendation: "all" };
+    queryClient.prefetchQuery({
+      queryKey: ["/api/students", defaultFilters, 1],
+      queryFn: () =>
+        fetch("/api/students?limit=10&offset=0", { credentials: "include" }).then(r => r.json()),
+      staleTime: 60_000,
+    });
+    queryClient.prefetchQuery({
+      queryKey: ["/api/students/count", defaultFilters],
+      queryFn: () =>
+        fetch("/api/students/count", { credentials: "include" }).then(r => r.json()),
+      staleTime: 60_000,
+    });
+  }, [authUser?.id]);
+
   function goToApp() {
-    window.location.href = authUser?.id ? "/browse" : "/login";
+    if (authUser?.id) {
+      navigate("/browse");
+    } else {
+      navigate("/login");
+    }
   }
 
   const [rotatingIdx, setRotatingIdx] = useState(0);
