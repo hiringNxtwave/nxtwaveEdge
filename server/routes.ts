@@ -1050,18 +1050,22 @@ export async function registerRoutes(app: Express): Promise<void> {
           roleScore = Math.min(20, hits.length * 6);
         } catch { /* ignore */ }
 
-        // 5. Location match against preferredLocations/devAreas (0–10 pts)
+        // 5. Location match against student's actual city (0–10 pts)
+        // Normalise both sides: bangalore = bengaluru, lowercase, trim
+        const normalize = (c: string) => c.toLowerCase().trim()
+          .replace("bengaluru", "bangalore")
+          .replace("visakhapatnam", "vizag");
+        const locLower = normalize(location || "");
+        const studentCity = normalize(s.location || "");
         let locScore = 0;
-        const locLower = (location || "").toLowerCase().trim();
         if (locLower === "" || locLower === "remote" || locLower === "anywhere") {
-          locScore = 5; // no preference = neutral bonus
-        } else {
-          try {
-            const pLocs: string[] = JSON.parse(s.preferredLocations || "[]");
-            const combined = pLocs.join(" ").toLowerCase();
-            if (combined.includes(locLower) || locLower.includes("remote")) locScore = 10;
-            else if (combined.includes(locLower.split(" ")[0])) locScore = 5;
-          } catch { /* ignore */ }
+          locScore = 10; // no city preference → everyone qualifies fully
+        } else if (studentCity === "india" || studentCity === "") {
+          locScore = 5; // student open to anywhere / city not specified
+        } else if (studentCity === locLower) {
+          locScore = 10; // exact city match
+        } else if (studentCity.includes(locLower) || locLower.includes(studentCity)) {
+          locScore = 5; // partial match (e.g. "new delhi" vs "delhi")
         }
 
         const total = Math.max(0, Math.min(100, assessBase + recScore + salaryAdj + roleScore + locScore));
@@ -1155,17 +1159,21 @@ export async function registerRoutes(app: Express): Promise<void> {
           roleScore = Math.min(20, hits.length * 6);
         } catch { /* ignore */ }
 
-        // 5. Location match against preferredLocations (0–10 pts) — same as existing job-match
+        // 5. Location match against student's actual city (0–10 pts)
+        const normalizeCity = (c: string) => c.toLowerCase().trim()
+          .replace("bengaluru", "bangalore")
+          .replace("visakhapatnam", "vizag");
+        const studentCity2 = normalizeCity(s.location || "");
+        const jobCity2 = normalizeCity(locLower);
         let locScore = 0;
-        if (locLower === "" || locLower === "remote" || locLower === "anywhere") {
+        if (jobCity2 === "" || jobCity2 === "remote" || jobCity2 === "anywhere") {
+          locScore = 10;
+        } else if (studentCity2 === "india" || studentCity2 === "") {
           locScore = 5;
-        } else {
-          try {
-            const pLocs: string[] = JSON.parse(s.preferredLocations || "[]");
-            const combined = pLocs.join(" ").toLowerCase();
-            if (combined.includes(locLower) || locLower.includes("remote")) locScore = 10;
-            else if (combined.includes(locLower.split(" ")[0])) locScore = 5;
-          } catch { /* ignore */ }
+        } else if (studentCity2 === jobCity2) {
+          locScore = 10;
+        } else if (studentCity2.includes(jobCity2) || jobCity2.includes(studentCity2)) {
+          locScore = 5;
         }
 
         // Extended: CGPA filter — applied as a bonus/penalty on top of existing score
