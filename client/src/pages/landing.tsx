@@ -289,7 +289,7 @@ export default function Landing() {
     queryClient.prefetchQuery({
       queryKey: ["/api/students", defaultFilters, 1],
       queryFn: () =>
-        fetch("/api/students?limit=25&offset=0", { credentials: "include" }).then(r => r.json()),
+        fetch("/api/students?limit=24&offset=0", { credentials: "include" }).then(r => r.json()),
       staleTime: 60_000,
     });
     queryClient.prefetchQuery({
@@ -442,6 +442,8 @@ export default function Landing() {
                     src="https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/wo8138w5cb-world-economic-forum-logo-world-economic-forum-liblogo.png"
                     alt="World Economic Forum"
                     className="w-full h-full object-contain"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
               </div>
@@ -639,6 +641,8 @@ export default function Landing() {
                       src={t.img}
                       alt={t.author}
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                       onError={(e) => {
                         (e.target as HTMLImageElement).style.display = "none";
                       }}
