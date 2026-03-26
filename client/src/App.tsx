@@ -107,7 +107,7 @@ function Router() {
             )} />
           </>
         )}
-        <Route component={NotFound} />
+        {!isLoading && <Route component={NotFound} />}
       </Switch>
 
     </>
