@@ -599,7 +599,7 @@ export default function Landing() {
                 desc: "Precision-filtered shortlist mapping for high-end DSA bars.",
               },
             ].map(({ icon, title, desc }) => (
-              <div key={title} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:border-blue-200 hover:shadow-md transition-all">
+              <div key={title} className="bg-white border border-slate-100 rounded-2xl p-6 shadow-md hover:border-blue-200 hover:shadow-xl transition-all">
                 <div className="mb-5">{icon}</div>
                 <h3 className="text-sm font-bold text-slate-900 mb-2">{title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
