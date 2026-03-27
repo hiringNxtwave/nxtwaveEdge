@@ -559,7 +559,7 @@ export default function Landing() {
                   </svg>
                 ),
                 title: "National Percentile Ranking",
-                desc: "Top 1% talent across India's top 300 NIRF-ranked campuses.",
+                desc: "Top 1% talent across India's top 250+ NIRF-ranked campuses.",
               },
               {
                 icon: (
