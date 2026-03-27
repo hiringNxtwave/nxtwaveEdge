@@ -668,9 +668,6 @@ export default function Landing() {
 
           {/* Header */}
           <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-blue-600 bg-blue-50 border border-blue-100 rounded-full px-4 py-1.5 mb-5 uppercase tracking-widest">
-              Why NxtWave Edge
-            </div>
             <h2 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight mb-4">
               India's First National<br className="hidden sm:block" /> Engineering Hiring Standard
             </h2>
