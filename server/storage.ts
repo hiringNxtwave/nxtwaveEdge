@@ -41,7 +41,7 @@ import {
   type InsertOtpCode,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, ilike, gte, desc, asc, sql, inArray, lt } from "drizzle-orm";
+import { eq, and, ilike, gte, desc, asc, sql, inArray, lt, isNull } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import seedDataJson from "./student-seed-data.json";
 
@@ -272,7 +272,7 @@ export class DatabaseStorage implements IStorage {
     return await db
       .select()
       .from(companyRequirements)
-      .where(eq(companyRequirements.companyId, companyId))
+      .where(and(eq(companyRequirements.companyId, companyId), isNull(companyRequirements.deletedAt)))
       .orderBy(desc(companyRequirements.createdAt));
   }
 
@@ -303,7 +303,8 @@ export class DatabaseStorage implements IStorage {
 
   async deleteCompanyRequirements(id: string): Promise<void> {
     await db
-      .delete(companyRequirements)
+      .update(companyRequirements)
+      .set({ deletedAt: new Date(), isActive: false })
       .where(eq(companyRequirements.id, id));
   }
 

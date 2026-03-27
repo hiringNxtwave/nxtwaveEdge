@@ -177,6 +177,7 @@ export const companyRequirements = pgTable("company_requirements", {
   isActive: boolean("is_active").default(true),
   lastUpdated: timestamp("last_updated").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
+  deletedAt: timestamp("deleted_at"),
 });
 
 export const students = pgTable("students", {

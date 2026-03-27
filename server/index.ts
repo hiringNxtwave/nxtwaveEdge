@@ -4,6 +4,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
 import { registerRoutes } from "./routes";
+import { runStartupMigrations } from "./db";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -66,6 +67,7 @@ server.listen(port, "0.0.0.0", () => {
 // Async initialisation — runs after the server is already accepting requests
 (async () => {
   try {
+    await runStartupMigrations();
     await registerRoutes(app);
 
     // Global error handler — must be added after routes
