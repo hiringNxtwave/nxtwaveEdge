@@ -588,15 +588,16 @@ export class DatabaseStorage implements IStorage {
     }
 
     const recPriority = sql`CASE WHEN ${students.recommendation} = 'Strong Hire' THEN 3 WHEN ${students.recommendation} = 'Hire' THEN 2 WHEN ${students.recommendation} = 'Weak Hire' THEN 1 ELSE 0 END`;
+    const scoreOrder = sql`${students.overallAssessmentScore} DESC NULLS LAST`;
 
     const results = whereConditions.length > 0
       ? await baseQuery
           .where(whereConditions.length === 1 ? whereConditions[0] : and(...whereConditions))
-          .orderBy(desc(recPriority), desc(students.overallAssessmentScore))
+          .orderBy(desc(recPriority), scoreOrder)
           .limit(filters?.limit || 20)
           .offset(filters?.offset || 0)
       : await baseQuery
-          .orderBy(desc(recPriority), desc(students.overallAssessmentScore))
+          .orderBy(desc(recPriority), scoreOrder)
           .limit(filters?.limit || 20)
           .offset(filters?.offset || 0);
 
