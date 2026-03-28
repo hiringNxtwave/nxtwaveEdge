@@ -20,7 +20,7 @@ import { Link } from "wouter";
 import {
   Lock, Users, Star, GitCompare, Shield, Briefcase,
   ChevronLeft, ChevronRight, X, Sparkles, MapPin,
-  DollarSign, Search as SearchIcon,
+  DollarSign, Search as SearchIcon, Video, FileCheck, ClipboardList,
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
@@ -38,6 +38,9 @@ export default function BrowseStudents() {
   const [currentPage, setCurrentPage] = useState(1);
   const [compareList, setCompareList] = useState<any[]>([]);
   const [showComparison, setShowComparison] = useState(false);
+  const [showFeatureHint, setShowFeatureHint] = useState(() => {
+    try { return sessionStorage.getItem("featureHintDismissed") !== "1"; } catch { return true; }
+  });
 
   // Job popup state
   const [showJobPopup, setShowJobPopup] = useState(false);
@@ -217,6 +220,40 @@ export default function BrowseStudents() {
             >
               <Briefcase className="w-3.5 h-3.5" />
               Post a Job
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── Feature hint: interview recordings + audit trail ── */}
+      {isAuthenticated && showFeatureHint && (
+        <div className="shrink-0 bg-[#EEF4FF] border-b border-blue-100 px-6 py-2.5">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-5 flex-wrap">
+              <div className="flex items-center gap-2 text-blue-700 text-xs font-semibold">
+                <Video className="w-3.5 h-3.5 shrink-0 text-blue-500" />
+                Interview recordings inside each profile
+              </div>
+              <div className="hidden sm:block w-px h-3 bg-blue-200" />
+              <div className="flex items-center gap-2 text-blue-700 text-xs font-semibold">
+                <ClipboardList className="w-3.5 h-3.5 shrink-0 text-blue-500" />
+                Full assessment audit trail
+              </div>
+              <div className="hidden sm:block w-px h-3 bg-blue-200" />
+              <div className="flex items-center gap-2 text-blue-700 text-xs font-semibold">
+                <FileCheck className="w-3.5 h-3.5 shrink-0 text-blue-500" />
+                Verified score reports
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setShowFeatureHint(false);
+                try { sessionStorage.setItem("featureHintDismissed", "1"); } catch {}
+              }}
+              className="shrink-0 text-blue-400 hover:text-blue-600 transition-colors"
+              aria-label="Dismiss"
+            >
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
