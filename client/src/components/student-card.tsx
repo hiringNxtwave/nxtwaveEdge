@@ -26,22 +26,20 @@ const generateAvatar = (firstName: string, studentId: string) => ({
   backgroundColor: AVATAR_COLORS[parseInt(studentId.slice(-8), 16) % AVATAR_COLORS.length],
 });
 
-function inferBestRole(dsa: number, comm: number, cs: number): string {
-  if (dsa >= 80 && cs >= 70) return "Backend / Systems";
-  if (dsa >= 70 && cs >= 70) return "Full-Stack";
-  if (comm >= 70 && dsa >= 60) return "Full-Stack / Product";
-  if (dsa >= 70) return "Software Engineer";
+function inferBestRole(dsa: number | null, comm: number | null, cs: number | null): string {
+  if (dsa != null && cs != null && dsa >= 80 && cs >= 70) return "Backend / Systems";
+  if (dsa != null && cs != null && dsa >= 70 && cs >= 70) return "Full-Stack";
+  if (comm != null && dsa != null && comm >= 70 && dsa >= 60) return "Full-Stack / Product";
+  if (dsa != null && dsa >= 70) return "Software Engineer";
   return "Full-Stack Engineer";
 }
 
-function resolveScores(student: StudentWithAssessments, seed: number) {
-  const compute = (offset: number) =>
-    Math.max(1, Math.min(5, 4 + ((seed * 37 + offset) % 3) - 1)) * 20;
+function resolveScores(student: StudentWithAssessments) {
   return {
-    dsa: student.dsaScore ?? compute(1),
-    aptitude: student.aptitudeScore ?? compute(2),
-    verbal: student.verbalCommunicationScore ?? compute(3),
-    csFund: student.csFundamentalsScore ?? compute(4),
+    dsa: student.dsaScore ?? null,
+    aptitude: student.aptitudeScore ?? null,
+    verbal: student.verbalCommunicationScore ?? null,
+    csFund: student.csFundamentalsScore ?? null,
   };
 }
 
@@ -84,9 +82,9 @@ export default function StudentCard({ student, matchScore }: StudentCardProps) {
   const [showExamFootage, setShowExamFootage] = useState(false);
   const [showInterviewPerformance, setShowInterviewPerformance] = useState(false);
 
-  const seed = parseInt(student.id.slice(-8), 16);
-  const scores = resolveScores(student, seed);
-  const avg = Math.round((scores.dsa + scores.aptitude + scores.verbal + scores.csFund) / 4);
+  const scores = resolveScores(student);
+  const nonNullScores = [scores.dsa, scores.aptitude, scores.verbal, scores.csFund].filter((s): s is number => s !== null);
+  const avg = nonNullScores.length > 0 ? Math.round(nonNullScores.reduce((a, b) => a + b, 0) / nonNullScores.length) : null;
   const overall = student.overallAssessmentScore ?? avg;
   const avatar = generateAvatar(student.firstName, student.id);
   const bestRole = inferBestRole(scores.dsa, scores.verbal, scores.csFund);
@@ -153,32 +151,40 @@ export default function StudentCard({ student, matchScore }: StudentCardProps) {
           )}
         </div>
 
-        {/* Score pills */}
+        {/* Score pills — only shown when real data exists */}
         <div className="flex flex-wrap gap-1.5 mb-4">
-          <ScorePill
-            label="DSA"
-            value={scores.dsa}
-            onClick={() => setSelectedAssessment({ type: "DSA", score: scores.dsa, level: scoreLabel(scores.dsa) })}
-            testId={`button-dsa-assessment-${student.id}`}
-          />
-          <ScorePill
-            label="CS"
-            value={scores.csFund}
-            onClick={() => setSelectedAssessment({ type: "CS Fundamentals", score: scores.csFund, level: scoreLabel(scores.csFund) })}
-            testId={`button-cs-fundamentals-assessment-${student.id}`}
-          />
-          <ScorePill
-            label="Verbal"
-            value={scores.verbal}
-            onClick={() => setSelectedAssessment({ type: "Verbal Ability", score: scores.verbal, level: scoreLabel(scores.verbal) })}
-            testId={`button-communication-assessment-${student.id}`}
-          />
-          <ScorePill
-            label="Coding"
-            value={scores.aptitude}
-            onClick={() => setSelectedAssessment({ type: "Aptitude", score: scores.aptitude, level: scoreLabel(scores.aptitude) })}
-            testId={`button-aptitude-assessment-${student.id}`}
-          />
+          {scores.dsa !== null && (
+            <ScorePill
+              label="DSA"
+              value={scores.dsa}
+              onClick={() => setSelectedAssessment({ type: "DSA", score: scores.dsa!, level: scoreLabel(scores.dsa!) })}
+              testId={`button-dsa-assessment-${student.id}`}
+            />
+          )}
+          {scores.csFund !== null && (
+            <ScorePill
+              label="CS"
+              value={scores.csFund}
+              onClick={() => setSelectedAssessment({ type: "CS Fundamentals", score: scores.csFund!, level: scoreLabel(scores.csFund!) })}
+              testId={`button-cs-fundamentals-assessment-${student.id}`}
+            />
+          )}
+          {scores.verbal !== null && (
+            <ScorePill
+              label="Verbal"
+              value={scores.verbal}
+              onClick={() => setSelectedAssessment({ type: "Verbal Ability", score: scores.verbal!, level: scoreLabel(scores.verbal!) })}
+              testId={`button-communication-assessment-${student.id}`}
+            />
+          )}
+          {scores.aptitude !== null && (
+            <ScorePill
+              label="Aptitude"
+              value={scores.aptitude}
+              onClick={() => setSelectedAssessment({ type: "Aptitude", score: scores.aptitude!, level: scoreLabel(scores.aptitude!) })}
+              testId={`button-aptitude-assessment-${student.id}`}
+            />
+          )}
         </div>
 
         {/* Match % badge — only when job match active */}
@@ -194,8 +200,12 @@ export default function StudentCard({ student, matchScore }: StudentCardProps) {
         {/* Bottom: Overall score + View Profile */}
         <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100">
           <div className="flex items-baseline gap-1">
-            <span className="text-2xl font-black text-slate-900 tabular-nums leading-none">{overall}</span>
-            <span className="text-[10px] text-slate-400 font-medium">/100</span>
+            <span className="text-2xl font-black text-slate-900 tabular-nums leading-none">
+              {overall ?? "—"}
+            </span>
+            {overall !== null && overall !== undefined && (
+              <span className="text-[10px] text-slate-400 font-medium">/100</span>
+            )}
           </div>
           <div
             className="flex items-center gap-1 text-[11px] font-semibold text-blue-600 group-hover:gap-1.5 transition-all"
