@@ -694,8 +694,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-white flex">
-      {/* Left panel — hidden on mobile */}
-      <div className="flex-1">
+      {/* Left panel — hidden below lg */}
+      <div className="hidden lg:block lg:flex-1 lg:max-w-[640px] xl:max-w-[720px]">
         <LeftPanel onPreview={() => setShowSampleProfile(true)} />
       </div>
 
