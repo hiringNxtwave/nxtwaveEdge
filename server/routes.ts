@@ -923,6 +923,8 @@ export async function registerRoutes(app: Express): Promise<void> {
         university, 
         minCgpa,
         recommendation,
+        name,
+        minScore,
         limit = 20, 
         offset = 0 
       } = req.query;
@@ -933,6 +935,8 @@ export async function registerRoutes(app: Express): Promise<void> {
         university: university as string,
         minCgpa: minCgpa ? parseFloat(minCgpa as string) : undefined,
         recommendation: recommendation as string || undefined,
+        name: name as string || undefined,
+        minScore: minScore ? parseInt(minScore as string) : undefined,
         limit: parseInt(limit as string),
         offset: parseInt(offset as string),
       };
@@ -973,7 +977,7 @@ export async function registerRoutes(app: Express): Promise<void> {
 
   app.get('/api/students/count', async (req, res) => {
     try {
-      const { skills, location, university, minCgpa, recommendation } = req.query;
+      const { skills, location, university, minCgpa, recommendation, name, minScore } = req.query;
 
       const filters = {
         skills: skills ? (skills as string).split(',') : undefined,
@@ -981,6 +985,8 @@ export async function registerRoutes(app: Express): Promise<void> {
         university: university as string,
         minCgpa: minCgpa ? parseFloat(minCgpa as string) : undefined,
         recommendation: recommendation as string || undefined,
+        name: name as string || undefined,
+        minScore: minScore ? parseInt(minScore as string) : undefined,
       };
 
       console.log("🔍 Count API called with filters:", JSON.stringify(filters, null, 2));

@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import StudentCard from "@/components/student-card";
-import StudentFilters from "@/components/student-filters";
+import StudentFilters, { type FilterState } from "@/components/student-filters";
 import CandidateComparison from "@/components/candidate-comparison";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,7 @@ export default function BrowseStudents() {
   const searchParams = new URLSearchParams(window.location.search);
   const jobIdFromUrl = searchParams.get("jobId");
 
-  const [filters, setFilters] = useState({ university: "all", recommendation: "all" });
+  const [filters, setFilters] = useState<FilterState>({ university: "all", recommendation: "all", name: "", minScore: "all" });
   const [currentPage, setCurrentPage] = useState(1);
   const [compareList, setCompareList] = useState<any[]>([]);
   const [showComparison, setShowComparison] = useState(false);
@@ -125,6 +125,8 @@ export default function BrowseStudents() {
       const params = new URLSearchParams();
       if (filters.university && filters.university !== "all") params.append("university", filters.university);
       if (filters.recommendation && filters.recommendation !== "all") params.append("recommendation", filters.recommendation);
+      if (filters.name && filters.name.trim()) params.append("name", filters.name.trim());
+      if (filters.minScore && filters.minScore !== "all") params.append("minScore", filters.minScore);
       params.append("limit", studentsPerPage.toString());
       params.append("offset", ((currentPage - 1) * studentsPerPage).toString());
       const response = await fetch(`/api/students?${params}`, { credentials: "include" });
@@ -140,6 +142,8 @@ export default function BrowseStudents() {
       const params = new URLSearchParams();
       if (filters.university && filters.university !== "all") params.append("university", filters.university);
       if (filters.recommendation && filters.recommendation !== "all") params.append("recommendation", filters.recommendation);
+      if (filters.name && filters.name.trim()) params.append("name", filters.name.trim());
+      if (filters.minScore && filters.minScore !== "all") params.append("minScore", filters.minScore);
       const response = await fetch(`/api/students/count?${params}`, { credentials: "include" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return response.json();

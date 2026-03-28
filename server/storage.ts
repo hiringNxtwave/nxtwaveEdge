@@ -550,6 +550,8 @@ export class DatabaseStorage implements IStorage {
     university?: string;
     minCgpa?: number;
     recommendation?: string;
+    name?: string;
+    minScore?: number;
     limit?: number;
     offset?: number;
   }): Promise<StudentWithAssessments[]> {
@@ -567,6 +569,28 @@ export class DatabaseStorage implements IStorage {
 
     if (filters?.recommendation) {
       whereConditions.push(eq(students.recommendation, filters.recommendation));
+    }
+
+    if (filters?.name && filters.name.trim()) {
+      whereConditions.push(
+        ilike(sql`concat(${students.firstName}, ' ', ${students.lastName})`, `%${filters.name.trim()}%`)
+      );
+    }
+
+    if (filters?.minScore && filters.minScore > 0) {
+      // Mirror the frontend computed score: average of all non-null sub-scores
+      const computedScore = sql`(
+        COALESCE(${students.dsaScore}, 0) +
+        COALESCE(${students.csFundamentalsScore}, 0) +
+        COALESCE(${students.verbalCommunicationScore}, 0) +
+        COALESCE(${students.aptitudeScore}, 0)
+      ) / NULLIF(
+        (CASE WHEN ${students.dsaScore} IS NOT NULL THEN 1 ELSE 0 END +
+         CASE WHEN ${students.csFundamentalsScore} IS NOT NULL THEN 1 ELSE 0 END +
+         CASE WHEN ${students.verbalCommunicationScore} IS NOT NULL THEN 1 ELSE 0 END +
+         CASE WHEN ${students.aptitudeScore} IS NOT NULL THEN 1 ELSE 0 END), 0
+      )`;
+      whereConditions.push(sql`${computedScore} >= ${filters.minScore}`);
     }
     
     // TODO: Re-enable minCgpa filter with proper casting
@@ -701,6 +725,8 @@ export class DatabaseStorage implements IStorage {
     university?: string;
     minCgpa?: number;
     recommendation?: string;
+    name?: string;
+    minScore?: number;
   }): Promise<number> {
     try {
       console.log("🔍 getStudentCount called with filters:", JSON.stringify(filters, null, 2));
@@ -717,6 +743,27 @@ export class DatabaseStorage implements IStorage {
 
       if (filters?.recommendation) {
         whereConditions.push(eq(students.recommendation, filters.recommendation));
+      }
+
+      if (filters?.name && filters.name.trim()) {
+        whereConditions.push(
+          ilike(sql`concat(${students.firstName}, ' ', ${students.lastName})`, `%${filters.name.trim()}%`)
+        );
+      }
+
+      if (filters?.minScore && filters.minScore > 0) {
+        const computedScore = sql`(
+          COALESCE(${students.dsaScore}, 0) +
+          COALESCE(${students.csFundamentalsScore}, 0) +
+          COALESCE(${students.verbalCommunicationScore}, 0) +
+          COALESCE(${students.aptitudeScore}, 0)
+        ) / NULLIF(
+          (CASE WHEN ${students.dsaScore} IS NOT NULL THEN 1 ELSE 0 END +
+           CASE WHEN ${students.csFundamentalsScore} IS NOT NULL THEN 1 ELSE 0 END +
+           CASE WHEN ${students.verbalCommunicationScore} IS NOT NULL THEN 1 ELSE 0 END +
+           CASE WHEN ${students.aptitudeScore} IS NOT NULL THEN 1 ELSE 0 END), 0
+        )`;
+        whereConditions.push(sql`${computedScore} >= ${filters.minScore}`);
       }
       
       // Add skills filtering by joining with studentSkills table
