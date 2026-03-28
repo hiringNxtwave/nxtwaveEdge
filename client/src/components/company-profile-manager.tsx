@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useLocation } from 'wouter';
-import { Plus, Edit3, Trash2, MapPin, IndianRupee, Users, GraduationCap, Briefcase, CheckCircle } from 'lucide-react';
+import { Plus, Edit3, Trash2, MapPin, IndianRupee, Users, GraduationCap, Briefcase, CheckCircle, ChevronRight } from 'lucide-react';
 
 interface JobRequirement {
   id: string;
@@ -208,11 +208,15 @@ export function CompanyProfileManager() {
       {requirements.length > 0 && (
         <div className="space-y-3">
           {requirements.map((req) => (
-            <div key={req.id} className="bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-sm transition-shadow">
+            <div key={req.id} className="bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
               <div className="h-0.5 bg-blue-600" />
               <div className="p-5">
                 <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
+                  {/* Clickable left section */}
+                  <button
+                    className="flex-1 min-w-0 text-left"
+                    onClick={() => navigate(`/browse?jobId=${req.id}`)}
+                  >
                     <div className="flex items-center gap-2.5 mb-3 flex-wrap">
                       <h3 className="text-base font-bold text-slate-900">{req.jobTitle}</h3>
                       <span className={`inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full ${req.isActive ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-500'}`}>
@@ -231,8 +235,17 @@ export function CompanyProfileManager() {
                         {req.jobLocation}
                       </span>
                     </div>
-                  </div>
-                  <div className="flex gap-2 shrink-0">
+                  </button>
+
+                  {/* Action buttons */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      onClick={() => navigate(`/browse?jobId=${req.id}`)}
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
+                      data-testid={`button-view-candidates-${req.id}`}
+                    >
+                      <Users className="w-3.5 h-3.5" /> View Candidates
+                    </button>
                     <button
                       onClick={() => handleEdit(req)}
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-3 py-1.5 rounded-lg transition-colors"
