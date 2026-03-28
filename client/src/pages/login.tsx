@@ -300,55 +300,52 @@ function LeftPanel({ onPreview }: { onPreview: () => void }) {
   const [, navigate] = useLocation();
 
   return (
-    <div className="hidden lg:flex bg-[#EEF4FF] h-full min-h-screen">
-      {/* Content pinned to the right side of the blue panel, max width so it stays close to the form */}
-      <div className="ml-auto w-full max-w-[520px] px-10 py-10 flex flex-col justify-between">
-        {/* Logo — click goes to landing */}
+    <div className="hidden lg:flex flex-col justify-between bg-[#EEF4FF] px-10 py-10 h-full min-h-screen">
+      {/* Logo — click goes to landing */}
+      <div>
+        <button onClick={() => navigate("/")} className="focus:outline-none">
+          <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto hover:opacity-80 transition-opacity" />
+        </button>
+      </div>
+
+      {/* Main copy */}
+      <div className="flex-1 flex flex-col justify-center gap-8 py-10">
         <div>
-          <button onClick={() => navigate("/")} className="focus:outline-none">
-            <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto hover:opacity-80 transition-opacity" />
-          </button>
+          <h1 className="text-4xl font-extrabold text-slate-900 leading-tight tracking-tight">
+            Your <span className="text-blue-600">Pre-Vetted</span><br />
+            Shortlist is Ready.
+          </h1>
+          <p className="text-slate-600 text-base mt-4 leading-relaxed max-w-sm">
+            2,500+ companies use Edge to hire top freshers, pre-vetted,
+            benchmark-verified, and ready to deploy.
+          </p>
         </div>
 
-        {/* Main copy */}
-        <div className="flex-1 flex flex-col justify-center gap-8 py-10">
-          <div>
-            <h1 className="text-4xl font-extrabold text-slate-900 leading-tight tracking-tight">
-              Your <span className="text-blue-600">Pre-Vetted</span><br />
-              Shortlist is Ready.
-            </h1>
-            <p className="text-slate-600 text-base mt-4 leading-relaxed max-w-sm">
-              2,500+ companies use Edge to hire top freshers, pre-vetted,
-              benchmark-verified, and ready to deploy.
-            </p>
-          </div>
+        {/* Sliding candidate card */}
+        <CandidateCarousel />
 
-          {/* Sliding candidate card */}
-          <CandidateCarousel />
+        {/* Preview link */}
+        <button
+          onClick={onPreview}
+          className="flex items-center gap-2 text-blue-600 text-sm font-semibold hover:text-blue-700 transition-colors w-fit"
+        >
+          <Eye className="w-4 h-4" />
+          Preview a Sample Profile
+        </button>
 
-          {/* Preview link */}
-          <button
-            onClick={onPreview}
-            className="flex items-center gap-2 text-blue-600 text-sm font-semibold hover:text-blue-700 transition-colors w-fit"
-          >
-            <Eye className="w-4 h-4" />
-            Preview a Sample Profile
-          </button>
-
-          {/* Trusted by with real logos */}
-          <div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Trusted By</p>
-            <div className="flex items-center gap-5 flex-wrap">
-              {hiringLogos.map(p => (
-                <img
-                  key={p.name}
-                  src={p.logo}
-                  alt={p.name}
-                  className="h-6 w-auto object-contain grayscale opacity-60"
-                />
-              ))}
-              <span className="text-[13px] text-slate-400 font-medium">and 2,500+ more companies</span>
-            </div>
+        {/* Trusted by with real logos */}
+        <div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Trusted By</p>
+          <div className="flex items-center gap-5 flex-wrap">
+            {hiringLogos.map(p => (
+              <img
+                key={p.name}
+                src={p.logo}
+                alt={p.name}
+                className="h-6 w-auto object-contain grayscale opacity-60"
+              />
+            ))}
+            <span className="text-[13px] text-slate-400 font-medium">and 2,500+ more companies</span>
           </div>
         </div>
       </div>
