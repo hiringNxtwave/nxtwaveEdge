@@ -95,8 +95,8 @@ export default function StudentCard({ student, matchScore }: StudentCardProps) {
 
   const scores = resolveScores(student);
   const nonNullScores = [scores.dsa, scores.aptitude, scores.verbal, scores.csFund].filter((s): s is number => s !== null);
-  const avg = nonNullScores.length > 0 ? Math.round(nonNullScores.reduce((a, b) => a + b, 0) / nonNullScores.length) : null;
-  const overall = student.overallAssessmentScore ?? avg;
+  // Always compute from the visible sub-scores so the total matches what is shown on the card
+  const overall = nonNullScores.length > 0 ? Math.round(nonNullScores.reduce((a, b) => a + b, 0) / nonNullScores.length) : null;
   const avatar = generateAvatar(student.firstName, student.id);
   const bestRole = inferBestRole(scores.dsa, scores.verbal, scores.csFund);
 
