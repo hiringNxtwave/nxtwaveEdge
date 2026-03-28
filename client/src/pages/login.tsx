@@ -300,7 +300,7 @@ function LeftPanel({ onPreview }: { onPreview: () => void }) {
   const [, navigate] = useLocation();
 
   return (
-    <div className="hidden lg:flex flex-col justify-between bg-[#EEF4FF] px-10 py-10 h-full min-h-screen">
+    <div className="flex flex-col justify-between bg-[#EEF4FF] px-10 py-10 h-full w-full">
       {/* Logo — click goes to landing */}
       <div>
         <button onClick={() => navigate("/")} className="focus:outline-none">
@@ -693,45 +693,49 @@ export default function LoginPage() {
   }, [step]);
 
   return (
-    <div className="min-h-screen bg-white flex">
-      {/* Left panel — hidden below lg, fills remaining space */}
-      <div className="hidden lg:block flex-1">
-        <LeftPanel onPreview={() => setShowSampleProfile(true)} />
-      </div>
+    <div className="min-h-screen bg-white flex items-center justify-center">
+      {/* Centered two-column card */}
+      <div className="w-full max-w-[960px] mx-auto flex min-h-screen lg:min-h-[640px] lg:shadow-[0_4px_40px_rgba(0,0,0,0.10)] lg:rounded-2xl overflow-hidden">
 
-      {/* Right panel — form */}
-      <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col">
-        {/* Mobile logo */}
-        <div className="lg:hidden flex items-center h-14 border-b border-slate-100 px-6">
-          <button onClick={() => navigate("/")} className="focus:outline-none">
-            <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-7 w-auto" />
-          </button>
+        {/* Left panel — equal half, hidden on mobile */}
+        <div className="hidden lg:flex flex-1">
+          <LeftPanel onPreview={() => setShowSampleProfile(true)} />
         </div>
 
-        <div className="flex-1 flex items-center justify-center px-8 py-12">
-          <div className="w-full max-w-sm">
-            {/* Desktop logo */}
-            <div className="hidden lg:block mb-8">
-              <button onClick={() => navigate("/")} className="focus:outline-none">
-                <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto hover:opacity-80 transition-opacity" />
-              </button>
-            </div>
+        {/* Right panel — equal half */}
+        <div className="flex-1 flex flex-col bg-white">
+          {/* Mobile logo */}
+          <div className="lg:hidden flex items-center h-14 border-b border-slate-100 px-6">
+            <button onClick={() => navigate("/")} className="focus:outline-none">
+              <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-7 w-auto" />
+            </button>
+          </div>
 
-            {isProfileRoute ? (
-              <ProfileStep />
-            ) : step === "email" ? (
-              <EmailStep onSent={(email) => { setSentEmail(email); setStep("otp"); }} />
-            ) : (
-              <OtpStep
-                email={sentEmail}
-                onBack={() => { setStep("email"); setSentEmail(""); }}
-              />
-            )}
+          <div className="flex-1 flex items-center justify-center px-8 py-12">
+            <div className="w-full max-w-sm">
+              {/* Desktop logo */}
+              <div className="hidden lg:block mb-8">
+                <button onClick={() => navigate("/")} className="focus:outline-none">
+                  <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto hover:opacity-80 transition-opacity" />
+                </button>
+              </div>
 
-            <div className="mt-8 pt-6 border-t border-slate-100">
-              <p className="text-xs text-slate-400 text-center leading-relaxed">
-                NxtWave Edge is a <span className="text-slate-500">B2B platform</span> exclusively for companies hiring pre-assessed engineering talent.
-              </p>
+              {isProfileRoute ? (
+                <ProfileStep />
+              ) : step === "email" ? (
+                <EmailStep onSent={(email) => { setSentEmail(email); setStep("otp"); }} />
+              ) : (
+                <OtpStep
+                  email={sentEmail}
+                  onBack={() => { setStep("email"); setSentEmail(""); }}
+                />
+              )}
+
+              <div className="mt-8 pt-6 border-t border-slate-100">
+                <p className="text-xs text-slate-400 text-center leading-relaxed">
+                  NxtWave Edge is a <span className="text-slate-500">B2B platform</span> exclusively for companies hiring pre-assessed engineering talent.
+                </p>
+              </div>
             </div>
           </div>
         </div>
