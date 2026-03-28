@@ -693,14 +693,14 @@ export default function LoginPage() {
   }, [step]);
 
   return (
-    <div className="min-h-screen bg-white flex">
-      {/* Left panel — hidden below lg */}
-      <div className="hidden lg:block lg:flex-1">
+    <div className="min-h-screen bg-white flex items-stretch justify-center lg:gap-10">
+      {/* Left panel — hidden below lg, fixed width */}
+      <div className="hidden lg:block w-[500px] xl:w-[540px] shrink-0">
         <LeftPanel onPreview={() => setShowSampleProfile(true)} />
       </div>
 
       {/* Right panel — form */}
-      <div className="w-full lg:w-[480px] xl:w-[520px] flex flex-col">
+      <div className="w-full lg:w-[460px] xl:w-[480px] shrink-0 flex flex-col">
         {/* Mobile logo */}
         <div className="lg:hidden flex items-center h-14 border-b border-slate-100 px-6">
           <button onClick={() => navigate("/")} className="focus:outline-none">
