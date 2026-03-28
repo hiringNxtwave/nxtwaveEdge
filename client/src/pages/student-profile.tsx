@@ -299,7 +299,7 @@ export default function StudentProfile() {
 
                     {/* Resource links */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {student.resumeUrl && (
+                      {student.resumeUrl && student.resumeUrl.includes("topin.tech") && (
                         <a
                           href={student.resumeUrl}
                           target="_blank"
@@ -310,9 +310,7 @@ export default function StudentProfile() {
                             <div className="w-7 h-7 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
                               <FileText className="w-3.5 h-3.5 text-blue-600" />
                             </div>
-                            <span className="text-sm font-medium text-slate-700">
-                              {student.resumeUrl.includes("topin.tech") ? "Assessment Report" : "Resume"}
-                            </span>
+                            <span className="text-sm font-medium text-slate-700">Assessment Report</span>
                           </div>
                           <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-colors" />
                         </a>
