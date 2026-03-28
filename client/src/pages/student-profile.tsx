@@ -310,7 +310,9 @@ export default function StudentProfile() {
                             <div className="w-7 h-7 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
                               <FileText className="w-3.5 h-3.5 text-blue-600" />
                             </div>
-                            <span className="text-sm font-medium text-slate-700">Assessment Report</span>
+                            <span className="text-sm font-medium text-slate-700">
+                              {student.resumeUrl.includes("topin.tech") ? "Assessment Report" : "Resume"}
+                            </span>
                           </div>
                           <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 transition-colors" />
                         </a>
