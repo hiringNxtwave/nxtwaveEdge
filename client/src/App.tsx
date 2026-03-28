@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { captureUtm, appendUtmToSearch } from "./lib/utm";
@@ -8,23 +8,26 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ShortlistProvider } from "@/contexts/shortlist-context";
 import { useAuth } from "@/hooks/useAuth";
 import AppShell from "@/components/app-shell";
-import NotFound from "./pages/not-found";
+
 import Landing from "./pages/landing";
-import Home from "./pages/home";
-import BrowseStudents from "./pages/browse-students";
-import StudentProfile from "./pages/student-profile";
-import ShortlistedCandidates from "./pages/shortlisted-candidates";
-import ComparisonView from "./pages/comparison-view";
-import ForColleges from "./pages/for-colleges";
-import ForStudents from "./pages/for-students";
-import StudentProfileForm from "./pages/student-profile-form";
-import StudentDashboard from "./pages/student-dashboard";
-import TalentDashboard from "./pages/talent-dashboard";
-import ShortlistingPage from "./pages/shortlisting";
-import { CompanyProfileManager } from "./components/company-profile-manager";
-import MarketIntelligencePage from "./pages/market-intelligence-page";
-import ExploreEdge from "./pages/explore-edge";
 import LoginPage from "./pages/login";
+
+const NotFound = lazy(() => import("./pages/not-found"));
+const BrowseStudents = lazy(() => import("./pages/browse-students"));
+const StudentProfile = lazy(() => import("./pages/student-profile"));
+const ShortlistedCandidates = lazy(() => import("./pages/shortlisted-candidates"));
+const ComparisonView = lazy(() => import("./pages/comparison-view"));
+const ForColleges = lazy(() => import("./pages/for-colleges"));
+const ForStudents = lazy(() => import("./pages/for-students"));
+const StudentProfileForm = lazy(() => import("./pages/student-profile-form"));
+const StudentDashboard = lazy(() => import("./pages/student-dashboard"));
+const TalentDashboard = lazy(() => import("./pages/talent-dashboard"));
+const ShortlistingPage = lazy(() => import("./pages/shortlisting"));
+const MarketIntelligencePage = lazy(() => import("./pages/market-intelligence-page"));
+const ExploreEdge = lazy(() => import("./pages/explore-edge"));
+const CompanyProfileManager = lazy(() =>
+  import("./components/company-profile-manager").then(m => ({ default: m.CompanyProfileManager }))
+);
 
 function useUtmPreservation() {
   const [location] = useLocation();
@@ -53,7 +56,7 @@ function Router() {
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
-    <>
+    <Suspense fallback={null}>
       <Switch>
         {/* Always-public routes */}
         <Route path="/login" component={LoginPage} />
@@ -66,7 +69,6 @@ function Router() {
         {!isAuthenticated ? (
           <>
             <Route path="/" component={Landing} />
-            {/* Any protected route visited while logged-out → redirect to landing */}
             {!isLoading && (
               <Route>
                 {() => {
@@ -110,8 +112,7 @@ function Router() {
         )}
         {!isLoading && <Route component={NotFound} />}
       </Switch>
-
-    </>
+    </Suspense>
   );
 }
 
