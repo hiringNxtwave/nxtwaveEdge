@@ -50,10 +50,21 @@ function ScorePill({
   testId,
 }: {
   label: string;
-  value: number;
+  value: number | null;
   onClick: () => void;
   testId: string;
 }) {
+  if (value === null) {
+    return (
+      <span
+        className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-slate-100 bg-slate-50 text-slate-300 text-[11px] font-medium select-none"
+        data-testid={testId}
+        title={`${label}: Not available`}
+      >
+        {label} <span className="font-bold">N/A</span>
+      </span>
+    );
+  }
   return (
     <button
       onClick={(e) => { e.preventDefault(); onClick(); }}
@@ -177,14 +188,12 @@ export default function StudentCard({ student, matchScore }: StudentCardProps) {
               testId={`button-communication-assessment-${student.id}`}
             />
           )}
-          {scores.aptitude !== null && (
-            <ScorePill
-              label="Aptitude"
-              value={scores.aptitude}
-              onClick={() => setSelectedAssessment({ type: "Aptitude", score: scores.aptitude!, level: scoreLabel(scores.aptitude!) })}
-              testId={`button-aptitude-assessment-${student.id}`}
-            />
-          )}
+          <ScorePill
+            label="Aptitude"
+            value={scores.aptitude}
+            onClick={() => scores.aptitude !== null && setSelectedAssessment({ type: "Aptitude", score: scores.aptitude!, level: scoreLabel(scores.aptitude!) })}
+            testId={`button-aptitude-assessment-${student.id}`}
+          />
         </div>
 
         {/* Match % badge — only when job match active */}
@@ -199,12 +208,15 @@ export default function StudentCard({ student, matchScore }: StudentCardProps) {
 
         {/* Bottom: Overall score + View Profile */}
         <div className="mt-auto flex items-center justify-between pt-3 border-t border-slate-100">
-          <div className="flex items-baseline gap-1">
+          <div className="flex items-end gap-1.5">
             <span className="text-2xl font-black text-slate-900 tabular-nums leading-none">
               {overall ?? "—"}
             </span>
             {overall !== null && overall !== undefined && (
-              <span className="text-[10px] text-slate-400 font-medium">/100</span>
+              <div className="flex flex-col leading-none pb-0.5">
+                <span className="text-[10px] text-slate-400 font-medium">/100</span>
+                <span className="text-[9px] text-slate-300 font-medium uppercase tracking-wide">Overall</span>
+              </div>
             )}
           </div>
           <div
