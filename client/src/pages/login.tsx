@@ -4,6 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { Mail, RotateCcw, ShieldCheck, Eye, X, MapPin, GraduationCap, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
+import { sendGTMEvent } from "@/lib/gtm";
 
 /* ── helpers ─────────────────────────────────────────────── */
 
@@ -326,7 +327,8 @@ function LeftPanel({ onPreview }: { onPreview: () => void }) {
 
         {/* Preview link */}
         <button
-          onClick={onPreview}
+          id="login_page_left_preview_profile_click"
+          onClick={() => { sendGTMEvent("login_page_left_preview_profile_click"); onPreview(); }}
           className="flex items-center gap-2 text-blue-600 text-sm font-semibold hover:text-blue-700 transition-colors w-fit"
         >
           <Eye className="w-4 h-4" />
@@ -402,8 +404,10 @@ function EmailStep({ onSent }: { onSent: (email: string) => void }) {
         </div>
 
         <button
+          id="login_page_email_view_profiles_click"
           type="submit"
           disabled={sendOtpMutation.isPending}
+          onClick={() => { if (!sendOtpMutation.isPending) sendGTMEvent("login_page_email_view_profiles_click"); }}
           className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-colors flex items-center justify-center gap-2"
         >
           {sendOtpMutation.isPending ? "Sending…" : <>View Shortlisted Profiles <span className="text-base">→</span></>}
@@ -501,8 +505,10 @@ function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
         </div>
 
         <button
+          id="login_page_otp_verify_click"
           type="submit"
           disabled={verifyMutation.isPending || otp.length < 6}
+          onClick={() => { if (!verifyMutation.isPending && otp.length >= 6) sendGTMEvent("login_page_otp_verify_click"); }}
           className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-colors"
         >
           {verifyMutation.isPending ? "Verifying…" : "Verify & Continue →"}
@@ -510,14 +516,14 @@ function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
       </form>
 
       <div className="flex items-center justify-between text-sm">
-        <button onClick={onBack} className="text-slate-400 hover:text-slate-600 transition-colors text-xs">
+        <button id="login_page_otp_change_email_click" onClick={() => { sendGTMEvent("login_page_otp_change_email_click"); onBack(); }} className="text-slate-400 hover:text-slate-600 transition-colors text-xs">
           ← Change email
         </button>
         <div className="flex items-center gap-2 text-slate-500">
           <span>Didn't receive it?</span>
           {resendCooldown > 0
             ? <span className="text-slate-400">Resend in {resendCooldown}s</span>
-            : <button type="button" onClick={() => resendMutation.mutate()} disabled={resendMutation.isPending} className="text-blue-600 hover:text-blue-700 flex items-center gap-1">
+            : <button id="login_page_otp_resend_click" type="button" onClick={() => { sendGTMEvent("login_page_otp_resend_click"); resendMutation.mutate(); }} disabled={resendMutation.isPending} className="text-blue-600 hover:text-blue-700 flex items-center gap-1">
                 <RotateCcw className="w-3 h-3" />
                 {resendMutation.isPending ? "Sending…" : "Resend"}
               </button>
@@ -651,8 +657,10 @@ function ProfileStep() {
         )}
 
         <button
+          id="login_page_profile_access_platform_click"
           type="submit"
           disabled={profileMutation.isPending}
+          onClick={() => { if (!profileMutation.isPending) sendGTMEvent("login_page_profile_access_platform_click"); }}
           className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-colors"
         >
           {profileMutation.isPending ? "Saving…" : "Access Platform →"}

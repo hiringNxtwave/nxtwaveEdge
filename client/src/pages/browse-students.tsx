@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
+import { sendGTMEvent } from "@/lib/gtm";
 import StudentCard from "@/components/student-card";
 import StudentFilters, { type FilterState } from "@/components/student-filters";
 import CandidateComparison from "@/components/candidate-comparison";
@@ -219,7 +220,8 @@ export default function BrowseStudents() {
               </h1>
             </div>
             <button
-              onClick={openJobDialog}
+              id="browse_page_header_post_job_click"
+              onClick={() => { sendGTMEvent("browse_page_header_post_job_click"); openJobDialog(); }}
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
             >
               <Briefcase className="w-3.5 h-3.5" />
@@ -250,7 +252,9 @@ export default function BrowseStudents() {
               </div>
             </div>
             <button
+              id="browse_page_hint_dismiss_click"
               onClick={() => {
+                sendGTMEvent("browse_page_hint_dismiss_click");
                 setShowFeatureHint(false);
                 try { sessionStorage.setItem("featureHintDismissed", "1"); } catch {}
               }}
@@ -276,7 +280,8 @@ export default function BrowseStudents() {
               <span className="opacity-70 text-xs ml-1">(top {matchedStudents.length} matches)</span>
             </div>
             <button
-              onClick={clearJobMatch}
+              id="browse_page_job_match_clear_click"
+              onClick={() => { sendGTMEvent("browse_page_job_match_clear_click"); clearJobMatch(); }}
               className="flex items-center gap-1.5 text-white/80 hover:text-white text-xs font-medium transition-colors shrink-0"
             >
               <X className="w-3.5 h-3.5" />
@@ -306,7 +311,8 @@ export default function BrowseStudents() {
                 <>
                   <div className="h-5 w-px bg-slate-200" />
                   <Button
-                    onClick={() => setShowComparison(true)}
+                    id="browse_page_filter_compare_click"
+                    onClick={() => { sendGTMEvent("browse_page_filter_compare_click", { count: compareList.length }); setShowComparison(true); }}
                     size="sm"
                     className="bg-blue-600 hover:bg-blue-700 text-white text-sm"
                     data-testid="button-compare-candidates"
@@ -340,9 +346,10 @@ export default function BrowseStudents() {
                 </div>
               </div>
               <Button
+                id="browse_page_banner_sign_in_click"
                 size="sm"
                 className="bg-white text-blue-700 hover:bg-blue-50 font-semibold text-sm shrink-0 border-0"
-                onClick={() => (window.location.href = "/api/login")}
+                onClick={() => { sendGTMEvent("browse_page_banner_sign_in_click"); window.location.href = "/api/login"; }}
                 data-testid="button-unlock-full-access"
               >
                 Sign In Free →
@@ -451,8 +458,9 @@ export default function BrowseStudents() {
                 <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-blue-500" /> Verified assessments</span>
               </div>
               <Button
+                id="browse_page_cta_sign_in_click"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8"
-                onClick={() => (window.location.href = "/api/login")}
+                onClick={() => { sendGTMEvent("browse_page_cta_sign_in_click"); window.location.href = "/api/login"; }}
                 data-testid="button-sign-in-to-continue"
               >
                 Sign In Free →
@@ -475,7 +483,8 @@ export default function BrowseStudents() {
             </span>
             <div className="flex items-center gap-2">
               <button
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                id="browse_page_pagination_prev_click"
+                onClick={() => { sendGTMEvent("browse_page_pagination_prev_click", { page: currentPage - 1 }); setCurrentPage(Math.max(1, currentPage - 1)); }}
                 disabled={currentPage === 1}
                 className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 data-testid="button-prev-page"
@@ -493,7 +502,8 @@ export default function BrowseStudents() {
                   return (
                     <button
                       key={page}
-                      onClick={() => setCurrentPage(page)}
+                      id={`browse_page_pagination_page_${page}_click`}
+                      onClick={() => { sendGTMEvent("browse_page_pagination_page_click", { page }); setCurrentPage(page); }}
                       className={`w-7 h-7 text-xs rounded font-medium transition-colors ${
                         page === currentPage ? "bg-blue-600 text-white" : "text-slate-600 hover:bg-slate-100"
                       }`}
@@ -505,7 +515,8 @@ export default function BrowseStudents() {
                 })}
               </div>
               <button
-                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                id="browse_page_pagination_next_click"
+                onClick={() => { sendGTMEvent("browse_page_pagination_next_click", { page: currentPage + 1 }); setCurrentPage(Math.min(totalPages, currentPage + 1)); }}
                 disabled={currentPage === totalPages}
                 className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 data-testid="button-next-page"

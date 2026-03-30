@@ -9,6 +9,7 @@ import CodeReplayModal from "@/components/code-replay-modal";
 import CommunicationSampleModal from "@/components/communication-sample-modal";
 import ExamFootageModal from "@/components/exam-footage-modal";
 import InterviewPerformanceModal from "./interview-performance-modal";
+import { sendGTMEvent } from "@/lib/gtm";
 
 interface StudentCardProps {
   student: StudentWithAssessments;
@@ -168,7 +169,7 @@ export default function StudentCard({ student, matchScore }: StudentCardProps) {
             <ScorePill
               label="DSA"
               value={scores.dsa}
-              onClick={() => setSelectedAssessment({ type: "DSA", score: scores.dsa!, level: scoreLabel(scores.dsa!) })}
+              onClick={() => { sendGTMEvent("student_card_dsa_score_click", { score: scores.dsa }); setSelectedAssessment({ type: "DSA", score: scores.dsa!, level: scoreLabel(scores.dsa!) }); }}
               testId={`button-dsa-assessment-${student.id}`}
             />
           )}
@@ -176,7 +177,7 @@ export default function StudentCard({ student, matchScore }: StudentCardProps) {
             <ScorePill
               label="CS"
               value={scores.csFund}
-              onClick={() => setSelectedAssessment({ type: "CS Fundamentals", score: scores.csFund!, level: scoreLabel(scores.csFund!) })}
+              onClick={() => { sendGTMEvent("student_card_cs_score_click", { score: scores.csFund }); setSelectedAssessment({ type: "CS Fundamentals", score: scores.csFund!, level: scoreLabel(scores.csFund!) }); }}
               testId={`button-cs-fundamentals-assessment-${student.id}`}
             />
           )}
@@ -184,14 +185,14 @@ export default function StudentCard({ student, matchScore }: StudentCardProps) {
             <ScorePill
               label="Verbal"
               value={scores.verbal}
-              onClick={() => setSelectedAssessment({ type: "Verbal Ability", score: scores.verbal!, level: scoreLabel(scores.verbal!) })}
+              onClick={() => { sendGTMEvent("student_card_verbal_score_click", { score: scores.verbal }); setSelectedAssessment({ type: "Verbal Ability", score: scores.verbal!, level: scoreLabel(scores.verbal!) }); }}
               testId={`button-communication-assessment-${student.id}`}
             />
           )}
           <ScorePill
             label="Aptitude"
             value={scores.aptitude}
-            onClick={() => scores.aptitude !== null && setSelectedAssessment({ type: "Aptitude", score: scores.aptitude!, level: scoreLabel(scores.aptitude!) })}
+            onClick={() => { if (scores.aptitude !== null) { sendGTMEvent("student_card_aptitude_score_click", { score: scores.aptitude }); setSelectedAssessment({ type: "Aptitude", score: scores.aptitude!, level: scoreLabel(scores.aptitude!) }); } }}
             testId={`button-aptitude-assessment-${student.id}`}
           />
         </div>

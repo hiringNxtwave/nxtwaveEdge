@@ -6,6 +6,7 @@ import { queryClient } from "@/lib/queryClient";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
 import { ArrowRight, CheckCircle, ChevronRight } from "lucide-react";
 import { EdgeBadge } from "@/components/edge-badge";
+import { sendGTMEvent } from "@/lib/gtm";
 
 const ROTATING_POINTS = [
   "Verified shortlists delivered within minutes",
@@ -331,7 +332,8 @@ export default function Landing() {
             </div>
             <div className="hidden md:flex items-center gap-8">
               <button
-                onClick={() => goToApp()}
+                id="landing_page_nav_login_click"
+                onClick={() => { sendGTMEvent("landing_page_nav_login_click"); goToApp(); }}
                 className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 h-9 rounded-lg transition-colors"
                 data-testid="button-login"
               >
@@ -345,7 +347,7 @@ export default function Landing() {
       <div className="bg-blue-600 text-white text-center text-xs font-medium py-2.5 px-4">
         <span className="bg-white text-blue-600 font-bold px-2 py-0.5 rounded text-[11px] mr-2">NEW</span>
         NxtWave Edge: India's First National Engineering Hiring Standard is live.{" "}
-        <button onClick={() => goToApp()} className="underline font-semibold ml-1">Get early access →</button>
+        <button id="landing_page_announcement_get_early_access_click" onClick={() => { sendGTMEvent("landing_page_announcement_get_early_access_click"); goToApp(); }} className="underline font-semibold ml-1">Get early access →</button>
       </div>
       {/* ── Hero ── */}
       <section className="bg-[#F0F5FF] overflow-hidden">
@@ -374,7 +376,8 @@ export default function Landing() {
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-3 mb-6">
                 <button
-                  onClick={() => goToApp()}
+                  id="landing_page_hero_request_top_candidates_click"
+                  onClick={() => { sendGTMEvent("landing_page_hero_request_top_candidates_click"); goToApp(); }}
                   className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
                   data-testid="button-explore-talent"
                 >
@@ -382,7 +385,8 @@ export default function Landing() {
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => navigate("/explore-edge")}
+                  id="landing_page_hero_how_we_assess_click"
+                  onClick={() => { sendGTMEvent("landing_page_hero_how_we_assess_click"); navigate("/explore-edge"); }}
                   className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors"
                   data-testid="button-explore-edge"
                 >
@@ -503,7 +507,8 @@ export default function Landing() {
               </div>
 
               <button
-                onClick={() => goToApp()}
+                id="landing_page_howitworks_browse_talent_click"
+                onClick={() => { sendGTMEvent("landing_page_howitworks_browse_talent_click"); goToApp(); }}
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
               >
                 Browse Talent
@@ -609,7 +614,8 @@ export default function Landing() {
 
           <div className="text-center">
             <button
-              onClick={() => goToApp()}
+              id="landing_page_whyedge_get_top_candidates_click"
+              onClick={() => { sendGTMEvent("landing_page_whyedge_get_top_candidates_click"); goToApp(); }}
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-8 py-3.5 rounded-lg transition-colors shadow-sm"
             >
               Get Top Candidates
@@ -742,7 +748,8 @@ export default function Landing() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
-              onClick={() => goToApp()}
+              id="landing_page_cta_get_top_candidates_click"
+              onClick={() => { sendGTMEvent("landing_page_cta_get_top_candidates_click"); goToApp(); }}
               className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-8 py-4 rounded-lg transition-colors shadow-lg"
               data-testid="button-start-free-trial"
             >
@@ -750,7 +757,8 @@ export default function Landing() {
               <ArrowRight className="w-4 h-4" />
             </button>
             <button
-              onClick={() => navigate("/explore-edge")}
+              id="landing_page_cta_how_we_assess_click"
+              onClick={() => { sendGTMEvent("landing_page_cta_how_we_assess_click"); navigate("/explore-edge"); }}
               className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-sm px-8 py-4 rounded-lg transition-colors"
               data-testid="button-book-demo"
             >
@@ -769,7 +777,7 @@ export default function Landing() {
           </div>
           <p className="text-xs text-slate-500">© 2025 NxtWave. Built for India's Best Engineers.</p>
           <div className="flex gap-6">
-            <button onClick={() => goToApp()} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">Login</button>
+            <button id="landing_page_footer_login_click" onClick={() => { sendGTMEvent("landing_page_footer_login_click"); goToApp(); }} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">Login</button>
           </div>
         </div>
       </footer>

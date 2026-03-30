@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useLocation } from 'wouter';
 import { Plus, Edit3, Trash2, MapPin, IndianRupee, Users, GraduationCap, Briefcase, CheckCircle, ChevronRight } from 'lucide-react';
+import { sendGTMEvent } from '@/lib/gtm';
 
 interface JobRequirement {
   id: string;
@@ -116,7 +117,8 @@ export function CompanyProfileManager() {
             {requirements.length === 0 ? 'No open roles yet' : `${requirements.length} open role${requirements.length !== 1 ? 's' : ''}`}
           </p>
           <button
-            onClick={() => setIsAdding(true)}
+            id="company_profile_post_job_click"
+            onClick={() => { sendGTMEvent("company_profile_post_job_click"); setIsAdding(true); }}
             className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
             data-testid="button-add-requirement"
           >
@@ -138,7 +140,7 @@ export function CompanyProfileManager() {
                 <p className="text-xs text-slate-400 mt-0.5">Fill in the basic details</p>
               </div>
             </div>
-            <button type="button" onClick={handleCancel} className="text-slate-400 hover:text-slate-600 text-sm transition-colors">
+            <button id="company_profile_form_cancel_click" type="button" onClick={() => { sendGTMEvent("company_profile_form_cancel_click"); handleCancel(); }} className="text-slate-400 hover:text-slate-600 text-sm transition-colors">
               Cancel
             </button>
           </div>
@@ -186,8 +188,10 @@ export function CompanyProfileManager() {
 
             <div className="flex items-center gap-3 pt-2 border-t border-slate-100">
               <button
+                id="company_profile_save_job_click"
                 type="submit"
                 disabled={saveMutation.isPending}
+                onClick={() => { if (!saveMutation.isPending) sendGTMEvent("company_profile_save_job_click", { action: editingId ? "update" : "create" }); }}
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
                 data-testid="button-save-requirement"
               >
@@ -196,7 +200,7 @@ export function CompanyProfileManager() {
                   : <><CheckCircle className="w-4 h-4" /> {editingId ? 'Update Job' : 'Post Job'}</>
                 }
               </button>
-              <button type="button" onClick={handleCancel} className="text-sm text-slate-500 hover:text-slate-700 transition-colors">
+              <button id="company_profile_form_cancel_footer_click" type="button" onClick={() => { sendGTMEvent("company_profile_form_cancel_click"); handleCancel(); }} className="text-sm text-slate-500 hover:text-slate-700 transition-colors">
                 Cancel
               </button>
             </div>
@@ -214,8 +218,9 @@ export function CompanyProfileManager() {
                 <div className="flex items-start justify-between gap-4">
                   {/* Clickable left section */}
                   <button
+                    id={`company_profile_job_name_${req.id}_click`}
                     className="flex-1 min-w-0 text-left"
-                    onClick={() => navigate(`/browse?jobId=${req.id}`)}
+                    onClick={() => { sendGTMEvent("company_profile_job_name_click", { jobId: req.id, jobTitle: req.jobTitle }); navigate(`/browse?jobId=${req.id}`); }}
                   >
                     <div className="flex items-center gap-2.5 mb-3 flex-wrap">
                       <h3 className="text-base font-bold text-slate-900">{req.jobTitle}</h3>
@@ -240,21 +245,24 @@ export function CompanyProfileManager() {
                   {/* Action buttons */}
                   <div className="flex items-center gap-2 shrink-0">
                     <button
-                      onClick={() => navigate(`/browse?jobId=${req.id}`)}
+                      id={`company_profile_view_candidates_${req.id}_click`}
+                      onClick={() => { sendGTMEvent("company_profile_view_candidates_click", { jobId: req.id, jobTitle: req.jobTitle }); navigate(`/browse?jobId=${req.id}`); }}
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
                       data-testid={`button-view-candidates-${req.id}`}
                     >
                       <Users className="w-3.5 h-3.5" /> View Candidates
                     </button>
                     <button
-                      onClick={() => handleEdit(req)}
+                      id={`company_profile_edit_job_${req.id}_click`}
+                      onClick={() => { sendGTMEvent("company_profile_edit_job_click", { jobId: req.id, jobTitle: req.jobTitle }); handleEdit(req); }}
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-3 py-1.5 rounded-lg transition-colors"
                       data-testid={`button-edit-${req.id}`}
                     >
                       <Edit3 className="w-3.5 h-3.5" /> Edit
                     </button>
                     <button
-                      onClick={() => { if (confirm('Delete this job?')) deleteMutation.mutate(req.id); }}
+                      id={`company_profile_delete_job_${req.id}_click`}
+                      onClick={() => { if (confirm('Delete this job?')) { sendGTMEvent("company_profile_delete_job_click", { jobId: req.id, jobTitle: req.jobTitle }); deleteMutation.mutate(req.id); } }}
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-3 py-1.5 rounded-lg transition-colors"
                       data-testid={`button-delete-${req.id}`}
                     >
