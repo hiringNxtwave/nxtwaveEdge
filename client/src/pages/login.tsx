@@ -300,22 +300,22 @@ function LeftPanel({ onPreview }: { onPreview: () => void }) {
   const [, navigate] = useLocation();
 
   return (
-    <div className="flex flex-col justify-between bg-[#EEF4FF] px-10 py-10 h-full w-full">
-      {/* Logo — click goes to landing */}
-      <div>
+    <div className="flex flex-col items-center bg-[#EEF4FF] px-8 py-10 h-full w-full">
+      {/* Logo — pinned top, full-width row */}
+      <div className="w-full max-w-[340px]">
         <button onClick={() => navigate("/")} className="focus:outline-none">
           <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto hover:opacity-80 transition-opacity" />
         </button>
       </div>
 
-      {/* Main copy */}
-      <div className="flex-1 flex flex-col justify-center gap-8 py-10">
+      {/* Main copy — centered column */}
+      <div className="flex-1 flex flex-col justify-center gap-8 w-full max-w-[340px]">
         <div>
           <h1 className="text-4xl font-extrabold text-slate-900 leading-tight tracking-tight">
             Your <span className="text-blue-600">Pre-Vetted</span><br />
             Shortlist is Ready.
           </h1>
-          <p className="text-slate-600 text-base mt-4 leading-relaxed max-w-sm">
+          <p className="text-slate-600 text-base mt-4 leading-relaxed">
             2,500+ companies use Edge to hire top freshers, pre-vetted,
             benchmark-verified, and ready to deploy.
           </p>
@@ -697,13 +697,13 @@ export default function LoginPage() {
       {/* Centered two-column card */}
       <div className="w-full max-w-[960px] mx-auto flex min-h-screen lg:min-h-[640px] lg:shadow-[0_4px_40px_rgba(0,0,0,0.10)] lg:rounded-2xl overflow-hidden">
 
-        {/* Left panel — equal half, hidden on mobile */}
-        <div className="hidden lg:flex flex-1">
+        {/* Left panel — half width, content centered, hidden on mobile */}
+        <div className="hidden lg:flex w-1/2">
           <LeftPanel onPreview={() => setShowSampleProfile(true)} />
         </div>
 
-        {/* Right panel — equal half */}
-        <div className="flex-1 flex flex-col bg-white">
+        {/* Right panel — half width, content centered */}
+        <div className="w-full lg:w-1/2 flex flex-col bg-white">
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center h-14 border-b border-slate-100 px-6">
             <button onClick={() => navigate("/")} className="focus:outline-none">
