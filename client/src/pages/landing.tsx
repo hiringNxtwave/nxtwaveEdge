@@ -344,11 +344,15 @@ export default function Landing() {
         </div>
       </nav>
       {/* ── Announcement Bar ── */}
-      <div className="bg-blue-600 text-white text-center text-xs font-medium py-2.5 px-4">
+      <button
+        id="landing_page_announcement_get_early_access_click"
+        onClick={() => { sendGTMEvent("landing_page_announcement_get_early_access_click"); goToApp(); }}
+        className="w-full bg-blue-600 text-white text-center text-xs font-medium py-2.5 px-4 cursor-pointer hover:bg-blue-700 transition-colors"
+      >
         <span className="bg-white text-blue-600 font-bold px-2 py-0.5 rounded text-[11px] mr-2">NEW</span>
         NxtWave Edge: India's First National Engineering Hiring Standard is live.{" "}
-        <button id="landing_page_announcement_get_early_access_click" onClick={() => { sendGTMEvent("landing_page_announcement_get_early_access_click"); goToApp(); }} className="underline font-semibold ml-1">Get early access →</button>
-      </div>
+        <span className="underline font-semibold ml-1">Get early access →</span>
+      </button>
       {/* ── Hero ── */}
       <section className="bg-[#F0F5FF] overflow-hidden">
         <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-16 md:py-20">
