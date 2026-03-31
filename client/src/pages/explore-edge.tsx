@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { sendGTMEvent } from "@/lib/gtm";
 import {
   ArrowRight,
   Shield,
@@ -128,11 +129,13 @@ export default function ExploreEdge() {
             <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-6 sm:h-7 w-auto shrink-0" />
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
-            <Link href="/">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-3 sm:px-5 py-2 rounded-lg transition-colors whitespace-nowrap">
-                Request Top Candidates
-              </button>
-            </Link>
+            <button
+              id="explore_edge_nav_request_top_candidates_click"
+              onClick={() => { sendGTMEvent("explore_edge_nav_request_top_candidates_click"); goToApp(); }}
+              className="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-3 sm:px-5 py-2 rounded-lg transition-colors whitespace-nowrap"
+            >
+              Request Top Candidates
+            </button>
           </div>
         </div>
       </header>
