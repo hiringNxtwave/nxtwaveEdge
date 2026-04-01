@@ -34,18 +34,14 @@
     <link rel="icon" type="image/svg+xml" href="https://nxtwave-website-media-files.s3.ap-south-1.amazonaws.com/ccbp-website/Nxtwave_White_logo.svg" />
     <link rel="shortcut icon" href="https://nxtwave-website-media-files.s3.ap-south-1.amazonaws.com/ccbp-website/Nxtwave_White_logo.svg" />
 
-    <!-- ===================== FONTS — non-blocking ===================== -->
-    <!-- preconnect hints (zero-cost, fast DNS+TLS warmup) -->
+    <!-- ===================== FONTS ===================== -->
+    <!-- preconnect hints reduce latency for the font download -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Preload the stylesheet then swap rel to stylesheet — never blocks first paint -->
-    <link rel="preload" as="style"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-      onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript>
-      <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" />
-    </noscript>
+    <!-- display=swap ensures text is visible immediately with a fallback font,
+         then swaps to Inter once downloaded — avoids both FOIT and SEO penalties -->
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" />
 
     <!-- ===================== DEFERRED ANALYTICS =====================
          All tracking tools fire either:

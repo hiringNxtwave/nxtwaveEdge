@@ -1,13 +1,9 @@
 User-agent: *
 Allow: /
 
-# Block internal/auth API routes from indexing
+# Block API and private auth routes
 Disallow: /api/
-Disallow: /api/auth/
-Disallow: /login/profile
 
-# Block private dashboard routes
+# Block private user dashboard routes
 Disallow: /company-dashboard
 Disallow: /shortlisted
-
-Sitemap: https://nxtwaveedge.ccbp.tech/sitemap.xml
