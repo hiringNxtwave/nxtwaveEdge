@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import compression from "compression";
 import http from "http";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -19,6 +20,8 @@ const log = (message: string) => {
 };
 
 const app = express();
+// Gzip/Brotli compression for all text responses (HTML, JSON, JS, CSS)
+app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -41,7 +44,7 @@ app.use((_req, res, next) => {
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.clarity.ms https://assets.apollo.io https://snap.licdn.com https://replit.com",
+      "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.clarity.ms https://assets.apollo.io https://snap.licdn.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",

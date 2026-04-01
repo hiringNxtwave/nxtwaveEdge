@@ -1,0 +1,288 @@
+
+Report from Apr 1, 2026, 10:34:47 AM
+https://d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev/
+Enter a valid URL
+
+
+smartphone
+Mobile
+
+computer
+Desktop
+
+Discover what your real users are experiencing
+No Data
+
+Diagnose performance issues
+50
+Performance
+84
+Accessibility
+73
+Best Practices
+69
+SEO
+50
+FCP
++0
+LCP
++0
+TBT
++25
+CLS
++25
+SI
++0
+Performance
+Values are estimated and may vary. The performance score is calculated directly from these metrics.See calculator.
+0–49
+50–89
+90–100
+Final Screenshot
+
+Metrics
+Expand view
+First Contentful Paint
+13.1 s
+Largest Contentful Paint
+24.6 s
+Total Blocking Time
+260 ms
+Cumulative Layout Shift
+0.005
+Speed Index
+21.8 s
+Captured at Apr 1, 2026, 10:34 AM GMT+5:30
+Emulated Moto G Power with Lighthouse 13.0.1
+Single page session
+Initial page load
+Slow 4G throttling
+Using HeadlessChromium 146.0.7680.153 with lr
+View Treemap
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Screenshot
+Show audits relevant to:
+
+All
+
+FCP
+
+LCP
+
+TBT
+
+CLS
+Insights
+Render blocking requests Est savings of 410 ms
+Requests are blocking the page's initial render, which may delay LCP. Deferring or inlining can move these network requests out of the critical path.LCPFCPUnscored
+URL
+Transfer Size
+Duration
+Google Fonts cdn 
+1.6 KiB	780 ms
+/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap(fonts.googleapis.com)
+1.6 KiB
+780 ms
+Use efficient cache lifetimes Est savings of 20 KiB
+A long cache lifetime can speed up repeat visits to your page. Learn more about caching.LCPFCPUnscored
+Request
+Cache TTL
+Transfer Size
+LinkedIn Ads ad
+20 KiB
+/li.lms-analytics/insight.min.js(snap.licdn.com)
+1d
+19 KiB
+/collect?v=…(px.ads.linkedin.com)
+None
+1 KiB
+hubspotusercontent-na1.net
+116 KiB
+…Assets/Arnab_Zivame.jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+14d
+36 KiB
+…Assets/NaushadRa….jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+14d
+23 KiB
+…44403767/wo8138w5cb-world-economic-forum-logo-world-econom….png(44403767.fs1.hubspotusercontent-na1.net)
+14d
+20 KiB
+…Assets/GopalanRaman_ADF.jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+14d
+10 KiB
+…Assets/AnnemVikr….jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+14d
+9 KiB
+…Assets/KalpanaKu….jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+14d
+7 KiB
+…Assets/RajanKushwaha_ADP.jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+14d
+6 KiB
+…Assets/RamaRaoGa….jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+14d
+5 KiB
+Forced reflow
+A forced reflow occurs when JavaScript queries geometric properties (such as offsetWidth) after styles have been invalidated by a change to the DOM state. This can result in poor performance. Learn more about forced reflows and possible mitigations.Unscored
+Top function call
+Total reflow time
+/gtm.js?id=GTM-PWNLJ6RX:707:197(www.googletagmanager.com)
+2 ms
+Source
+Total reflow time
+[unattributed]
+42 ms
+/gtag/js?id=G-W7W0DN5JY7&cx=c&gtm=4e63u1h2:814:55(www.googletagmanager.com)
+2 ms
+LCP breakdown
+Each subpart has specific improvement strategies. Ideally, most of the LCP time should be spent on loading the resources, not within delays.LCPUnscored
+Subpart
+Duration
+Time to first byte
+0 ms
+Element render delay
+8,680 ms
+Hire Top 1% Engineers in Under an Hour, Filtered Through National Standard Asse…
+<p data-replit-metadata="client/src/pages/landing.tsx:366:14" data-component-name="p" class="text-base md:text-lg text-slate-700 font-medium mb-8 max-w-lg leading-rela…">
+Network dependency tree
+Avoid chaining critical requests by reducing the length of chains, reducing the download size of resources, or deferring the download of unnecessary resources to improve page load.LCPUnscored
+Maximum critical path latency: 9,897 ms
+Initial Navigation
+https://d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev - 1,353 ms, 55.68 KiB
+/@vite/client(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 2,735 ms, 135.78 KiB
+…client/env.mjs(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,687 ms, 5.09 KiB
+/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap(fonts.googleapis.com) - 1,356 ms, 1.58 KiB
+…v20/UcC73FwrK….woff2(fonts.gstatic.com) - 8,656 ms, 48.09 KiB
+/src/main.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 1,787 ms, 3.24 KiB
+…deps/react_jsx-dev-runtime.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,063 ms, 37.40 KiB
+…deps/react-dom_client.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 2,754 ms, 2.35 KiB
+…deps/chunk-RPCDYKBN.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,746 ms, 907.58 KiB
+…deps/chunk-QCHXOAYK.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,241 ms, 77.20 KiB
+…deps/chunk-WOOG5QLI.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,554 ms, 4.00 KiB
+/src/App.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,062 ms, 42.34 KiB
+…deps/react.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,549 ms, 1.44 KiB
+…deps/wouter.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,386 ms, 17.27 KiB
+…lib/queryClient.ts(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,550 ms, 14.70 KiB
+…lib/mockStudentData.ts(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,028 ms, 49.63 KiB
+…lib/utm.ts(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,547 ms, 5.20 KiB
+…deps/@tanstack_react-query.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,350 ms, 114.94 KiB
+…ui/toaster.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,875 ms, 8.54 KiB
+…hooks/use-toast.ts(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,979 ms, 12.83 KiB
+…ui/toast.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,509 ms, 21.02 KiB
+…deps/@radix-ui_react-toast.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,973 ms, 28.58 KiB
+…deps/chunk-TPYHSINA.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 5,141 ms, 4.91 KiB
+…deps/class-variance-authority.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,821 ms, 3.52 KiB
+…ui/tooltip.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,546 ms, 7.82 KiB
+…deps/@radix-ui_react-tooltip.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,871 ms, 21.34 KiB
+…deps/chunk-G76BAGTM.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,191 ms, 12.53 KiB
+…deps/chunk-NWIKVZDZ.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,189 ms, 2.88 KiB
+…deps/chunk-E4UC4BFD.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,196 ms, 6.39 KiB
+…deps/chunk-5Q5YC75F.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,188 ms, 1.68 KiB
+…deps/chunk-LETPRLTX.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,193 ms, 2.11 KiB
+…deps/chunk-OXZDJRWN.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,187 ms, 4.98 KiB
+…deps/chunk-AXMZZQ2X.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,181 ms, 2.83 KiB
+…deps/chunk-2K77HOHX.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,183 ms, 6.45 KiB
+…deps/chunk-KBTYAULA.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,352 ms, 37.72 KiB
+…deps/chunk-UPVX7IVH.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,353 ms, 2.56 KiB
+…deps/chunk-TSMXHQXX.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,672 ms, 71.68 KiB
+…deps/chunk-A3PB5QHF.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,656 ms, 2.74 KiB
+…deps/chunk-GWAL4JHI.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,180 ms, 2.01 KiB
+…lib/utils.ts(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,022 ms, 1.93 KiB
+…deps/clsx.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,503 ms, 1.46 KiB
+…deps/chunk-U7P2NEEE.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,980 ms, 1.79 KiB
+…deps/tailwind-merge.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,677 ms, 72.15 KiB
+…contexts/shortlist-context.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,014 ms, 9.15 KiB
+…hooks/useAuth.ts(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,390 ms, 5.10 KiB
+…components/app-shell.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,384 ms, 5.98 KiB
+…components/app-sidebar.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,195 ms, 50.31 KiB
+…attached_assets/image_177….png?import(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,506 ms, 1.68 KiB
+…components/edge-badge.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,504 ms, 8.06 KiB
+…deps/lucide-react.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 8,032 ms, 1,127.32 KiB
+…ui/dropdown-menu.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,664 ms, 33.68 KiB
+…deps/@radix-ui_react-dropdown-menu.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 5,298 ms, 48.70 KiB
+…deps/chunk-QRQG5FMB.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 5,788 ms, 10.97 KiB
+…deps/chunk-3LVBQLPI.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 5,806 ms, 39.49 KiB
+…deps/chunk-4RO2SXZU.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 5,622 ms, 1.92 KiB
+…pages/landing.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,497 ms, 237.26 KiB
+…hooks/useScrollToTop.ts(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,817 ms, 2.29 KiB
+…auth/user(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 8,914 ms, 1.17 KiB
+…pages/login.tsx(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,341 ms, 168.60 KiB
+…lib/gtm.ts(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 4,821 ms, 2.67 KiB
+/src/index.css(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 3,213 ms, 180.69 KiB
+…workspace/tailwind.config.ts(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 8,676 ms, 14.70 KiB
+…deps/tailwindcss-animate.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 8,999 ms, 7.72 KiB
+…deps/chunk-PQQCSXBF.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 9,480 ms, 3.28 KiB
+…deps/@tailwindcss_typography.js?v=f1b185fc(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 9,897 ms, 223.58 KiB
+/@react-refresh(d88f77d8-bb11-4881-87a3-e5acf52f0076-00-2dzib5xa5d7gp.picard.replit.dev) - 2,573 ms, 63.89 KiB
+Preconnected origins
+preconnect hints help the browser establish a connection earlier in the page load, saving time when the first request for that origin is made. The following are the origins that the page preconnected to.
+Origin
+Source
+https://fonts.googleapis.com/
+head > link
+<link rel="preconnect" href="https://fonts.googleapis.com">
+https://fonts.gstatic.com/
+head > link
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+Preconnect candidates
+Add preconnect hints to your most important origins, but try to use no more than 4.
+No additional origins are good candidates for preconnecting
+Document request latency Est savings of 37 KiB
+Your first network request is the most important. Reduce its latency by avoiding redirects, ensuring a fast server response, and enabling text compression.LCPFCPUnscored
+Avoids redirects
+Server responds quickly (observed 311 ms)
+No compression applied
+Improve image delivery Est savings of 95 KiB
+Reducing the download time of images can improve the perceived load time of the page and LCP. Learn more about optimizing image sizeLCPFCPUnscored
+URL
+Resource Size
+Est Savings
+hubspotusercontent-na1.net
+99.5 KiB	95.2 KiB
+Arnab
+<img data-replit-metadata="client/src/pages/landing.tsx:650:20" data-component-name="img" src="https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Arna…" alt="Arnab" width="56" height="56" class="w-full h-full object-cover" loading="lazy" decoding="async">
+…Assets/Arnab_Zivame.jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+35.3 KiB
+34.7 KiB
+This image file is larger than it needs to be (674x674) for its displayed dimensions (84x84). Use responsive images to reduce the image download size.
+34.7 KiB
+Naushad Rahman
+<img data-replit-metadata="client/src/pages/landing.tsx:650:20" data-component-name="img" src="https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Naus…" alt="Naushad Rahman" width="56" height="56" class="w-full h-full object-cover" loading="lazy" decoding="async">
+…Assets/NaushadRa….jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+22.0 KiB
+21.4 KiB
+This image file is larger than it needs to be (500x500) for its displayed dimensions (84x84). Use responsive images to reduce the image download size.
+21.4 KiB
+World Economic Forum
+<img data-replit-metadata="client/src/pages/landing.tsx:449:18" data-component-name="img" src="https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/wo8138w5cb-…" alt="World Economic Forum" class="w-full h-full object-contain" loading="lazy" decoding="async">
+…44403767/wo8138w5cb-world-economic-forum-logo-world-econom….png(44403767.fs1.hubspotusercontent-na1.net)
+19.0 KiB
+18.8 KiB
+This image file is larger than it needs to be (800x494) for its displayed dimensions (67x41). Use responsive images to reduce the image download size.
+18.8 KiB
+Gopalan Raman
+<img data-replit-metadata="client/src/pages/landing.tsx:650:20" data-component-name="img" src="https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Gopa…" alt="Gopalan Raman" width="56" height="56" class="w-full h-full object-cover" loading="lazy" decoding="async">
+…Assets/GopalanRaman_ADF.jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+8.9 KiB
+8.2 KiB
+This image file is larger than it needs to be (299x299) for its displayed dimensions (84x84). Use responsive images to reduce the image download size.
+8.2 KiB
+Annem Vikram Reddy
+<img data-replit-metadata="client/src/pages/landing.tsx:650:20" data-component-name="img" src="https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Anne…" alt="Annem Vikram Reddy" width="56" height="56" class="w-full h-full object-cover" loading="lazy" decoding="async">
+…Assets/AnnemVikr….jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+8.1 KiB
+7.0 KiB
+This image file is larger than it needs to be (200x200) for its displayed dimensions (84x84). Use responsive images to reduce the image download size.
+6.7 KiB
+Kalpana Kudlingar
+<img data-replit-metadata="client/src/pages/landing.tsx:650:20" data-component-name="img" src="https://44403767.fs1.hubspotusercontent-na1.net/hubfs/44403767/Assets/Kalp…" alt="Kalpana Kudlingar" width="56" height="56" class="w-full h-full object-cover" loading="lazy" decoding="async">
+…Assets/KalpanaKu….jpg?width=112&height=112(44403767.fs1.hubspotusercontent-na1.net)
+6.2 KiB
+5.1 KiB
+This image file is larger than it needs to be (200x200) for its displayed dimensions (84x84). Use responsive images to reduce the image download size.

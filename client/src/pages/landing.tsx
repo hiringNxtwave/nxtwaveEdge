@@ -648,7 +648,7 @@ export default function Landing() {
                 <div className="-my-5 relative z-10">
                   <div className="w-14 h-14 rounded-full bg-white border-4 border-white shadow-md overflow-hidden">
                     <img
-                      src={`${t.img}?width=112&height=112`}
+                      src={t.img}
                       alt={t.author}
                       width={56}
                       height={56}
