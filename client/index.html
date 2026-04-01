@@ -34,74 +34,119 @@
     <link rel="icon" type="image/svg+xml" href="https://nxtwave-website-media-files.s3.ap-south-1.amazonaws.com/ccbp-website/Nxtwave_White_logo.svg" />
     <link rel="shortcut icon" href="https://nxtwave-website-media-files.s3.ap-south-1.amazonaws.com/ccbp-website/Nxtwave_White_logo.svg" />
 
-    <!-- ===================== FONTS ===================== -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap">
+    <!-- ===================== FONTS — non-blocking ===================== -->
+    <!-- preconnect hints (zero-cost, fast DNS+TLS warmup) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preload the stylesheet then swap rel to stylesheet — never blocks first paint -->
+    <link rel="preload" as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript>
+      <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" />
+    </noscript>
 
-    <!-- ===================== GOOGLE TAG MANAGER ===================== -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-PWNLJ6RX');</script>
-    <!-- End GTM -->
-
-    <!-- ===================== MS CLARITY — vpzilrnvyy ===================== -->
-    <script type="text/javascript">
-      (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "vpzilrnvyy");
-    </script>
-    <!-- End MS Clarity -->
-
-    <!-- ===================== APOLLO WEBSITE TRACKER — 691c42ef5547e4000d8ce182 ===================== -->
+    <!-- ===================== DEFERRED ANALYTICS =====================
+         All tracking tools fire either:
+           (a) 3 seconds after the page finishes loading, OR
+           (b) on the very first user interaction (click/scroll/keydown/touch)
+         — whichever comes first. The page is fully interactive before any
+           third-party script network request is made.
+    ============================================================== -->
     <script>
-      (function initApollo(){
-        var n=Math.random().toString(36).substring(7),o=document.createElement("script");
-        o.src="https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache="+n;
-        o.async=true;o.defer=true;
-        o.onload=function(){window.trackingFunctions.onLoad({appId:"691c42ef5547e4000d8ce182"})};
-        document.head.appendChild(o);
-      })();
+    (function () {
+      var fired = false;
+      function loadAnalytics() {
+        if (fired) return;
+        fired = true;
+
+        // Google Tag Manager
+        (function (w, d, s, l, i) {
+          w[l] = w[l] || [];
+          w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+          var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l !== 'dataLayer' ? '&l=' + l : '';
+          j.async = true;
+          j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+          f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-PWNLJ6RX');
+
+        // Microsoft Clarity
+        (function (c, l, a, r, i, t, y) {
+          c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+          t = l.createElement(r); t.async = 1;
+          t.src = 'https://www.clarity.ms/tag/' + i;
+          y = l.getElementsByTagName(r)[0];
+          y.parentNode.insertBefore(t, y);
+        })(window, document, 'clarity', 'script', 'vpzilrnvyy');
+
+        // Apollo Website Tracker
+        (function () {
+          var n = Math.random().toString(36).substring(7),
+              o = document.createElement('script');
+          o.src = 'https://assets.apollo.io/micro/website-tracker/tracker.iife.js?nocache=' + n;
+          o.async = true; o.defer = true;
+          o.onload = function () {
+            if (window.trackingFunctions) {
+              window.trackingFunctions.onLoad({ appId: '691c42ef5547e4000d8ce182' });
+            }
+          };
+          document.head.appendChild(o);
+        })();
+
+        // LinkedIn Insight Tag
+        window._linkedin_partner_id = '5838524';
+        window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+        window._linkedin_data_partner_ids.push('5838524');
+        (function (l) {
+          if (!l) {
+            window.lintrk = function (a, b) { window.lintrk.q.push([a, b]); };
+            window.lintrk.q = [];
+          }
+          var s = document.getElementsByTagName('script')[0],
+              b = document.createElement('script');
+          b.type = 'text/javascript'; b.async = true;
+          b.src = 'https://snap.licdn.com/li.lms-analytics/insight.min.js';
+          s.parentNode.insertBefore(b, s);
+        })(window.lintrk);
+      }
+
+      // Idle-load: fire 3 s after full page load
+      var idleTimer;
+      function scheduleLoad() {
+        idleTimer = setTimeout(loadAnalytics, 3000);
+      }
+      if (document.readyState === 'complete') {
+        scheduleLoad();
+      } else {
+        window.addEventListener('load', scheduleLoad);
+      }
+
+      // Interaction-triggered: fire immediately on first user gesture
+      ['click', 'scroll', 'keydown', 'touchstart', 'mousemove'].forEach(function (ev) {
+        document.addEventListener(ev, function () {
+          clearTimeout(idleTimer);
+          loadAnalytics();
+        }, { once: true, passive: true });
+      });
+    })();
     </script>
-    <!-- End Apollo -->
 
   </head>
   <body>
-    <!-- GTM noscript fallback (must be first element inside <body>) -->
+    <!-- GTM noscript fallback (must be first element inside body) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PWNLJ6RX"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End GTM noscript -->
 
-    <!-- ===================== LINKEDIN INSIGHT TAG — 5838524 ===================== -->
-    <script type="text/javascript">
-      _linkedin_partner_id = "5838524";
-      window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
-      window._linkedin_data_partner_ids.push(_linkedin_partner_id);
-    </script>
-    <script type="text/javascript">
-      (function(l) {
-        if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
-        window.lintrk.q=[];}
-        var s = document.getElementsByTagName("script")[0];
-        var b = document.createElement("script");
-        b.type = "text/javascript"; b.async = true;
-        b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
-        s.parentNode.insertBefore(b, s);
-      })(window.lintrk);
-    </script>
+    <!-- LinkedIn noscript pixel -->
     <noscript>
       <img height="1" width="1" style="display:none;" alt=""
         src="https://px.ads.linkedin.com/collect/?pid=5838524&fmt=gif" />
     </noscript>
-    <!-- End LinkedIn Insight Tag -->
 
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- Replit dev banner (stripped in production builds) -->
-    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
   </body>
 </html>

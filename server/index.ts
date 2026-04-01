@@ -22,6 +22,38 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// ── Security headers ──────────────────────────────────────────────────────────
+app.use((_req, res, next) => {
+  // Prevent browsers inferring a different MIME type
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  // Deny framing by other origins (clickjacking protection)
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  // Force HTTPS for 2 years (only meaningful on the deployed domain)
+  res.setHeader("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
+  // Allow popups (needed for OAuth flows) but isolate window context
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  // Don't send the full URL as referrer to third parties
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  // Restrict powerful browser APIs
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
+  // Content Security Policy — permissive enough for all analytics + strict enough to block XSS
+  res.setHeader(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.clarity.ms https://assets.apollo.io https://snap.licdn.com https://replit.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      "img-src 'self' data: https:",
+      "connect-src 'self' https:",
+      "frame-src 'self' https://www.googletagmanager.com",
+      "object-src 'none'",
+      "base-uri 'self'",
+    ].join("; ")
+  );
+  next();
+});
+
 // Health check — registered first so Cloud Run can verify the app is up
 // even while the rest of initialisation (DB seed, route setup) is still running
 app.get("/health", (_req, res) => {
