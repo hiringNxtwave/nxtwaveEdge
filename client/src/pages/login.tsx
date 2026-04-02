@@ -719,6 +719,29 @@ export default function LoginPage() {
             </button>
           </div>
 
+          {/* Mobile context banner — gives users clarity on what they're logging into */}
+          <div className="lg:hidden bg-[#EEF4FF] px-6 py-5 border-b border-blue-100">
+            <p className="text-[11px] font-semibold text-blue-600 uppercase tracking-wider mb-1">NxtWave Edge</p>
+            <h2 className="text-[17px] font-extrabold text-slate-900 leading-snug mb-1">
+              Your Pre-Vetted Shortlist<br />is Ready
+            </h2>
+            <p className="text-sm text-slate-500 mb-4">327 engineers, nationally ranked and offline-assessed.</p>
+            <div className="flex gap-2">
+              <div className="flex items-center gap-1.5 bg-white rounded-lg px-3 py-2 shadow-sm">
+                <span className="text-blue-600 font-extrabold text-sm">327</span>
+                <span className="text-slate-500 text-xs">Candidates</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-white rounded-lg px-3 py-2 shadow-sm">
+                <span className="text-blue-600 font-extrabold text-sm">Top 1%</span>
+                <span className="text-slate-500 text-xs">Screened</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-white rounded-lg px-3 py-2 shadow-sm">
+                <span className="text-blue-600 font-extrabold text-sm">&lt;1 hr</span>
+                <span className="text-slate-500 text-xs">To Hire</span>
+              </div>
+            </div>
+          </div>
+
           <div className="flex-1 flex items-center justify-center px-8 py-12">
             <div className="w-full max-w-sm">
               {/* Desktop logo */}
