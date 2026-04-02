@@ -70,12 +70,18 @@ function Router() {
           <>
             <Route path="/" component={Landing} />
             {!isLoading && (
-              <Route>
-                {() => {
-                  window.location.replace("/");
-                  return null;
-                }}
-              </Route>
+              <>
+                {/* Protected routes redirect to login, not landing */}
+                <Route path="/browse">{() => { window.location.replace("/login"); return null; }}</Route>
+                <Route path="/candidates">{() => { window.location.replace("/login"); return null; }}</Route>
+                {/* All other unknown routes fall back to landing */}
+                <Route>
+                  {() => {
+                    window.location.replace("/");
+                    return null;
+                  }}
+                </Route>
+              </>
             )}
           </>
         ) : (

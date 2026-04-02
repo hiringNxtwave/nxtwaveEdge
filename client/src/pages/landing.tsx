@@ -326,15 +326,20 @@ export default function Landing() {
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-100">
         <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center gap-2">
+            <button
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => { sendGTMEvent("landing_page_nav_logo_click"); goToApp(); }}
+              aria-label="Go to login"
+            >
               <img src={nxtWaveLogo} alt="NxtWave" className="h-10 w-auto" />
               <EdgeBadge className="mt-0.5" />
-            </div>
-            <div className="hidden md:flex items-center gap-8">
+            </button>
+            <div className="flex items-center gap-3">
+              {/* Login button — visible on all screen sizes */}
               <button
                 id="landing_page_nav_login_click"
                 onClick={() => { sendGTMEvent("landing_page_nav_login_click"); goToApp(); }}
-                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-5 h-9 rounded-lg transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 md:px-5 h-9 rounded-lg transition-colors"
                 data-testid="button-login"
               >
                 Login →
@@ -359,7 +364,11 @@ export default function Landing() {
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Left */}
             <div className="pt-4">
-              <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-[1.15] mb-4">
+              <h1
+                className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-[1.15] mb-4 cursor-pointer hover:opacity-90 transition-opacity"
+                onClick={() => { sendGTMEvent("landing_page_hero_headline_click"); goToApp(); }}
+                title="Click to get started"
+              >
                 India's <span className="text-blue-600">'Uber'</span> for Hiring Entry Level Talent
               </h1>
 
