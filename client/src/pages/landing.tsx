@@ -301,13 +301,6 @@ export default function Landing() {
     });
   }, [authUser?.id]);
 
-  function goToApp() {
-    if (authUser?.id) {
-      navigate("/browse");
-    } else {
-      navigate("/login");
-    }
-  }
 
   const [rotatingIdx, setRotatingIdx] = useState(0);
   const [fade, setFade] = useState(true);
@@ -328,7 +321,7 @@ export default function Landing() {
           <div className="flex justify-between items-center h-16">
             <button
               className="flex items-center gap-2 cursor-pointer"
-              onClick={() => { sendGTMEvent("landing_page_nav_logo_click"); goToApp(); }}
+              onClick={() => { sendGTMEvent("landing_page_nav_logo_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
               aria-label="Go to login"
             >
               <img src={nxtWaveLogo} alt="NxtWave" className="h-10 w-auto" />
@@ -338,7 +331,7 @@ export default function Landing() {
               {/* Login button — visible on all screen sizes */}
               <button
                 id="landing_page_nav_login_click"
-                onClick={() => { sendGTMEvent("landing_page_nav_login_click"); goToApp(); }}
+                onClick={() => { sendGTMEvent("landing_page_nav_login_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
                 className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 md:px-5 h-9 rounded-lg transition-colors"
                 data-testid="button-login"
               >
@@ -351,7 +344,7 @@ export default function Landing() {
       {/* ── Announcement Bar ── */}
       <button
         id="landing_page_announcement_get_early_access_click"
-        onClick={() => { sendGTMEvent("landing_page_announcement_get_early_access_click"); goToApp(); }}
+        onClick={() => { sendGTMEvent("landing_page_announcement_get_early_access_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
         className="w-full bg-blue-600 text-white text-center text-xs font-medium py-2.5 px-4 cursor-pointer hover:bg-blue-700 transition-colors"
       >
         <span className="bg-white text-blue-600 font-bold px-2 py-0.5 rounded text-[11px] mr-2">NEW</span>
@@ -366,7 +359,7 @@ export default function Landing() {
             <div className="pt-4">
               <h1
                 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-[1.15] mb-4 cursor-pointer hover:opacity-90 transition-opacity"
-                onClick={() => { sendGTMEvent("landing_page_hero_headline_click"); goToApp(); }}
+                onClick={() => { sendGTMEvent("landing_page_hero_headline_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
                 title="Click to get started"
               >
                 India's <span className="text-blue-600">'Uber'</span> for Hiring Entry Level Talent
@@ -390,7 +383,7 @@ export default function Landing() {
               <div className="flex flex-col sm:flex-row gap-3 mb-6">
                 <button
                   id="landing_page_hero_request_top_candidates_click"
-                  onClick={() => { sendGTMEvent("landing_page_hero_request_top_candidates_click"); goToApp(); }}
+                  onClick={() => { sendGTMEvent("landing_page_hero_request_top_candidates_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
                   className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
                   data-testid="button-explore-talent"
                 >
@@ -521,7 +514,7 @@ export default function Landing() {
 
               <button
                 id="landing_page_howitworks_browse_talent_click"
-                onClick={() => { sendGTMEvent("landing_page_howitworks_browse_talent_click"); goToApp(); }}
+                onClick={() => { sendGTMEvent("landing_page_howitworks_browse_talent_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
                 className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
               >
                 Browse Talent
@@ -628,7 +621,7 @@ export default function Landing() {
           <div className="text-center">
             <button
               id="landing_page_whyedge_get_top_candidates_click"
-              onClick={() => { sendGTMEvent("landing_page_whyedge_get_top_candidates_click"); goToApp(); }}
+              onClick={() => { sendGTMEvent("landing_page_whyedge_get_top_candidates_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
               className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-8 py-3.5 rounded-lg transition-colors shadow-sm"
             >
               Get Top Candidates
@@ -764,7 +757,7 @@ export default function Landing() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               id="landing_page_cta_get_top_candidates_click"
-              onClick={() => { sendGTMEvent("landing_page_cta_get_top_candidates_click"); goToApp(); }}
+              onClick={() => { sendGTMEvent("landing_page_cta_get_top_candidates_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
               className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-8 py-4 rounded-lg transition-colors shadow-lg"
               data-testid="button-start-free-trial"
             >
@@ -792,7 +785,7 @@ export default function Landing() {
           </div>
           <p className="text-xs text-slate-500">© 2025 NxtWave. Built for India's Best Engineers.</p>
           <div className="flex gap-6">
-            <button id="landing_page_footer_login_click" onClick={() => { sendGTMEvent("landing_page_footer_login_click"); goToApp(); }} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">Login</button>
+            <button id="landing_page_footer_login_click" onClick={() => { sendGTMEvent("landing_page_footer_login_click"); navigate(authUser?.id ? "/browse" : "/login"); }} className="text-xs text-slate-500 hover:text-slate-300 transition-colors">Login</button>
           </div>
         </div>
       </footer>

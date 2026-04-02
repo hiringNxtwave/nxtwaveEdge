@@ -115,9 +115,6 @@ export default function ExploreEdge() {
     retry: false,
   });
 
-  function goToApp() {
-    navigate(authUser?.id ? "/browse" : "/login");
-  }
 
   return (
     <div className="min-h-screen bg-[#EEF2F7]">
@@ -131,7 +128,7 @@ export default function ExploreEdge() {
           <div className="flex items-center gap-2 sm:gap-4">
             <button
               id="explore_edge_nav_request_top_candidates_click"
-              onClick={() => { sendGTMEvent("explore_edge_nav_request_top_candidates_click"); goToApp(); }}
+              onClick={() => { sendGTMEvent("explore_edge_nav_request_top_candidates_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
               className="bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold px-3 sm:px-5 py-2 rounded-lg transition-colors whitespace-nowrap"
             >
               Request Top Candidates
@@ -308,7 +305,7 @@ export default function ExploreEdge() {
                   <Award className="w-4 h-4 text-white" />
                   <span className="text-sm font-bold text-white">Top 1% Talent</span>
                 </div>
-                <button onClick={goToApp} className="inline-flex items-center justify-center gap-2 bg-white text-blue-700 hover:bg-blue-50 font-bold text-sm px-5 py-3 rounded-xl transition-colors w-full">
+                <button onClick={() => navigate(authUser?.id ? "/browse" : "/login")} className="inline-flex items-center justify-center gap-2 bg-white text-blue-700 hover:bg-blue-50 font-bold text-sm px-5 py-3 rounded-xl transition-colors w-full">
                   Browse Verified Profiles <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -328,7 +325,7 @@ export default function ExploreEdge() {
             this process, no screening required on your end.
           </p>
           <div className="flex items-center justify-center">
-            <button onClick={goToApp} className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-colors">
+            <button onClick={() => navigate(authUser?.id ? "/browse" : "/login")} className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm px-8 py-3.5 rounded-xl transition-colors">
               Browse Talent
             </button>
           </div>
