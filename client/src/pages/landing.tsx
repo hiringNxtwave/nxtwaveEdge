@@ -272,7 +272,44 @@ function AssessmentOrbitIllustration() {
   );
 }
 
-export default function Landing() {
+function HubSpotContactForm() {
+  useEffect(() => {
+    const existingScript = document.getElementById("hs-forms-script");
+    const mountForm = () => {
+      const w = window as any;
+      if (w.hbspt) {
+        w.hbspt.forms.create({
+          portalId: "44403767",
+          formId: "d135cbc5-dc0d-498c-a07f-bb3d7bd5c473",
+          region: "na1",
+          target: "#hs-form-container",
+        });
+      }
+    };
+    if (existingScript) {
+      mountForm();
+      return;
+    }
+    const script = document.createElement("script");
+    script.id = "hs-forms-script";
+    script.src = "https://js.hsforms.net/forms/embed/v2.js";
+    script.charset = "utf-8";
+    script.type = "text/javascript";
+    script.onload = mountForm;
+    document.body.appendChild(script);
+  }, []);
+
+  return (
+    <div className="w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+      <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Talk to the Edge Team</p>
+      <h3 className="text-xl font-extrabold text-slate-900 mb-1">Let's find you the right engineers</h3>
+      <p className="text-sm text-slate-500 mb-5">Fill in your details and our team will reach out within 1 business day.</p>
+      <div id="hs-form-container" />
+    </div>
+  );
+}
+
+export default function Landing({ showContactForm }: { showContactForm?: boolean } = {}) {
   useScrollToTop();
   const [, navigate] = useLocation();
 
@@ -401,10 +438,16 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Right — Hero illustration */}
-            <div className="hidden lg:flex justify-center items-start">
-              <HeroIllustration />
-            </div>
+            {/* Right — Hero illustration or contact form */}
+            {showContactForm ? (
+              <div className="flex justify-center items-start">
+                <HubSpotContactForm />
+              </div>
+            ) : (
+              <div className="hidden lg:flex justify-center items-start">
+                <HeroIllustration />
+              </div>
+            )}
           </div>
         </div>
       </section>
