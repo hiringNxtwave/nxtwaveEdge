@@ -431,15 +431,17 @@ export default function Landing({ showContactForm }: { showContactForm?: boolean
 
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-3 mb-6">
-                <button
-                  id="landing_page_hero_request_top_candidates_click"
-                  onClick={() => { sendGTMEvent("landing_page_hero_request_top_candidates_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
-                  className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
-                  data-testid="button-explore-talent"
-                >
-                  Request Top Candidates
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                {!showContactForm && (
+                  <button
+                    id="landing_page_hero_request_top_candidates_click"
+                    onClick={() => { sendGTMEvent("landing_page_hero_request_top_candidates_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
+                    className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
+                    data-testid="button-explore-talent"
+                  >
+                    Request Top Candidates
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                )}
                 <button
                   id="landing_page_hero_how_we_assess_click"
                   onClick={() => { sendGTMEvent("landing_page_hero_how_we_assess_click"); navigate("/explore-edge"); }}
