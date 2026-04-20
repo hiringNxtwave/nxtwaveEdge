@@ -445,7 +445,9 @@ export default function Landing({ showContactForm }: { showContactForm?: boolean
                 <button
                   id="landing_page_hero_how_we_assess_click"
                   onClick={() => { sendGTMEvent("landing_page_hero_how_we_assess_click"); navigate("/explore-edge"); }}
-                  className="inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors"
+                  className={showContactForm
+                    ? "inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors shadow-sm"
+                    : "inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-semibold text-sm px-7 py-3.5 rounded-lg transition-colors"}
                   data-testid="button-explore-edge"
                 >
                   How We Assess
