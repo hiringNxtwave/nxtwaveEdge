@@ -29,6 +29,28 @@ const CompanyProfileManager = lazy(() =>
   import("./components/company-profile-manager").then(m => ({ default: m.CompanyProfileManager }))
 );
 
+const BASE_URL = "https://nxtwaveedge.ccbp.tech";
+
+// Routes whose canonical should point to the homepage (duplicate-content pages)
+const CANONICAL_OVERRIDES: Record<string, string> = {
+  "/talk-to-edge": "/",
+};
+
+function useCanonical() {
+  const [location] = useLocation();
+  useEffect(() => {
+    const path = CANONICAL_OVERRIDES[location] ?? location;
+    const canonical = `${BASE_URL}${path === "/" ? "" : path}`;
+    let tag = document.querySelector<HTMLLinkElement>("link[rel='canonical']");
+    if (!tag) {
+      tag = document.createElement("link");
+      tag.rel = "canonical";
+      document.head.appendChild(tag);
+    }
+    tag.href = canonical;
+  }, [location]);
+}
+
 function useUtmPreservation() {
   const [location] = useLocation();
 
@@ -53,6 +75,7 @@ function useUtmPreservation() {
 
 function Router() {
   useUtmPreservation();
+  useCanonical();
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
