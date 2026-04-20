@@ -301,6 +301,19 @@ function HubSpotContactForm() {
 
   return (
     <div className="w-full bg-white rounded-2xl shadow-md border border-slate-200 p-6 lg:p-8">
+      <style>{`
+        #hs-form-container .submitted-message {
+          min-height: 220px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          font-size: 1rem;
+          font-weight: 600;
+          color: #0f172a;
+          padding: 2rem;
+        }
+      `}</style>
       <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Talk to the Edge Team</p>
       <h3 className="text-xl font-extrabold text-slate-900 mb-1">Let's find you the right engineers</h3>
       <p className="text-sm text-slate-500 mb-5 leading-relaxed">Fill in your details and our team will reach out shortly.</p>
