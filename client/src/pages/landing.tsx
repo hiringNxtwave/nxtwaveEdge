@@ -391,9 +391,9 @@ export default function Landing({ showContactForm }: { showContactForm?: boolean
       {/* ── Hero ── */}
       <section className={`bg-[#F0F5FF]${showContactForm ? "" : " overflow-hidden"}`}>
         <div className="max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 py-16 md:py-20">
-          <div className="grid lg:grid-cols-2 gap-10 items-start">
+          <div className="grid lg:grid-cols-2 gap-10 lg:items-stretch">
             {/* Left */}
-            <div className={showContactForm ? "pt-0 lg:pt-2" : "pt-4"}>
+            <div className={showContactForm ? "flex flex-col justify-center py-2" : "pt-4"}>
               <h1
                 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-[1.15] mb-4 cursor-pointer hover:opacity-90 transition-opacity"
                 onClick={() => { sendGTMEvent("landing_page_hero_headline_click"); navigate(authUser?.id ? "/browse" : "/login"); }}
@@ -436,6 +436,25 @@ export default function Landing({ showContactForm }: { showContactForm?: boolean
                   How We Assess
                 </button>
               </div>
+
+              {/* Trust signals — only on /talk-to-edge */}
+              {showContactForm && (
+                <div className="mt-6 pt-6 border-t border-blue-100 space-y-3">
+                  {[
+                    { stat: "2,500+", label: "companies have hired through Edge" },
+                    { stat: "3,00,000+", label: "freshers evaluated offline, nationally" },
+                    { stat: "<1 hr",   label: "average time to receive your shortlist" },
+                    { stat: "Top 1%",  label: "only benchmark-cleared candidates reach you" },
+                  ].map(({ stat, label }) => (
+                    <div key={stat} className="flex items-start gap-3">
+                      <CheckCircle className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
+                      <p className="text-sm text-slate-700 leading-snug">
+                        <span className="font-bold text-slate-900">{stat}</span> {label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Right — Hero illustration or contact form */}
