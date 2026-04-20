@@ -303,7 +303,7 @@ function HubSpotContactForm() {
     <div className="w-full bg-white rounded-2xl shadow-md border border-slate-200 p-6 lg:p-8">
       <p className="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Talk to the Edge Team</p>
       <h3 className="text-xl font-extrabold text-slate-900 mb-1">Let's find you the right engineers</h3>
-      <p className="text-sm text-slate-500 mb-5 leading-relaxed">Fill in your details and our team will reach out within 1 business day.</p>
+      <p className="text-sm text-slate-500 mb-5 leading-relaxed">Fill in your details and our team will reach out shortly.</p>
       <div id="hs-form-container" className="[&_input]:w-full [&_input]:border-0 [&_input]:border-b [&_input]:border-slate-300 [&_input]:py-2 [&_input]:text-sm [&_input]:outline-none [&_input:focus]:border-blue-500 [&_label]:text-sm [&_label]:font-medium [&_label]:text-slate-700 [&_select]:w-full [&_select]:border-0 [&_select]:border-b [&_select]:border-slate-300 [&_select]:py-2 [&_select]:text-sm [&_select]:outline-none [&_textarea]:w-full [&_textarea]:border [&_textarea]:border-slate-200 [&_textarea]:rounded-lg [&_textarea]:p-2.5 [&_textarea]:text-sm [&_textarea]:outline-none [&_textarea:focus]:border-blue-500 [&_.hs-button]:mt-4 [&_.hs-button]:w-full [&_.hs-button]:bg-blue-600 [&_.hs-button]:hover:bg-blue-700 [&_.hs-button]:text-white [&_.hs-button]:font-semibold [&_.hs-button]:py-3 [&_.hs-button]:rounded-lg [&_.hs-button]:text-sm [&_.hs-button]:cursor-pointer [&_.hs-button]:transition-colors" />
     </div>
   );
@@ -443,7 +443,6 @@ export default function Landing({ showContactForm }: { showContactForm?: boolean
                   {[
                     { stat: "2,500+", label: "companies have hired through Edge" },
                     { stat: "3,00,000+", label: "freshers evaluated offline, nationally" },
-                    { stat: "<1 hr",   label: "average time to receive your shortlist" },
                     { stat: "Top 1%",  label: "only benchmark-cleared candidates reach you" },
                   ].map(({ stat, label }) => (
                     <div key={stat} className="flex items-start gap-3">
