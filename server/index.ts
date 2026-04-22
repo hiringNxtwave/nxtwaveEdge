@@ -50,6 +50,8 @@ app.use((_req, res, next) => {
       "img-src 'self' data: https:",
       "connect-src 'self' https:",
       "frame-src 'self' https://www.googletagmanager.com https://forms.hubspot.com https://forms.hsforms.com",
+      "worker-src blob: 'self'",
+      "child-src blob: 'self'",
       "object-src 'none'",
       "base-uri 'self'",
     ].join("; ")
