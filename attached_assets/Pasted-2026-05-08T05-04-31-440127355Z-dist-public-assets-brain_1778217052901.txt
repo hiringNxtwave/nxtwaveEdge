@@ -1,0 +1,50 @@
+2026-05-08T05:04:31.440127355Z ../dist/public/assets/brain-Dc5uDBf9.js                         0.90 kB │ gzip:   0.46 kB
+2026-05-08T05:04:31.440136455Z ../dist/public/assets/card-0yomdi4F.js                          1.11 kB │ gzip:   0.41 kB
+2026-05-08T05:04:31.440164475Z ../dist/public/assets/badge-DDyAyxoj.js                         1.38 kB │ gzip:   0.63 kB
+2026-05-08T05:04:31.440167306Z ../dist/public/assets/button-CSNHz68B.js                        1.59 kB │ gzip:   0.69 kB
+2026-05-08T05:04:31.440239347Z ../dist/public/assets/progress-DJ6rNTMf.js                      1.90 kB │ gzip:   0.95 kB
+2026-05-08T05:04:31.440257588Z ../dist/public/assets/tabs-haStMO2J.js                          3.52 kB │ gzip:   1.55 kB
+2026-05-08T05:04:31.440266058Z ../dist/public/assets/shortlisted-candidates-Dz6C7898.js        5.15 kB │ gzip:   1.89 kB
+2026-05-08T05:04:31.440287048Z ../dist/public/assets/dialog-DkxcqQQD.js                        6.99 kB │ gzip:   2.57 kB
+2026-05-08T05:04:31.440302169Z ../dist/public/assets/company-profile-manager-CYG2L9p0.js       9.84 kB │ gzip:   2.84 kB
+2026-05-08T05:04:31.440321509Z ../dist/public/assets/explore-edge-CAzLMX-S.js                  9.87 kB │ gzip:   3.07 kB
+2026-05-08T05:04:31.440330679Z ../dist/public/assets/student-dashboard-Civ6lpLZ.js            10.38 kB │ gzip:   2.56 kB
+2026-05-08T05:04:31.44036303Z ../dist/public/assets/market-intelligence-page-CEt9jY6R.js     14.53 kB │ gzip:   3.50 kB
+2026-05-08T05:04:31.44036585Z ../dist/public/assets/student-profile-CgAbA3d5.js              14.56 kB │ gzip:   3.85 kB
+2026-05-08T05:04:31.44038364Z ../dist/public/assets/for-students-3h77Dibr.js                 14.56 kB │ gzip:   3.37 kB
+2026-05-08T05:04:31.440391731Z ../dist/public/assets/for-colleges-CKoHp3g0.js                 16.87 kB │ gzip:   3.85 kB
+2026-05-08T05:04:31.440422491Z ../dist/public/assets/comparison-view-lr2RdlyQ.js              17.14 kB │ gzip:   5.47 kB
+2026-05-08T05:04:31.440427591Z ../dist/public/assets/input-Bx4Q42Yy.js                        22.34 kB │ gzip:   7.74 kB
+2026-05-08T05:04:31.440515073Z ../dist/public/assets/student-card-qDbwzmTK.js                 26.47 kB │ gzip:   7.29 kB
+2026-05-08T05:04:31.440522873Z ../dist/public/assets/header-CPtwWu_a.js                       33.88 kB │ gzip:   8.45 kB
+2026-05-08T05:04:31.440551304Z ../dist/public/assets/browse-students-CccJzfIi.js              37.26 kB │ gzip:  10.02 kB
+2026-05-08T05:04:31.440574975Z ../dist/public/assets/communication-sample-modal-Dp20ituL.js   40.15 kB │ gzip:   9.99 kB
+2026-05-08T05:04:31.440580075Z ../dist/public/assets/role-match-rationale-I5qEdOQN.js         51.55 kB │ gzip:  13.82 kB
+2026-05-08T05:04:31.440620056Z ../dist/public/assets/talent-dashboard-D_L1ikKj.js             59.46 kB │ gzip:  16.41 kB
+2026-05-08T05:04:31.440640166Z ../dist/public/assets/student-profile-form-BaCSJVBq.js         98.74 kB │ gzip:  27.57 kB
+2026-05-08T05:04:31.440660086Z ../dist/public/assets/index-0WI-yRnx.js                       411.49 kB │ gzip: 126.78 kB
+2026-05-08T05:04:31.440674827Z ../dist/public/assets/shortlisting-3L21nqKB.js                467.77 kB │ gzip: 124.68 kB
+2026-05-08T05:04:31.441054225Z ✓ built in 7.53s
+2026-05-08T05:04:31.584921134Z 
+2026-05-08T05:04:31.584941294Z   dist/index.js  1.0mb ⚠️
+2026-05-08T05:04:31.584944514Z 
+2026-05-08T05:04:31.584946934Z ⚡ Done in 41ms
+2026-05-08T05:04:38.297244568Z ==> Uploading build...
+2026-05-08T05:04:49.671239403Z ==> Uploaded in 6.3s. Compression took 5.1s
+2026-05-08T05:04:49.723149413Z ==> Build successful 🎉
+2026-05-08T05:05:31.16687989Z ==> Deploying...
+2026-05-08T05:05:31.443158939Z ==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+2026-05-08T05:05:50.240678012Z ==> Running 'node dist/index.js'
+2026-05-08T05:05:57.240182409Z file:///opt/render/project/src/dist/index.js:710
+2026-05-08T05:05:57.240213109Z       throw new Error(
+2026-05-08T05:05:57.240215979Z             ^
+2026-05-08T05:05:57.240218049Z 
+2026-05-08T05:05:57.240220719Z Error: DATABASE_URL must be set. Did you forget to provision a database?
+2026-05-08T05:05:57.240222789Z     at server/db.ts (file:///opt/render/project/src/dist/index.js:710:13)
+2026-05-08T05:05:57.240224989Z     at __init (file:///opt/render/project/src/dist/index.js:4:56)
+2026-05-08T05:05:57.240227529Z     at file:///opt/render/project/src/dist/index.js:1413:1
+2026-05-08T05:05:57.240229489Z     at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+2026-05-08T05:05:57.240232209Z     at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+2026-05-08T05:05:57.24023456Z     at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+2026-05-08T05:05:57.24023647Z 
+2026-05-08T05:05:57.24023847Z Node.js v24.14.1
