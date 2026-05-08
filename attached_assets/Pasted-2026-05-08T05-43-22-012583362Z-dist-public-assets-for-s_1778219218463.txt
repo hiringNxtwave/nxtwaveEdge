@@ -1,0 +1,50 @@
+2026-05-08T05:43:22.012583362Z ../dist/public/assets/for-students-3h77Dibr.js                 14.56 kB │ gzip:   3.37 kB
+2026-05-08T05:43:22.012606542Z ../dist/public/assets/for-colleges-CKoHp3g0.js                 16.87 kB │ gzip:   3.85 kB
+2026-05-08T05:43:22.012608842Z ../dist/public/assets/comparison-view-lr2RdlyQ.js              17.14 kB │ gzip:   5.47 kB
+2026-05-08T05:43:22.012613233Z ../dist/public/assets/input-Bx4Q42Yy.js                        22.34 kB │ gzip:   7.74 kB
+2026-05-08T05:43:22.012679684Z ../dist/public/assets/student-card-qDbwzmTK.js                 26.47 kB │ gzip:   7.29 kB
+2026-05-08T05:43:22.012682304Z ../dist/public/assets/header-CPtwWu_a.js                       33.88 kB │ gzip:   8.45 kB
+2026-05-08T05:43:22.012694955Z ../dist/public/assets/browse-students-CccJzfIi.js              37.26 kB │ gzip:  10.02 kB
+2026-05-08T05:43:22.012703285Z ../dist/public/assets/communication-sample-modal-Dp20ituL.js   40.15 kB │ gzip:   9.99 kB
+2026-05-08T05:43:22.012757986Z ../dist/public/assets/role-match-rationale-I5qEdOQN.js         51.55 kB │ gzip:  13.82 kB
+2026-05-08T05:43:22.012763577Z ../dist/public/assets/talent-dashboard-D_L1ikKj.js             59.46 kB │ gzip:  16.41 kB
+2026-05-08T05:43:22.012767087Z ../dist/public/assets/student-profile-form-BaCSJVBq.js         98.74 kB │ gzip:  27.57 kB
+2026-05-08T05:43:22.012775737Z ../dist/public/assets/index-0WI-yRnx.js                       411.49 kB │ gzip: 126.78 kB
+2026-05-08T05:43:22.012782427Z ../dist/public/assets/shortlisting-3L21nqKB.js                467.77 kB │ gzip: 124.68 kB
+2026-05-08T05:43:22.013163418Z ✓ built in 7.69s
+2026-05-08T05:43:22.150300029Z 
+2026-05-08T05:43:22.15032228Z   dist/index.js  1.0mb ⚠️
+2026-05-08T05:43:22.15032605Z 
+2026-05-08T05:43:22.15032956Z ⚡ Done in 42ms
+2026-05-08T05:43:51.768110468Z ==> Uploading build...
+2026-05-08T05:44:03.845940672Z ==> Uploaded in 5.8s. Compression took 6.3s
+2026-05-08T05:44:03.901606567Z ==> Build successful 🎉
+2026-05-08T05:45:56.608543675Z ==> Deploying...
+2026-05-08T05:45:56.658164715Z ==> Setting WEB_CONCURRENCY=1 by default, based on available CPUs in the instance
+2026-05-08T05:46:31.385946507Z error: column "recommendation" does not exist
+2026-05-08T05:46:31.385969659Z     at file:///opt/render/project/src/node_modules/@neondatabase/serverless/index.mjs:1345:74
+2026-05-08T05:46:31.38597952Z     at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+2026-05-08T05:46:31.38598581Z     at async NeonPreparedQuery.execute (file:///opt/render/project/src/node_modules/drizzle-orm/neon-serverless/session.js:76:20)
+2026-05-08T05:46:31.38599175Z     at async DatabaseStorage.seedInitialData (file:///opt/render/project/src/dist/index.js:14101:26)
+2026-05-08T05:46:31.385997111Z     at async registerRoutes (file:///opt/render/project/src/dist/index.js:14764:3)
+2026-05-08T05:46:31.386001891Z     at async file:///opt/render/project/src/dist/index.js:16288:5 {
+2026-05-08T05:46:31.386006391Z   length: 115,
+2026-05-08T05:46:31.386011692Z   severity: 'ERROR',
+2026-05-08T05:46:31.386016182Z   code: '42703',
+2026-05-08T05:46:31.386020462Z   detail: undefined,
+2026-05-08T05:46:31.386024983Z   hint: undefined,
+2026-05-08T05:46:31.386029473Z   position: '567',
+2026-05-08T05:46:31.386034743Z   internalPosition: undefined,
+2026-05-08T05:46:31.386039284Z   internalQuery: undefined,
+2026-05-08T05:46:31.386043574Z   where: undefined,
+2026-05-08T05:46:31.386048464Z   schema: undefined,
+2026-05-08T05:46:31.386053415Z   table: undefined,
+2026-05-08T05:46:31.386058135Z   column: undefined,
+2026-05-08T05:46:31.386061595Z   dataType: undefined,
+2026-05-08T05:46:31.386064635Z   constraint: undefined,
+2026-05-08T05:46:31.386067786Z   file: 'parse_relation.c',
+2026-05-08T05:46:31.386070946Z   line: '3722',
+2026-05-08T05:46:31.386074046Z   routine: 'errorMissingColumn'
+2026-05-08T05:46:31.386077086Z }
+2026-05-08T05:46:32.679360748Z ==> Exited with status 1
+2026-05-08T05:46:32.682012843Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys

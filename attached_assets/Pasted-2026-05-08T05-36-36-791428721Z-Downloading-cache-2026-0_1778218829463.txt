@@ -1,0 +1,32 @@
+2026-05-08T05:36:36.791428721Z ==> Downloading cache...
+2026-05-08T05:36:36.826668944Z ==> Cloning from https://github.com/hiringNxtwave/nxtwaveEdge
+2026-05-08T05:36:37.619509478Z ==> Checking out commit 2085e2064578111f9f703068fd0c1142c01662aa in branch main
+2026-05-08T05:36:42.994292717Z ==> Downloaded 202MB in 4s. Extraction took 2s.
+2026-05-08T05:36:45.881037674Z ==> Using Node.js version 24.14.1 (default)
+2026-05-08T05:36:45.90581772Z ==> Docs on specifying a Node.js version: https://render.com/docs/node-version
+2026-05-08T05:36:46.013413258Z ==> Running build command 'npm install; npm run build'...
+2026-05-08T05:37:25.799447832Z 
+2026-05-08T05:37:25.799477602Z added 533 packages, and audited 534 packages in 40s
+2026-05-08T05:37:25.799491562Z 
+2026-05-08T05:37:25.799567963Z 67 packages are looking for funding
+2026-05-08T05:37:25.799631385Z   run `npm fund` for details
+2026-05-08T05:37:25.831962588Z 
+2026-05-08T05:37:25.831991788Z 21 vulnerabilities (1 low, 5 moderate, 15 high)
+2026-05-08T05:37:25.831996599Z 
+2026-05-08T05:37:25.832002039Z To address issues that do not require attention, run:
+2026-05-08T05:37:25.832006049Z   npm audit fix
+2026-05-08T05:37:25.832009839Z 
+2026-05-08T05:37:25.832015049Z To address all issues possible (including breaking changes), run:
+2026-05-08T05:37:25.832019019Z   npm audit fix --force
+2026-05-08T05:37:25.832022789Z 
+2026-05-08T05:37:25.832026649Z Some issues need review, and may require choosing
+2026-05-08T05:37:25.832031259Z a different dependency.
+2026-05-08T05:37:25.832034999Z 
+2026-05-08T05:37:25.832039429Z Run `npm audit` for details.
+2026-05-08T05:37:26.046733378Z 
+2026-05-08T05:37:26.046759588Z > rest-express@1.0.0 build
+2026-05-08T05:37:26.046765009Z > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+2026-05-08T05:37:26.046771418Z 
+2026-05-08T05:37:26.051164243Z sh: 1: vite: not found
+2026-05-08T05:37:26.09325175Z ==> Build failed 😞
+2026-05-08T05:37:26.09327155Z ==> Common ways to troubleshoot your deploy: https://render.com/docs/troubleshooting-deploys
