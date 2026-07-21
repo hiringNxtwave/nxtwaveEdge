@@ -341,8 +341,8 @@ export async function registerRoutes(app: Express): Promise<void> {
 
       res.json(updated);
     } catch (error) {
-      console.error("Error updating profile:", error);
-      res.status(500).json({ message: "Failed to save profile." });
+      console.error("Error updating profile:", error?.message || error);
+      res.status(500).json({ message: "Failed to save profile.", detail: String(error?.message || error) });
     }
   });
 
