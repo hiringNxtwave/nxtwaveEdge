@@ -10,7 +10,7 @@ declare module "express-session" {
 
 const isVercel = process.env.VERCEL === "true";
 
-export function getSession() {
+export async function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
 
   if (isVercel) {
@@ -31,8 +31,8 @@ export function getSession() {
   }
 
   // Local development: use PostgreSQL session store
-  const connectPg = require("connect-pg-simple");
-  const pgStore = connectPg(session);
+  const connectPg = await import("connect-pg-simple");
+  const pgStore = connectPg.default(session);
   const sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,
     createTableIfMissing: false,
@@ -55,7 +55,7 @@ export function getSession() {
 
 export async function setupAuth(app: Express) {
   app.set("trust proxy", 1);
-  app.use(getSession());
+  app.use(await getSession());
 }
 
 export const isAuthenticated: RequestHandler = (req, res, next) => {

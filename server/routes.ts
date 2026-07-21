@@ -1718,11 +1718,6 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Initialize OpenAI client
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-
   // Chatbot endpoint
   app.post('/api/chatbot', isAuthenticated, async (req: any, res) => {
     try {
@@ -1731,6 +1726,11 @@ export async function registerRoutes(app: Express): Promise<void> {
       if (!message) {
         return res.status(400).json({ error: "Message is required" });
       }
+
+      // Lazy-init OpenAI client (only needed when chatbot is called)
+      const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
 
       // Build system prompt with platform context
       const systemPrompt = `You are NxtWave Assistant, an AI helper for India's premier talent marketplace connecting companies with top 10% freshers.
