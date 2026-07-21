@@ -851,25 +851,60 @@ vercel --prod
 
 ---
 
+## Immediate Fix: Vercel API Not Working (4 Changes)
+
+### Problem
+Login fails with "Something went wrong" because the 40+ API routes in `server/routes.ts` are NOT deployed to Vercel. The `api/index.ts` is just a skeleton.
+
+### Root Causes & Fixes
+
+#### Fix 1: `server/db.ts` — Neon HTTP driver on Vercel
+- **Problem:** Uses `ws` WebSocket pool — doesn't work in Vercel serverless
+- **Fix:** Detect `VERCEL` env var → use `neon()` HTTP driver instead of `Pool` WebSocket
+- **Keep:** WebSocket driver for local dev
+
+#### Fix 2: `server/hubspot.ts` — Direct API instead of Replit SDK
+- **Problem:** Uses `@replit/connectors-sdk` — Replit-only package
+- **Fix:** Replace with direct `fetch()` to `https://api.hubapi.com` using `HUBSPOT_API_KEY` Bearer token
+- **Same API calls:** upsertContact, upsertCompany, associateContactWithCompany, createDeal
+
+#### Fix 3: `server/replitAuth.ts` — Cookie sessions on Vercel
+- **Problem:** `connect-pg-simple` creates a `pg.Pool` (WebSocket) internally
+- **Fix:** Detect Vercel → use signed cookie session (no DB pool needed)
+- **Keep:** DB-backed session for local dev
+
+#### Fix 4: `server/routes.ts` — Database-backed OTP
+- **Problem:** In-memory `Map<string, OtpEntry>` is lost between serverless cold starts
+- **Fix:** Use existing `otp_codes` table instead of in-memory Map
+- **Same flow:** generate OTP → store in DB → verify → delete
+
+### Build Config
+- Change build to output `server/index.ts` → `api/index.js` (not `dist/index.js`)
+- Update `vercel.json` to point functions at `api/index.js`
+- Include `dist/public/**` for static files
+
+### Verification
+After fixes:
+1. `curl https://nxtwave-edge-gamma.vercel.app/api/health` → should return JSON
+2. Login with `sagar.mood@nxtwave.co.in` → should receive OTP email
+3. Browse students → should show 327 candidates
+4. Create job → should work
+
+---
+
 ## Pending Items
 
-### Must Complete First
-- [ ] Refactor React → Next.js (single Vercel deployment)
-- [ ] Set up Vercel project
-- [ ] Configure environment variables on Vercel
-- [ ] Test deployment
-
-### Phase 1: MVP Features
+### Phase 1: MVP Features (Hiring Workflow)
 - [ ] Database schema (4 new tables: jobs, candidate_shares, company_interest, notifications)
-- [ ] Admin dashboard (Akanksha)
-- [ ] Company portal (recruiter)
-- [ ] Email system (SendGrid)
-- [ ] Notification system
+- [ ] Admin dashboard (Akanksha) — manage jobs, import candidates, send to companies
+- [ ] Company portal (recruiter) — dynamic URL, view profiles, mark interest
+- [ ] Email system — shortlist email with dynamic link, interest notifications
+- [ ] Notification system — in-app bell + email alerts
 
 ### Phase 2: Enhanced Features
 - [ ] CSV export
 - [ ] Student expectations capture
-- [ ] Pipeline kanban board
+- [ ] Pipeline kanban board (drag-and-drop)
 - [ ] HubSpot sync enhancement
 
 ### Phase 3: Advanced Features
