@@ -334,7 +334,7 @@ export default function BrowseStudents() {
           {/* Limited Access Banner */}
           {!isAuthenticated && (
             <div className="mb-4 bg-blue-600 rounded-xl p-4 flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-wrap">
                 <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
                   <Lock className="w-4 h-4 text-white" />
                 </div>

@@ -9,8 +9,7 @@ export default function AppShell({ children }: AppShellProps) {
     <div className="min-h-screen bg-[#F8FAFC]" style={{ display: "flex" }}>
       <AppSidebar />
       <main
-        className="flex-1 min-h-screen overflow-x-hidden transition-all duration-300"
-        style={{ marginLeft: "var(--sidebar-w, 220px)" }}
+        className="flex-1 min-h-screen overflow-x-hidden transition-all duration-300 sidebar-margin"
       >
         {children}
       </main>

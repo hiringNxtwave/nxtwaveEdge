@@ -4,7 +4,7 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { db } from "./db";
 import { otpCodes } from "@shared/schema";
 import { eq, and, gt, desc } from "drizzle-orm";
-import OpenAI from 'openai';
+import MistralClient from '@mistralai/mistralai';
 import multer from 'multer';
 import { upsertContact, upsertCompany, associateContactWithCompany, createDeal } from "./hubspot";
 import { 
@@ -1733,9 +1733,9 @@ export async function registerRoutes(app: Express): Promise<void> {
         return res.status(400).json({ error: "Message is required" });
       }
 
-      // Lazy-init OpenAI client (only needed when chatbot is called)
-      const openai = new OpenAI({
-        apiKey: process.env.OPENAI_API_KEY,
+      // Lazy-init Mistral client (only needed when chatbot is called)
+      const mistral = new MistralClient({
+        apiKey: process.env.MISTRAL_API_KEY,
       });
 
       // Build system prompt with platform context
@@ -1766,13 +1766,13 @@ Context: ${context ? JSON.stringify(context) : 'General platform assistance'}
 
 Be helpful, professional, and focus on recruitment and talent discovery assistance.`;
 
-      const completion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+      const completion = await mistral.chat({
+        model: "mistral-small-latest",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: message }
         ],
-        max_tokens: 500,
+        maxTokens: 500,
         temperature: 0.7,
       });
 

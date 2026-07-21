@@ -70,7 +70,7 @@ export default function ShortlistedCandidates() {
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Page Header */}
       <div className="bg-white border-b border-slate-100 px-6 py-5">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div>
             <h1 className="text-xl font-bold text-slate-900">Shortlisted Candidates</h1>
             <p className="text-sm text-slate-500 mt-0.5">

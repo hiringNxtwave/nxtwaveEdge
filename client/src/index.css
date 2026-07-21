@@ -20,6 +20,17 @@ textarea::placeholder {
   animation-play-state: paused;
 }
 
+@layer utilities {
+  .sidebar-margin {
+    margin-left: var(--sidebar-w, 220px);
+  }
+  @media (max-width: 767px) {
+    .sidebar-margin {
+      margin-left: 0;
+    }
+  }
+}
+
 :root {
   /* Apple/Microsoft Inspired Minimal Palette */
   --background: hsl(0, 0%, 98%);

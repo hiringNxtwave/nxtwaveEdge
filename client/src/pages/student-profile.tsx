@@ -67,8 +67,8 @@ export default function StudentProfile() {
           <Skeleton className="h-6 w-40" />
         </div>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-          <div className="flex gap-6">
-            <Skeleton className="h-[560px] w-72 rounded-2xl flex-shrink-0" />
+          <div className="flex flex-col md:flex-row gap-6">
+            <Skeleton className="h-[560px] w-full md:w-72 rounded-2xl flex-shrink-0" />
             <Skeleton className="h-[560px] flex-1 rounded-2xl" />
           </div>
         </div>

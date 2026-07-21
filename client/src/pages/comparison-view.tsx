@@ -282,8 +282,8 @@ export default function ComparisonView() {
             {analyzedStudents.map((analysis: any, index: number) => (
               <Card key={analysis.student.id} className="overflow-hidden">
                 <CardHeader className="bg-slate-50">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+                  <div className="flex flex-wrap items-center justify-between">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                       <div className="flex items-center gap-3">
                         <span className="text-2xl font-bold text-gray-500">#{index + 1}</span>
                         <div className="flex items-center gap-2">
@@ -319,7 +319,7 @@ export default function ComparisonView() {
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                       <div className="text-right">
                         <div className="text-3xl font-bold text-purple-600">{analysis.matchPercentage}%</div>
                         <div className="text-sm text-gray-600">JD Match</div>

@@ -163,10 +163,10 @@ export default function TalentDashboard() {
                   <Search className="w-5 h-5 text-blue-600" />
                   Talent Discovery
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                   <Link href="/shortlisting">
                     <Button 
-                      className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700"
+                      className="flex items-center gap-2 bg-purple-600 hover:bg-purple-700 w-full sm:w-auto"
                       data-testid="button-go-to-shortlisting"
                     >
                       <CheckCircle className="w-4 h-4" />
@@ -180,7 +180,7 @@ export default function TalentDashboard() {
                   </Link>
                   <Button 
                     onClick={() => setShowAdvancedFilters(true)}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
                     data-testid="button-open-advanced-filters"
                   >
                     <Filter className="w-4 h-4" />

@@ -250,7 +250,7 @@ export default function ExploreEdge() {
 
                 return (
                   <div key={stage.num} className="relative flex items-center">
-                    <div className="w-[calc(50%-32px)] pr-8">
+                    <div className="w-full md:w-[calc(50%-32px)] pr-8">
                       {isLeft && <Card />}
                     </div>
                     <div className="relative z-10 w-16 h-16 flex items-center justify-center shrink-0">
@@ -262,7 +262,7 @@ export default function ExploreEdge() {
                         {stage.num}
                       </div>
                     </div>
-                    <div className="w-[calc(50%-32px)] pl-8">
+                    <div className="w-full md:w-[calc(50%-32px)] pl-8">
                       {!isLeft && <Card />}
                     </div>
                   </div>
@@ -271,13 +271,13 @@ export default function ExploreEdge() {
 
               {/* Final stage connector dot */}
               <div className="relative flex items-center">
-                <div className="w-[calc(50%-32px)]" />
+                <div className="w-full md:w-[calc(50%-32px)]" />
                 <div className="relative z-10 w-16 h-16 flex items-center justify-center shrink-0">
                   <div className="w-10 h-10 rounded-full flex items-center justify-center bg-blue-600 shadow-md">
                     <CheckCircle className="w-5 h-5 text-white" />
                   </div>
                 </div>
-                <div className="w-[calc(50%-32px)]" />
+                <div className="w-full md:w-[calc(50%-32px)]" />
               </div>
             </div>
           </div>

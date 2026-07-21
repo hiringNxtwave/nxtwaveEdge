@@ -49,20 +49,20 @@ function RecruiterDashboard({ user, shortlistCount }: { user: any; shortlistCoun
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Lean page header */}
       <div className="bg-white border-b border-slate-100 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <div>
             <p className="text-xs text-slate-400 font-medium mb-0.5">Welcome back</p>
             <h1 className="text-xl font-bold text-slate-900" data-testid="text-welcome">{displayName}</h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <Link href="/company-profile">
-              <Button variant="outline" size="sm" className="border-slate-200 text-slate-600 text-sm">
+              <Button variant="outline" size="sm" className="border-slate-200 text-slate-600 text-sm w-full sm:w-auto">
                 <Briefcase className="w-3.5 h-3.5 mr-1.5" />
                 Post a Job
               </Button>
             </Link>
             <Link href="/browse">
-              <Button size="sm" className="bg-slate-900 hover:bg-slate-800 text-white text-sm" data-testid="card-browse-candidates">
+              <Button size="sm" className="bg-slate-900 hover:bg-slate-800 text-white text-sm w-full sm:w-auto" data-testid="card-browse-candidates">
                 <Search className="w-3.5 h-3.5 mr-1.5" />
                 Browse Talent
               </Button>

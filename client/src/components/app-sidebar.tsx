@@ -12,6 +12,8 @@ import {
   User,
   LogOut,
   Mail,
+  Menu,
+  X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -35,6 +37,7 @@ export default function AppSidebar() {
   const { toast } = useToast();
   const [contactSending, setContactSending] = useState(false);
   const [contactSent, setContactSent] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleContactUs = useCallback(async () => {
     if (contactSending || contactSent) return;
@@ -80,13 +83,8 @@ export default function AppSidebar() {
     ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`.trim()
     : user?.email?.split("@")[0] || "User";
 
-  return (
-    <aside
-      className={cn(
-        "fixed left-0 top-0 h-screen z-40 flex flex-col bg-slate-950 border-r border-slate-800/80 transition-all duration-300 ease-in-out shadow-xl shadow-black/10",
-        collapsed ? "w-[68px]" : "w-[220px]"
-      )}
-    >
+  const sidebarContent = (
+    <>
       {/* Logo + Collapse toggle */}
       <div
         className={cn(
@@ -244,6 +242,56 @@ export default function AppSidebar() {
         </DropdownMenu>
 
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile hamburger button */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="fixed top-3 left-3 z-50 md:hidden p-2 rounded-lg bg-slate-900 text-white shadow-lg hover:bg-slate-800 transition-colors"
+        aria-label="Open menu"
+      >
+        <Menu className="w-5 h-5" />
+      </button>
+
+      {/* Mobile overlay backdrop */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "fixed left-0 top-0 h-screen z-40 flex flex-col bg-slate-950 border-r border-slate-800/80 transition-all duration-300 ease-in-out shadow-xl shadow-black/10",
+          collapsed ? "w-[68px]" : "w-[220px]",
+          "hidden md:flex"
+        )}
+      >
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile sidebar overlay */}
+      <aside
+        className={cn(
+          "fixed left-0 top-0 h-screen z-50 flex flex-col bg-slate-950 border-r border-slate-800/80 transition-all duration-300 ease-in-out shadow-xl shadow-black/10 md:hidden",
+          collapsed ? "w-[68px]" : "w-[220px]",
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="absolute top-3 right-3 p-1 rounded-md text-slate-500 hover:text-slate-300 hover:bg-slate-800/70 transition-colors z-10"
+          aria-label="Close menu"
+        >
+          <X className="w-4 h-4" />
+        </button>
+        {sidebarContent}
+      </aside>
+    </>
   );
 }
