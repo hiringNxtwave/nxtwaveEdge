@@ -12,22 +12,93 @@
             align-items: center;
             min-height: 100vh;
             background: #f1f5f9;
+            font-family: Inter, system-ui, sans-serif;
         }
         .wrapper {
             width: 100%;
             max-width: 1400px;
             padding: 20px;
         }
+        .svg-container {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f1f5f9;
+        }
+        .svg-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .svg-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .svg-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .svg-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
         svg {
             width: 100%;
+            min-width: 1200px;
             height: auto;
             display: block;
+        }
+        .mobile-note {
+            display: none;
+            text-align: center;
+            padding: 12px;
+            margin-bottom: 16px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            color: #1e40af;
+            font-size: 13px;
+        }
+        .mobile-note svg {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        @media (max-width: 768px) {
+            body {
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+            .wrapper {
+                padding: 12px;
+            }
+            .mobile-note {
+                display: block;
+            }
+            svg {
+                min-width: 1200px;
+            }
+        }
+        @media (max-width: 480px) {
+            .wrapper {
+                padding: 8px;
+            }
+            .mobile-note {
+                font-size: 12px;
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
 <div class="wrapper">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 950" font-family="Inter, system-ui, sans-serif">
+    <div class="mobile-note">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        Best viewed on desktop. Scroll horizontally to see full diagram.
+    </div>
+    <div class="svg-container">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1000" font-family="Inter, system-ui, sans-serif">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#f8fafc"/>
@@ -42,7 +113,7 @@
   </defs>
 
   <!-- Background -->
-  <rect width="1400" height="950" fill="url(#bg)"/>
+  <rect width="1400" height="1000" fill="url(#bg)"/>
 
   <!-- Title -->
   <text x="700" y="55" text-anchor="middle" font-size="26" font-weight="800" fill="#1e293b">NxtWave EDGE — Automated Hiring Flow</text>
@@ -146,295 +217,296 @@
   </g>
 
   <!-- ==================== ROW 1.5: AFTER EMAIL — COMPANY PORTAL ==================== -->
-  <text x="40" y="280" font-size="13" font-weight="700" fill="#475569" letter-spacing="1">AFTER EMAIL — COMPANY PORTAL</text>
+  <text x="40" y="310" font-size="13" font-weight="700" fill="#475569" letter-spacing="1">AFTER EMAIL — COMPANY PORTAL</text>
 
   <!-- Step 7 -->
   <g filter="url(#shadow)">
-    <rect x="40" y="293" width="190" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-    <rect x="40" y="293" width="190" height="30" rx="12" fill="#2563eb"/>
-    <rect x="40" y="311" width="190" height="12" fill="#2563eb"/>
-    <text x="135" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">NxtWave SYSTEM</text>
-    <circle cx="80" cy="343" r="13" fill="#2563eb"/>
-    <text x="80" y="347" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">7</text>
-    <text x="100" y="347" font-size="11.5" font-weight="700" fill="#1e40af">Email Sent</text>
-    <text x="135" y="367" font-size="9.5" fill="#2563eb" text-anchor="middle">System sends branded</text>
-    <text x="135" y="381" font-size="9.5" fill="#2563eb" text-anchor="middle">email with dynamic link</text>
-    <text x="135" y="401" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">Unique token per company</text>
+    <rect x="40" y="323" width="190" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+    <rect x="40" y="323" width="190" height="30" rx="12" fill="#2563eb"/>
+    <rect x="40" y="341" width="190" height="12" fill="#2563eb"/>
+    <text x="135" y="343" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">NxtWave SYSTEM</text>
+    <circle cx="80" cy="373" r="13" fill="#2563eb"/>
+    <text x="80" y="377" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">7</text>
+    <text x="100" y="377" font-size="11.5" font-weight="700" fill="#1e40af">Email Sent</text>
+    <text x="135" y="397" font-size="9.5" fill="#2563eb" text-anchor="middle">System sends branded</text>
+    <text x="135" y="411" font-size="9.5" fill="#2563eb" text-anchor="middle">email with dynamic link</text>
+    <text x="135" y="431" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">Unique token per company</text>
   </g>
 
-  <line x1="230" y1="360" x2="268" y2="360" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="230" y1="390" x2="268" y2="390" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- Step 8 -->
   <g filter="url(#shadow)">
-    <rect x="272" y="293" width="190" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-    <rect x="272" y="293" width="190" height="30" rx="12" fill="#2563eb"/>
-    <rect x="272" y="311" width="190" height="12" fill="#2563eb"/>
-    <text x="367" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">COMPANY</text>
-    <circle cx="312" cy="343" r="13" fill="#2563eb"/>
-    <text x="312" y="347" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">8</text>
-    <text x="332" y="347" font-size="11.5" font-weight="700" fill="#1e40af">Company Logs In</text>
-    <text x="367" y="367" font-size="9.5" fill="#2563eb" text-anchor="middle">Corporate email +</text>
-    <text x="367" y="381" font-size="9.5" fill="#2563eb" text-anchor="middle">OTP authentication</text>
-    <text x="367" y="401" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">Secure access</text>
+    <rect x="272" y="323" width="190" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+    <rect x="272" y="323" width="190" height="30" rx="12" fill="#2563eb"/>
+    <rect x="272" y="341" width="190" height="12" fill="#2563eb"/>
+    <text x="367" y="343" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">COMPANY</text>
+    <circle cx="312" cy="373" r="13" fill="#2563eb"/>
+    <text x="312" y="377" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">8</text>
+    <text x="332" y="377" font-size="11.5" font-weight="700" fill="#1e40af">Company Logs In</text>
+    <text x="367" y="397" font-size="9.5" fill="#2563eb" text-anchor="middle">Corporate email +</text>
+    <text x="367" y="411" font-size="9.5" fill="#2563eb" text-anchor="middle">OTP authentication</text>
+    <text x="367" y="431" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">Secure access</text>
   </g>
 
-  <line x1="462" y1="360" x2="500" y2="360" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="462" y1="390" x2="500" y2="390" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- Step 9 -->
   <g filter="url(#shadow)">
-    <rect x="504" y="293" width="190" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-    <rect x="504" y="293" width="190" height="30" rx="12" fill="#2563eb"/>
-    <rect x="504" y="311" width="190" height="12" fill="#2563eb"/>
-    <text x="599" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">COMPANY</text>
-    <circle cx="544" cy="343" r="13" fill="#2563eb"/>
-    <text x="544" y="347" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">9</text>
-    <text x="564" y="347" font-size="11.5" font-weight="700" fill="#1e40af">Views Profiles</text>
-    <text x="599" y="367" font-size="9.5" fill="#2563eb" text-anchor="middle">Pre-filtered candidates</text>
-    <text x="599" y="381" font-size="9.5" fill="#2563eb" text-anchor="middle">based on job requirements</text>
-    <text x="599" y="401" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">Skills + CGPA + Tier</text>
+    <rect x="504" y="323" width="190" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+    <rect x="504" y="323" width="190" height="30" rx="12" fill="#2563eb"/>
+    <rect x="504" y="341" width="190" height="12" fill="#2563eb"/>
+    <text x="599" y="343" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">COMPANY</text>
+    <circle cx="544" cy="373" r="13" fill="#2563eb"/>
+    <text x="544" y="377" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">9</text>
+    <text x="564" y="377" font-size="11.5" font-weight="700" fill="#1e40af">Views Profiles</text>
+    <text x="599" y="397" font-size="9.5" fill="#2563eb" text-anchor="middle">Pre-filtered candidates</text>
+    <text x="599" y="411" font-size="9.5" fill="#2563eb" text-anchor="middle">based on job requirements</text>
+    <text x="599" y="431" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">Skills + CGPA + Tier</text>
   </g>
 
-  <line x1="694" y1="360" x2="732" y2="360" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="694" y1="390" x2="732" y2="390" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- Step 10 -->
   <g filter="url(#shadow)">
-    <rect x="736" y="293" width="190" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-    <rect x="736" y="293" width="190" height="30" rx="12" fill="#2563eb"/>
-    <rect x="736" y="311" width="190" height="12" fill="#2563eb"/>
-    <text x="831" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">COMPANY</text>
-    <circle cx="776" cy="343" r="13" fill="#2563eb"/>
-    <text x="776" y="347" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">10</text>
-    <text x="796" y="347" font-size="11.5" font-weight="700" fill="#1e40af">Clicks Interested</text>
-    <text x="831" y="367" font-size="9.5" fill="#2563eb" text-anchor="middle">Mark interest on</text>
-    <text x="831" y="381" font-size="9.5" fill="#2563eb" text-anchor="middle">specific candidates</text>
-    <text x="831" y="401" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">One-click action</text>
+    <rect x="736" y="323" width="190" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+    <rect x="736" y="323" width="190" height="30" rx="12" fill="#2563eb"/>
+    <rect x="736" y="341" width="190" height="12" fill="#2563eb"/>
+    <text x="831" y="343" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">COMPANY</text>
+    <circle cx="776" cy="373" r="13" fill="#2563eb"/>
+    <text x="776" y="377" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">10</text>
+    <text x="796" y="377" font-size="11.5" font-weight="700" fill="#1e40af">Clicks Interested</text>
+    <text x="831" y="397" font-size="9.5" fill="#2563eb" text-anchor="middle">Mark interest on</text>
+    <text x="831" y="411" font-size="9.5" fill="#2563eb" text-anchor="middle">specific candidates</text>
+    <text x="831" y="431" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">One-click action</text>
   </g>
 
-  <line x1="926" y1="360" x2="964" y2="360" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="926" y1="390" x2="964" y2="390" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- Step 11 -->
   <g filter="url(#shadow)">
-    <rect x="968" y="293" width="190" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-    <rect x="968" y="293" width="190" height="30" rx="12" fill="#2563eb"/>
-    <rect x="968" y="311" width="190" height="12" fill="#2563eb"/>
-    <text x="1063" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">NxtWave SYSTEM</text>
-    <circle cx="1008" cy="343" r="13" fill="#2563eb"/>
-    <text x="1008" y="347" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">11</text>
-    <text x="1028" y="347" font-size="11.5" font-weight="700" fill="#1e40af">NxtWave Notified</text>
-    <text x="1063" y="367" font-size="9.5" fill="#2563eb" text-anchor="middle">Email + in-app</text>
-    <text x="1063" y="381" font-size="9.5" fill="#2563eb" text-anchor="middle">notifications sent</text>
-    <text x="1063" y="401" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">Real-time alerts</text>
+    <rect x="968" y="323" width="190" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+    <rect x="968" y="323" width="190" height="30" rx="12" fill="#2563eb"/>
+    <rect x="968" y="341" width="190" height="12" fill="#2563eb"/>
+    <text x="1063" y="343" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">NxtWave SYSTEM</text>
+    <circle cx="1008" cy="373" r="13" fill="#2563eb"/>
+    <text x="1008" y="377" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">11</text>
+    <text x="1028" y="377" font-size="11.5" font-weight="700" fill="#1e40af">NxtWave Notified</text>
+    <text x="1063" y="397" font-size="9.5" fill="#2563eb" text-anchor="middle">Email + in-app</text>
+    <text x="1063" y="411" font-size="9.5" fill="#2563eb" text-anchor="middle">notifications sent</text>
+    <text x="1063" y="431" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">Real-time alerts</text>
   </g>
 
-  <line x1="1158" y1="360" x2="1196" y2="360" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="1158" y1="390" x2="1196" y2="390" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow)"/>
 
   <!-- Step 12 -->
   <g filter="url(#shadow)">
-    <rect x="1200" y="293" width="165" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-    <rect x="1200" y="293" width="165" height="30" rx="12" fill="#2563eb"/>
-    <rect x="1200" y="311" width="165" height="12" fill="#2563eb"/>
-    <text x="1282" y="313" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">BOTH SIDES</text>
-    <circle cx="1235" cy="343" r="13" fill="#2563eb"/>
-    <text x="1235" y="347" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">12</text>
-    <text x="1255" y="347" font-size="11.5" font-weight="700" fill="#1e40af">Pipeline Updates</text>
-    <text x="1282" y="367" font-size="9.5" fill="#2563eb" text-anchor="middle">Auto-update hiring</text>
-    <text x="1282" y="381" font-size="9.5" fill="#2563eb" text-anchor="middle">pipeline stages</text>
-    <text x="1282" y="401" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">Full visibility</text>
+    <rect x="1200" y="323" width="165" height="135" rx="12" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+    <rect x="1200" y="323" width="165" height="30" rx="12" fill="#2563eb"/>
+    <rect x="1200" y="341" width="165" height="12" fill="#2563eb"/>
+    <text x="1282" y="343" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" letter-spacing="0.5">BOTH SIDES</text>
+    <circle cx="1235" cy="373" r="13" fill="#2563eb"/>
+    <text x="1235" y="377" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">12</text>
+    <text x="1255" y="377" font-size="11.5" font-weight="700" fill="#1e40af">Pipeline Updates</text>
+    <text x="1282" y="397" font-size="9.5" fill="#2563eb" text-anchor="middle">Auto-update hiring</text>
+    <text x="1282" y="411" font-size="9.5" fill="#2563eb" text-anchor="middle">pipeline stages</text>
+    <text x="1282" y="431" font-size="8.5" fill="#3b82f6" text-anchor="middle" font-weight="500">Full visibility</text>
   </g>
 
   <!-- ==================== ROW 2: SCREENS ==================== -->
-  <text x="40" y="445" font-size="13" font-weight="700" fill="#475569" letter-spacing="1">SCREENS</text>
-  <line x1="40" y1="453" x2="1360" y2="453" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="40" y="475" font-size="13" font-weight="700" fill="#475569" letter-spacing="1">SCREENS</text>
+  <line x1="40" y1="483" x2="1360" y2="483" stroke="#e2e8f0" stroke-width="1"/>
 
   <!-- Screen 1: Admin Import -->
   <g filter="url(#shadow)">
-    <rect x="40" y="470" width="310" height="250" rx="10" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
-    <rect x="40" y="470" width="310" height="28" rx="10" fill="#fef3c7"/>
-    <rect x="40" y="486" width="310" height="12" fill="#fef3c7"/>
-    <text x="195" y="489" text-anchor="middle" font-size="10" font-weight="600" fill="#92400e">Admin — Import Shortlisted</text>
-    <circle cx="326" cy="484" r="4" fill="#fca5a5"/>
-    <circle cx="338" cy="484" r="4" fill="#fde68a"/>
-    <circle cx="350" cy="484" r="4" fill="#86efac"/>
+    <rect x="40" y="500" width="310" height="250" rx="10" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+    <rect x="40" y="500" width="310" height="28" rx="10" fill="#fef3c7"/>
+    <rect x="40" y="516" width="310" height="12" fill="#fef3c7"/>
+    <text x="195" y="519" text-anchor="middle" font-size="10" font-weight="600" fill="#92400e">Admin — Import Shortlisted</text>
+    <circle cx="326" cy="514" r="4" fill="#fca5a5"/>
+    <circle cx="338" cy="514" r="4" fill="#fde68a"/>
+    <circle cx="350" cy="514" r="4" fill="#86efac"/>
 
-    <text x="60" y="523" font-size="9" fill="#6b7280" font-weight="500">Company</text>
-    <rect x="60" y="528" width="270" height="22" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.8"/>
-    <text x="70" y="543" font-size="9.5" fill="#374151">Sprint Enterprises</text>
+    <text x="60" y="553" font-size="9" fill="#6b7280" font-weight="500">Company</text>
+    <rect x="60" y="558" width="270" height="22" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.8"/>
+    <text x="70" y="573" font-size="9.5" fill="#374151">Sprint Enterprises</text>
 
-    <text x="60" y="567" font-size="9" fill="#6b7280" font-weight="500">Job Requirement</text>
-    <rect x="60" y="572" width="270" height="22" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.8"/>
-    <text x="70" y="587" font-size="9.5" fill="#374151">Full Stack Developer — Bangalore</text>
+    <text x="60" y="597" font-size="9" fill="#6b7280" font-weight="500">Job Requirement</text>
+    <rect x="60" y="602" width="270" height="22" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.8"/>
+    <text x="70" y="617" font-size="9.5" fill="#374151">Full Stack Developer — Bangalore</text>
 
-    <rect x="60" y="605" width="270" height="50" rx="8" fill="#fafafa" stroke="#d1d5db" stroke-width="1" stroke-dasharray="4,3"/>
-    <text x="195" y="627" text-anchor="middle" font-size="9.5" fill="#2563eb" font-weight="600">Click to upload or drag</text>
-    <text x="195" y="641" text-anchor="middle" font-size="8.5" fill="#9ca3af">.xlsx, .csv supported</text>
+    <rect x="60" y="635" width="270" height="50" rx="8" fill="#fafafa" stroke="#d1d5db" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="195" y="657" text-anchor="middle" font-size="9.5" fill="#2563eb" font-weight="600">Click to upload or drag</text>
+    <text x="195" y="671" text-anchor="middle" font-size="8.5" fill="#9ca3af">.xlsx, .csv supported</text>
 
-    <rect x="60" y="667" width="90" height="24" rx="6" fill="#2563eb"/>
-    <text x="105" y="683" text-anchor="middle" font-size="9" font-weight="600" fill="#fff">Upload &amp; Match</text>
+    <rect x="60" y="697" width="90" height="24" rx="6" fill="#2563eb"/>
+    <text x="105" y="713" text-anchor="middle" font-size="9" font-weight="600" fill="#fff">Upload &amp; Match</text>
   </g>
 
   <!-- Screen 2: Admin Curated Pool -->
   <g filter="url(#shadow)">
-    <rect x="375" y="470" width="310" height="250" rx="10" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
-    <rect x="375" y="470" width="310" height="28" rx="10" fill="#fef3c7"/>
-    <rect x="375" y="486" width="310" height="12" fill="#fef3c7"/>
-    <text x="530" y="489" text-anchor="middle" font-size="10" font-weight="600" fill="#92400e">Admin — Curated Candidates</text>
-    <circle cx="661" cy="484" r="4" fill="#fca5a5"/>
-    <circle cx="673" cy="484" r="4" fill="#fde68a"/>
-    <circle cx="685" cy="484" r="4" fill="#86efac"/>
+    <rect x="375" y="500" width="310" height="250" rx="10" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+    <rect x="375" y="500" width="310" height="28" rx="10" fill="#fef3c7"/>
+    <rect x="375" y="516" width="310" height="12" fill="#fef3c7"/>
+    <text x="530" y="519" text-anchor="middle" font-size="10" font-weight="600" fill="#92400e">Admin — Curated Candidates</text>
+    <circle cx="661" cy="514" r="4" fill="#fca5a5"/>
+    <circle cx="673" cy="514" r="4" fill="#fde68a"/>
+    <circle cx="685" cy="514" r="4" fill="#86efac"/>
 
-    <text x="395" y="523" font-size="10.5" font-weight="600" fill="#1e293b">12 Candidates Matched</text>
-    <rect x="590" y="512" width="78" height="18" rx="5" fill="#059669"/>
-    <text x="629" y="525" text-anchor="middle" font-size="8" font-weight="600" fill="#fff">Send</text>
+    <text x="395" y="553" font-size="10.5" font-weight="600" fill="#1e293b">12 Candidates Matched</text>
+    <rect x="590" y="542" width="78" height="18" rx="5" fill="#059669"/>
+    <text x="629" y="555" text-anchor="middle" font-size="8" font-weight="600" fill="#fff">Send</text>
 
-    <rect x="390" y="535" width="280" height="34" rx="6" fill="#f9fafb" stroke="#f3f4f6" stroke-width="0.5"/>
-    <circle cx="412" cy="552" r="11" fill="#2563eb"/>
-    <text x="412" y="556" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">PS</text>
-    <text x="430" y="549" font-size="9" font-weight="600" fill="#1e293b">Priya Sharma</text>
-    <text x="430" y="561" font-size="7.5" fill="#6b7280">IIT Bombay</text>
-    <rect x="630" y="543" width="26" height="16" rx="8" fill="#dcfce7"/>
-    <text x="643" y="555" text-anchor="middle" font-size="7.5" font-weight="700" fill="#166534">92</text>
+    <rect x="390" y="565" width="280" height="34" rx="6" fill="#f9fafb" stroke="#f3f4f6" stroke-width="0.5"/>
+    <circle cx="412" cy="582" r="11" fill="#2563eb"/>
+    <text x="412" y="586" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">PS</text>
+    <text x="430" y="579" font-size="9" font-weight="600" fill="#1e293b">Priya Sharma</text>
+    <text x="430" y="591" font-size="7.5" fill="#6b7280">IIT Bombay</text>
+    <rect x="630" y="573" width="26" height="16" rx="8" fill="#dcfce7"/>
+    <text x="643" y="585" text-anchor="middle" font-size="7.5" font-weight="700" fill="#166534">92</text>
 
-    <rect x="390" y="575" width="280" height="34" rx="6" fill="#f9fafb" stroke="#f3f4f6" stroke-width="0.5"/>
-    <circle cx="412" cy="592" r="11" fill="#8b5cf6"/>
-    <text x="412" y="596" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">RK</text>
-    <text x="430" y="589" font-size="9" font-weight="600" fill="#1e293b">Rahul Kumar</text>
-    <text x="430" y="601" font-size="7.5" fill="#6b7280">NIT Trichy</text>
-    <rect x="630" y="583" width="26" height="16" rx="8" fill="#dcfce7"/>
-    <text x="643" y="595" text-anchor="middle" font-size="7.5" font-weight="700" fill="#166534">87</text>
+    <rect x="390" y="605" width="280" height="34" rx="6" fill="#f9fafb" stroke="#f3f4f6" stroke-width="0.5"/>
+    <circle cx="412" cy="622" r="11" fill="#8b5cf6"/>
+    <text x="412" y="626" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">RK</text>
+    <text x="430" y="619" font-size="9" font-weight="600" fill="#1e293b">Rahul Kumar</text>
+    <text x="430" y="631" font-size="7.5" fill="#6b7280">NIT Trichy</text>
+    <rect x="630" y="613" width="26" height="16" rx="8" fill="#dcfce7"/>
+    <text x="643" y="625" text-anchor="middle" font-size="7.5" font-weight="700" fill="#166534">87</text>
 
-    <rect x="390" y="615" width="280" height="34" rx="6" fill="#f9fafb" stroke="#f3f4f6" stroke-width="0.5"/>
-    <circle cx="412" cy="632" r="11" fill="#059669"/>
-    <text x="412" y="636" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">AP</text>
-    <text x="430" y="629" font-size="9" font-weight="600" fill="#1e293b">Ananya Patel</text>
-    <text x="430" y="641" font-size="7.5" fill="#6b7280">BITS Pilani</text>
-    <rect x="630" y="623" width="26" height="16" rx="8" fill="#fef9c3"/>
-    <text x="643" y="635" text-anchor="middle" font-size="7.5" font-weight="700" fill="#854d0e">78</text>
+    <rect x="390" y="645" width="280" height="34" rx="6" fill="#f9fafb" stroke="#f3f4f6" stroke-width="0.5"/>
+    <circle cx="412" cy="662" r="11" fill="#059669"/>
+    <text x="412" y="666" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">AP</text>
+    <text x="430" y="659" font-size="9" font-weight="600" fill="#1e293b">Ananya Patel</text>
+    <text x="430" y="671" font-size="7.5" fill="#6b7280">BITS Pilani</text>
+    <rect x="630" y="653" width="26" height="16" rx="8" fill="#fef9c3"/>
+    <text x="643" y="665" text-anchor="middle" font-size="7.5" font-weight="700" fill="#854d0e">78</text>
   </g>
 
   <!-- Screen 3: Recruiter Job Board -->
   <g filter="url(#shadow)">
-    <rect x="710" y="470" width="310" height="250" rx="10" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
-    <rect x="710" y="470" width="310" height="28" rx="10" fill="#eff6ff"/>
-    <rect x="710" y="486" width="310" height="12" fill="#eff6ff"/>
-    <text x="865" y="489" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">Recruiter — Job Board</text>
-    <circle cx="986" cy="484" r="4" fill="#fca5a5"/>
-    <circle cx="998" cy="484" r="4" fill="#fde68a"/>
-    <circle cx="1010" cy="484" r="4" fill="#86efac"/>
+    <rect x="710" y="500" width="310" height="250" rx="10" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+    <rect x="710" y="500" width="310" height="28" rx="10" fill="#eff6ff"/>
+    <rect x="710" y="516" width="310" height="12" fill="#eff6ff"/>
+    <text x="865" y="519" text-anchor="middle" font-size="10" font-weight="600" fill="#1e40af">Recruiter — Job Board</text>
+    <circle cx="986" cy="514" r="4" fill="#fca5a5"/>
+    <circle cx="998" cy="514" r="4" fill="#fde68a"/>
+    <circle cx="1010" cy="514" r="4" fill="#86efac"/>
 
-    <text x="730" y="523" font-size="10.5" font-weight="700" fill="#1e293b">Full Stack Developer</text>
-    <text x="730" y="537" font-size="8.5" fill="#6b7280">Sprint Enterprises</text>
+    <text x="730" y="553" font-size="10.5" font-weight="700" fill="#1e293b">Full Stack Developer</text>
+    <text x="730" y="567" font-size="8.5" fill="#6b7280">Sprint Enterprises</text>
 
-    <rect x="730" y="547" width="38" height="16" rx="8" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="0.5"/>
-    <text x="749" y="558" text-anchor="middle" font-size="7.5" fill="#6b7280">All</text>
-    <rect x="774" y="547" width="62" height="16" rx="8" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="0.5"/>
-    <text x="805" y="558" text-anchor="middle" font-size="7.5" fill="#6b7280">Strong (4)</text>
-    <rect x="842" y="547" width="50" height="16" rx="8" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="0.5"/>
-    <text x="867" y="558" text-anchor="middle" font-size="7.5" fill="#6b7280">Hire (6)</text>
+    <rect x="730" y="577" width="38" height="16" rx="8" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="0.5"/>
+    <text x="749" y="588" text-anchor="middle" font-size="7.5" fill="#6b7280">All</text>
+    <rect x="774" y="577" width="62" height="16" rx="8" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="0.5"/>
+    <text x="805" y="588" text-anchor="middle" font-size="7.5" fill="#6b7280">Strong (4)</text>
+    <rect x="842" y="577" width="50" height="16" rx="8" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="0.5"/>
+    <text x="867" y="588" text-anchor="middle" font-size="7.5" fill="#6b7280">Hire (6)</text>
 
-    <rect x="725" y="573" width="280" height="34" rx="6" fill="#f9fafb" stroke="#f3f4f6" stroke-width="0.5"/>
-    <circle cx="747" cy="590" r="11" fill="#2563eb"/>
-    <text x="747" y="594" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">PS</text>
-    <text x="765" y="587" font-size="9" font-weight="600" fill="#1e293b">Priya Sharma</text>
-    <text x="765" y="599" font-size="7.5" fill="#6b7280">Score 92</text>
-    <rect x="960" y="581" width="30" height="16" rx="5" fill="#2563eb"/>
-    <text x="975" y="592" text-anchor="middle" font-size="7" font-weight="600" fill="#fff">View</text>
+    <rect x="725" y="603" width="280" height="34" rx="6" fill="#f9fafb" stroke="#f3f4f6" stroke-width="0.5"/>
+    <circle cx="747" cy="620" r="11" fill="#2563eb"/>
+    <text x="747" y="624" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">PS</text>
+    <text x="765" y="617" font-size="9" font-weight="600" fill="#1e293b">Priya Sharma</text>
+    <text x="765" y="629" font-size="7.5" fill="#6b7280">Score 92</text>
+    <rect x="960" y="611" width="30" height="16" rx="5" fill="#2563eb"/>
+    <text x="975" y="622" text-anchor="middle" font-size="7" font-weight="600" fill="#fff">View</text>
 
-    <rect x="725" y="613" width="280" height="34" rx="6" fill="#f9fafb" stroke="#f3f4f6" stroke-width="0.5"/>
-    <circle cx="747" cy="630" r="11" fill="#8b5cf6"/>
-    <text x="747" y="634" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">RK</text>
-    <text x="765" y="627" font-size="9" font-weight="600" fill="#1e293b">Rahul Kumar</text>
-    <text x="765" y="639" font-size="7.5" fill="#6b7280">Score 87</text>
-    <rect x="960" y="621" width="30" height="16" rx="5" fill="#2563eb"/>
-    <text x="975" y="632" text-anchor="middle" font-size="7" font-weight="600" fill="#fff">View</text>
+    <rect x="725" y="643" width="280" height="34" rx="6" fill="#f9fafb" stroke="#f3f4f6" stroke-width="0.5"/>
+    <circle cx="747" cy="660" r="11" fill="#8b5cf6"/>
+    <text x="747" y="664" text-anchor="middle" font-size="7" font-weight="700" fill="#fff">RK</text>
+    <text x="765" y="657" font-size="9" font-weight="600" fill="#1e293b">Rahul Kumar</text>
+    <text x="765" y="669" font-size="7.5" fill="#6b7280">Score 87</text>
+    <rect x="960" y="651" width="30" height="16" rx="5" fill="#2563eb"/>
+    <text x="975" y="662" text-anchor="middle" font-size="7" font-weight="600" fill="#fff">View</text>
   </g>
 
   <!-- Screen 4: Pipeline Kanban -->
   <g filter="url(#shadow)">
-    <rect x="1045" y="470" width="320" height="250" rx="10" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
-    <rect x="1045" y="470" width="320" height="28" rx="10" fill="#ecfdf5"/>
-    <rect x="1045" y="486" width="320" height="12" fill="#ecfdf5"/>
-    <text x="1205" y="489" text-anchor="middle" font-size="10" font-weight="600" fill="#065f46">Hiring Pipeline — Kanban</text>
-    <circle cx="1341" cy="484" r="4" fill="#fca5a5"/>
-    <circle cx="1353" cy="484" r="4" fill="#fde68a"/>
-    <circle cx="1365" cy="484" r="4" fill="#86efac"/>
+    <rect x="1045" y="500" width="320" height="250" rx="10" fill="#fff" stroke="#e5e7eb" stroke-width="1"/>
+    <rect x="1045" y="500" width="320" height="28" rx="10" fill="#ecfdf5"/>
+    <rect x="1045" y="516" width="320" height="12" fill="#ecfdf5"/>
+    <text x="1205" y="519" text-anchor="middle" font-size="10" font-weight="600" fill="#065f46">Hiring Pipeline — Kanban</text>
+    <circle cx="1341" cy="514" r="4" fill="#fca5a5"/>
+    <circle cx="1353" cy="514" r="4" fill="#fde68a"/>
+    <circle cx="1365" cy="514" r="4" fill="#86efac"/>
 
     <!-- Sourced -->
-    <text x="1060" y="523" font-size="7.5" font-weight="700" fill="#6b7280" letter-spacing="0.5">SOURCED (12)</text>
-    <line x1="1060" y1="528" x2="1125" y2="528" stroke="#d1d5db" stroke-width="1.5"/>
-    <rect x="1056" y="535" width="70" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
-    <rect x="1056" y="535" width="3" height="30" rx="1" fill="#d1d5db"/>
-    <text x="1068" y="548" font-size="7" font-weight="600" fill="#1e293b">Priya S.</text>
-    <text x="1068" y="558" font-size="6.5" fill="#6b7280">Score 92</text>
-    <rect x="1056" y="571" width="70" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
-    <rect x="1056" y="571" width="3" height="30" rx="1" fill="#d1d5db"/>
-    <text x="1068" y="584" font-size="7" font-weight="600" fill="#1e293b">Rahul K.</text>
-    <text x="1068" y="594" font-size="6.5" fill="#6b7280">Score 87</text>
+    <text x="1060" y="553" font-size="7.5" font-weight="700" fill="#6b7280" letter-spacing="0.5">SOURCED (12)</text>
+    <line x1="1060" y1="558" x2="1125" y2="558" stroke="#d1d5db" stroke-width="1.5"/>
+    <rect x="1056" y="565" width="70" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
+    <rect x="1056" y="565" width="3" height="30" rx="1" fill="#d1d5db"/>
+    <text x="1068" y="578" font-size="7" font-weight="600" fill="#1e293b">Priya S.</text>
+    <text x="1068" y="588" font-size="6.5" fill="#6b7280">Score 92</text>
+    <rect x="1056" y="601" width="70" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
+    <rect x="1056" y="601" width="3" height="30" rx="1" fill="#d1d5db"/>
+    <text x="1068" y="614" font-size="7" font-weight="600" fill="#1e293b">Rahul K.</text>
+    <text x="1068" y="624" font-size="6.5" fill="#6b7280">Score 87</text>
 
     <!-- Screening -->
-    <text x="1135" y="523" font-size="7.5" font-weight="700" fill="#d97706" letter-spacing="0.5">SCREENING (3)</text>
-    <line x1="1135" y1="528" x2="1215" y2="528" stroke="#fcd34d" stroke-width="1.5"/>
-    <rect x="1131" y="535" width="75" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
-    <rect x="1131" y="535" width="3" height="30" rx="1" fill="#fcd34d"/>
-    <text x="1143" y="548" font-size="7" font-weight="600" fill="#1e293b">Vikram R.</text>
-    <text x="1143" y="558" font-size="6.5" fill="#6b7280">Score 81</text>
-    <rect x="1131" y="571" width="75" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
-    <rect x="1131" y="571" width="3" height="30" rx="1" fill="#fcd34d"/>
-    <text x="1143" y="584" font-size="7" font-weight="600" fill="#1e293b">Neha G.</text>
-    <text x="1143" y="594" font-size="6.5" fill="#6b7280">Score 79</text>
+    <text x="1135" y="553" font-size="7.5" font-weight="700" fill="#d97706" letter-spacing="0.5">SCREENING (3)</text>
+    <line x1="1135" y1="558" x2="1215" y2="558" stroke="#fcd34d" stroke-width="1.5"/>
+    <rect x="1131" y="565" width="75" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
+    <rect x="1131" y="565" width="3" height="30" rx="1" fill="#fcd34d"/>
+    <text x="1143" y="578" font-size="7" font-weight="600" fill="#1e293b">Vikram R.</text>
+    <text x="1143" y="588" font-size="6.5" fill="#6b7280">Score 81</text>
+    <rect x="1131" y="601" width="75" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
+    <rect x="1131" y="601" width="3" height="30" rx="1" fill="#fcd34d"/>
+    <text x="1143" y="614" font-size="7" font-weight="600" fill="#1e293b">Neha G.</text>
+    <text x="1143" y="624" font-size="6.5" fill="#6b7280">Score 79</text>
 
     <!-- Interview -->
-    <text x="1218" y="523" font-size="7.5" font-weight="700" fill="#2563eb" letter-spacing="0.5">INTERVIEW (2)</text>
-    <line x1="1218" y1="528" x2="1298" y2="528" stroke="#93c5fd" stroke-width="1.5"/>
-    <rect x="1214" y="535" width="75" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
-    <rect x="1214" y="535" width="3" height="30" rx="1" fill="#93c5fd"/>
-    <text x="1226" y="548" font-size="7" font-weight="600" fill="#1e293b">Arjun M.</text>
-    <text x="1226" y="558" font-size="6.5" fill="#6b7280">Round 2</text>
+    <text x="1218" y="553" font-size="7.5" font-weight="700" fill="#2563eb" letter-spacing="0.5">INTERVIEW (2)</text>
+    <line x1="1218" y1="558" x2="1298" y2="558" stroke="#93c5fd" stroke-width="1.5"/>
+    <rect x="1214" y="565" width="75" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
+    <rect x="1214" y="565" width="3" height="30" rx="1" fill="#93c5fd"/>
+    <text x="1226" y="578" font-size="7" font-weight="600" fill="#1e293b">Arjun M.</text>
+    <text x="1226" y="588" font-size="6.5" fill="#6b7280">Round 2</text>
 
     <!-- Offer -->
-    <text x="1300" y="523" font-size="7.5" font-weight="700" fill="#7c3aed" letter-spacing="0.5">OFFER (1)</text>
-    <line x1="1300" y1="528" x2="1358" y2="528" stroke="#c4b5fd" stroke-width="1.5"/>
-    <rect x="1296" y="535" width="62" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
-    <rect x="1296" y="535" width="3" height="30" rx="1" fill="#c4b5fd"/>
-    <text x="1308" y="548" font-size="7" font-weight="600" fill="#1e293b">Sneha I.</text>
-    <text x="1308" y="558" font-size="6.5" fill="#6b7280">10 LPA</text>
+    <text x="1300" y="553" font-size="7.5" font-weight="700" fill="#7c3aed" letter-spacing="0.5">OFFER (1)</text>
+    <line x1="1300" y1="558" x2="1358" y2="558" stroke="#c4b5fd" stroke-width="1.5"/>
+    <rect x="1296" y="565" width="62" height="30" rx="5" fill="#f9fafb" stroke="#e5e7eb" stroke-width="0.5"/>
+    <rect x="1296" y="565" width="3" height="30" rx="1" fill="#c4b5fd"/>
+    <text x="1308" y="578" font-size="7" font-weight="600" fill="#1e293b">Sneha I.</text>
+    <text x="1308" y="588" font-size="6.5" fill="#6b7280">10 LPA</text>
 
     <!-- Hired -->
-    <text x="1060" y="627" font-size="7.5" font-weight="700" fill="#059669" letter-spacing="0.5">HIRED (0)</text>
-    <line x1="1060" y1="632" x2="1125" y2="632" stroke="#6ee7b7" stroke-width="1.5"/>
+    <text x="1060" y="657" font-size="7.5" font-weight="700" fill="#059669" letter-spacing="0.5">HIRED (0)</text>
+    <line x1="1060" y1="662" x2="1125" y2="662" stroke="#6ee7b7" stroke-width="1.5"/>
   </g>
 
   <!-- Note: Job created after recruiter confirmation -->
   <g>
-    <rect x="40" y="745" width="1320" height="50" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
-    <text x="700" y="767" text-anchor="middle" font-size="11" font-weight="600" fill="#166534">Job is created after recruiter confirms hiring from NxtWave. Admin imports shortlisted candidates directly to that job.</text>
-    <text x="700" y="783" text-anchor="middle" font-size="9" fill="#15803d">Recruiter confirms → Job created → Admin imports shortlisted candidates → Admin sends to recruiter → Recruiter gets access</text>
+    <rect x="40" y="775" width="1320" height="50" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+    <text x="700" y="797" text-anchor="middle" font-size="11" font-weight="600" fill="#166534">Job is created after recruiter confirms hiring from NxtWave. Admin imports shortlisted candidates directly to that job.</text>
+    <text x="700" y="813" text-anchor="middle" font-size="9" fill="#15803d">Recruiter confirms → Job created → Admin imports shortlisted candidates → Admin sends to recruiter → Recruiter gets access</text>
   </g>
 
   <!-- ==================== ROW 3: ROLES ==================== -->
-  <text x="40" y="835" font-size="13" font-weight="700" fill="#475569" letter-spacing="1">ROLES &amp; PERMISSIONS</text>
-  <line x1="40" y1="843" x2="1360" y2="843" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="40" y="865" font-size="13" font-weight="700" fill="#475569" letter-spacing="1">ROLES &amp; PERMISSIONS</text>
+  <line x1="40" y1="873" x2="1360" y2="873" stroke="#e2e8f0" stroke-width="1"/>
 
   <!-- Admin -->
   <g filter="url(#shadow)">
-    <rect x="40" y="858" width="640" height="70" rx="10" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
-    <circle cx="65" cy="878" r="14" fill="#f59e0b"/>
-    <text x="65" y="883" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">A</text>
-    <text x="88" y="882" font-size="12" font-weight="700" fill="#92400e">Akanksha — Admin</text>
-    <text x="65" y="900" font-size="8.5" fill="#a16207">Import shortlisted sheets • Send candidates • Create recruiter accounts</text>
-    <text x="65" y="914" font-size="8.5" fill="#a16207">Manage pipeline • Update deal stages</text>
+    <rect x="40" y="888" width="640" height="70" rx="10" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+    <circle cx="65" cy="908" r="14" fill="#f59e0b"/>
+    <text x="65" y="913" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">A</text>
+    <text x="88" y="912" font-size="12" font-weight="700" fill="#92400e">Akanksha — Admin</text>
+    <text x="65" y="930" font-size="8.5" fill="#a16207">Import shortlisted sheets • Send candidates • Create recruiter accounts</text>
+    <text x="65" y="944" font-size="8.5" fill="#a16207">Manage pipeline • Update deal stages</text>
   </g>
 
   <!-- Recruiter -->
   <g filter="url(#shadow)">
-    <rect x="700" y="858" width="660" height="70" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
-    <circle cx="725" cy="878" r="14" fill="#2563eb"/>
-    <text x="725" y="883" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">R</text>
-    <text x="748" y="882" font-size="12" font-weight="700" fill="#1e40af">Recruiter — Company Account</text>
-    <text x="725" y="900" font-size="8.5" fill="#2563eb">View candidates • Move pipeline • Schedule interviews • Add notes</text>
-    <text x="725" y="914" font-size="8.5" fill="#2563eb">Compare side-by-side • Download reports • Track progress</text>
+    <rect x="700" y="888" width="660" height="70" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+    <circle cx="725" cy="908" r="14" fill="#2563eb"/>
+    <text x="725" y="913" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">R</text>
+    <text x="748" y="912" font-size="12" font-weight="700" fill="#1e40af">Recruiter — Company Account</text>
+    <text x="725" y="930" font-size="8.5" fill="#2563eb">View candidates • Move pipeline • Schedule interviews • Add notes</text>
+    <text x="725" y="944" font-size="8.5" fill="#2563eb">Compare side-by-side • Download reports • Track progress</text>
   </g>
 
 </svg>
+    </div>
 </div>
 </body>
 </html>
