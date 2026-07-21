@@ -92,14 +92,21 @@ app.use((req, res, next) => {
   next();
 });
 
-// Create HTTP server and start listening IMMEDIATELY so health checks pass
-// before the (potentially slow) route/seed initialisation completes.
+// For Vercel serverless: export the app without listening
+// For local development: listen on a port
+const isVercel = process.env.VERCEL === "true";
 const port = parseInt(process.env.PORT || "5000", 10);
-const server = http.createServer(app);
 
-server.listen(port, "0.0.0.0", () => {
-  log(`serving on port ${port}`);
-});
+if (!isVercel) {
+  // Local development: create HTTP server and start listening
+  const server = http.createServer(app);
+  server.listen(port, "0.0.0.0", () => {
+    log(`serving on port ${port}`);
+  });
+} else {
+  // Vercel: just log that we're running serverless
+  log("running in Vercel serverless mode");
+}
 
 // Async initialisation — runs after the server is already accepting requests
 (async () => {
@@ -164,3 +171,6 @@ function mountStatic(app: express.Express) {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
+
+// Export for Vercel serverless
+export default app;
