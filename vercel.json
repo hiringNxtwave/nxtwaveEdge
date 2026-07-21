@@ -4,8 +4,7 @@
   "outputDirectory": "dist/public",
   "installCommand": "npm install",
   "functions": {
-    "api/index.ts": {
-      "includeFiles": "dist/**",
+    "api/index.mjs": {
       "maxDuration": 30
     }
   },
