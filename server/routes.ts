@@ -6,7 +6,6 @@ import { otpCodes } from "@shared/schema";
 import { eq, and, gt, desc } from "drizzle-orm";
 import OpenAI from 'openai';
 import multer from 'multer';
-import { createRequire } from 'module';
 import { upsertContact, upsertCompany, associateContactWithCompany, createDeal } from "./hubspot";
 import { 
   insertCompanySchema,
@@ -17,8 +16,15 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 
-const _require = createRequire(import.meta.url);
-const pdfParse = _require('pdf-parse') as (buffer: Buffer) => Promise<{ text: string }>;
+// Lazy-loaded pdf-parse (avoids createRequire issues in ESM bundles)
+let _pdfParse: ((buffer: Buffer) => Promise<{ text: string }>) | null = null;
+async function getPdfParse() {
+  if (!_pdfParse) {
+    const mod = await import('pdf-parse');
+    _pdfParse = (mod as any).default || mod;
+  }
+  return _pdfParse;
+}
 
 export async function registerRoutes(app: Express): Promise<void> {
   // Configure multer for file uploads
@@ -882,7 +888,7 @@ export async function registerRoutes(app: Express): Promise<void> {
         jobDescription = req.file.buffer.toString('utf8');
       } else if (req.file.mimetype === 'application/pdf') {
         try {
-          const pdfData = await pdfParse(req.file.buffer);
+          const pdfData = await (await getPdfParse())(req.file.buffer);
           jobDescription = pdfData.text;
         } catch (pdfErr) {
           console.error("PDF parse error:", pdfErr);
