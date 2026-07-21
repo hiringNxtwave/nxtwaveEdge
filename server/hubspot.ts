@@ -1,9 +1,17 @@
-import { ReplitConnectors } from "@replit/connectors-sdk";
+// HubSpot CRM integration — direct API calls using HUBSPOT_API_KEY
 
-const connectors = new ReplitConnectors();
+const HUBSPOT_API_KEY = process.env.HUBSPOT_API_KEY;
+const HUBSPOT_BASE_URL = "https://api.hubapi.com";
 
-// Pre-configured fetch that routes through the Replit HubSpot proxy
-const hubFetch = connectors.createProxyFetch("hubspot");
+function getHeaders() {
+  if (!HUBSPOT_API_KEY) {
+    throw new Error("HUBSPOT_API_KEY environment variable is not set");
+  }
+  return {
+    Authorization: `Bearer ${HUBSPOT_API_KEY}`,
+    "Content-Type": "application/json",
+  };
+}
 
 async function hubspotRequest(
   path: string,
@@ -12,16 +20,19 @@ async function hubspotRequest(
 ): Promise<any> {
   const options: RequestInit = {
     method,
-    headers: { "Content-Type": "application/json" },
+    headers: getHeaders(),
   };
   if (body !== undefined) {
     options.body = JSON.stringify(body);
   }
-  const response = await hubFetch(path, options);
+
+  const response = await fetch(`${HUBSPOT_BASE_URL}${path}`, options);
+
   if (!response.ok) {
     const text = await response.text();
     throw new Error(`HubSpot API error ${response.status}: ${text}`);
   }
+
   if (response.status === 204) return {};
   return response.json();
 }
@@ -53,10 +64,14 @@ export async function upsertContact(
 
   if (searchResult.results && searchResult.results.length > 0) {
     const contactId = searchResult.results[0].id;
-    await hubspotRequest(`/crm/v3/objects/contacts/${contactId}`, "PATCH", { properties });
+    await hubspotRequest(`/crm/v3/objects/contacts/${contactId}`, "PATCH", {
+      properties,
+    });
     return contactId;
   } else {
-    const created = await hubspotRequest("/crm/v3/objects/contacts", "POST", { properties });
+    const created = await hubspotRequest("/crm/v3/objects/contacts", "POST", {
+      properties,
+    });
     return created.id;
   }
 }
@@ -81,10 +96,14 @@ export async function upsertCompany(
 
   if (searchResult.results && searchResult.results.length > 0) {
     const companyId = searchResult.results[0].id;
-    await hubspotRequest(`/crm/v3/objects/companies/${companyId}`, "PATCH", { properties });
+    await hubspotRequest(`/crm/v3/objects/companies/${companyId}`, "PATCH", {
+      properties,
+    });
     return companyId;
   } else {
-    const created = await hubspotRequest("/crm/v3/objects/companies", "POST", { properties });
+    const created = await hubspotRequest("/crm/v3/objects/companies", "POST", {
+      properties,
+    });
     return created.id;
   }
 }

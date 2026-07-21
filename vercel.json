@@ -5,13 +5,18 @@
   "installCommand": "npm install",
   "functions": {
     "api/index.ts": {
-      "includeFiles": "dist/index.js"
+      "includeFiles": "dist/**",
+      "maxDuration": 30
     }
   },
   "rewrites": [
     {
       "source": "/api/:path*",
       "destination": "/api"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
     }
   ],
   "headers": [

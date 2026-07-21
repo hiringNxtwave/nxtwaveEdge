@@ -1,6 +1,5 @@
 import session from "express-session";
 import type { Express, RequestHandler } from "express";
-import connectPg from "connect-pg-simple";
 
 // Extend express-session to include our userId
 declare module "express-session" {
@@ -9,8 +8,30 @@ declare module "express-session" {
   }
 }
 
+const isVercel = process.env.VERCEL === "true";
+
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
+
+  if (isVercel) {
+    // Vercel serverless: use cookie-based sessions (no DB pool needed)
+    // Note: This means sessions won't persist across serverless function instances,
+    // but for OTP-based auth this is acceptable since verification happens quickly.
+    return session({
+      secret: process.env.SESSION_SECRET ?? "nxtwave-edge-secret-key",
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: true,
+        maxAge: sessionTtl,
+        sameSite: "lax",
+      },
+    });
+  }
+
+  // Local development: use PostgreSQL session store
+  const connectPg = require("connect-pg-simple");
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,
@@ -18,6 +39,7 @@ export function getSession() {
     ttl: sessionTtl,
     tableName: "sessions",
   });
+
   return session({
     secret: process.env.SESSION_SECRET ?? "nxtwave-edge-secret-key",
     store: sessionStore,

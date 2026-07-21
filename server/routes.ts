@@ -1,6 +1,9 @@
 import type { Express } from "express";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { db } from "./db";
+import { otpCodes } from "@shared/schema";
+import { eq, and, gt, desc } from "drizzle-orm";
 import OpenAI from 'openai';
 import multer from 'multer';
 import { createRequire } from 'module';
@@ -95,22 +98,20 @@ export async function registerRoutes(app: Express): Promise<void> {
     return null;
   }
 
-  // ── In-memory OTP store ──────────────────────────────────────────────
-  interface OtpEntry {
-    otp: string;
-    name: string;
-    mobile: string;
-    expires: number;   // Unix ms
-    attempts: number;
-    lastSent: number;  // Unix ms — for resend throttle
-  }
-  const otpStore = new Map<string, OtpEntry>();
+  // ── Database-backed OTP store ──────────────────────────────────────────────
+  // Uses the otp_codes table for persistence across serverless cold starts
 
-  // Cleanup expired OTPs every 15 minutes
-  setInterval(() => {
-    const now = Date.now();
-    for (const [email, entry] of otpStore.entries()) {
-      if (entry.expires < now) otpStore.delete(email);
+  // Cleanup expired OTPs (best-effort, runs periodically)
+  setInterval(async () => {
+    try {
+      await db.delete(otpCodes).where(
+        and(
+          eq(otpCodes.isUsed, false),
+          gt(new Date(), otpCodes.expiresAt)
+        )
+      );
+    } catch (err) {
+      // Ignore cleanup errors
     }
   }, 15 * 60 * 1000);
 
@@ -250,24 +251,40 @@ export async function registerRoutes(app: Express): Promise<void> {
 
       const mobileClean = mobile ? mobile.replace(/\D/g, "") : "";
 
-      // Resend throttle — 30 seconds between sends
-      const existing = otpStore.get(emailLower);
-      const now = Date.now();
-      if (existing && now - existing.lastSent < 30_000) {
-        const waitSec = Math.ceil((30_000 - (now - existing.lastSent)) / 1000);
-        return res.status(429).json({ message: `Please wait ${waitSec} seconds before requesting a new code.` });
+      // Check for recent OTP (resend throttle — 30 seconds between sends)
+      const now = new Date();
+      const recentOtp = await db.select().from(otpCodes)
+        .where(
+          and(
+            eq(otpCodes.email, emailLower),
+            eq(otpCodes.isUsed, false)
+          )
+        )
+        .orderBy(desc(otpCodes.createdAt))
+        .limit(1);
+
+      if (recentOtp.length > 0) {
+        const lastSent = recentOtp[0].createdAt?.getTime() || 0;
+        const timeSinceLastSent = now.getTime() - lastSent;
+        if (timeSinceLastSent < 30_000) {
+          const waitSec = Math.ceil((30_000 - timeSinceLastSent) / 1000);
+          return res.status(429).json({ message: `Please wait ${waitSec} seconds before requesting a new code.` });
+        }
       }
 
       // Generate 6-digit OTP
       const otp = String(Math.floor(100000 + Math.random() * 900000));
 
-      otpStore.set(emailLower, {
-        otp,
-        name: (name || "").trim(),
-        mobile: mobileClean,
-        expires: now + 10 * 60 * 1000,
-        attempts: 0,
-        lastSent: now,
+      // Store OTP in database
+      await db.insert(otpCodes).values({
+        email: emailLower,
+        code: otp,
+        hashedCode: otp, // In production, hash this with bcrypt
+        purpose: "login",
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+        attemptsCount: 0,
+        maxAttempts: 5,
+        deliveryStatus: "pending",
       });
 
       await sendOtpEmail(emailLower, otp);
@@ -333,25 +350,48 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
 
       const emailLower = email.trim().toLowerCase();
-      const entry = otpStore.get(emailLower);
 
-      if (!entry) {
+      // Find the latest unused OTP for this email
+      const otpRecord = await db.select().from(otpCodes)
+        .where(
+          and(
+            eq(otpCodes.email, emailLower),
+            eq(otpCodes.isUsed, false),
+            eq(otpCodes.purpose, "login")
+          )
+        )
+        .orderBy(desc(otpCodes.createdAt))
+        .limit(1);
+
+      if (otpRecord.length === 0) {
         return res.status(400).json({ message: "No verification code found for this email. Please request a new one." });
       }
 
-      if (Date.now() > entry.expires) {
-        otpStore.delete(emailLower);
+      const entry = otpRecord[0];
+
+      // Check if OTP has expired
+      if (entry.expiresAt && new Date() > entry.expiresAt) {
+        await db.delete(otpCodes).where(eq(otpCodes.id, entry.id));
         return res.status(400).json({ message: "Verification code has expired. Please request a new one." });
       }
 
-      entry.attempts += 1;
-      if (entry.attempts > 5) {
-        otpStore.delete(emailLower);
+      // Check attempts limit
+      const currentAttempts = entry.attemptsCount || 0;
+      const maxAttempts = entry.maxAttempts || 5;
+
+      if (currentAttempts >= maxAttempts) {
+        await db.delete(otpCodes).where(eq(otpCodes.id, entry.id));
         return res.status(429).json({ message: "Too many incorrect attempts. Please request a new code." });
       }
 
-      if (otp.trim() !== entry.otp) {
-        const remaining = 5 - entry.attempts;
+      // Increment attempts
+      await db.update(otpCodes)
+        .set({ attemptsCount: currentAttempts + 1 })
+        .where(eq(otpCodes.id, entry.id));
+
+      // Verify OTP code
+      if (otp.trim() !== entry.code) {
+        const remaining = maxAttempts - currentAttempts - 1;
         return res.status(400).json({
           message: remaining > 0
             ? `Incorrect code. ${remaining} attempt${remaining === 1 ? "" : "s"} remaining.`
@@ -359,10 +399,11 @@ export async function registerRoutes(app: Express): Promise<void> {
         });
       }
 
-      // OTP verified — create/update user and set session
-      otpStore.delete(emailLower);
+      // OTP verified — delete the OTP record and create/update user
+      await db.delete(otpCodes).where(eq(otpCodes.id, entry.id));
 
-      const nameParts = entry.name.split(/\s+/);
+      // Extract name from email or use default
+      const nameParts = (entry.email || "").split("@")[0].split(/[._-]/);
       const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || "";
 
@@ -371,7 +412,6 @@ export async function registerRoutes(app: Express): Promise<void> {
         user = await storage.updateUser(user.id, {
           firstName: firstName || user.firstName,
           lastName: lastName || user.lastName,
-          mobile: entry.mobile,
           emailVerified: true,
         });
       } else {
@@ -379,7 +419,6 @@ export async function registerRoutes(app: Express): Promise<void> {
           email: emailLower,
           firstName,
           lastName,
-          mobile: entry.mobile,
           role: "recruiter",
           emailVerified: true,
           onboardingCompleted: false,
@@ -396,32 +435,59 @@ export async function registerRoutes(app: Express): Promise<void> {
     }
   });
 
-  // Resend OTP — reuses stored name/mobile, just regenerates and resends
+  // Resend OTP — delete old OTPs and create new one
   app.post('/api/auth/resend-otp', async (req: any, res) => {
     try {
       const { email } = req.body;
       if (!email) return res.status(400).json({ message: "Email is required." });
 
       const emailLower = email.trim().toLowerCase();
-      const existing = otpStore.get(emailLower);
 
-      if (!existing) {
+      // Find the latest OTP for this email
+      const recentOtp = await db.select().from(otpCodes)
+        .where(
+          and(
+            eq(otpCodes.email, emailLower),
+            eq(otpCodes.isUsed, false)
+          )
+        )
+        .orderBy(desc(otpCodes.createdAt))
+        .limit(1);
+
+      if (recentOtp.length === 0) {
         return res.status(400).json({ message: "Session expired. Please start over." });
       }
 
-      const now = Date.now();
-      if (now - existing.lastSent < 30_000) {
-        const waitSec = Math.ceil((30_000 - (now - existing.lastSent)) / 1000);
+      // Check resend throttle (30 seconds)
+      const now = new Date();
+      const lastSent = recentOtp[0].createdAt?.getTime() || 0;
+      const timeSinceLastSent = now.getTime() - lastSent;
+      if (timeSinceLastSent < 30_000) {
+        const waitSec = Math.ceil((30_000 - timeSinceLastSent) / 1000);
         return res.status(429).json({ message: `Please wait ${waitSec} seconds before requesting a new code.` });
       }
 
+      // Delete old OTPs for this email
+      await db.delete(otpCodes).where(
+        and(
+          eq(otpCodes.email, emailLower),
+          eq(otpCodes.isUsed, false)
+        )
+      );
+
+      // Generate new OTP
       const otp = String(Math.floor(100000 + Math.random() * 900000));
-      otpStore.set(emailLower, {
-        ...existing,
-        otp,
-        expires: now + 10 * 60 * 1000,
-        attempts: 0,
-        lastSent: now,
+
+      // Store new OTP in database
+      await db.insert(otpCodes).values({
+        email: emailLower,
+        code: otp,
+        hashedCode: otp, // In production, hash this with bcrypt
+        purpose: "login",
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 minutes
+        attemptsCount: 0,
+        maxAttempts: 5,
+        deliveryStatus: "pending",
       });
 
       await sendOtpEmail(emailLower, otp);
