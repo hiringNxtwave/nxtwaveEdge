@@ -3,7 +3,18 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useLocation } from 'wouter';
-import { Plus, Edit3, Trash2, MapPin, IndianRupee, Users, GraduationCap, Briefcase, CheckCircle, ChevronRight } from 'lucide-react';
+import {
+  Plus,
+  Edit3,
+  Trash2,
+  MapPin,
+  IndianRupee,
+  Users,
+  Briefcase,
+  CheckCircle,
+  X,
+  Inbox,
+} from 'lucide-react';
 import { sendGTMEvent } from '@/lib/gtm';
 
 interface JobRequirement {
@@ -102,188 +113,221 @@ export function CompanyProfileManager() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600" />
+        <div className="animate-spin rounded-full h-6 w-6 border-2 border-primary border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-
-      {/* Top action row */}
-      {!isAdding && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-slate-500">
-            {requirements.length === 0 ? 'No open roles yet' : `${requirements.length} open role${requirements.length !== 1 ? 's' : ''}`}
-          </p>
+    <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-5">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between mb-1">
+          <span className="text-xs font-medium text-muted-foreground">
+            {requirements.length === 0 ? 'No roles' : `${requirements.length} role${requirements.length !== 1 ? 's' : ''}`}
+          </span>
           <button
             id="company_profile_post_job_click"
             onClick={() => { sendGTMEvent("company_profile_post_job_click"); setIsAdding(true); }}
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
+            className="inline-flex items-center gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
             data-testid="button-add-requirement"
           >
-            <Plus className="w-4 h-4" /> Post a Job
+            <Plus className="w-3.5 h-3.5" />
+            Post Job
           </button>
         </div>
-      )}
 
-      {/* Add / Edit form */}
-      {isAdding && (
-        <div className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm">
-          <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                <Briefcase className="w-4 h-4 text-white" />
+        {requirements.length === 0 && !isAdding && (
+          <div className="surface-card p-8 text-center">
+            <div className="empty-state py-0">
+              <div className="empty-state-icon">
+                <Briefcase className="w-5 h-5" />
               </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900">{editingId ? 'Edit Job' : 'Post a New Role'}</h3>
-                <p className="text-xs text-slate-400 mt-0.5">Fill in the basic details</p>
+              <div className="empty-state-title">No jobs posted yet</div>
+              <div className="empty-state-description">
+                Click "Post Job" to create your first listing.
               </div>
             </div>
-            <button id="company_profile_form_cancel_click" type="button" onClick={() => { sendGTMEvent("company_profile_form_cancel_click"); handleCancel(); }} className="text-slate-400 hover:text-slate-600 text-sm transition-colors">
-              Cancel
-            </button>
           </div>
+        )}
 
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Role Name <span className="text-red-400">*</span></label>
-              <input
-                type="text"
-                value={roleName}
-                onChange={e => { setRoleName(e.target.value); setFormError(''); }}
-                placeholder="e.g. Software Engineer"
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
-                data-testid="input-job-title"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Location <span className="text-red-400">*</span></label>
-              <input
-                type="text"
-                value={location}
-                onChange={e => { setLocation(e.target.value); setFormError(''); }}
-                placeholder="e.g. Hyderabad"
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
-                data-testid="input-job-location"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Salary (LPA)</label>
-              <input
-                type="number"
-                min="0"
-                step="0.5"
-                value={salary}
-                onChange={e => setSalary(e.target.value)}
-                placeholder="e.g. 8"
-                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500"
-                data-testid="input-salary"
-              />
-            </div>
-
-            {formError && <p className="text-xs text-red-500">{formError}</p>}
-
-            <div className="flex items-center gap-3 pt-2 border-t border-slate-100">
-              <button
-                id="company_profile_save_job_click"
-                type="submit"
-                disabled={saveMutation.isPending}
-                onClick={() => { if (!saveMutation.isPending) sendGTMEvent("company_profile_save_job_click", { action: editingId ? "update" : "create" }); }}
-                className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors"
-                data-testid="button-save-requirement"
-              >
-                {saveMutation.isPending
-                  ? <><div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" /> Saving…</>
-                  : <><CheckCircle className="w-4 h-4" /> {editingId ? 'Update Job' : 'Post Job'}</>
-                }
-              </button>
-              <button id="company_profile_form_cancel_footer_click" type="button" onClick={() => { sendGTMEvent("company_profile_form_cancel_click"); handleCancel(); }} className="text-sm text-slate-500 hover:text-slate-700 transition-colors">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      {/* Jobs list */}
-      {requirements.length > 0 && (
-        <div className="space-y-3">
-          {requirements.map((req) => (
-            <div key={req.id} className="bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-md transition-shadow">
-              <div className="h-0.5 bg-blue-600" />
-              <div className="p-5">
-                <div className="flex items-start justify-between gap-4">
-                  {/* Clickable left section */}
-                  <button
-                    id={`company_profile_job_name_${req.id}_click`}
-                    className="flex-1 min-w-0 text-left"
-                    onClick={() => { sendGTMEvent("company_profile_job_name_click", { jobId: req.id, jobTitle: req.jobTitle }); navigate(`/browse?jobId=${req.id}`); }}
-                  >
-                    <div className="flex items-center gap-2.5 mb-3 flex-wrap">
-                      <h3 className="text-base font-bold text-slate-900">{req.jobTitle}</h3>
-                      <span className={`inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full ${req.isActive ? 'bg-blue-50 text-blue-600' : 'bg-slate-100 text-slate-500'}`}>
-                        {req.isActive ? 'Active' : 'Inactive'}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {req.salaryMax ? (
-                        <span className="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-100 text-slate-600 text-xs font-medium px-2.5 py-1.5 rounded-lg">
-                          <IndianRupee className="w-3 h-3 text-slate-400" />
-                          {(req.salaryMax / 100).toFixed(1)} LPA
-                        </span>
-                      ) : null}
-                      <span className="inline-flex items-center gap-1.5 bg-slate-50 border border-slate-100 text-slate-600 text-xs font-medium px-2.5 py-1.5 rounded-lg">
-                        <MapPin className="w-3 h-3 text-slate-400" />
-                        {req.jobLocation}
-                      </span>
-                    </div>
-                  </button>
-
-                  {/* Action buttons */}
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      id={`company_profile_view_candidates_${req.id}_click`}
-                      onClick={() => { sendGTMEvent("company_profile_view_candidates_click", { jobId: req.id, jobTitle: req.jobTitle }); navigate(`/browse?jobId=${req.id}`); }}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 border border-blue-200 hover:bg-blue-50 px-3 py-1.5 rounded-lg transition-colors"
-                      data-testid={`button-view-candidates-${req.id}`}
-                    >
-                      <Users className="w-3.5 h-3.5" /> View Candidates
-                    </button>
-                    <button
-                      id={`company_profile_edit_job_${req.id}_click`}
-                      onClick={() => { sendGTMEvent("company_profile_edit_job_click", { jobId: req.id, jobTitle: req.jobTitle }); handleEdit(req); }}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-3 py-1.5 rounded-lg transition-colors"
-                      data-testid={`button-edit-${req.id}`}
-                    >
-                      <Edit3 className="w-3.5 h-3.5" /> Edit
-                    </button>
-                    <button
-                      id={`company_profile_delete_job_${req.id}_click`}
-                      onClick={() => { if (confirm('Delete this job?')) { sendGTMEvent("company_profile_delete_job_click", { jobId: req.id, jobTitle: req.jobTitle }); deleteMutation.mutate(req.id); } }}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 px-3 py-1.5 rounded-lg transition-colors"
-                      data-testid={`button-delete-${req.id}`}
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
+        {requirements.map((req) => (
+          <button
+            key={req.id}
+            id={`company_profile_job_name_${req.id}_click`}
+            onClick={() => { sendGTMEvent("company_profile_job_name_click", { jobId: req.id, jobTitle: req.jobTitle }); navigate(`/browse?jobId=${req.id}`); }}
+            className={`w-full text-left surface-card p-4 transition-all hover:shadow-sm ${
+              !isAdding && !editingId ? 'hover:border-primary/30' : ''
+            }`}
+            data-testid={`job-card-${req.id}`}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="text-sm font-semibold text-foreground truncate">{req.jobTitle}</h3>
+                  <span className={`badge-status shrink-0 ${req.isActive ? 'badge-active' : 'bg-muted text-muted-foreground border border-border'}`}>
+                    {req.isActive ? 'Active' : 'Inactive'}
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                    <MapPin className="w-3 h-3" />
+                    {req.jobLocation}
+                  </span>
+                  {req.salaryMax ? (
+                    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                      <IndianRupee className="w-3 h-3" />
+                      {(req.salaryMax / 100).toFixed(1)} LPA
+                    </span>
+                  ) : null}
                 </div>
               </div>
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  id={`company_profile_edit_job_${req.id}_click`}
+                  onClick={(e) => { e.stopPropagation(); sendGTMEvent("company_profile_edit_job_click", { jobId: req.id, jobTitle: req.jobTitle }); handleEdit(req); }}
+                  className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  data-testid={`button-edit-${req.id}`}
+                  title="Edit"
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  id={`company_profile_delete_job_${req.id}_click`}
+                  onClick={(e) => { e.stopPropagation(); if (confirm('Delete this job?')) { sendGTMEvent("company_profile_delete_job_click", { jobId: req.id, jobTitle: req.jobTitle }); deleteMutation.mutate(req.id); } }}
+                  className="p-1.5 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  data-testid={`button-delete-${req.id}`}
+                  title="Delete"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
-          ))}
-        </div>
-      )}
+          </button>
+        ))}
+      </div>
 
-      {/* Empty state when not adding */}
-      {requirements.length === 0 && !isAdding && (
-        <div className="text-center py-16 text-slate-400">
-          <Briefcase className="w-8 h-8 mx-auto mb-3 text-slate-300" />
-          <p className="text-sm font-medium">No jobs posted yet</p>
-          <p className="text-xs mt-1">Click "Post a Job" to get started</p>
-        </div>
-      )}
+      <div>
+        {isAdding ? (
+          <div className="surface-card animate-fade-in">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <Briefcase className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold">{editingId ? 'Edit Job' : 'Post a New Role'}</h3>
+                  <p className="text-xs text-muted-foreground">Fill in the details below</p>
+                </div>
+              </div>
+              <button
+                id="company_profile_form_cancel_click"
+                type="button"
+                onClick={() => { sendGTMEvent("company_profile_form_cancel_click"); handleCancel(); }}
+                className="p-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="p-5 space-y-5">
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground">
+                  Role Name <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={roleName}
+                  onChange={(e) => { setRoleName(e.target.value); setFormError(''); }}
+                  placeholder="e.g. Software Engineer"
+                  className="w-full h-9 rounded-lg border border-border bg-background px-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  data-testid="input-job-title"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground">
+                  Location <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={location}
+                  onChange={(e) => { setLocation(e.target.value); setFormError(''); }}
+                  placeholder="e.g. Hyderabad"
+                  className="w-full h-9 rounded-lg border border-border bg-background px-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  data-testid="input-job-location"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-muted-foreground">
+                  Salary (LPA)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.5"
+                  value={salary}
+                  onChange={(e) => setSalary(e.target.value)}
+                  placeholder="e.g. 8"
+                  className="w-full h-9 rounded-lg border border-border bg-background px-3 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  data-testid="input-salary"
+                />
+              </div>
+
+              {formError && (
+                <p className="text-xs text-destructive">{formError}</p>
+              )}
+
+              <div className="flex items-center gap-3 pt-3 border-t border-border">
+                <button
+                  id="company_profile_save_job_click"
+                  type="submit"
+                  disabled={saveMutation.isPending}
+                  onClick={() => { if (!saveMutation.isPending) sendGTMEvent("company_profile_save_job_click", { action: editingId ? "update" : "create" }); }}
+                  className="inline-flex items-center gap-1.5 bg-primary hover:bg-primary/90 disabled:opacity-50 text-primary-foreground text-xs font-semibold px-4 py-2 rounded-lg transition-colors"
+                  data-testid="button-save-requirement"
+                >
+                  {saveMutation.isPending ? (
+                    <>
+                      <div className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-primary-foreground border-t-transparent" />
+                      Saving…
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-3.5 h-3.5" />
+                      {editingId ? 'Update Job' : 'Post Job'}
+                    </>
+                  )}
+                </button>
+                <button
+                  id="company_profile_form_cancel_footer_click"
+                  type="button"
+                  onClick={() => { sendGTMEvent("company_profile_form_cancel_click"); handleCancel(); }}
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        ) : (
+          <div className="surface-card animate-fade-in">
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
+                <Inbox className="w-5 h-5 text-muted-foreground" />
+              </div>
+              <p className="text-sm font-medium text-foreground mb-1">
+                {requirements.length > 0 ? 'Select a job to view details' : 'No job selected'}
+              </p>
+              <p className="text-xs text-muted-foreground max-w-[240px]">
+                {requirements.length > 0
+                  ? 'Click a job on the left to browse candidates, or create a new one.'
+                  : 'Post your first job to start finding candidates.'}
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 import { sendGTMEvent } from "@/lib/gtm";
 import StudentCard from "@/components/student-card";
 import StudentFilters, { type FilterState } from "@/components/student-filters";
@@ -22,18 +23,31 @@ import {
   Lock, Users, Star, GitCompare, Shield, Briefcase,
   ChevronLeft, ChevronRight, X, Sparkles, MapPin,
   DollarSign, Search as SearchIcon, Video, FileCheck, ClipboardList,
+  SlidersHorizontal, RotateCcw,
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
 export default function BrowseStudents() {
   const { isAuthenticated, user } = useAuth();
+  const { toast } = useToast();
   const displayName = user?.firstName
     ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`.trim()
     : "Recruiter";
 
-  // Extract jobId from URL query params
   const searchParams = new URLSearchParams(window.location.search);
   const jobIdFromUrl = searchParams.get("jobId");
+  const tokenFromUrl = searchParams.get("token");
+  const isTokenMode = !!tokenFromUrl;
+
+  const [tokenData, setTokenData] = useState<{
+    job: any;
+    company: any;
+    candidates: any[];
+    expiresAt: string;
+  } | null>(null);
+  const [tokenLoading, setTokenLoading] = useState(false);
+  const [tokenError, setTokenError] = useState<string | null>(null);
+  const [interestedStudents, setInterestedStudents] = useState<Set<string>>(new Set());
 
   const [filters, setFilters] = useState<FilterState>({ university: "all", recommendation: "all", name: "", minScore: "all" });
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,8 +56,8 @@ export default function BrowseStudents() {
   const [showFeatureHint, setShowFeatureHint] = useState(() => {
     try { return sessionStorage.getItem("featureHintDismissed") !== "1"; } catch { return true; }
   });
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // Job popup state
   const [showJobPopup, setShowJobPopup] = useState(false);
   const [jobRole, setJobRole] = useState("");
   const [jobLocation, setJobLocation] = useState("");
@@ -58,9 +72,58 @@ export default function BrowseStudents() {
   const popupShownRef = useRef(false);
   const jobIdMatchTriggeredRef = useRef<string | null>(null);
 
+  useEffect(() => {
+    if (isTokenMode && tokenFromUrl && jobIdFromUrl) {
+      setTokenLoading(true);
+      fetch(`/api/company/candidates?jobId=${jobIdFromUrl}&token=${tokenFromUrl}`)
+        .then(async (res) => {
+          if (!res.ok) {
+            const data = await res.json();
+            throw new Error(data.message || "Failed to load candidates");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          setTokenData(data);
+          setTokenLoading(false);
+        })
+        .catch((err) => {
+          setTokenError(err.message);
+          setTokenLoading(false);
+        });
+    }
+  }, [isTokenMode, tokenFromUrl, jobIdFromUrl]);
+
+  const markInterestMutation = useMutation({
+    mutationFn: async (studentId: string) => {
+      return apiRequest("POST", "/api/company/interest", {
+        token: tokenFromUrl,
+        studentId,
+        jobId: jobIdFromUrl,
+      });
+    },
+    onSuccess: (_, studentId) => {
+      setInterestedStudents((prev) => {
+        const next = new Set(prev);
+        next.add(studentId);
+        return next;
+      });
+      toast({
+        title: "Interest recorded",
+        description: "The NxtWave team has been notified",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Failed to record interest",
+        description: "Please try again",
+        variant: "destructive",
+      });
+    },
+  });
+
   const studentsPerPage = isAuthenticated ? 24 : 12;
 
-  // Auto-trigger job match when jobId is in URL (once per jobId)
   const jobMatchByIdMutation = useMutation({
     mutationFn: async (jobId: string) =>
       apiRequest("POST", "/api/students/job-match-by-id", { jobId }).then(r => r.json()),
@@ -79,7 +142,6 @@ export default function BrowseStudents() {
     },
   });
 
-  // Persist matched students/job to sessionStorage so they survive navigation
   useEffect(() => {
     if (matchedStudents) {
       sessionStorage.setItem(`jobMatch:${sessionKey}`, JSON.stringify(matchedStudents));
@@ -102,12 +164,10 @@ export default function BrowseStudents() {
       jobIdMatchTriggeredRef.current = jobIdFromUrl;
       jobMatchByIdMutation.mutate(jobIdFromUrl);
     } else if (jobIdFromUrl && matchedStudents) {
-      // Data already restored from sessionStorage — mark as triggered
       jobIdMatchTriggeredRef.current = jobIdFromUrl;
     }
   }, [jobIdFromUrl, isAuthenticated]);
 
-  // 15-second popup trigger — once per session, authenticated users only, skip if job context exists
   useEffect(() => {
     if (!isAuthenticated || popupShownRef.current || jobIdFromUrl) return;
     const alreadyShown = sessionStorage.getItem("jobPopupShown");
@@ -158,14 +218,13 @@ export default function BrowseStudents() {
     onSuccess: (data, variables) => {
       setMatchedStudents(data);
       setShowJobPopup(false);
-      // Also persist the job to the DB so it shows in the Jobs section
       apiRequest("POST", "/api/company/requirements", {
         jobTitle: variables.role,
         jobLocation: variables.location,
         salaryMax: Math.round(variables.salary * 100),
       }).then(() => {
         queryClient.invalidateQueries({ queryKey: ["/api/company/requirements"] });
-      }).catch(() => { /* non-blocking — match results already shown */ });
+      }).catch(() => {});
     },
   });
 
@@ -186,7 +245,6 @@ export default function BrowseStudents() {
     setJobRole("");
     setJobLocation("");
     setJobSalary("");
-    // Clear sessionStorage cache for both keyed and inline sessions
     sessionStorage.removeItem(`jobMatch:${sessionKey}`);
     sessionStorage.removeItem(`activeJob:${sessionKey}`);
     if (jobIdFromUrl) {
@@ -206,73 +264,101 @@ export default function BrowseStudents() {
   const totalPages = matchedStudents ? 1 : Math.ceil(totalCount / studentsPerPage);
   const showPagination = isAuthenticated && !matchedStudents && totalPages > 1;
 
-  return (
-    <div className="flex flex-col bg-[#F8FAFC]" style={{ height: "100vh", overflow: "hidden" }}>
+  const hasAnyFilter =
+    (filters.name && filters.name.trim()) ||
+    (filters.university && filters.university !== "all") ||
+    (filters.recommendation && filters.recommendation !== "all") ||
+    (filters.minScore && filters.minScore !== "all");
 
-      {/* ── Sticky top: Welcome header (auth only) ── */}
-      {isAuthenticated && (
-        <div className="shrink-0 bg-white border-b border-slate-100 px-6 py-4">
+  return (
+    <div className="flex h-screen overflow-hidden bg-background">
+
+      {isTokenMode && (
+        <div className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-r from-primary/90 to-primary px-6 py-3 border-b border-primary/20">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div>
-              <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-0.5">Welcome back</p>
-              <h1 className="text-xl font-bold text-slate-900 tracking-tight" data-testid="text-welcome">
-                {displayName}
-              </h1>
+            <div className="text-primary-foreground">
+              <div className="flex items-center gap-2 mb-0.5">
+                <Shield className="w-4 h-4 opacity-80" />
+                <span className="text-2xs font-semibold uppercase tracking-widest opacity-80">NxtWave Edge</span>
+              </div>
+              {tokenLoading ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-3.5 w-3.5 border-2 border-white/40 border-t-white"></div>
+                  <span className="text-sm opacity-90">Loading candidates...</span>
+                </div>
+              ) : tokenError ? (
+                <div>
+                  <h1 className="text-lg font-bold">Link Error</h1>
+                  <p className="text-xs opacity-90">{tokenError}</p>
+                </div>
+              ) : tokenData ? (
+                <div>
+                  <h1 className="text-lg font-bold">{tokenData.job?.title}</h1>
+                  <p className="text-xs opacity-90">
+                    {tokenData.company?.name} · {tokenData.candidates?.length || 0} candidates
+                  </p>
+                </div>
+              ) : null}
             </div>
-            <button
-              id="browse_page_header_post_job_click"
-              onClick={() => { sendGTMEvent("browse_page_header_post_job_click"); openJobDialog(); }}
-              className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
-            >
-              <Briefcase className="w-3.5 h-3.5" />
-              Post a Job
-            </button>
+            {tokenData?.expiresAt && (
+              <div className="text-right text-primary-foreground">
+                <p className="text-2xs opacity-60">Link expires</p>
+                <p className="text-xs font-semibold">
+                  {new Date(tokenData.expiresAt).toLocaleDateString()} {new Date(tokenData.expiresAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}
 
-      {/* ── Feature hint: interview recordings + audit trail ── */}
+      {isTokenMode && (
+        <div className="h-20" />
+      )}
+
       {isAuthenticated && showFeatureHint && (
-        <div className="shrink-0 bg-[#EEF4FF] border-b border-blue-100 px-6 py-2.5">
+        <div className="absolute top-0 left-0 right-0 z-30 bg-primary/5 border-b border-primary/10 px-6 py-2">
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-            <div className="flex items-center gap-5 flex-wrap">
-              <div className="flex items-center gap-2 text-blue-700 text-xs font-semibold">
-                <Video className="w-3.5 h-3.5 shrink-0 text-blue-500" />
+            <div className="flex items-center gap-6 flex-wrap">
+              <div className="flex items-center gap-1.5 text-primary text-2xs font-semibold">
+                <Video className="w-3 h-3 shrink-0" />
                 Interview recordings inside each profile
               </div>
-              <div className="hidden sm:block w-px h-3 bg-blue-200" />
-              <div className="flex items-center gap-2 text-blue-700 text-xs font-semibold">
-                <ClipboardList className="w-3.5 h-3.5 shrink-0 text-blue-500" />
+              <div className="hidden sm:block w-px h-3 bg-primary/15" />
+              <div className="flex items-center gap-1.5 text-primary text-2xs font-semibold">
+                <ClipboardList className="w-3 h-3 shrink-0" />
                 Full assessment audit trail
               </div>
-              <div className="hidden sm:block w-px h-3 bg-blue-200" />
-              <div className="flex items-center gap-2 text-blue-700 text-xs font-semibold">
-                <FileCheck className="w-3.5 h-3.5 shrink-0 text-blue-500" />
+              <div className="hidden sm:block w-px h-3 bg-primary/15" />
+              <div className="flex items-center gap-1.5 text-primary text-2xs font-semibold">
+                <FileCheck className="w-3 h-3 shrink-0" />
                 Verified score reports
               </div>
             </div>
             <button
-              id="browse_page_hint_dismiss_click"
               onClick={() => {
                 sendGTMEvent("browse_page_hint_dismiss_click");
                 setShowFeatureHint(false);
                 try { sessionStorage.setItem("featureHintDismissed", "1"); } catch {}
               }}
-              className="shrink-0 text-blue-400 hover:text-blue-600 transition-colors"
+              className="shrink-0 text-muted-foreground hover:text-foreground transition-colors"
               aria-label="Dismiss"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3" />
             </button>
           </div>
         </div>
       )}
 
-      {/* ── Active job match banner ── */}
+      {!isTokenMode && showFeatureHint && (
+        <div className="h-10" />
+      )}
+
       {activeJob && matchedStudents && (
-        <div className="shrink-0 bg-blue-600 px-6 py-2.5">
+        <div className="absolute top-0 left-0 right-0 z-30 bg-primary px-6 py-2">
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2.5 text-white text-sm">
-              <Sparkles className="w-4 h-4 shrink-0" />
+            <div className="flex items-center gap-2 text-primary-foreground text-sm">
+              <Sparkles className="w-3.5 h-3.5 shrink-0" />
               <span className="font-semibold">Job Match:</span>
               <span className="font-medium">{activeJob.role}</span>
               {activeJob.location && <><span className="opacity-60">·</span><span>{activeJob.location}</span></>}
@@ -280,257 +366,443 @@ export default function BrowseStudents() {
               <span className="opacity-70 text-xs ml-1">(top {matchedStudents.length} matches)</span>
             </div>
             <button
-              id="browse_page_job_match_clear_click"
               onClick={() => { sendGTMEvent("browse_page_job_match_clear_click"); clearJobMatch(); }}
-              className="flex items-center gap-1.5 text-white/80 hover:text-white text-xs font-medium transition-colors shrink-0"
+              className="flex items-center gap-1.5 text-primary-foreground/80 hover:text-primary-foreground text-xs font-medium transition-colors shrink-0"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-3 h-3" />
               Clear
             </button>
           </div>
         </div>
       )}
 
-      {/* ── Sticky: Filter bar ── */}
-      {!matchedStudents && (
-        <div className="shrink-0 bg-white border-b border-slate-100 px-6 py-3">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4 flex-wrap">
-            <div>
-              <h2 className="text-sm font-bold text-slate-800">Talent Directory</h2>
-              <p className="text-xs text-slate-400 mt-0.5">
-                {isLoading ? "Loading..." : `${totalCount.toLocaleString()} candidates`}
-                {filters.recommendation && filters.recommendation !== "all" ? ` · ${filters.recommendation}` : ""}
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <StudentFilters
-                filters={filters}
-                onFiltersChange={(newFilters) => { setFilters(newFilters); setCurrentPage(1); }}
+      {activeJob && matchedStudents && (
+        <div className="h-10" />
+      )}
+
+      <aside
+        className={`${
+          sidebarOpen ? "w-[280px]" : "w-0"
+        } flex-shrink-0 border-r border-border bg-card overflow-hidden transition-all duration-200 flex flex-col ${
+          isTokenMode ? "hidden lg:flex" : "hidden md:flex"
+        }`}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+          <div className="flex items-center gap-2">
+            <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm font-semibold text-foreground">Filters</span>
+          </div>
+          {hasAnyFilter && (
+            <button
+              onClick={() => {
+                setFilters({ university: "all", recommendation: "all", name: "", minScore: "all" });
+                setCurrentPage(1);
+              }}
+              className="text-2xs text-primary hover:text-primary/80 font-medium flex items-center gap-1"
+            >
+              <RotateCcw className="w-3 h-3" />
+              Reset
+            </button>
+          )}
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5">
+          <div className="space-y-2">
+            <Label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Search</Label>
+            <div className="relative">
+              <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
+              <Input
+                placeholder="Search by name..."
+                value={filters.name || ""}
+                onChange={(e) => {
+                  setFilters({ ...filters, name: e.target.value });
+                  setCurrentPage(1);
+                }}
+                className="h-8 text-sm pl-8 pr-7 bg-muted/50 border-border focus:bg-card"
               />
-              {isAuthenticated && compareList.length > 0 && (
-                <>
-                  <div className="h-5 w-px bg-slate-200" />
-                  <Button
-                    id="browse_page_filter_compare_click"
-                    onClick={() => { sendGTMEvent("browse_page_filter_compare_click", { count: compareList.length }); setShowComparison(true); }}
-                    size="sm"
-                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm"
-                    data-testid="button-compare-candidates"
-                  >
-                    <GitCompare className="w-3.5 h-3.5 mr-1.5" />
-                    Compare ({compareList.length})
-                  </Button>
-                </>
+              {filters.name && (
+                <button
+                  onClick={() => { setFilters({ ...filters, name: "" }); setCurrentPage(1); }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="h-3 w-3" />
+                </button>
               )}
             </div>
           </div>
-        </div>
-      )}
 
-      {/* ── Scrollable student list ── */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="h-px bg-border" />
 
-          {/* Limited Access Banner */}
-          {!isAuthenticated && (
-            <div className="mb-4 bg-blue-600 rounded-xl p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3 flex-wrap">
-                <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
-                  <Lock className="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <p className="font-semibold text-white text-sm">
-                    Preview Mode: {students.length} of {totalStudentCount.toLocaleString()}+ candidates shown
-                  </p>
-                  <p className="text-xs text-blue-200">Sign in to unlock full profiles, assessment details, and hiring tools.</p>
-                </div>
-              </div>
-              <Button
-                id="browse_page_banner_sign_in_click"
-                size="sm"
-                className="bg-white text-blue-700 hover:bg-blue-50 font-semibold text-sm shrink-0 border-0"
-                onClick={() => { sendGTMEvent("browse_page_banner_sign_in_click"); window.location.href = "/api/login"; }}
-                data-testid="button-unlock-full-access"
-              >
-                Sign In Free →
-              </Button>
-            </div>
-          )}
-
-          {/* Results info */}
-          {!isLoading && students.length > 0 && !matchedStudents && (
-            <div className="flex items-center gap-3 text-xs text-slate-500 mb-3">
-              <span className="flex items-center gap-1">
-                <Shield className="w-3.5 h-3.5 text-blue-500" />
-                All offline-verified
-              </span>
-              {currentPage > 1 && (
-                <>
-                  <span className="h-3 w-px bg-slate-200" />
-                  <span>Page {currentPage} of {totalPages}</span>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Match loading state */}
-          {isPendingMatch && (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-              {Array.from({ length: 9 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl border border-slate-100 p-5 flex flex-col gap-4">
-                  <div className="flex items-start gap-3">
-                    <Skeleton className="w-11 h-11 rounded-xl shrink-0" />
-                    <div className="flex-1 space-y-1.5">
-                      <Skeleton className="h-4 w-32" />
-                      <Skeleton className="h-3 w-24" />
-                      <Skeleton className="h-3 w-40" />
-                    </div>
-                    <Skeleton className="h-5 w-20 rounded-full shrink-0" />
-                  </div>
-                  <Skeleton className="h-4 w-24 rounded-full" />
-                  <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                    <Skeleton className="h-7 w-12" />
-                    <Skeleton className="h-4 w-24" />
-                  </div>
-                </div>
+          <div className="space-y-2">
+            <Label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Verdict</Label>
+            <div className="flex flex-wrap gap-1.5">
+              {["all", "Strong Hire", "Hire", "Weak Hire"].map((value) => (
+                <button
+                  key={value}
+                  onClick={() => { setFilters({ ...filters, recommendation: value }); setCurrentPage(1); }}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors border ${
+                    filters.recommendation === value
+                      ? "bg-primary/10 text-primary border-primary/20"
+                      : "bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  {value === "all" ? "All" : value}
+                </button>
               ))}
             </div>
-          )}
+          </div>
 
-          {/* Student Cards */}
-          {!isPendingMatch && (
-            isLoading && !matchedStudents ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {Array.from({ length: 9 }).map((_, i) => (
-                  <div key={i} className="bg-white rounded-xl border border-slate-100 p-5 flex flex-col gap-4">
-                    <div className="flex items-start gap-3">
-                      <Skeleton className="w-11 h-11 rounded-xl shrink-0" />
-                      <div className="flex-1 space-y-1.5">
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-3 w-24" />
-                        <Skeleton className="h-3 w-40" />
-                      </div>
-                      <Skeleton className="h-5 w-20 rounded-full shrink-0" />
+          <div className="h-px bg-border" />
+
+          <div className="space-y-2">
+            <Label className="text-2xs font-medium text-muted-foreground uppercase tracking-wider">Min Score</Label>
+            <div className="flex flex-wrap gap-1.5">
+              {[
+                { value: "all", label: "Any" },
+                { value: "60", label: "60+" },
+                { value: "70", label: "70+" },
+                { value: "80", label: "80+" },
+                { value: "85", label: "85+" },
+                { value: "90", label: "90+" },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => { setFilters({ ...filters, minScore: opt.value }); setCurrentPage(1); }}
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors border ${
+                    filters.minScore === opt.value
+                      ? "bg-primary/10 text-primary border-primary/20"
+                      : "bg-card text-muted-foreground border-border hover:bg-muted hover:text-foreground"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="h-px bg-border" />
+
+          <StudentFilters
+            filters={filters}
+            onFiltersChange={(newFilters) => { setFilters(newFilters); setCurrentPage(1); }}
+          />
+        </div>
+      </aside>
+
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+        <div className="flex-shrink-0 border-b border-border bg-card px-6 py-3">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="hidden md:flex lg:hidden items-center justify-center w-8 h-8 rounded-lg border border-border hover:bg-muted transition-colors"
+                aria-label="Toggle filters"
+              >
+                <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
+              </button>
+              <div>
+                <h1 className="text-base font-semibold text-foreground tracking-tight">
+                  {isTokenMode && tokenData ? tokenData.job?.title : "Talent Directory"}
+                </h1>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {isLoading ? "Loading..." : `${totalCount.toLocaleString()} candidates`}
+                  {filters.recommendation && filters.recommendation !== "all" ? ` · ${filters.recommendation}` : ""}
+                  {matchedStudents ? " · Job match" : ""}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {isAuthenticated && compareList.length > 0 && (
+                <Button
+                  onClick={() => { sendGTMEvent("browse_page_filter_compare_click", { count: compareList.length }); setShowComparison(true); }}
+                  size="sm"
+                  className="bg-primary text-primary-foreground text-xs h-8"
+                  data-testid="button-compare-candidates"
+                >
+                  <GitCompare className="w-3.5 h-3.5 mr-1.5" />
+                  Compare ({compareList.length})
+                </Button>
+              )}
+
+              {isAuthenticated && !isTokenMode && (
+                <Button
+                  id="browse_page_header_post_job_click"
+                  onClick={() => { sendGTMEvent("browse_page_header_post_job_click"); openJobDialog(); }}
+                  size="sm"
+                  className="bg-primary text-primary-foreground text-xs h-8"
+                >
+                  <Briefcase className="w-3.5 h-3.5 mr-1.5" />
+                  Post a Job
+                </Button>
+              )}
+
+              {!isAuthenticated && (
+                <Button
+                  size="sm"
+                  className="bg-primary text-primary-foreground text-xs h-8"
+                  onClick={() => { sendGTMEvent("browse_page_banner_sign_in_click"); window.location.href = "/api/login"; }}
+                  data-testid="button-unlock-full-access"
+                >
+                  Sign In Free
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-6">
+            {!isAuthenticated && (
+              <div className="mb-4 bg-primary/5 border border-primary/10 rounded-xl p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                    <Lock className="w-4 h-4 text-primary" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground text-sm">
+                      Preview Mode: {students.length} of {totalStudentCount.toLocaleString()}+ candidates shown
+                    </p>
+                    <p className="text-xs text-muted-foreground">Sign in to unlock full profiles, assessment details, and hiring tools.</p>
+                  </div>
+                </div>
+                <Button
+                  size="sm"
+                  className="bg-primary text-primary-foreground text-xs shrink-0"
+                  onClick={() => { sendGTMEvent("browse_page_cta_sign_in_click"); window.location.href = "/api/login"; }}
+                  data-testid="button-sign-in-to-continue"
+                >
+                  Sign In Free
+                </Button>
+              </div>
+            )}
+
+            {!isLoading && students.length > 0 && !matchedStudents && (
+              <div className="flex items-center gap-3 text-2xs text-muted-foreground mb-4">
+                <span className="flex items-center gap-1">
+                  <Shield className="w-3 h-3 text-primary" />
+                  All offline-verified
+                </span>
+                {currentPage > 1 && (
+                  <>
+                    <span className="h-3 w-px bg-border" />
+                    <span>Page {currentPage} of {totalPages}</span>
+                  </>
+                )}
+              </div>
+            )}
+
+            {isPendingMatch && (
+              <div className="space-y-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="bg-card border border-border rounded-xl p-4 flex items-center gap-4">
+                    <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
+                    <div className="flex-1 space-y-2">
+                      <Skeleton className="h-4 w-32" />
+                      <Skeleton className="h-3 w-48" />
                     </div>
-                    <div className="flex gap-1.5 flex-wrap">
-                      <Skeleton className="h-5 w-16 rounded" />
-                      <Skeleton className="h-5 w-14 rounded" />
+                    <div className="flex gap-4">
+                      <Skeleton className="h-3 w-16" />
+                      <Skeleton className="h-3 w-16" />
+                      <Skeleton className="h-3 w-16" />
                     </div>
-                    <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                      <Skeleton className="h-7 w-12" />
-                      <Skeleton className="h-4 w-24" />
-                    </div>
+                    <Skeleton className="h-8 w-24 rounded-lg" />
                   </div>
                 ))}
               </div>
-            ) : students.length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-xl border border-slate-100" data-testid="text-no-students">
-                <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                <p className="text-slate-600 text-base font-semibold">No candidates match your criteria</p>
-                <p className="text-slate-400 text-sm mt-1">Try adjusting the filters above.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="grid-students">
-                {students.map((student: any) => (
-                  <StudentCard
-                    key={student.id}
-                    student={student}
-                    matchScore={matchedStudents && student.matchScore !== undefined ? student.matchScore : undefined}
-                  />
-                ))}
-              </div>
-            )
-          )}
+            )}
 
-          {/* Login CTA at bottom for unauthenticated */}
-          {!isAuthenticated && students.length > 0 && (
-            <div className="bg-white border border-slate-200 rounded-xl p-6 text-center mt-4">
-              <Lock className="w-8 h-8 text-blue-600 mx-auto mb-3" />
-              <h3 className="text-lg font-bold text-slate-900 mb-1">
-                Access {totalStudentCount.toLocaleString()}+ Verified Engineers
-              </h3>
-              <p className="text-slate-500 text-sm mb-5">
-                Sign in to view full assessment reports, contact details, and hiring tools.
-              </p>
-              <div className="flex justify-center gap-6 mb-5 text-sm text-slate-600">
-                <span className="flex items-center gap-2"><Users className="w-4 h-4 text-blue-500" /> Full profile access</span>
-                <span className="flex items-center gap-2"><Star className="w-4 h-4 text-blue-500" /> Shortlist & compare</span>
-                <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-blue-500" /> Verified assessments</span>
-              </div>
-              <Button
-                id="browse_page_cta_sign_in_click"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8"
-                onClick={() => { sendGTMEvent("browse_page_cta_sign_in_click"); window.location.href = "/api/login"; }}
-                data-testid="button-sign-in-to-continue"
-              >
-                Sign In Free →
-              </Button>
-            </div>
-          )}
+            {!isPendingMatch && (
+              (isTokenMode && tokenLoading) ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="bg-card border border-border rounded-xl p-4 flex items-center gap-4">
+                      <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-3 w-48" />
+                      </div>
+                      <Skeleton className="h-8 w-28 rounded-lg" />
+                    </div>
+                  ))}
+                </div>
+              ) : (isTokenMode && tokenError) ? (
+                <div className="empty-state">
+                  <div className="empty-state-icon bg-destructive/10">
+                    <Lock className="w-6 h-6 text-destructive" />
+                  </div>
+                  <p className="empty-state-title text-destructive">Unable to load candidates</p>
+                  <p className="empty-state-description">{tokenError}</p>
+                </div>
+              ) : isTokenMode && tokenData ? (
+                <div className="space-y-3">
+                  {tokenData.candidates.map((student: any) => (
+                    <div key={student.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-4 hover-lift">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <span className="text-primary font-bold text-sm">
+                          {student.firstName?.[0]}{student.lastName?.[0]}
+                        </span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground text-sm truncate">{student.firstName} {student.lastName}</h3>
+                        <p className="text-xs text-muted-foreground truncate">{student.university}</p>
+                        <p className="text-2xs text-muted-foreground">{student.degree} · {student.major}</p>
+                      </div>
+                      <div className="flex gap-2 shrink-0">
+                        {student.overallAssessmentScore && (
+                          <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-medium rounded-md">
+                            Score: {student.overallAssessmentScore}
+                          </span>
+                        )}
+                        {student.cgpa && (
+                          <span className="px-2 py-0.5 bg-accent/10 text-accent text-xs font-medium rounded-md">
+                            CGPA: {student.cgpa}
+                          </span>
+                        )}
+                      </div>
+                      <div className="shrink-0">
+                        {interestedStudents.has(student.id) ? (
+                          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-accent/10 text-accent rounded-lg text-xs font-medium">
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                            </svg>
+                            Interested
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => markInterestMutation.mutate(student.id)}
+                            disabled={markInterestMutation.isPending}
+                            className="px-3 py-1.5 bg-primary text-primary-foreground rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+                          >
+                            {markInterestMutation.isPending ? "Recording..." : "Mark Interested"}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : isLoading && !matchedStudents ? (
+                <div className="space-y-3">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="bg-card border border-border rounded-xl p-4 flex items-center gap-4">
+                      <Skeleton className="w-10 h-10 rounded-lg shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-3 w-48" />
+                      </div>
+                      <div className="flex gap-2">
+                        <Skeleton className="h-5 w-14 rounded" />
+                        <Skeleton className="h-5 w-14 rounded" />
+                      </div>
+                      <Skeleton className="h-8 w-24 rounded-lg" />
+                    </div>
+                  ))}
+                </div>
+              ) : students.length === 0 ? (
+                <div className="empty-state" data-testid="text-no-students">
+                  <div className="empty-state-icon">
+                    <Users className="w-6 h-6" />
+                  </div>
+                  <p className="empty-state-title">No candidates match your criteria</p>
+                  <p className="empty-state-description">Try adjusting the filters on the left.</p>
+                </div>
+              ) : (
+                <div className="space-y-3" data-testid="grid-students">
+                  {students.map((student: any) => (
+                    <StudentCard
+                      key={student.id}
+                      student={student}
+                      matchScore={matchedStudents && student.matchScore !== undefined ? student.matchScore : undefined}
+                    />
+                  ))}
+                </div>
+              )
+            )}
 
-          {showPagination && <div className="h-4" />}
-        </div>
-      </div>
-
-      {/* ── Sticky bottom: Pagination ── */}
-      {showPagination && (
-        <div className="shrink-0 bg-white border-t border-slate-100 px-6 py-3">
-          <div className="max-w-7xl mx-auto flex items-center justify-between" data-testid="pagination-controls">
-            <span className="text-xs text-slate-500">
-              {students.length > 0
-                ? `Showing ${((currentPage - 1) * studentsPerPage) + 1}–${Math.min(currentPage * studentsPerPage, totalCount)} of ${totalCount}`
-                : "No results"}
-            </span>
-            <div className="flex items-center gap-2">
-              <button
-                id="browse_page_pagination_prev_click"
-                onClick={() => { sendGTMEvent("browse_page_pagination_prev_click", { page: currentPage - 1 }); setCurrentPage(Math.max(1, currentPage - 1)); }}
-                disabled={currentPage === 1}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                data-testid="button-prev-page"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-                Prev
-              </button>
-              <div className="flex items-center gap-1">
-                {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
-                  let page: number;
-                  if (totalPages <= 7) page = i + 1;
-                  else if (currentPage <= 4) page = i + 1;
-                  else if (currentPage >= totalPages - 3) page = totalPages - 6 + i;
-                  else page = currentPage - 3 + i;
-                  return (
-                    <button
-                      key={page}
-                      id={`browse_page_pagination_page_${page}_click`}
-                      onClick={() => { sendGTMEvent("browse_page_pagination_page_click", { page }); setCurrentPage(page); }}
-                      className={`w-7 h-7 text-xs rounded font-medium transition-colors ${
-                        page === currentPage ? "bg-blue-600 text-white" : "text-slate-600 hover:bg-slate-100"
-                      }`}
-                      data-testid={page === currentPage ? "text-page-info" : undefined}
-                    >
-                      {page}
-                    </button>
-                  );
-                })}
+            {!isAuthenticated && students.length > 0 && (
+              <div className="border border-border rounded-xl p-6 text-center mt-4 bg-card">
+                <Lock className="w-7 h-7 text-primary mx-auto mb-3" />
+                <h3 className="text-base font-semibold text-foreground mb-1">
+                  Access {totalStudentCount.toLocaleString()}+ Verified Engineers
+                </h3>
+                <p className="text-muted-foreground text-sm mb-5">
+                  Sign in to view full assessment reports, contact details, and hiring tools.
+                </p>
+                <div className="flex justify-center gap-6 mb-5 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5 text-primary" /> Full profile access</span>
+                  <span className="flex items-center gap-1.5"><Star className="w-3.5 h-3.5 text-primary" /> Shortlist & compare</span>
+                  <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-primary" /> Verified assessments</span>
+                </div>
+                <Button
+                  className="bg-primary text-primary-foreground px-8"
+                  onClick={() => { sendGTMEvent("browse_page_cta_sign_in_click"); window.location.href = "/api/login"; }}
+                  data-testid="button-sign-in-to-continue"
+                >
+                  Sign In Free
+                </Button>
               </div>
-              <button
-                id="browse_page_pagination_next_click"
-                onClick={() => { sendGTMEvent("browse_page_pagination_next_click", { page: currentPage + 1 }); setCurrentPage(Math.min(totalPages, currentPage + 1)); }}
-                disabled={currentPage === totalPages}
-                className="flex items-center gap-1 px-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                data-testid="button-next-page"
-              >
-                Next
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-            <span className="text-xs text-slate-400">Page {currentPage} of {totalPages}</span>
+            )}
+
+            {showPagination && <div className="h-4" />}
           </div>
         </div>
-      )}
 
-      {/* ── Comparison Modal ── */}
+        {showPagination && (
+          <div className="flex-shrink-0 border-t border-border bg-card px-6 py-2.5">
+            <div className="flex items-center justify-between" data-testid="pagination-controls">
+              <span className="text-2xs text-muted-foreground">
+                {students.length > 0
+                  ? `Showing ${((currentPage - 1) * studentsPerPage) + 1}–${Math.min(currentPage * studentsPerPage, totalCount)} of ${totalCount}`
+                  : "No results"}
+              </span>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => { sendGTMEvent("browse_page_pagination_prev_click", { page: currentPage - 1 }); setCurrentPage(Math.max(1, currentPage - 1)); }}
+                  disabled={currentPage === 1}
+                  className="flex items-center gap-1 px-2 py-1 text-2xs bg-card border border-border rounded-md text-muted-foreground hover:bg-muted font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  data-testid="button-prev-page"
+                >
+                  <ChevronLeft className="w-3 h-3" />
+                  Prev
+                </button>
+                <div className="flex items-center gap-0.5 mx-1">
+                  {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                    let page: number;
+                    if (totalPages <= 7) page = i + 1;
+                    else if (currentPage <= 4) page = i + 1;
+                    else if (currentPage >= totalPages - 3) page = totalPages - 6 + i;
+                    else page = currentPage - 3 + i;
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => { sendGTMEvent("browse_page_pagination_page_click", { page }); setCurrentPage(page); }}
+                        className={`w-6 h-6 text-2xs rounded font-medium transition-colors ${
+                          page === currentPage ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:bg-muted"
+                        }`}
+                        data-testid={page === currentPage ? "text-page-info" : undefined}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+                </div>
+                <button
+                  onClick={() => { sendGTMEvent("browse_page_pagination_next_click", { page: currentPage + 1 }); setCurrentPage(Math.min(totalPages, currentPage + 1)); }}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center gap-1 px-2 py-1 text-2xs bg-card border border-border rounded-md text-muted-foreground hover:bg-muted font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  data-testid="button-next-page"
+                >
+                  Next
+                  <ChevronRight className="w-3 h-3" />
+                </button>
+              </div>
+              <span className="text-2xs text-muted-foreground">Page {currentPage} of {totalPages}</span>
+            </div>
+          </div>
+        )}
+      </div>
+
       {showComparison && (
         <CandidateComparison
           candidates={compareList}
@@ -539,46 +811,43 @@ export default function BrowseStudents() {
         />
       )}
 
-      {/* ── Job Posting Popup ── */}
       <Dialog open={showJobPopup} onOpenChange={setShowJobPopup}>
-        <DialogContent className="sm:max-w-md p-0 overflow-hidden">
-          {/* Header */}
-          <div className="bg-blue-600 px-6 pt-6 pb-5">
+        <DialogContent className="sm:max-w-md p-0 overflow-hidden border-border">
+          <div className="bg-primary px-6 pt-6 pb-5">
             <div className="flex items-center gap-3 mb-1">
-              <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
-                <Briefcase className="w-5 h-5 text-white" />
+              <div className="w-9 h-9 bg-white/15 rounded-xl flex items-center justify-center shrink-0">
+                <Briefcase className="w-5 h-5 text-primary-foreground" />
               </div>
               <DialogHeader>
-                <DialogTitle className="text-white text-lg font-bold leading-tight">
+                <DialogTitle className="text-primary-foreground text-lg font-bold leading-tight">
                   Find matching candidates
                 </DialogTitle>
-                <DialogDescription className="text-blue-100 text-sm mt-0.5">
+                <DialogDescription className="text-primary-foreground/70 text-sm mt-0.5">
                   Tell us about the role and we'll rank the best-fit engineers from our pre-assessed talent pool.
                 </DialogDescription>
               </DialogHeader>
             </div>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleJobSubmit} className="px-6 py-5 space-y-4">
             <div className="space-y-1.5">
-              <Label htmlFor="jobRole" className="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
-                <SearchIcon className="w-3.5 h-3.5 text-blue-500" />
-                Role Name <span className="text-red-500">*</span>
+              <Label htmlFor="jobRole" className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                <SearchIcon className="w-3.5 h-3.5 text-primary" />
+                Role Name <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="jobRole"
                 placeholder="e.g. Python Developer, Data Analyst"
                 value={jobRole}
                 onChange={e => setJobRole(e.target.value)}
-                className="border-slate-200 focus:border-blue-400 focus:ring-blue-400/20 text-sm placeholder:text-slate-400"
+                className="border-border focus:border-primary focus:ring-primary/20 text-sm placeholder:text-muted-foreground"
                 autoFocus
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="jobLocation" className="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
-                <MapPin className="w-3.5 h-3.5 text-blue-500" />
+              <Label htmlFor="jobLocation" className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-primary" />
                 Location
               </Label>
               <Input
@@ -586,13 +855,13 @@ export default function BrowseStudents() {
                 placeholder="e.g. Hyderabad, Bangalore, Remote"
                 value={jobLocation}
                 onChange={e => setJobLocation(e.target.value)}
-                className="border-slate-200 focus:border-blue-400 focus:ring-blue-400/20 text-sm placeholder:text-slate-400"
+                className="border-border focus:border-primary focus:ring-primary/20 text-sm placeholder:text-muted-foreground"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="jobSalary" className="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
-                <DollarSign className="w-3.5 h-3.5 text-blue-500" />
+              <Label htmlFor="jobSalary" className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                <DollarSign className="w-3.5 h-3.5 text-primary" />
                 Salary Budget (LPA)
               </Label>
               <Input
@@ -603,7 +872,7 @@ export default function BrowseStudents() {
                 placeholder="e.g. 8"
                 value={jobSalary}
                 onChange={e => setJobSalary(e.target.value)}
-                className="border-slate-200 focus:border-blue-400 focus:ring-blue-400/20 text-sm placeholder:text-slate-400"
+                className="border-border focus:border-primary focus:ring-primary/20 text-sm placeholder:text-muted-foreground"
               />
             </div>
 
@@ -611,10 +880,10 @@ export default function BrowseStudents() {
               <Button
                 type="submit"
                 disabled={!jobRole.trim() || matchMutation.isPending}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm"
+                className="flex-1 bg-primary text-primary-foreground font-semibold text-sm"
               >
                 {matchMutation.isPending ? (
-                  <span className="flex items-center gap-2"><span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />Matching…</span>
+                  <span className="flex items-center gap-2"><span className="w-3.5 h-3.5 border-2 border-primary-foreground/40 border-t-primary-foreground rounded-full animate-spin" />Matching…</span>
                 ) : (
                   <span className="flex items-center gap-2"><Sparkles className="w-3.5 h-3.5" />Show Matches</span>
                 )}
@@ -623,7 +892,7 @@ export default function BrowseStudents() {
                 type="button"
                 variant="outline"
                 onClick={() => setShowJobPopup(false)}
-                className="px-4 border-slate-200 text-slate-600 hover:bg-slate-50 text-sm font-medium"
+                className="px-4 border-border text-muted-foreground hover:bg-muted text-sm font-medium"
               >
                 Not now
               </Button>

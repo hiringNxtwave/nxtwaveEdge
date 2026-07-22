@@ -2,27 +2,24 @@ import { useState, useEffect, useRef, type ChangeEvent } from "react";
 import { useLocation } from "wouter";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
-import { Mail, RotateCcw, ShieldCheck, Eye, X, MapPin, GraduationCap, Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { Mail, RotateCcw, ShieldCheck, Eye, X, MapPin, GraduationCap, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
 import nxtWaveLogo from "@assets/image_1774348454567.png";
 import { sendGTMEvent } from "@/lib/gtm";
 
-/* ── helpers ─────────────────────────────────────────────── */
-
 const BLOCKED_DOMAINS = new Set([
-  // Gmail — exact + common typos
   "gmail.com","gmail.co","gmail.net","gmail.co.in",
   "gmai.com","gmal.com","gmial.com","gmali.com","gmall.com",
   "gmeil.com","gemail.com","googmail.com","googlemail.com",
-  // Yahoo — exact + common typos
   "yahoo.com","yahoo.in","yahoo.co.in","yahoo.co.uk",
   "yaho.com","yahooo.com","yahoomail.com","yahoo.com.in",
   "ymail.com","rocketmail.com",
-  // Outlook / Hotmail / Live / MSN
   "outlook.com","outlook.in","outlook.co.in",
   "hotmail.com","hotmail.in","hotmail.co.in","hotmail.co.uk",
   "live.com","live.in","live.co.in","live.co.uk",
   "msn.com","windowslive.com",
-  // Other free providers
   "rediffmail.com","rediff.com",
   "aol.com","aim.com",
   "icloud.com","me.com","mac.com",
@@ -62,14 +59,12 @@ function parseServerError(err: any): string {
   return "Something went wrong. Please try again.";
 }
 
-/* ── Sliding candidates ──────────────────────────────────── */
-
 const slidingCandidates = [
-  { name: "Aditya P.", college: "NIT Bhopal (MANIT)", role: "Full Stack Developer", score: 99, verdict: "Strong Hire", initials: "A", avatarBg: "bg-blue-100 text-blue-700" },
-  { name: "Aman M.", college: "NIT Bhopal (MANIT)", role: "Backend Developer", score: 98, verdict: "Strong Hire", initials: "A", avatarBg: "bg-indigo-100 text-indigo-700" },
-  { name: "Rajveer S.", college: "HBTU, Uttar Pradesh", role: "Full Stack Developer", score: 99, verdict: "Strong Hire", initials: "R", avatarBg: "bg-sky-100 text-sky-700" },
-  { name: "Aditi R.", college: "NIT Uttarakhand", role: "Full Stack Developer", score: 98, verdict: "Strong Hire", initials: "A", avatarBg: "bg-blue-100 text-blue-700" },
-  { name: "Devansh G.", college: "HBTU, Kanpur", role: "Backend Developer", score: 94, verdict: "Strong Hire", initials: "D", avatarBg: "bg-indigo-100 text-indigo-700" },
+  { name: "Aditya P.", college: "NIT Bhopal (MANIT)", role: "Full Stack Developer", score: 99, verdict: "Strong Hire", initials: "A", avatarBg: "bg-primary/10 text-primary" },
+  { name: "Aman M.", college: "NIT Bhopal (MANIT)", role: "Backend Developer", score: 98, verdict: "Strong Hire", initials: "A", avatarBg: "bg-primary/10 text-primary" },
+  { name: "Rajveer S.", college: "HBTU, Uttar Pradesh", role: "Full Stack Developer", score: 99, verdict: "Strong Hire", initials: "R", avatarBg: "bg-primary/10 text-primary" },
+  { name: "Aditi R.", college: "NIT Uttarakhand", role: "Full Stack Developer", score: 98, verdict: "Strong Hire", initials: "A", avatarBg: "bg-primary/10 text-primary" },
+  { name: "Devansh G.", college: "HBTU, Kanpur", role: "Backend Developer", score: 94, verdict: "Strong Hire", initials: "D", avatarBg: "bg-primary/10 text-primary" },
 ];
 
 const hiringLogos = [
@@ -95,67 +90,60 @@ function CandidateCarousel() {
   const c = slidingCandidates[current];
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 max-w-sm">
-      {/* Header row */}
-      <div className="flex items-center justify-between mb-4">
+    <div className="surface-card p-4 max-w-sm">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded bg-blue-100 flex items-center justify-center">
-            <div className="w-2.5 h-2.5 grid grid-cols-2 gap-0.5">
-              {[...Array(4)].map((_,i)=><div key={i} className="bg-blue-500 rounded-[1px]"/>)}
+          <div className="w-4 h-4 rounded bg-primary/10 flex items-center justify-center">
+            <div className="w-2 h-2 grid grid-cols-2 gap-px">
+              {[...Array(4)].map((_,i)=><div key={i} className="bg-primary rounded-[0.5px]"/>)}
             </div>
           </div>
-          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest">
             Shortlisted Profiles
           </span>
         </div>
-        {/* Dots indicator */}
         <div className="flex items-center gap-1">
           {slidingCandidates.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrent(i)}
-              className={`transition-all duration-300 rounded-full ${i === current ? "w-5 h-1.5 bg-blue-600" : "w-1.5 h-1.5 bg-slate-200 hover:bg-slate-300"}`}
+              className={`transition-all duration-300 rounded-full ${i === current ? "w-4 h-1 bg-primary" : "w-1 h-1 bg-border hover:bg-muted-foreground/40"}`}
             />
           ))}
         </div>
       </div>
 
-      {/* Candidate — slides in/out */}
-      <div
-        className={`transition-all duration-300 ${animating ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0"}`}
-      >
-        <div className="flex items-center gap-3 mb-4">
-          <div className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm shrink-0 ${c.avatarBg}`}>
+      <div className={`transition-all duration-300 ${animating ? "opacity-0 translate-y-1" : "opacity-100 translate-y-0"}`}>
+        <div className="flex items-center gap-3 mb-3">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-xs shrink-0 ${c.avatarBg}`}>
             {c.initials}
           </div>
-          <div>
-            <p className="text-sm font-bold text-slate-900">{c.name}</p>
-            <p className="text-xs text-slate-400">{c.college}</p>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-foreground truncate">{c.name}</p>
+            <p className="text-xs text-muted-foreground truncate">{c.college}</p>
           </div>
         </div>
 
-        <div className="h-px bg-slate-100 mb-4" />
+        <div className="h-px bg-border mb-3" />
 
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Role Fit</p>
-            <p className="text-[12px] font-bold text-slate-800 leading-tight">{c.role}</p>
+            <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Role Fit</p>
+            <p className="text-xs font-semibold text-foreground leading-tight">{c.role}</p>
           </div>
           <div>
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Score</p>
-            <p className="text-[13px] font-bold text-slate-800">{c.score}/100</p>
+            <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Score</p>
+            <p className="text-xs font-semibold text-foreground">{c.score}/100</p>
           </div>
           <div>
-            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Verdict</p>
-            <p className="text-[13px] font-bold text-blue-600">{c.verdict}</p>
+            <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Verdict</p>
+            <p className="text-xs font-semibold text-primary">{c.verdict}</p>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-/* ── Sample profile modal ────────────────────────────────── */
 
 function SampleProfileModal({ onClose }: { onClose: () => void }) {
   const { data: student, isLoading } = useQuery<any>({
@@ -183,96 +171,92 @@ function SampleProfileModal({ onClose }: { onClose: () => void }) {
   const strengths = parseJson(student?.preferredRoles);
 
   const verdictColor =
-    student?.recommendation === "Strong Hire" ? "bg-blue-50 text-blue-700 border-blue-200" :
-    student?.recommendation === "Hire"        ? "bg-slate-50 text-slate-700 border-slate-200" :
-    "bg-slate-50 text-slate-600 border-slate-200";
+    student?.recommendation === "Strong Hire" ? "bg-primary/10 text-primary border-primary/20" :
+    student?.recommendation === "Hire" ? "bg-muted text-foreground border-border" :
+    "bg-muted text-muted-foreground border-border";
 
   return (
     <div
-      className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md relative overflow-hidden">
-        {/* Header bar */}
-        <div className="bg-[#EEF4FF] px-6 py-4 flex items-center justify-between">
+      <div className="bg-card border border-border rounded-xl shadow-xl w-full max-w-md relative overflow-hidden animate-slide-up">
+        <div className="bg-muted/50 px-5 py-3.5 flex items-center justify-between border-b border-border">
           <div className="flex items-center gap-2">
-            <Star className="w-4 h-4 text-blue-600 fill-blue-600" />
-            <span className="text-sm font-bold text-blue-700 uppercase tracking-widest">Sample Profile</span>
+            <Star className="w-3.5 h-3.5 text-primary fill-primary" />
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Sample Profile</span>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full hover:bg-blue-100 flex items-center justify-center transition-colors">
-            <X className="w-4 h-4 text-slate-500" />
+          <button onClick={onClose} className="w-7 h-7 rounded-lg hover:bg-muted flex items-center justify-center transition-colors">
+            <X className="w-3.5 h-3.5 text-muted-foreground" />
           </button>
         </div>
 
         {isLoading ? (
-          <div className="px-6 py-10 flex items-center justify-center">
-            <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div className="px-5 py-10 flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         ) : student ? (
-          <div className="px-6 py-6 space-y-5">
-            {/* Identity */}
-            <div className="flex items-start gap-4">
-              <div className="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-extrabold text-xl shrink-0">
+          <div className="px-5 py-5 space-y-4">
+            <div className="flex items-start gap-3.5">
+              <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg shrink-0">
                 {student.fullName?.charAt(0) ?? "?"}
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-extrabold text-slate-900 tracking-tight">{student.fullName}</h3>
-                <div className="flex items-center gap-1.5 mt-1 text-slate-500 text-sm">
-                  <GraduationCap className="w-3.5 h-3.5 shrink-0" />
+                <h3 className="text-base font-bold text-foreground tracking-tight">{student.fullName}</h3>
+                <div className="flex items-center gap-1.5 mt-0.5 text-muted-foreground text-xs">
+                  <GraduationCap className="w-3 h-3 shrink-0" />
                   <span className="truncate">{student.university}</span>
                 </div>
-                <div className="flex items-center gap-3 mt-0.5">
-                  {student.major && <p className="text-xs text-slate-400">{student.major} · {student.graduationYear}</p>}
+                <div className="flex items-center gap-2.5 mt-0.5">
+                  {student.major && <p className="text-[11px] text-muted-foreground">{student.major} · {student.graduationYear}</p>}
                   {student.location && student.location !== "India" && (
-                    <div className="flex items-center gap-1 text-xs text-slate-400">
-                      <MapPin className="w-3 h-3" />
+                    <div className="flex items-center gap-0.5 text-[11px] text-muted-foreground">
+                      <MapPin className="w-2.5 h-2.5" />
                       {student.location}
                     </div>
                   )}
                 </div>
               </div>
-              <span className={`shrink-0 text-xs font-bold px-2.5 py-1 rounded-lg border ${verdictColor}`}>
+              <span className={`shrink-0 text-[10px] font-semibold px-2 py-0.5 rounded-md border ${verdictColor}`}>
                 {student.recommendation}
               </span>
             </div>
 
-            <div className="h-px bg-slate-100" />
+            <div className="h-px bg-border" />
 
-            {/* Scores */}
             <div>
-              <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Assessment Scores</p>
-              <div className="grid grid-cols-4 gap-2">
-                <div className="bg-blue-50 rounded-xl px-3 py-2.5 text-center">
-                  <p className="text-[9px] font-semibold text-blue-400 uppercase tracking-wider mb-1">Overall</p>
-                  <p className="text-lg font-extrabold text-blue-700">{student.overallAssessmentScore ?? "—"}</p>
-                  <p className="text-[9px] text-blue-400">/ 100</p>
+              <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Assessment Scores</p>
+              <div className="grid grid-cols-4 gap-1.5">
+                <div className="bg-primary/5 rounded-lg px-2 py-2 text-center border border-primary/10">
+                  <p className="text-[8px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Overall</p>
+                  <p className="text-sm font-bold text-primary">{student.overallAssessmentScore ?? "—"}</p>
+                  <p className="text-[8px] text-muted-foreground">/ 100</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl px-3 py-2.5 text-center">
-                  <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-1">DSA</p>
-                  <p className="text-lg font-extrabold text-slate-800">{student.dsaScore ?? "—"}</p>
-                  <p className="text-[9px] text-slate-400">/ 100</p>
+                <div className="bg-muted rounded-lg px-2 py-2 text-center">
+                  <p className="text-[8px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">DSA</p>
+                  <p className="text-sm font-bold text-foreground">{student.dsaScore ?? "—"}</p>
+                  <p className="text-[8px] text-muted-foreground">/ 100</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl px-3 py-2.5 text-center">
-                  <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-1">CS Fund.</p>
-                  <p className="text-lg font-extrabold text-slate-800">{student.csFundamentalsScore ?? "—"}</p>
-                  <p className="text-[9px] text-slate-400">/ 100</p>
+                <div className="bg-muted rounded-lg px-2 py-2 text-center">
+                  <p className="text-[8px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">CS Fund.</p>
+                  <p className="text-sm font-bold text-foreground">{student.csFundamentalsScore ?? "—"}</p>
+                  <p className="text-[8px] text-muted-foreground">/ 100</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl px-3 py-2.5 text-center">
-                  <p className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Aptitude</p>
-                  <p className="text-lg font-extrabold text-slate-800">{student.aptitudeScore ?? "—"}</p>
-                  <p className="text-[9px] text-slate-400">/ 100</p>
+                <div className="bg-muted rounded-lg px-2 py-2 text-center">
+                  <p className="text-[8px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">Aptitude</p>
+                  <p className="text-sm font-bold text-foreground">{student.aptitudeScore ?? "—"}</p>
+                  <p className="text-[8px] text-muted-foreground">/ 100</p>
                 </div>
               </div>
             </div>
 
-            {/* Strengths */}
             {strengths.length > 0 && (
               <div>
-                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Assessor Highlights</p>
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Assessor Highlights</p>
                 <ul className="space-y-1.5">
                   {strengths.slice(0, 4).map((s: string, i: number) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-slate-600 leading-relaxed">
-                      <span className="mt-1 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
+                    <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground leading-relaxed">
+                      <span className="mt-1 w-1 h-1 rounded-full bg-primary shrink-0" />
                       {s}
                     </li>
                   ))}
@@ -280,82 +264,72 @@ function SampleProfileModal({ onClose }: { onClose: () => void }) {
               </div>
             )}
 
-            <div className="h-px bg-slate-100" />
+            <div className="h-px bg-border" />
 
-            {/* CTA */}
-            <p className="text-xs text-slate-500 text-center">
+            <p className="text-xs text-muted-foreground text-center">
               This is a live profile from our pre-assessed talent pool. Log in to see full contact details and assessment reports.
             </p>
           </div>
         ) : (
-          <div className="px-6 py-8 text-center text-slate-400 text-sm">Could not load profile. Please try again.</div>
+          <div className="px-5 py-8 text-center text-muted-foreground text-sm">Could not load profile. Please try again.</div>
         )}
       </div>
     </div>
   );
 }
 
-/* ── Left marketing panel ────────────────────────────────── */
-
 function LeftPanel({ onPreview }: { onPreview: () => void }) {
   const [, navigate] = useLocation();
 
   return (
-    <div className="flex flex-col items-center bg-[#EEF4FF] px-8 py-10 h-full w-full">
-      {/* Logo — pinned top, full-width row */}
+    <div className="flex flex-col items-center bg-muted/30 dark:bg-muted/20 px-8 py-10 h-full w-full border-r border-border">
       <div className="w-full max-w-[340px]">
         <button onClick={() => navigate("/")} className="focus:outline-none">
-          <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto hover:opacity-80 transition-opacity" />
+          <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-7 w-auto hover:opacity-80 transition-opacity dark:brightness-90" />
         </button>
       </div>
 
-      {/* Main copy — centered column */}
-      <div className="flex-1 flex flex-col justify-center gap-8 w-full max-w-[340px]">
+      <div className="flex-1 flex flex-col justify-center gap-7 w-full max-w-[340px]">
         <div>
-          <h1 className="text-4xl font-extrabold text-slate-900 leading-tight tracking-tight">
-            Your <span className="text-blue-600">Pre-Vetted</span><br />
+          <h1 className="text-3xl font-bold text-foreground leading-tight tracking-tight">
+            Your <span className="text-primary">Pre-Vetted</span><br />
             Shortlist is Ready.
           </h1>
-          <p className="text-slate-600 text-base mt-4 leading-relaxed">
+          <p className="text-muted-foreground text-sm mt-3 leading-relaxed">
             2,500+ companies use Edge to hire top freshers, pre-vetted,
             benchmark-verified, and ready to deploy.
           </p>
         </div>
 
-        {/* Sliding candidate card */}
         <CandidateCarousel />
 
-        {/* Preview link */}
         <button
           id="login_page_left_preview_profile_click"
           onClick={() => { sendGTMEvent("login_page_left_preview_profile_click"); onPreview(); }}
-          className="flex items-center gap-2 text-blue-600 text-sm font-semibold hover:text-blue-700 transition-colors w-fit"
+          className="flex items-center gap-2 text-primary text-sm font-semibold hover:text-primary/80 transition-colors w-fit"
         >
           <Eye className="w-4 h-4" />
           Preview a Sample Profile
         </button>
 
-        {/* Trusted by with real logos */}
         <div>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Trusted By</p>
-          <div className="flex items-center gap-5 flex-wrap">
+          <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-widest mb-2.5">Trusted By</p>
+          <div className="flex items-center gap-4 flex-wrap">
             {hiringLogos.map(p => (
               <img
                 key={p.name}
                 src={p.logo}
                 alt={p.name}
-                className="h-6 w-auto object-contain grayscale opacity-60"
+                className="h-5 w-auto object-contain grayscale opacity-50 dark:opacity-40"
               />
             ))}
-            <span className="text-[13px] text-slate-400 font-medium">and 2,500+ more companies</span>
+            <span className="text-xs text-muted-foreground font-medium">and 2,500+ more</span>
           </div>
         </div>
       </div>
     </div>
   );
 }
-
-/* ── Step 1: Email ───────────────────────────────────────── */
 
 function EmailStep({ onSent }: { onSent: (email: string) => void }) {
   const [email, setEmail] = useState("");
@@ -379,50 +353,51 @@ function EmailStep({ onSent }: { onSent: (email: string) => void }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Get Started</h2>
-        <p className="text-slate-500 text-sm mt-1.5">Enter your work email to access the platform.</p>
+        <h2 className="text-xl font-bold text-foreground tracking-tight">Sign in to your account</h2>
+        <p className="text-sm text-muted-foreground mt-1.5">Enter your work email to get started.</p>
       </div>
 
-      <form onSubmit={(e) => { e.preventDefault(); if (validate()) sendOtpMutation.mutate(); }} noValidate className="space-y-4">
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Work Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={e => { setEmail(e.target.value); setError(""); }}
-            placeholder="name@company.com"
-            autoComplete="email"
-            autoFocus
-            className={`w-full border rounded-xl px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 ${error ? "border-red-400 bg-red-50" : "border-slate-200 bg-white"}`}
-          />
+      <form onSubmit={(e) => { e.preventDefault(); if (validate()) sendOtpMutation.mutate(); }} noValidate className="space-y-3.5">
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-foreground">Work Email</label>
+          <div className="relative">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              type="email"
+              value={email}
+              onChange={e => { setEmail(e.target.value); setError(""); }}
+              placeholder="name@company.com"
+              autoComplete="email"
+              autoFocus
+              className={`h-10 pl-9 text-sm ${error ? "border-destructive focus-visible:ring-destructive" : ""}`}
+            />
+          </div>
           {error
-            ? <p className="mt-1.5 text-xs text-red-500">{error}</p>
-            : <p className="mt-1.5 text-xs text-slate-400">Personal, academic and free emails are not accepted.</p>
+            ? <p className="text-xs text-destructive">{error}</p>
+            : <p className="text-xs text-muted-foreground">Personal, academic and free emails are not accepted.</p>
           }
         </div>
 
-        <button
+        <Button
           id="login_page_email_view_profiles_click"
           type="submit"
           disabled={sendOtpMutation.isPending}
           onClick={() => { if (!sendOtpMutation.isPending) sendGTMEvent("login_page_email_view_profiles_click"); }}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-colors flex items-center justify-center gap-2"
+          className="w-full h-11 text-sm font-semibold"
         >
-          {sendOtpMutation.isPending ? "Sending…" : <>View Shortlisted Profiles <span className="text-base">→</span></>}
-        </button>
+          {sendOtpMutation.isPending ? "Sending..." : "Send OTP"}
+        </Button>
       </form>
 
-      <div className="flex items-center justify-center gap-2 text-xs text-slate-400">
-        <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
+      <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+        <ShieldCheck className="w-3.5 h-3.5" />
         We respect your inbox. No spam, ever.
       </div>
     </div>
   );
 }
-
-/* ── Step 2: OTP ─────────────────────────────────────────── */
 
 function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
   const [, navigate] = useLocation();
@@ -438,7 +413,6 @@ function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
     return () => clearTimeout(t);
   }, [resendCooldown]);
 
-  // Prevent browser back while on OTP step
   useEffect(() => {
     history.pushState(null, "", window.location.href);
     const handler = () => { history.pushState(null, "", window.location.href); };
@@ -473,21 +447,21 @@ function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Check your email</h2>
-        <p className="text-slate-500 text-sm mt-1.5">
-          We sent a 6-digit code to <span className="font-semibold text-slate-700">{email}</span>
+        <h2 className="text-xl font-bold text-foreground tracking-tight">Check your email</h2>
+        <p className="text-sm text-muted-foreground mt-1.5">
+          We sent a 6-digit code to <span className="font-semibold text-foreground">{email}</span>
         </p>
-        <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mt-2">
-          Don't see it? Check your <span className="font-semibold">Spam / Junk</span> folder. It may have been filtered there.
+        <p className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2 mt-2">
+          Don't see it? Check your <span className="font-semibold">Spam / Junk</span> folder.
         </p>
       </div>
 
-      <form onSubmit={(e) => { e.preventDefault(); if (otp.trim().length === 6) verifyMutation.mutate(); else setError("Please enter the full 6-digit code."); }} className="space-y-4">
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Verification Code</label>
-          <input
+      <form onSubmit={(e) => { e.preventDefault(); if (otp.trim().length === 6) verifyMutation.mutate(); else setError("Please enter the full 6-digit code."); }} className="space-y-3.5">
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-foreground">Verification Code</label>
+          <Input
             ref={inputRef}
             type="text"
             inputMode="numeric"
@@ -495,37 +469,37 @@ function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
             maxLength={6}
             value={otp}
             onChange={e => { setOtp(e.target.value.replace(/\D/g, "").slice(0, 6)); setError(""); }}
-            placeholder="• • • • • •"
-            className={`w-full border rounded-xl px-4 py-4 text-2xl font-bold text-slate-900 text-center tracking-[0.5em] placeholder:text-slate-300 placeholder:tracking-[0.2em] outline-none transition-colors focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 ${error ? "border-red-400 bg-red-50" : "border-slate-200 bg-white"}`}
+            placeholder="000000"
+            className={`h-11 text-lg font-bold text-center tracking-[0.4em] placeholder:tracking-[0.2em] placeholder:text-muted-foreground/50 ${error ? "border-destructive focus-visible:ring-destructive" : ""}`}
           />
           {error
-            ? <p className="mt-1.5 text-xs text-red-500">{error}</p>
-            : <p className="mt-1.5 text-xs text-slate-400">Code expires in 10 minutes.</p>
+            ? <p className="text-xs text-destructive">{error}</p>
+            : <p className="text-xs text-muted-foreground">Code expires in 10 minutes.</p>
           }
         </div>
 
-        <button
+        <Button
           id="login_page_otp_verify_click"
           type="submit"
           disabled={verifyMutation.isPending || otp.length < 6}
           onClick={() => { if (!verifyMutation.isPending && otp.length >= 6) sendGTMEvent("login_page_otp_verify_click"); }}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-colors"
+          className="w-full h-11 text-sm font-semibold"
         >
-          {verifyMutation.isPending ? "Verifying…" : "Verify & Continue →"}
-        </button>
+          {verifyMutation.isPending ? "Verifying..." : "Verify & Continue"}
+        </Button>
       </form>
 
       <div className="flex items-center justify-between text-sm">
-        <button id="login_page_otp_change_email_click" onClick={() => { sendGTMEvent("login_page_otp_change_email_click"); onBack(); }} className="text-slate-400 hover:text-slate-600 transition-colors text-xs">
-          ← Change email
+        <button id="login_page_otp_change_email_click" onClick={() => { sendGTMEvent("login_page_otp_change_email_click"); onBack(); }} className="text-muted-foreground hover:text-foreground transition-colors text-xs">
+          Change email
         </button>
-        <div className="flex items-center gap-2 text-slate-500">
-          <span>Didn't receive it?</span>
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <span className="text-xs">Didn't receive it?</span>
           {resendCooldown > 0
-            ? <span className="text-slate-400">Resend in {resendCooldown}s</span>
-            : <button id="login_page_otp_resend_click" type="button" onClick={() => { sendGTMEvent("login_page_otp_resend_click"); resendMutation.mutate(); }} disabled={resendMutation.isPending} className="text-blue-600 hover:text-blue-700 flex items-center gap-1">
+            ? <span className="text-xs text-muted-foreground/60">Resend in {resendCooldown}s</span>
+            : <button id="login_page_otp_resend_click" type="button" onClick={() => { sendGTMEvent("login_page_otp_resend_click"); resendMutation.mutate(); }} disabled={resendMutation.isPending} className="text-xs text-primary hover:text-primary/80 flex items-center gap-1 font-medium">
                 <RotateCcw className="w-3 h-3" />
-                {resendMutation.isPending ? "Sending…" : "Resend"}
+                {resendMutation.isPending ? "Sending..." : "Resend"}
               </button>
           }
         </div>
@@ -534,14 +508,11 @@ function OtpStep({ email, onBack }: { email: string; onBack: () => void }) {
   );
 }
 
-/* ── Step 3: Profile setup ───────────────────────────────── */
-
 function ProfileStep() {
   const [, navigate] = useLocation();
   const [form, setForm] = useState({ name: "", company: "", mobile: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Prevent leaving mid-profile
   useEffect(() => {
     history.pushState(null, "", window.location.href);
     const pop = () => history.pushState(null, "", window.location.href);
@@ -582,7 +553,6 @@ function ProfileStep() {
     return (e: ChangeEvent<HTMLInputElement>) => {
       let val = e.target.value;
       if (k === "mobile") {
-        // Strip +91 / 91 / 0 country/trunk prefix then keep only digits, max 10
         val = val.replace(/\D/g, "");
         if (val.startsWith("91") && val.length > 10) val = val.slice(2);
         if (val.startsWith("0") && val.length > 10) val = val.slice(1);
@@ -594,83 +564,81 @@ function ProfileStep() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
-          <Mail className="w-5 h-5 text-blue-600" />
+        <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+          <Mail className="w-4 h-4 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Almost there!</h2>
-        <p className="text-slate-500 text-sm mt-1.5">One quick step: tell us about yourself to set up your account.</p>
+        <h2 className="text-xl font-bold text-foreground tracking-tight">Almost there!</h2>
+        <p className="text-sm text-muted-foreground mt-1.5">One quick step: tell us about yourself to set up your account.</p>
       </div>
 
-      <form onSubmit={(e) => { e.preventDefault(); if (validate()) profileMutation.mutate(); }} noValidate className="space-y-4">
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
-          <input
+      <form onSubmit={(e) => { e.preventDefault(); if (validate()) profileMutation.mutate(); }} noValidate className="space-y-3.5">
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-foreground">Full Name</label>
+          <Input
             type="text"
             value={form.name}
             onChange={field("name")}
             placeholder="e.g. Arjun Sharma"
             autoComplete="name"
             autoFocus
-            className={`w-full border rounded-xl px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 ${errors.name ? "border-red-400 bg-red-50" : "border-slate-200 bg-white"}`}
+            className={`h-10 text-sm ${errors.name ? "border-destructive focus-visible:ring-destructive" : ""}`}
           />
-          {errors.name && <p className="mt-1.5 text-xs text-red-500">{errors.name}</p>}
+          {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Company Name</label>
-          <input
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-foreground">Company Name</label>
+          <Input
             type="text"
             value={form.company}
             onChange={field("company")}
             placeholder="e.g. Infosys, TCS, your startup"
             autoComplete="organization"
-            className={`w-full border rounded-xl px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 ${errors.company ? "border-red-400 bg-red-50" : "border-slate-200 bg-white"}`}
+            className={`h-10 text-sm ${errors.company ? "border-destructive focus-visible:ring-destructive" : ""}`}
           />
-          {errors.company && <p className="mt-1.5 text-xs text-red-500">{errors.company}</p>}
+          {errors.company && <p className="text-xs text-destructive">{errors.company}</p>}
         </div>
 
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 mb-2">Mobile Number</label>
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-foreground">Mobile Number</label>
           <div className="flex gap-2">
-            <div className="flex items-center border border-slate-200 bg-slate-50 rounded-xl px-3 text-sm text-slate-500 shrink-0 select-none font-medium">
+            <div className="flex items-center border border-input bg-muted rounded-lg px-3 text-sm text-muted-foreground shrink-0 select-none font-medium h-10">
               +91
             </div>
-            <input
+            <Input
               type="tel"
               value={form.mobile}
               onChange={field("mobile")}
               placeholder="9876543210"
               autoComplete="tel"
               maxLength={10}
-              className={`flex-1 border rounded-xl px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-colors focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 ${errors.mobile ? "border-red-400 bg-red-50" : "border-slate-200 bg-white"}`}
+              className={`flex-1 h-10 text-sm ${errors.mobile ? "border-destructive focus-visible:ring-destructive" : ""}`}
             />
           </div>
-          {errors.mobile && <p className="mt-1.5 text-xs text-red-500">{errors.mobile}</p>}
+          {errors.mobile && <p className="text-xs text-destructive">{errors.mobile}</p>}
         </div>
 
         {errors.server && (
-          <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-            <p className="text-sm text-red-600">{errors.server}</p>
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg px-3.5 py-2.5">
+            <p className="text-sm text-destructive">{errors.server}</p>
           </div>
         )}
 
-        <button
+        <Button
           id="login_page_profile_access_platform_click"
           type="submit"
           disabled={profileMutation.isPending}
           onClick={() => { if (!profileMutation.isPending) sendGTMEvent("login_page_profile_access_platform_click"); }}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3.5 px-4 rounded-xl text-sm transition-colors"
+          className="w-full h-11 text-sm font-semibold"
         >
-          {profileMutation.isPending ? "Saving…" : "Access Platform →"}
-        </button>
+          {profileMutation.isPending ? "Saving..." : "Access Platform"}
+        </Button>
       </form>
     </div>
   );
 }
-
-/* ── Main login page ─────────────────────────────────────── */
 
 export default function LoginPage() {
   const [location, navigate] = useLocation();
@@ -680,7 +648,6 @@ export default function LoginPage() {
 
   const isProfileRoute = location === "/login/profile";
 
-  // Redirect already-authenticated users straight to the app
   const { data: authUser } = useQuery<any>({
     queryKey: ["/api/auth/user"],
     staleTime: 30_000,
@@ -692,7 +659,6 @@ export default function LoginPage() {
     }
   }, [authUser, isProfileRoute]);
 
-  // Prevent accidental page leave during OTP step
   useEffect(() => {
     if (step !== "otp") return;
     const handler = (e: BeforeUnloadEvent) => { e.preventDefault(); e.returnValue = ""; };
@@ -701,40 +667,33 @@ export default function LoginPage() {
   }, [step]);
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
-      {/* Centered two-column card */}
-      <div className="w-full max-w-[960px] mx-auto flex min-h-screen lg:min-h-[640px] lg:shadow-[0_4px_40px_rgba(0,0,0,0.10)] lg:rounded-2xl overflow-hidden">
-
-        {/* Left panel — half width, content centered, hidden on mobile */}
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-[900px] min-h-[560px] flex rounded-xl border border-border overflow-hidden shadow-lg dark:shadow-2xl">
         <div className="hidden lg:flex w-1/2">
           <LeftPanel onPreview={() => setShowSampleProfile(true)} />
         </div>
 
-        {/* Right panel — half width, content centered */}
-        <div className="w-full lg:w-1/2 flex flex-col bg-white">
-          {/* Mobile logo */}
-          <div className="lg:hidden flex items-center h-14 border-b border-slate-100 px-6">
+        <div className="w-full lg:w-1/2 flex flex-col bg-card">
+          <div className="lg:hidden flex items-center h-12 border-b border-border px-5">
             <button onClick={() => navigate("/")} className="focus:outline-none">
-              <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-7 w-auto" />
+              <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-6 w-auto dark:brightness-90" />
             </button>
           </div>
 
-          {/* Mobile context banner */}
-          <div className="lg:hidden bg-[#EEF4FF] px-6 py-5 border-b border-blue-100">
-            <h2 className="text-[18px] font-extrabold text-slate-900 leading-snug mb-2">
+          <div className="lg:hidden bg-muted/40 px-5 py-4 border-b border-border">
+            <h2 className="text-base font-bold text-foreground leading-snug mb-1">
               Your Pre-Vetted<br />Shortlist is Ready.
             </h2>
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               2,500+ companies use Edge to hire top freshers, pre-vetted, benchmark-verified, and ready to deploy.
             </p>
           </div>
 
-          <div className="flex-1 flex items-center justify-center px-8 py-12">
+          <div className="flex-1 flex items-center justify-center px-6 py-10">
             <div className="w-full max-w-sm">
-              {/* Desktop logo */}
-              <div className="hidden lg:block mb-8">
+              <div className="hidden lg:block mb-7">
                 <button onClick={() => navigate("/")} className="focus:outline-none">
-                  <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-8 w-auto hover:opacity-80 transition-opacity" />
+                  <img src={nxtWaveLogo} alt="NxtWave Edge" className="h-7 w-auto hover:opacity-80 transition-opacity dark:brightness-90" />
                 </button>
               </div>
 
@@ -749,9 +708,9 @@ export default function LoginPage() {
                 />
               )}
 
-              <div className="mt-8 pt-6 border-t border-slate-100">
-                <p className="text-xs text-slate-400 text-center leading-relaxed">
-                  NxtWave Edge is a <span className="text-slate-500">B2B platform</span> exclusively for companies hiring pre-assessed engineering talent.
+              <div className="mt-7 pt-5 border-t border-border">
+                <p className="text-xs text-muted-foreground text-center leading-relaxed">
+                  NxtWave Edge is a <span className="text-foreground/60">B2B platform</span> exclusively for companies hiring pre-assessed engineering talent.
                 </p>
               </div>
             </div>
@@ -759,7 +718,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Sample profile modal */}
       {showSampleProfile && <SampleProfileModal onClose={() => setShowSampleProfile(false)} />}
     </div>
   );

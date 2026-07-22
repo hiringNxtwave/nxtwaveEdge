@@ -1,11 +1,13 @@
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
-import { Handshake, Menu, Heart, Trophy, BookOpen, MessageCircle, User, Settings, Building, ChevronDown } from "lucide-react";
+import { Handshake, Menu, Heart, MessageCircle, User, ChevronDown, Moon, Sun, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useShortlist } from "@/contexts/shortlist-context";
 import { Chatbot } from "@/components/chatbot";
+import NotificationBell from "@/components/notification-bell";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,137 +20,95 @@ import {
 export default function Header() {
   const { isAuthenticated, user } = useAuth();
   const [location] = useLocation();
+  const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [chatbotOpen, setChatbotOpen] = useState(false);
   const { shortlistCount } = useShortlist();
 
+  const isDark = theme === "dark" || (theme === "system" && typeof window !== "undefined" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+
   return (
-    <header className="bg-card/95 backdrop-blur-md shadow-clean border-b border-border sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+    <header className="bg-card/80 backdrop-blur-xl shadow-clean border-b border-border sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 md:h-16">
-          <Link href="/" className="flex items-center space-x-2 md:space-x-3 group" data-testid="link-home">
-            <div className="w-9 h-9 md:w-11 md:h-11 bg-primary rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 shadow-clean">
-              <Handshake className="text-primary-foreground w-5 h-5 md:w-6 md:h-6" />
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2 group" data-testid="link-home">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center transition-transform group-hover:scale-105">
+              <Handshake className="text-primary-foreground w-4 h-4" />
             </div>
-            <span className="text-xl md:text-2xl font-bold text-foreground tracking-tight">NxtWave</span>
+            <span className="text-lg font-semibold tracking-tight">NxtWave <span className="text-muted-foreground font-normal">EDGE</span></span>
           </Link>
-          
-          <nav className="hidden lg:flex items-center space-x-8 xl:space-x-10">
+
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center gap-1">
             {!isAuthenticated ? (
-              // Marketing navigation for unauthenticated users
               <>
-                {/* Only show relevant navigation based on current page */}
                 {location === "/for-students" ? (
                   <>
-                    <Link 
-                      href="/" 
-                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
-                      data-testid="link-for-companies"
-                    >
+                    <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-muted">
                       For Companies
                     </Link>
-                    <Link 
-                      href="/for-colleges" 
-                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
-                      data-testid="link-for-colleges"
-                    >
+                    <Link href="/for-colleges" className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-muted">
                       For Colleges
                     </Link>
-                    <Link 
-                      href="/for-students" 
-                      className="text-foreground border-b-2 border-primary transition-colors font-medium inline-block py-1"
-                      data-testid="link-for-students"
-                    >
+                    <Link href="/for-students" className="text-sm text-foreground font-medium px-3 py-2 rounded-lg bg-muted">
                       For Students
                     </Link>
                   </>
                 ) : location === "/for-colleges" ? (
                   <>
-                    <Link 
-                      href="/" 
-                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
-                      data-testid="link-for-companies"
-                    >
+                    <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-muted">
                       For Companies
                     </Link>
-                    <Link 
-                      href="/for-colleges" 
-                      className="text-foreground border-b-2 border-primary transition-colors font-medium inline-block py-1"
-                      data-testid="link-for-colleges"
-                    >
+                    <Link href="/for-colleges" className="text-sm text-foreground font-medium px-3 py-2 rounded-lg bg-muted">
                       For Colleges
                     </Link>
-                    <Link 
-                      href="/for-students" 
-                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
-                      data-testid="link-for-students"
-                    >
+                    <Link href="/for-students" className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-muted">
                       For Students
                     </Link>
                   </>
                 ) : (
-                  // Default navigation for landing page
                   <>
-                    <Link 
-                      href="/for-colleges" 
-                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
-                      data-testid="link-for-colleges"
-                    >
+                    <Link href="/for-colleges" className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-muted">
                       For Colleges
                     </Link>
-                    <Link 
-                      href="/for-students" 
-                      className="text-muted-foreground hover:text-foreground transition-colors font-medium inline-block py-1"
-                      data-testid="link-for-students"
-                    >
+                    <Link href="/for-students" className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-muted">
                       For Students
                     </Link>
                   </>
                 )}
               </>
             ) : (
-              // Clean navigation for authenticated users
               <>
-                <Link 
-                  href="/" 
+                <Link
+                  href="/"
                   className={cn(
-                    "transition-colors font-medium inline-block py-1",
-                    location === "/" 
-                      ? "text-foreground border-b-2 border-primary" 
-                      : "text-muted-foreground hover:text-foreground"
+                    "text-sm transition-colors px-3 py-2 rounded-lg",
+                    location === "/" ? "text-foreground font-medium bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
-                  data-testid="link-dashboard"
                 >
                   Dashboard
                 </Link>
-                <Link 
-                  href="/browse" 
+                <Link
+                  href="/browse"
                   className={cn(
-                    "transition-colors font-medium inline-block py-1",
-                    location === "/browse" 
-                      ? "text-foreground border-b-2 border-primary" 
-                      : "text-muted-foreground hover:text-foreground"
+                    "text-sm transition-colors px-3 py-2 rounded-lg",
+                    location === "/browse" ? "text-foreground font-medium bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
-                  data-testid="link-browse-profiles"
                 >
-                  Browse Profiles
+                  Browse Talent
                 </Link>
-                <Link 
-                  href="/shortlist" 
+                <Link
+                  href="/shortlist"
                   className={cn(
-                    "transition-colors font-medium inline-flex items-center gap-2 py-1 px-3 rounded-full",
-                    location === "/shortlist" 
-                      ? "text-white bg-primary" 
-                      : shortlistCount > 0 
-                        ? "text-primary bg-primary/10 hover:bg-primary/20" 
-                        : "text-muted-foreground hover:text-foreground"
+                    "text-sm transition-colors px-3 py-2 rounded-lg inline-flex items-center gap-1.5",
+                    location === "/shortlist" ? "text-foreground font-medium bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
-                  data-testid="link-shortlist"
                 >
-                  <Heart className={cn("w-4 h-4", shortlistCount > 0 ? "fill-current" : "")} />
-                  Shortlisted
+                  <Heart className={cn("w-3.5 h-3.5", shortlistCount > 0 && "fill-current text-primary")} />
+                  Shortlist
                   {shortlistCount > 0 && (
-                    <span className="bg-white/20 px-1.5 py-0.5 rounded-full text-xs font-semibold">
+                    <span className="bg-primary/10 text-primary text-[10px] font-semibold px-1.5 py-0.5 rounded-full">
                       {shortlistCount}
                     </span>
                   )}
@@ -156,365 +116,156 @@ export default function Header() {
               </>
             )}
           </nav>
-          
-          <div className="flex items-center gap-3 md:gap-4 lg:gap-6">
+
+          {/* Right side */}
+          <div className="flex items-center gap-2">
+            {/* Theme toggle */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="min-h-[40px] min-w-[40px] p-2"
+              onClick={toggleTheme}
+              title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              data-testid="button-theme-toggle"
+            >
+              {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </Button>
+
             {isAuthenticated ? (
-              <div className="flex items-center gap-3 md:gap-4 lg:gap-6">
+              <>
                 <Button
                   variant="ghost"
+                  size="sm"
                   onClick={() => setChatbotOpen(!chatbotOpen)}
                   className={cn(
-                    "flex items-center gap-2 h-auto px-3 py-2 hover:bg-accent rounded-lg transition-colors min-h-[44px]",
-                    chatbotOpen ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground"
+                    "hidden md:flex items-center gap-2 h-auto px-3 py-2 rounded-lg min-h-[40px]",
+                    chatbotOpen ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   )}
                   data-testid="button-toggle-chatbot"
-                  title="AI Assistant"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  <span className="hidden md:inline text-sm font-medium">AI Assistant</span>
-                  {!chatbotOpen && (
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  )}
+                  <span className="text-sm">AI Assistant</span>
                 </Button>
+                <NotificationBell />
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      className="flex items-center gap-2 md:gap-3 h-auto px-2 md:px-3 py-2 hover:bg-accent rounded-lg transition-colors min-h-[44px]"
+                    <Button
+                      variant="ghost"
+                      className="flex items-center gap-2 h-auto px-2 py-1.5 hover:bg-muted rounded-lg min-h-[40px]"
                       data-testid="button-user-dropdown"
                     >
                       {user?.profileImageUrl ? (
-                        <img 
-                          src={user.profileImageUrl} 
-                          alt="Profile" 
-                          className="w-8 h-8 rounded-full object-cover ring-2 ring-border"
-                          data-testid="img-profile-avatar"
-                        />
+                        <img src={user.profileImageUrl} alt="Profile" className="w-7 h-7 rounded-full object-cover" />
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center ring-2 ring-border">
-                          <User className="w-4 h-4 text-primary" />
+                        <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center">
+                          <User className="w-3.5 h-3.5 text-muted-foreground" />
                         </div>
                       )}
-                      <div className="hidden md:flex items-center gap-2">
-                        <span className="text-sm font-medium text-foreground" data-testid="text-user-name">
-                          {user?.firstName || user?.email?.split('@')[0] || 'User'}
-                        </span>
-                        <ChevronDown className="w-4 h-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
-                      </div>
-                      <ChevronDown className="w-4 h-4 text-muted-foreground md:hidden transition-transform group-data-[state=open]:rotate-180" />
+                      <ChevronDown className="w-3.5 h-3.5 text-muted-foreground hidden md:block" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-64 p-3 md:p-4">
-                    <DropdownMenuLabel className="p-3 md:p-4">
-                      <div className="flex items-center gap-3">
-                        {user?.profileImageUrl ? (
-                          <img 
-                            src={user.profileImageUrl} 
-                            alt="Profile" 
-                            className="w-10 h-10 rounded-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                            <User className="w-5 h-5 text-primary" />
-                          </div>
-                        )}
-                        <div className="flex flex-col">
-                          <p className="text-sm font-semibold leading-none text-foreground">
-                            {user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : 'User'}
-                          </p>
-                          <p className="text-xs leading-none text-muted-foreground mt-1">
-                            {user?.email}
-                          </p>
-                        </div>
-                      </div>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel className="p-3">
+                      <p className="text-sm font-medium">{user?.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : "User"}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{user?.email}</p>
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator className="my-2" />
-                    <DropdownMenuItem asChild className="p-0">
-                      <Link 
-                        href="/company-profile" 
-                        className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-md cursor-pointer hover:bg-accent transition-colors"
-                        data-testid="link-company-profile"
-                      >
-                        <Building className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-foreground">Company Profile</span>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link href="/jobs" className="flex items-center gap-2">
+                        <span className="text-muted-foreground">Jobs</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem asChild className="p-0">
-                      <button 
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-md cursor-pointer hover:bg-accent transition-colors text-left"
-                        onClick={() => setChatbotOpen(!chatbotOpen)}
-                        data-testid="button-ai-assistant"
-                      >
-                        <MessageCircle className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-foreground">AI Assistant</span>
+                    <DropdownMenuItem asChild className="cursor-pointer md:hidden">
+                      <button onClick={() => setChatbotOpen(!chatbotOpen)} className="w-full flex items-center gap-2">
+                        <span className="text-muted-foreground">AI Assistant</span>
                       </button>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator className="my-2" />
-                    <DropdownMenuItem asChild className="p-0">
-                      <button 
-                        className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-md cursor-pointer hover:bg-red-50 hover:text-red-600 transition-colors text-left text-red-600"
-                        onClick={() => window.location.href = "/api/logout"}
-                        data-testid="button-logout"
-                      >
-                        <span className="text-red-600">Sign Out</span>
-                      </button>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-red-600 focus:text-red-600 cursor-pointer"
+                      onClick={async () => {
+                        await fetch("/api/auth/logout", { method: "POST" });
+                        window.location.href = "/";
+                      }}
+                    >
+                      Sign Out
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-              </div>
+              </>
             ) : (
-              <div className="flex items-center gap-3 md:gap-4">
-                <Button 
-                  variant="ghost" 
-                  onClick={() => window.location.href = "/api/login"}
-                  className="min-h-[44px] px-4"
-                  data-testid="button-signin"
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  onClick={() => (window.location.href = "/api/login")}
+                  className="text-sm min-h-[40px] px-4"
                 >
                   Sign In
                 </Button>
                 {location === "/" && (
-                  <Button 
-                    onClick={() => window.location.href = "/api/login"}
-                    className="min-h-[44px] px-4 hidden sm:inline-flex"
-                    data-testid="button-start-hiring"
+                  <Button
+                    onClick={() => (window.location.href = "/api/login")}
+                    className="text-sm min-h-[40px] px-4 hidden sm:inline-flex"
                   >
-                    Browse Candidates
+                    Get Started
                   </Button>
                 )}
               </div>
             )}
-            
+
+            {/* Mobile menu button */}
             <Button
               variant="ghost"
               size="sm"
-              className="lg:hidden min-h-[44px] min-w-[44px] p-2"
+              className="lg:hidden min-h-[40px] min-w-[40px] p-2"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               data-testid="button-mobile-menu"
             >
-              <Menu className="w-5 h-5" />
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
           </div>
         </div>
-        
+
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-border py-4">
-            <nav className="flex flex-col gap-3 md:gap-4">
+          <div className="lg:hidden border-t border-border py-3 animate-fade-in">
+            <nav className="flex flex-col gap-1">
               {!isAuthenticated ? (
-                // Mobile navigation for unauthenticated users
                 <>
-                  {location === "/for-students" ? (
-                    <>
-                      <Link 
-                        href="/" 
-                        onClick={() => setMobileMenuOpen(false)}
-                        data-testid="link-mobile-for-companies"
-                      >
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
-                        >
-                          For Companies
-                        </Button>
-                      </Link>
-                      <Link 
-                        href="/for-colleges" 
-                        onClick={() => setMobileMenuOpen(false)}
-                        data-testid="link-mobile-for-colleges"
-                      >
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
-                        >
-                          For Colleges
-                        </Button>
-                      </Link>
-                      <Link 
-                        href="/for-students" 
-                        onClick={() => setMobileMenuOpen(false)}
-                        data-testid="link-mobile-for-students"
-                      >
-                        <Button 
-                          variant="default" 
-                          className="w-full justify-start font-medium transition-colors min-h-[48px] bg-primary text-primary-foreground"
-                        >
-                          For Students
-                        </Button>
-                      </Link>
-                    </>
-                  ) : location === "/for-colleges" ? (
-                    <>
-                      <Link 
-                        href="/" 
-                        onClick={() => setMobileMenuOpen(false)}
-                        data-testid="link-mobile-for-companies"
-                      >
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
-                        >
-                          For Companies
-                        </Button>
-                      </Link>
-                      <Link 
-                        href="/for-colleges" 
-                        onClick={() => setMobileMenuOpen(false)}
-                        data-testid="link-mobile-for-colleges"
-                      >
-                        <Button 
-                          variant="default" 
-                          className="w-full justify-start font-medium transition-colors min-h-[48px] bg-primary text-primary-foreground"
-                        >
-                          For Colleges
-                        </Button>
-                      </Link>
-                      <Link 
-                        href="/for-students" 
-                        onClick={() => setMobileMenuOpen(false)}
-                        data-testid="link-mobile-for-students"
-                      >
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
-                        >
-                          For Students
-                        </Button>
-                      </Link>
-                    </>
-                  ) : (
-                    // Default navigation for landing page
-                    <>
-                      <Link 
-                        href="/for-colleges" 
-                        onClick={() => setMobileMenuOpen(false)}
-                        data-testid="link-mobile-for-colleges"
-                      >
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
-                        >
-                          For Colleges
-                        </Button>
-                      </Link>
-                      <Link 
-                        href="/for-students" 
-                        onClick={() => setMobileMenuOpen(false)}
-                        data-testid="link-mobile-for-students"
-                      >
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-start font-medium transition-colors min-h-[48px] text-muted-foreground hover:text-foreground hover:bg-muted"
-                        >
-                          For Students
-                        </Button>
-                      </Link>
-                    </>
-                  )}
-                  <div className="border-t border-border pt-3 mt-3">
-                    <Button 
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        window.location.href = "/api/login";
-                      }}
-                      className="w-full min-h-[48px] font-medium"
-                      data-testid="button-mobile-signin"
-                    >
+                  <Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground px-3 py-2.5 rounded-lg hover:bg-muted">
+                    For Companies
+                  </Link>
+                  <Link href="/for-colleges" onClick={() => setMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground px-3 py-2.5 rounded-lg hover:bg-muted">
+                    For Colleges
+                  </Link>
+                  <Link href="/for-students" onClick={() => setMobileMenuOpen(false)} className="text-sm text-muted-foreground hover:text-foreground px-3 py-2.5 rounded-lg hover:bg-muted">
+                    For Students
+                  </Link>
+                  <div className="border-t border-border mt-2 pt-2">
+                    <Button onClick={() => { setMobileMenuOpen(false); window.location.href = "/api/login"; }} className="w-full text-sm min-h-[44px]">
                       Sign In
                     </Button>
                   </div>
                 </>
               ) : (
-                // Mobile navigation for authenticated users
                 <>
-                  <Link 
-                    href="/" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    data-testid="link-mobile-dashboard"
-                  >
-                    <Button 
-                      variant={location === "/" ? "default" : "ghost"} 
-                      className={cn(
-                        "w-full justify-start font-medium transition-colors min-h-[48px]",
-                        location === "/" 
-                          ? "bg-primary text-primary-foreground" 
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                      )}
-                    >
-                      Dashboard
-                    </Button>
+                  <Link href="/" onClick={() => setMobileMenuOpen(false)} className={cn("text-sm px-3 py-2.5 rounded-lg", location === "/" ? "font-medium bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}>
+                    Dashboard
                   </Link>
-                  <Link 
-                    href="/browse" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    data-testid="link-mobile-browse"
-                  >
-                    <Button 
-                      variant={location === "/browse" ? "default" : "ghost"} 
-                      className={cn(
-                        "w-full justify-start font-medium transition-colors min-h-[48px]",
-                        location === "/browse" 
-                          ? "bg-primary text-primary-foreground" 
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                      )}
-                    >
-                      Browse Profiles
-                    </Button>
+                  <Link href="/browse" onClick={() => setMobileMenuOpen(false)} className={cn("text-sm px-3 py-2.5 rounded-lg", location === "/browse" ? "font-medium bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}>
+                    Browse Talent
                   </Link>
-                  <Link 
-                    href="/shortlist" 
-                    onClick={() => setMobileMenuOpen(false)}
-                    data-testid="link-mobile-shortlist"
-                  >
-                    <Button 
-                      variant={location === "/shortlist" ? "default" : "ghost"} 
-                      className={cn(
-                        "w-full justify-start font-medium transition-colors min-h-[48px]",
-                        location === "/shortlist" 
-                          ? "bg-primary text-primary-foreground" 
-                          : shortlistCount > 0 
-                            ? "text-primary hover:text-primary hover:bg-primary/10" 
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                      )}
-                    >
-                      <Heart className={cn("w-4 h-4 mr-2", shortlistCount > 0 ? "fill-current" : "")} />
-                      Shortlisted
-                      {shortlistCount > 0 && (
-                        <span className="ml-auto bg-primary/20 px-2 py-0.5 rounded-full text-xs font-semibold">
-                          {shortlistCount}
-                        </span>
-                      )}
-                    </Button>
+                  <Link href="/shortlist" onClick={() => setMobileMenuOpen(false)} className={cn("text-sm px-3 py-2.5 rounded-lg inline-flex items-center gap-2", location === "/shortlist" ? "font-medium bg-muted" : "text-muted-foreground hover:text-foreground hover:bg-muted")}>
+                    <Heart className={cn("w-3.5 h-3.5", shortlistCount > 0 && "fill-current text-primary")} />
+                    Shortlist
                   </Link>
-                  <div className="border-t border-border pt-3 mt-3">
-                    <button 
-                      className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md cursor-pointer hover:bg-accent transition-colors text-left min-h-[48px]"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setChatbotOpen(!chatbotOpen);
-                      }}
-                      data-testid="button-mobile-ai-assistant"
-                    >
-                      <MessageCircle className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-foreground">AI Assistant</span>
+                  <div className="border-t border-border mt-2 pt-2 space-y-1">
+                    <button onClick={() => { setMobileMenuOpen(false); setChatbotOpen(!chatbotOpen); }} className="w-full text-left text-sm text-muted-foreground hover:text-foreground px-3 py-2.5 rounded-lg hover:bg-muted flex items-center gap-2">
+                      <MessageCircle className="w-4 h-4" />
+                      AI Assistant
                     </button>
-                    <Link 
-                      href="/company-profile" 
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md cursor-pointer hover:bg-accent transition-colors min-h-[48px]"
-                      data-testid="link-mobile-company-profile"
-                    >
-                      <Building className="w-4 h-4 text-muted-foreground" />
-                      <span className="text-foreground">Company Profile</span>
-                    </Link>
-                    <button 
-                      className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-md cursor-pointer hover:bg-red-50 hover:text-red-600 transition-colors text-left text-red-600 min-h-[48px]"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        window.location.href = "/api/logout";
-                      }}
-                      data-testid="button-mobile-logout"
-                    >
-                      <span className="text-red-600">Sign Out</span>
+                    <button onClick={() => { setMobileMenuOpen(false); window.location.href = "/api/logout"; }} className="w-full text-left text-sm text-red-600 px-3 py-2.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">
+                      Sign Out
                     </button>
                   </div>
                 </>
@@ -523,14 +274,10 @@ export default function Header() {
           </div>
         )}
       </div>
-      
+
       {/* AI Chatbot */}
       {isAuthenticated && (
-        <Chatbot 
-          isOpen={chatbotOpen} 
-          onToggle={() => setChatbotOpen(!chatbotOpen)}
-          context={{ page: location, user }}
-        />
+        <Chatbot isOpen={chatbotOpen} onToggle={() => setChatbotOpen(!chatbotOpen)} context={{ page: location, user }} />
       )}
     </header>
   );

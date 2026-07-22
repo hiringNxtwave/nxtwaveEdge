@@ -11,6 +11,9 @@ import {
   assessmentQuestions,
   assessmentResponses,
   otpCodes,
+  candidateShares,
+  companyInterest,
+  notifications,
   type User,
   type UpsertUser,
   type Company,
@@ -39,6 +42,12 @@ import {
   type AssessmentWithResponses,
   type OtpCode,
   type InsertOtpCode,
+  type CandidateShare,
+  type InsertCandidateShare,
+  type CompanyInterest,
+  type InsertCompanyInterest,
+  type Notification,
+  type InsertNotification,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, ilike, gte, desc, asc, sql, inArray, lt, isNull } from "drizzle-orm";
@@ -210,6 +219,31 @@ export interface IStorage {
 
   // Initial data seeding
   seedInitialData(): Promise<void>;
+
+  // Candidate Shares operations
+  createCandidateShares(shares: InsertCandidateShare[]): Promise<CandidateShare[]>;
+  getCandidateSharesByJob(jobId: string): Promise<CandidateShare[]>;
+  getCandidateShareByToken(token: string): Promise<CandidateShare | undefined>;
+  updateCandidateShareStatus(id: string, status: string): Promise<void>;
+  markCandidateShareViewed(token: string): Promise<void>;
+
+  // Company Interest operations
+  createCompanyInterest(interest: InsertCompanyInterest): Promise<CompanyInterest>;
+  getCompanyInterestByJob(jobId: string, companyId: string): Promise<CompanyInterest[]>;
+  getCompanyInterestByStudent(studentId: string): Promise<CompanyInterest[]>;
+  updateCompanyInterestStatus(id: string, status: string): Promise<void>;
+
+  // Notification operations
+  createNotification(notification: InsertNotification): Promise<Notification>;
+  getNotificationsByUser(userId: string): Promise<Notification[]>;
+  getUnreadNotificationCount(userId: string): Promise<number>;
+  markNotificationRead(id: string): Promise<void>;
+  markAllNotificationsRead(userId: string): Promise<void>;
+
+  // Admin operations
+  getAllJobsWithCompany(): Promise<(CompanyRequirements & { companyName: string; shareCount: number })[]>;
+  importStudentsFromData(studentsData: InsertStudent[]): Promise<{ imported: number; errors: string[] }>;
+  getAllSharedCandidates(): Promise<(CandidateShare & { jobTitle: string; studentName: string; companyName: string })[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1875,6 +1909,143 @@ function inorderTraversal(root) {
         (studentWorkMode === "onsite" && companyWorkMode === "remote")) return 60;
     
     return 80; // Default moderate match
+  }
+
+  // Candidate Shares operations
+  async createCandidateShares(shares: InsertCandidateShare[]): Promise<CandidateShare[]> {
+    const created = await db.insert(candidateShares).values(shares).returning();
+    return created;
+  }
+
+  async getCandidateSharesByJob(jobId: string): Promise<CandidateShare[]> {
+    return await db.select().from(candidateShares).where(eq(candidateShares.jobId, jobId));
+  }
+
+  async getCandidateShareByToken(token: string): Promise<CandidateShare | undefined> {
+    const [share] = await db.select().from(candidateShares).where(eq(candidateShares.token, token));
+    return share;
+  }
+
+  async updateCandidateShareStatus(id: string, status: string): Promise<void> {
+    await db.update(candidateShares).set({ status }).where(eq(candidateShares.id, id));
+  }
+
+  async markCandidateShareViewed(token: string): Promise<void> {
+    await db.update(candidateShares)
+      .set({ status: "viewed", viewedAt: new Date() })
+      .where(eq(candidateShares.token, token));
+  }
+
+  // Company Interest operations
+  async createCompanyInterest(interest: InsertCompanyInterest): Promise<CompanyInterest> {
+    const [created] = await db.insert(companyInterest).values(interest).returning();
+    return created;
+  }
+
+  async getCompanyInterestByJob(jobId: string, companyId: string): Promise<CompanyInterest[]> {
+    return await db.select().from(companyInterest)
+      .where(and(eq(companyInterest.jobId, jobId), eq(companyInterest.companyId, companyId)));
+  }
+
+  async getCompanyInterestByStudent(studentId: string): Promise<CompanyInterest[]> {
+    return await db.select().from(companyInterest).where(eq(companyInterest.studentId, studentId));
+  }
+
+  async updateCompanyInterestStatus(id: string, status: string): Promise<void> {
+    await db.update(companyInterest).set({ status, updatedAt: new Date() }).where(eq(companyInterest.id, id));
+  }
+
+  // Notification operations
+  async createNotification(notification: InsertNotification): Promise<Notification> {
+    const [created] = await db.insert(notifications).values(notification).returning();
+    return created;
+  }
+
+  async getNotificationsByUser(userId: string): Promise<Notification[]> {
+    return await db.select().from(notifications)
+      .where(eq(notifications.userId, userId))
+      .orderBy(desc(notifications.createdAt));
+  }
+
+  async getUnreadNotificationCount(userId: string): Promise<number> {
+    const [result] = await db.select({ count: sql`count(*)` })
+      .from(notifications)
+      .where(and(eq(notifications.userId, userId), eq(notifications.read, false)));
+    return Number(result?.count || 0);
+  }
+
+  async markNotificationRead(id: string): Promise<void> {
+    await db.update(notifications)
+      .set({ read: true, readAt: new Date() })
+      .where(eq(notifications.id, id));
+  }
+
+  async markAllNotificationsRead(userId: string): Promise<void> {
+    await db.update(notifications)
+      .set({ read: true, readAt: new Date() })
+      .where(and(eq(notifications.userId, userId), eq(notifications.read, false)));
+  }
+
+  // Admin operations
+  async getAllJobsWithCompany(): Promise<(CompanyRequirements & { companyName: string; shareCount: number })[]> {
+    const results = await db
+      .select({
+        requirement: companyRequirements,
+        companyName: companies.name,
+        shareCount: sql<number>`cast(count(${candidateShares.id}) as int)`,
+      })
+      .from(companyRequirements)
+      .innerJoin(companies, eq(companyRequirements.companyId, companies.id))
+      .leftJoin(candidateShares, eq(companyRequirements.id, candidateShares.jobId))
+      .groupBy(companyRequirements.id, companies.name)
+      .orderBy(desc(companyRequirements.createdAt));
+
+    return results.map(r => ({
+      ...r.requirement,
+      companyName: r.companyName,
+      shareCount: r.shareCount,
+    }));
+  }
+
+  async importStudentsFromData(studentsData: InsertStudent[]): Promise<{ imported: number; errors: string[] }> {
+    let imported = 0;
+    const errors: string[] = [];
+
+    for (const student of studentsData) {
+      try {
+        await db.insert(students).values(student).onConflictDoUpdate({
+          target: students.email,
+          set: { ...student, updatedAt: new Date() },
+        });
+        imported++;
+      } catch (error: any) {
+        errors.push(`Failed to import ${student.email}: ${error.message}`);
+      }
+    }
+
+    return { imported, errors };
+  }
+
+  async getAllSharedCandidates(): Promise<(CandidateShare & { jobTitle: string; studentName: string; companyName: string })[]> {
+    const results = await db
+      .select({
+        share: candidateShares,
+        jobTitle: companyRequirements.jobTitle,
+        studentName: sql<string>`concat(${students.firstName}, ' ', ${students.lastName})`,
+        companyName: companies.name,
+      })
+      .from(candidateShares)
+      .innerJoin(companyRequirements, eq(candidateShares.jobId, companyRequirements.id))
+      .innerJoin(students, eq(candidateShares.studentId, students.id))
+      .innerJoin(companies, eq(candidateShares.companyId, companies.id))
+      .orderBy(desc(candidateShares.createdAt));
+
+    return results.map(r => ({
+      ...r.share,
+      jobTitle: r.jobTitle,
+      studentName: r.studentName,
+      companyName: r.companyName,
+    }));
   }
 }
 

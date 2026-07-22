@@ -25,6 +25,7 @@ const TalentDashboard = lazy(() => import("./pages/talent-dashboard"));
 const ShortlistingPage = lazy(() => import("./pages/shortlisting"));
 const MarketIntelligencePage = lazy(() => import("./pages/market-intelligence-page"));
 const ExploreEdge = lazy(() => import("./pages/explore-edge"));
+const AdminDashboard = lazy(() => import("./pages/admin"));
 const CompanyProfileManager = lazy(() =>
   import("./components/company-profile-manager").then(m => ({ default: m.CompanyProfileManager }))
 );
@@ -93,10 +94,18 @@ function Router() {
         {!isAuthenticated ? (
           <>
             <Route path="/" component={Landing} />
+            {/* Allow token-based browse without auth */}
+            <Route path="/browse">{() => {
+              const params = new URLSearchParams(window.location.search);
+              if (params.get("token")) {
+                return <BrowseStudents />;
+              }
+              window.location.replace("/login");
+              return null;
+            }}</Route>
             {!isLoading && (
               <>
                 {/* Protected routes redirect to login, not landing */}
-                <Route path="/browse">{() => { window.location.replace("/login"); return null; }}</Route>
                 <Route path="/candidates">{() => { window.location.replace("/login"); return null; }}</Route>
                 {/* All other unknown routes fall back to landing */}
                 <Route>
@@ -112,6 +121,7 @@ function Router() {
           <>
             <Route path="/" component={Landing} />
             <Route path="/browse" component={() => <AppShell><BrowseStudents /></AppShell>} />
+            <Route path="/admin" component={() => <AppShell><AdminDashboard /></AppShell>} />
             <Route path="/student-dashboard" component={() => <AppShell><StudentDashboard /></AppShell>} />
             <Route path="/student/:id" component={() => <AppShell><StudentProfile /></AppShell>} />
             <Route path="/student-profile" component={() => <AppShell><StudentProfileForm /></AppShell>} />

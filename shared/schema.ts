@@ -175,6 +175,7 @@ export const companyRequirements = pgTable("company_requirements", {
   
   // Status
   isActive: boolean("is_active").default(true),
+  status: varchar("status").default("active"), // 'active', 'closed', 'draft'
   lastUpdated: timestamp("last_updated").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
   deletedAt: timestamp("deleted_at"),
@@ -310,6 +311,8 @@ export const usersRelations = relations(users, ({ one, many }) => ({
     references: [companies.userId],
   }),
   otpCodes: many(otpCodes),
+  notifications: many(notifications),
+  sharedCandidates: many(candidateShares),
 }));
 
 export const otpCodesRelations = relations(otpCodes, ({ one }) => ({
@@ -325,13 +328,17 @@ export const companiesRelations = relations(companies, ({ one, many }) => ({
   contactRequests: many(contactRequests),
   interviews: many(interviews),
   requirements: many(companyRequirements),
+  candidateShares: many(candidateShares),
+  companyInterest: many(companyInterest),
 }));
 
-export const companyRequirementsRelations = relations(companyRequirements, ({ one }) => ({
+export const companyRequirementsRelations = relations(companyRequirements, ({ one, many }) => ({
   company: one(companies, {
     fields: [companyRequirements.companyId],
     references: [companies.id],
   }),
+  candidateShares: many(candidateShares),
+  companyInterest: many(companyInterest),
 }));
 
 export const studentsRelations = relations(students, ({ many }) => ({
@@ -341,6 +348,8 @@ export const studentsRelations = relations(students, ({ many }) => ({
   codeSubmissions: many(codeSubmissions),
   interviews: many(interviews),
   idVerifications: many(idVerifications),
+  candidateShares: many(candidateShares),
+  companyInterest: many(companyInterest),
 }));
 
 export const skillsRelations = relations(skills, ({ many }) => ({
@@ -531,6 +540,45 @@ export const idVerifications = pgTable("id_verifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Candidate Shares - token-based access for company portal
+export const candidateShares = pgTable("candidate_shares", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobId: varchar("job_id").notNull().references(() => companyRequirements.id),
+  studentId: varchar("student_id").notNull().references(() => students.id),
+  companyId: varchar("company_id").notNull().references(() => companies.id),
+  token: varchar("token").notNull().unique(),
+  sharedBy: varchar("shared_by").references(() => users.id),
+  expiresAt: timestamp("expires_at").notNull(),
+  status: varchar("status").default("active"), // 'active', 'expired', 'viewed'
+  viewedAt: timestamp("viewed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Company Interest - track which candidates a company marks interested in
+export const companyInterest = pgTable("company_interest", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  jobId: varchar("job_id").notNull().references(() => companyRequirements.id),
+  studentId: varchar("student_id").notNull().references(() => students.id),
+  companyId: varchar("company_id").notNull().references(() => companies.id),
+  notes: text("notes"),
+  status: varchar("status").default("interested"), // 'interested', 'shortlisted', 'interviewed', 'hired'
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Notifications - in-app notification bell
+export const notifications = pgTable("notifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  type: varchar("type").notNull(), // 'interest', 'share', 'update', 'interview'
+  title: varchar("title").notNull(),
+  message: text("message"),
+  link: varchar("link"),
+  read: boolean("read").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  readAt: timestamp("read_at"),
+});
+
 // New Relations (after table definitions)
 export const codeSubmissionsRelations = relations(codeSubmissions, ({ one }) => ({
   student: one(students, {
@@ -572,6 +620,47 @@ export const idVerificationsRelations = relations(idVerifications, ({ one }) => 
   }),
 }));
 
+export const candidateSharesRelations = relations(candidateShares, ({ one }) => ({
+  job: one(companyRequirements, {
+    fields: [candidateShares.jobId],
+    references: [companyRequirements.id],
+  }),
+  student: one(students, {
+    fields: [candidateShares.studentId],
+    references: [students.id],
+  }),
+  company: one(companies, {
+    fields: [candidateShares.companyId],
+    references: [companies.id],
+  }),
+  sharedByUser: one(users, {
+    fields: [candidateShares.sharedBy],
+    references: [users.id],
+  }),
+}));
+
+export const companyInterestRelations = relations(companyInterest, ({ one }) => ({
+  job: one(companyRequirements, {
+    fields: [companyInterest.jobId],
+    references: [companyRequirements.id],
+  }),
+  student: one(students, {
+    fields: [companyInterest.studentId],
+    references: [students.id],
+  }),
+  company: one(companies, {
+    fields: [companyInterest.companyId],
+    references: [companies.id],
+  }),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.userId],
+    references: [users.id],
+  }),
+}));
+
 export const insertAssessmentQuestionSchema = createInsertSchema(assessmentQuestions).omit({
   id: true,
   createdAt: true,
@@ -602,6 +691,24 @@ export const insertMessageSchema = createInsertSchema(messages).omit({
 export const insertIdVerificationSchema = createInsertSchema(idVerifications).omit({
   id: true,
   createdAt: true,
+});
+
+export const insertCandidateShareSchema = createInsertSchema(candidateShares).omit({
+  id: true,
+  createdAt: true,
+  viewedAt: true,
+});
+
+export const insertCompanyInterestSchema = createInsertSchema(companyInterest).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertNotificationSchema = createInsertSchema(notifications).omit({
+  id: true,
+  createdAt: true,
+  readAt: true,
 });
 
 // Types
@@ -638,6 +745,13 @@ export type Message = typeof messages.$inferSelect;
 export type InsertIdVerification = z.infer<typeof insertIdVerificationSchema>;
 export type IdVerification = typeof idVerifications.$inferSelect;
 
+export type InsertCandidateShare = z.infer<typeof insertCandidateShareSchema>;
+export type CandidateShare = typeof candidateShares.$inferSelect;
+export type InsertCompanyInterest = z.infer<typeof insertCompanyInterestSchema>;
+export type CompanyInterest = typeof companyInterest.$inferSelect;
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;
+export type Notification = typeof notifications.$inferSelect;
+
 // Extended types for joined data
 export type StudentWithAssessments = Student & {
   projects: Project[];
@@ -645,6 +759,11 @@ export type StudentWithAssessments = Student & {
   institution: string;
   course: string;
   assessmentLevel: 'Excellent' | 'Strong' | 'Good' | 'Needs Improvement' | 'Not Assessed';
+};
+
+export type StudentWithSkills = Student & {
+  skills: (typeof studentSkills.$inferSelect & { skill: typeof skills.$inferSelect })[];
+  projects: Project[];
 };
 
 export type CompanyWithUser = Company & {

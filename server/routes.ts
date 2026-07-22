@@ -4,13 +4,14 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { db } from "./db";
 import { otpCodes } from "@shared/schema";
 import { eq, and, gt, desc } from "drizzle-orm";
-import MistralClient from '@mistralai/mistralai';
 import multer from 'multer';
 import { upsertContact, upsertCompany, associateContactWithCompany, createDeal } from "./hubspot";
 import { 
   insertCompanySchema,
   insertCompanyRequirementsSchema,
   insertContactRequestSchema,
+  insertCandidateShareSchema,
+  insertCompanyInterestSchema,
   type Student,
   type StudentWithAssessments,
 } from "@shared/schema";
@@ -1535,14 +1536,20 @@ export async function registerRoutes(app: Express): Promise<void> {
         return res.status(400).json({ message: "Company profile required" });
       }
 
-      const { candidateIds } = req.body;
+      const { candidateIds, jobId, expiresInHours = 24, recipientEmail } = req.body;
       
       if (!Array.isArray(candidateIds) || candidateIds.length === 0) {
         return res.status(400).json({ message: "Candidate IDs are required" });
       }
 
-      if (candidateIds.length > 3) {
-        return res.status(400).json({ message: "Maximum 3 candidates can be selected" });
+      if (!jobId) {
+        return res.status(400).json({ message: "Job ID is required" });
+      }
+
+      // Get job details
+      const job = await storage.getCompanyRequirementById(jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
       }
 
       // Get candidate details
@@ -1557,26 +1564,117 @@ export async function registerRoutes(app: Express): Promise<void> {
         return res.status(404).json({ message: "No valid candidates found" });
       }
 
-      // For now, we'll simulate email sending and log the action
-      // In a real implementation, you would integrate with SendGrid or another email service
-      console.log(`Sending shortlist emails to ${validCandidates.length} candidates:`);
-      validCandidates.forEach((candidate: any) => {
-        console.log(`- ${candidate.firstName} ${candidate.lastName} (${candidate.email})`);
-      });
-
-      // Create a simple success response
-      const emailResults = validCandidates.map((candidate: any) => ({
-        candidateId: candidate.id,
-        candidateName: `${candidate.firstName} ${candidate.lastName}`,
-        email: candidate.email,
-        status: 'sent',
-        message: 'Shortlist notification sent successfully'
+      // Create candidate shares with tokens
+      const crypto = await import('crypto');
+      const shares = validCandidates.map((candidate: any) => ({
+        jobId,
+        studentId: candidate.id,
+        companyId: company.id,
+        token: crypto.randomBytes(32).toString('hex'),
+        sharedBy: userId,
+        expiresAt: new Date(Date.now() + expiresInHours * 60 * 60 * 1000),
       }));
+
+      const createdShares = await storage.createCandidateShares(shares);
+
+      // Generate links
+      const baseUrl = req.protocol + '://' + req.get('host');
+      const links = createdShares.map((share, index) => ({
+        student: validCandidates[index],
+        link: `${baseUrl}/browse?jobId=${jobId}&token=${share.token}`,
+        expiresAt: share.expiresAt,
+      }));
+
+      // Send email via SendGrid if API key is available
+      if (process.env.SENDGRID_API_KEY && recipientEmail) {
+        try {
+          const sgMail = (await import('@sendgrid/mail')).default;
+          sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+          const candidateListHtml = links.map(({ student, link }) => `
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #eee;">
+                <strong>${student.firstName} ${student.lastName}</strong><br/>
+                <span style="color: #666; font-size: 12px;">${student.university} • ${student.degree}</span>
+              </td>
+              <td style="padding: 12px; border-bottom: 1px solid #eee; text-align: right;">
+                <a href="${link}" style="background: #2563eb; color: white; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px;">View Profile</a>
+              </td>
+            </tr>
+          `).join('');
+
+          const emailHtml = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            </head>
+            <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f8fafc;">
+              <div style="max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                <div style="background: linear-gradient(135deg, #2563eb, #1d4ed8); padding: 24px; color: white;">
+                  <h1 style="margin: 0; font-size: 20px;">NxtWave Edge</h1>
+                  <p style="margin: 8px 0 0; opacity: 0.9; font-size: 14px;">Shortlisted Candidates for ${job.jobTitle}</p>
+                </div>
+                <div style="padding: 24px;">
+                  <p style="color: #333; margin: 0 0 16px;">Hi ${company.name} Team,</p>
+                  <p style="color: #333; margin: 0 0 16px;">We've shortlisted <strong>${validCandidates.length} candidates</strong> for the <strong>${job.jobTitle}</strong> position.</p>
+                  <p style="color: #666; font-size: 13px; margin: 0 0 16px;">These candidates have been assessed through our rigorous evaluation process including DSA, CS Fundamentals, Aptitude, and Communication skills.</p>
+                  
+                  <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+                    <tr style="background: #f8fafc;">
+                      <th style="padding: 12px; text-align: left; font-size: 12px; color: #666; text-transform: uppercase;">Candidate</th>
+                      <th style="padding: 12px; text-align: right; font-size: 12px; color: #666; text-transform: uppercase;">Action</th>
+                    </tr>
+                    ${candidateListHtml}
+                  </table>
+
+                  <div style="background: #f0f9ff; border-radius: 8px; padding: 16px; margin: 16px 0;">
+                    <p style="margin: 0; font-size: 13px; color: #0369a1;">
+                      <strong>What you can do:</strong><br/>
+                      ✓ View detailed candidate profiles<br/>
+                      ✓ See assessment scores and recommendations<br/>
+                      ✓ Mark candidates as "Interested"
+                    </p>
+                  </div>
+
+                  <p style="color: #999; font-size: 12px; margin: 16px 0 0;">
+                    This link expires in ${expiresInHours} hours. Powered by NxtWave Edge
+                  </p>
+                </div>
+              </div>
+            </body>
+            </html>
+          `;
+
+          await sgMail.send({
+            to: recipientEmail,
+            from: 'noreply@nxtwave.co.in',
+            subject: `Shortlisted candidates for ${job.jobTitle} — NxtWave Edge`,
+            html: emailHtml,
+          });
+
+          console.log(`Shortlist email sent to ${recipientEmail} for ${validCandidates.length} candidates`);
+        } catch (emailError) {
+          console.error("SendGrid email error:", emailError);
+          // Continue even if email fails - shares are already created
+        }
+      }
+
+      // Create notification for admin
+      await storage.createNotification({
+        userId,
+        type: "share",
+        title: "Candidates Shared",
+        message: `Shared ${validCandidates.length} candidates for ${job.jobTitle}`,
+        link: `/admin`,
+      });
 
       res.json({
         success: true,
-        message: `Shortlist notifications sent to ${validCandidates.length} candidates`,
-        results: emailResults
+        message: `Shared ${validCandidates.length} candidates. ${recipientEmail ? 'Email sent.' : 'No email configured.'}`,
+        shares: createdShares,
+        links: links.map(l => ({ studentId: l.student.id, link: l.link, expiresAt: l.expiresAt })),
       });
     } catch (error) {
       console.error("Error sending shortlist emails:", error);
@@ -1734,6 +1832,7 @@ export async function registerRoutes(app: Express): Promise<void> {
       }
 
       // Lazy-init Mistral client (only needed when chatbot is called)
+      const { default: MistralClient } = await import('@mistralai/mistralai');
       const mistral = new MistralClient({
         apiKey: process.env.MISTRAL_API_KEY,
       });
@@ -1809,6 +1908,324 @@ Be helpful, professional, and focus on recruitment and talent discovery assistan
     } catch (error) {
       console.error("Error fetching chatbot suggestions:", error);
       res.status(500).json({ error: "Failed to load suggestions" });
+    }
+  });
+
+  // ============================================
+  // ADMIN ROUTES (role-based access control)
+  // ============================================
+
+  // Middleware: require admin role
+  const requireAdmin = async (req: any, res: any, next: any) => {
+    const userId = req.session?.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const user = await storage.getUser(userId);
+    if (!user || user.role !== "admin") {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+    next();
+  };
+
+  // GET /api/admin/jobs - List all jobs with company info
+  app.get('/api/admin/jobs', isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const jobs = await storage.getAllJobsWithCompany();
+      res.json(jobs);
+    } catch (error) {
+      console.error("Error fetching admin jobs:", error);
+      res.status(500).json({ message: "Failed to fetch jobs" });
+    }
+  });
+
+  // POST /api/admin/import-candidates - Import CSV/Excel data
+  app.post('/api/admin/import-candidates', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const { students: studentsData } = req.body;
+      
+      if (!Array.isArray(studentsData) || studentsData.length === 0) {
+        return res.status(400).json({ message: "No student data provided" });
+      }
+
+      // Validate required fields
+      const requiredFields = ['firstName', 'lastName', 'email', 'university', 'degree', 'major', 'graduationYear', 'location'];
+      const errors: string[] = [];
+      
+      const validStudents = studentsData.filter((s: any, index: number) => {
+        const missing = requiredFields.filter(f => !s[f]);
+        if (missing.length > 0) {
+          errors.push(`Row ${index + 1}: Missing ${missing.join(', ')}`);
+          return false;
+        }
+        return true;
+      });
+
+      if (validStudents.length === 0) {
+        return res.status(400).json({ message: "No valid students found", errors });
+      }
+
+      const result = await storage.importStudentsFromData(validStudents);
+      res.json({ 
+        message: `Import completed: ${result.imported} students imported`,
+        imported: result.imported,
+        errors: [...errors, ...result.errors]
+      });
+    } catch (error) {
+      console.error("Error importing candidates:", error);
+      res.status(500).json({ message: "Failed to import candidates" });
+    }
+  });
+
+  // GET /api/admin/shared-candidates - List all shared candidates
+  app.get('/api/admin/shared-candidates', isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const shared = await storage.getAllSharedCandidates();
+      res.json(shared);
+    } catch (error) {
+      console.error("Error fetching shared candidates:", error);
+      res.status(500).json({ message: "Failed to fetch shared candidates" });
+    }
+  });
+
+  // POST /api/admin/share-candidates - Create shares and send email
+  app.post('/api/admin/share-candidates', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const { jobId, studentIds, companyId, expiresInHours = 24 } = req.body;
+      const userId = req.session.userId;
+
+      if (!jobId || !studentIds?.length || !companyId) {
+        return res.status(400).json({ message: "jobId, studentIds, and companyId are required" });
+      }
+
+      // Generate tokens and create shares
+      const crypto = await import('crypto');
+      const shares = studentIds.map((studentId: string) => ({
+        jobId,
+        studentId,
+        companyId,
+        token: crypto.randomBytes(32).toString('hex'),
+        sharedBy: userId,
+        expiresAt: new Date(Date.now() + expiresInHours * 60 * 60 * 1000),
+      }));
+
+      const createdShares = await storage.createCandidateShares(shares);
+
+      // Get job and company info for email
+      const job = await storage.getCompanyRequirementById(jobId);
+      const company = await storage.getCompanyByUserId(userId);
+      
+      // TODO: Send branded email via SendGrid with dynamic link
+      // For now, return the shares with tokens
+      const baseUrl = req.protocol + '://' + req.get('host');
+      const links = createdShares.map(share => ({
+        studentId: share.studentId,
+        link: `${baseUrl}/browse?jobId=${jobId}&token=${share.token}`,
+        expiresAt: share.expiresAt,
+      }));
+
+      res.json({
+        message: `Shared ${createdShares.length} candidates`,
+        shares: createdShares,
+        links,
+      });
+    } catch (error) {
+      console.error("Error sharing candidates:", error);
+      res.status(500).json({ message: "Failed to share candidates" });
+    }
+  });
+
+  // ============================================
+  // COMPANY PORTAL ROUTES (token-based access)
+  // ============================================
+
+  // GET /api/company/candidates - Get candidates via token
+  app.get('/api/company/candidates', async (req, res) => {
+    try {
+      const { jobId, token } = req.query;
+
+      if (!jobId || !token) {
+        return res.status(400).json({ message: "jobId and token are required" });
+      }
+
+      // Validate token
+      const share = await storage.getCandidateShareByToken(token as string);
+      if (!share) {
+        return res.status(404).json({ message: "Invalid link" });
+      }
+
+      if (share.jobId !== jobId) {
+        return res.status(403).json({ message: "Link does not match job" });
+      }
+
+      if (new Date(share.expiresAt) < new Date()) {
+        return res.status(410).json({ message: "Link has expired" });
+      }
+
+      // Mark as viewed
+      await storage.markCandidateShareViewed(token as string);
+
+      // Get job details
+      const job = await storage.getCompanyRequirementById(jobId as string);
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+
+      // Get all students for this job (filtered by job requirements)
+      const students = await storage.getStudents({
+        skills: job.requiredSkills ? JSON.parse(job.requiredSkills) : undefined,
+        minCgpa: job.minimumCGPA ? parseFloat(job.minimumCGPA) : undefined,
+        limit: 100,
+      });
+
+      // Get company info
+      const company = await storage.getCompanyByUserId(job.companyId);
+
+      res.json({
+        job: {
+          id: job.id,
+          title: job.jobTitle,
+          location: job.jobLocation,
+          salary: { min: job.salaryMin, max: job.salaryMax },
+          skills: job.requiredSkills ? JSON.parse(job.requiredSkills) : [],
+        },
+        company: company ? { name: company.name, industry: company.industry } : null,
+        candidates: students,
+        expiresAt: share.expiresAt,
+      });
+    } catch (error) {
+      console.error("Error fetching candidates by token:", error);
+      res.status(500).json({ message: "Failed to fetch candidates" });
+    }
+  });
+
+  // POST /api/company/interest - Mark interest in a candidate
+  app.post('/api/company/interest', async (req, res) => {
+    try {
+      const { token, studentId, jobId, notes } = req.body;
+
+      if (!token || !studentId || !jobId) {
+        return res.status(400).json({ message: "token, studentId, and jobId are required" });
+      }
+
+      // Validate token
+      const share = await storage.getCandidateShareByToken(token);
+      if (!share) {
+        return res.status(404).json({ message: "Invalid link" });
+      }
+
+      if (new Date(share.expiresAt) < new Date()) {
+        return res.status(410).json({ message: "Link has expired" });
+      }
+
+      // Create interest record
+      const interest = await storage.createCompanyInterest({
+        jobId,
+        studentId,
+        companyId: share.companyId,
+        notes,
+        status: "interested",
+      });
+
+      // Get student and job info for notification
+      const student = await storage.getStudentById(studentId);
+      const job = await storage.getCompanyRequirementById(jobId);
+      const company = await storage.getCompanyByUserId(share.companyId);
+
+      // Create notification for admin
+      if (share.sharedBy) {
+        await storage.createNotification({
+          userId: share.sharedBy,
+          type: "interest",
+          title: "New Candidate Interest",
+          message: `${company?.name || 'A company'} is interested in ${student?.firstName} ${student?.lastName} for ${job?.jobTitle || 'a position'}`,
+          link: `/admin`,
+        });
+      }
+
+      res.json({
+        message: "Interest recorded successfully",
+        interest,
+      });
+    } catch (error) {
+      console.error("Error marking interest:", error);
+      res.status(500).json({ message: "Failed to mark interest" });
+    }
+  });
+
+  // GET /api/company/interest/:jobId - Get company's interests for a job
+  app.get('/api/company/interest/:jobId', async (req, res) => {
+    try {
+      const { jobId } = req.params;
+      const { token } = req.query;
+
+      if (!token) {
+        return res.status(400).json({ message: "Token is required" });
+      }
+
+      // Validate token
+      const share = await storage.getCandidateShareByToken(token as string);
+      if (!share) {
+        return res.status(404).json({ message: "Invalid link" });
+      }
+
+      const interests = await storage.getCompanyInterestByJob(jobId, share.companyId);
+      res.json(interests);
+    } catch (error) {
+      console.error("Error fetching interests:", error);
+      res.status(500).json({ message: "Failed to fetch interests" });
+    }
+  });
+
+  // ============================================
+  // NOTIFICATION ROUTES
+  // ============================================
+
+  // GET /api/notifications - Get user notifications
+  app.get('/api/notifications', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const notifications = await storage.getNotificationsByUser(userId);
+      res.json(notifications);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      res.status(500).json({ message: "Failed to fetch notifications" });
+    }
+  });
+
+  // GET /api/notifications/unread-count - Get unread count
+  app.get('/api/notifications/unread-count', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const count = await storage.getUnreadNotificationCount(userId);
+      res.json({ count });
+    } catch (error) {
+      console.error("Error fetching unread count:", error);
+      res.status(500).json({ message: "Failed to fetch unread count" });
+    }
+  });
+
+  // PATCH /api/notifications/:id/read - Mark as read
+  app.patch('/api/notifications/:id/read', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      await storage.markNotificationRead(id);
+      res.json({ message: "Notification marked as read" });
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+      res.status(500).json({ message: "Failed to mark notification as read" });
+    }
+  });
+
+  // PATCH /api/notifications/read-all - Mark all as read
+  app.patch('/api/notifications/read-all', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      await storage.markAllNotificationsRead(userId);
+      res.json({ message: "All notifications marked as read" });
+    } catch (error) {
+      console.error("Error marking all notifications as read:", error);
+      res.status(500).json({ message: "Failed to mark all notifications as read" });
     }
   });
 

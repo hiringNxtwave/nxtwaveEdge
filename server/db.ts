@@ -22,6 +22,7 @@ export const db = drizzleNeonHttp({ client: sql, schema });
 export async function runStartupMigrations() {
   const statements = [
     `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'active'`,
     `ALTER TABLE students ADD COLUMN IF NOT EXISTS nirf_ranking INTEGER`,
     `ALTER TABLE students ADD COLUMN IF NOT EXISTS dsa_score INTEGER`,
     `ALTER TABLE students ADD COLUMN IF NOT EXISTS cs_fundamentals_score INTEGER`,
@@ -46,6 +47,40 @@ export async function runStartupMigrations() {
     `ALTER TABLE students ADD COLUMN IF NOT EXISTS profile_image_url VARCHAR(255)`,
     `ALTER TABLE students ADD COLUMN IF NOT EXISTS bio TEXT`,
     `ALTER TABLE students ADD COLUMN IF NOT EXISTS verified BOOLEAN DEFAULT true`,
+    // New tables for hiring workflow
+    `CREATE TABLE IF NOT EXISTS candidate_shares (
+      id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+      job_id VARCHAR NOT NULL,
+      student_id VARCHAR NOT NULL,
+      company_id VARCHAR NOT NULL,
+      token VARCHAR NOT NULL UNIQUE,
+      shared_by VARCHAR,
+      expires_at TIMESTAMP NOT NULL,
+      status VARCHAR(50) DEFAULT 'active',
+      viewed_at TIMESTAMP,
+      created_at TIMESTAMP DEFAULT NOW()
+    )`,
+    `CREATE TABLE IF NOT EXISTS company_interest (
+      id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+      job_id VARCHAR NOT NULL,
+      student_id VARCHAR NOT NULL,
+      company_id VARCHAR NOT NULL,
+      notes TEXT,
+      status VARCHAR(50) DEFAULT 'interested',
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    )`,
+    `CREATE TABLE IF NOT EXISTS notifications (
+      id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id VARCHAR NOT NULL,
+      type VARCHAR(50) NOT NULL,
+      title VARCHAR(255) NOT NULL,
+      message TEXT,
+      link VARCHAR(500),
+      read BOOLEAN DEFAULT FALSE,
+      created_at TIMESTAMP DEFAULT NOW(),
+      read_at TIMESTAMP
+    )`,
   ];
   for (const stmt of statements) {
     try {

@@ -1,19 +1,18 @@
 import { Link, useLocation } from "wouter";
-import nxtWaveLogo from "@assets/image_1774348454567.png";
-import { EdgeBadge } from "@/components/edge-badge";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Search,
-  Building2,
+  Briefcase,
   ChevronLeft,
+  ChevronRight,
   User,
   LogOut,
   Mail,
-  Menu,
-  X,
+  Shield,
+  LayoutDashboard,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -23,12 +22,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const SIDEBAR_FULL = 220;
-const SIDEBAR_MINI = 68;
+const SIDEBAR_FULL = 240;
+const SIDEBAR_MINI = 72;
 
-const navItems = [
-  { href: "/browse", icon: Search, label: "Browse Talent", exact: false },
-  { href: "/jobs", icon: Building2, label: "Jobs" },
+const navSections = [
+  {
+    label: "Platform",
+    items: [
+      { href: "/browse", icon: Search, label: "Browse Talent" },
+      { href: "/jobs", icon: Briefcase, label: "Jobs" },
+    ],
+  },
+];
+
+const adminSections = [
+  {
+    label: "Management",
+    items: [
+      { href: "/admin", icon: Shield, label: "Admin" },
+    ],
+  },
 ];
 
 export default function AppSidebar() {
@@ -37,7 +50,6 @@ export default function AppSidebar() {
   const { toast } = useToast();
   const [contactSending, setContactSending] = useState(false);
   const [contactSent, setContactSent] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleContactUs = useCallback(async () => {
     if (contactSending || contactSent) return;
@@ -70,45 +82,70 @@ export default function AppSidebar() {
     try { localStorage.setItem("sidebar-collapsed", collapsed ? "1" : "0"); } catch {}
   }, [collapsed]);
 
-  const isActive = (item: typeof navItems[0]) => {
-    const { href, exact, aliases } = item as any;
-    const allPaths = [href, ...(aliases || [])];
-    if (exact === false || !exact) {
-      return allPaths.some(p => location === p || location.startsWith(p + "/"));
-    }
-    return allPaths.some(p => location === p);
+  const isActive = (href: string) => {
+    return location === href || location.startsWith(href + "/");
   };
 
   const displayName = user?.firstName
     ? `${user.firstName}${user.lastName ? ` ${user.lastName}` : ""}`.trim()
     : user?.email?.split("@")[0] || "User";
 
+  const renderNavItems = (items: typeof navSections[0]["items"], activeColor: string) => {
+    return items.map((item) => {
+      const active = isActive(item.href);
+      return (
+        <Link key={item.href} href={item.href}>
+          <div
+            className={cn(
+              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors cursor-pointer",
+              active
+                ? cn("bg-primary/10", activeColor)
+                : "text-muted-foreground hover:text-foreground hover:bg-muted",
+              collapsed && "justify-center px-0"
+            )}
+            title={collapsed ? item.label : undefined}
+          >
+            <item.icon
+              className={cn(
+                "w-4 h-4 shrink-0",
+                active ? activeColor : "text-muted-foreground"
+              )}
+            />
+            {!collapsed && <span className="truncate">{item.label}</span>}
+          </div>
+        </Link>
+      );
+    });
+  };
+
   const sidebarContent = (
     <>
-      {/* Logo + Collapse toggle */}
+      {/* Logo + Collapse */}
       <div
         className={cn(
-          "flex items-center h-14 border-b border-slate-800/80 shrink-0 select-none",
+          "flex items-center h-14 border-b border-border shrink-0 select-none",
           collapsed ? "px-0 justify-center" : "px-4 gap-3"
         )}
       >
         {collapsed ? (
           <button
             onClick={() => setCollapsed(false)}
-            className="flex items-center justify-center w-full h-full text-slate-600 hover:text-slate-300 transition-colors"
+            className="flex items-center justify-center w-full h-full text-muted-foreground hover:text-foreground transition-colors"
             title="Expand sidebar"
           >
-            <img src={nxtWaveLogo} alt="NxtWave" className="h-6 w-auto brightness-0 invert" />
+            <LayoutDashboard className="w-5 h-5" />
           </button>
         ) : (
           <>
-            <Link href="/" className="flex items-center gap-1.5 shrink-0 hover:opacity-80 transition-opacity">
-              <img src={nxtWaveLogo} alt="NxtWave" className="h-8 w-auto brightness-0 invert max-w-[130px]" />
-              <EdgeBadge className="mt-0.5" />
+            <Link href="/" className="flex items-center gap-2 shrink-0 hover:opacity-80 transition-opacity">
+              <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center">
+                <span className="text-primary-foreground text-xs font-bold">E</span>
+              </div>
+              <span className="text-sm font-semibold tracking-tight">EDGE</span>
             </Link>
             <button
               onClick={() => setCollapsed(true)}
-              className="ml-auto p-1 rounded-md text-slate-600 hover:text-slate-300 hover:bg-slate-800/70 transition-all shrink-0"
+              className="ml-auto p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shrink-0"
               title="Collapse sidebar"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -117,82 +154,72 @@ export default function AppSidebar() {
         )}
       </div>
 
-      {/* Section label */}
-      {!collapsed && (
-        <div className="px-4 pt-5 pb-1.5">
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-600">
-            Recruiting
-          </span>
-        </div>
-      )}
-
-      {/* Nav Items */}
-      <nav className={cn("flex-1 overflow-y-auto space-y-0.5", collapsed ? "px-2 pt-4" : "px-2")}>
-        {navItems.map((item) => {
-          const active = isActive(item);
-
-          return (
-            <Link key={item.href} href={item.href}>
-              <div
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-[13px] font-medium transition-all duration-150 cursor-pointer group relative",
-                  active
-                    ? "bg-blue-500/12 text-blue-400"
-                    : "text-slate-500 hover:text-slate-100 hover:bg-slate-800/70",
-                  collapsed && "justify-center"
-                )}
-                title={collapsed ? item.label : undefined}
-              >
-                <item.icon
-                  className={cn(
-                    "w-4 h-4 shrink-0 transition-colors",
-                    active ? "text-blue-400" : "text-slate-500 group-hover:text-slate-300"
-                  )}
-                />
-                {!collapsed && (
-                  <span className="flex-1 truncate">{item.label}</span>
-                )}
+      {/* Navigation */}
+      <nav className={cn("flex-1 overflow-y-auto", collapsed ? "px-2 pt-3" : "px-3")}>
+        {navSections.map((section) => (
+          <div key={section.label} className="mb-4">
+            {!collapsed && (
+              <div className="px-3 pb-1.5">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  {section.label}
+                </span>
               </div>
-            </Link>
-          );
-        })}
+            )}
+            <div className="space-y-0.5">
+              {renderNavItems(section.items, "text-primary")}
+            </div>
+          </div>
+        ))}
+
+        {/* Admin section */}
+        {user?.role === "admin" && adminSections.map((section) => (
+          <div key={section.label} className="mb-4">
+            {!collapsed && (
+              <div className="px-3 pb-1.5">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                  {section.label}
+                </span>
+              </div>
+            )}
+            <div className="space-y-0.5">
+              {renderNavItems(section.items, "text-primary")}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* Contact Us */}
       <div className={cn("shrink-0", collapsed ? "px-2 pb-3" : "px-3 pb-3")}>
-        {collapsed ? (
-          <button
-            onClick={handleContactUs}
-            disabled={contactSending || contactSent}
-            className="w-full flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed text-white p-2 transition-colors"
-            title={contactSent ? "Message Sent ✓" : "Contact Us"}
-            data-testid="button-contact-us"
-          >
-            <Mail className="w-4 h-4" />
-          </button>
-        ) : (
-          <button
-            onClick={handleContactUs}
-            disabled={contactSending || contactSent}
-            className="w-full flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed text-white text-[12px] font-semibold px-3 py-2 transition-colors"
-            title="Contact NxtWave Edge"
-            data-testid="button-contact-us"
-          >
-            <Mail className="w-3.5 h-3.5 shrink-0" />
-            <span>{contactSent ? "Message Sent ✓" : contactSending ? "Sending…" : "Contact Us"}</span>
-          </button>
-        )}
+        <button
+          onClick={handleContactUs}
+          disabled={contactSending || contactSent}
+          className={cn(
+            "w-full flex items-center gap-2 rounded-lg text-sm font-medium transition-colors",
+            contactSent
+              ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800"
+              : "bg-primary text-primary-foreground hover:bg-primary/90",
+            "disabled:opacity-70 disabled:cursor-not-allowed",
+            collapsed ? "justify-center p-2" : "px-3 py-2"
+          )}
+          title={contactSent ? "Message Sent" : "Contact Us"}
+          data-testid="button-contact-us"
+        >
+          <Mail className="w-4 h-4 shrink-0" />
+          {!collapsed && (
+            <span className="truncate">{contactSent ? "Sent!" : contactSending ? "Sending..." : "Contact Us"}</span>
+          )}
+        </button>
       </div>
 
-      {/* Bottom Section */}
-      <div className="border-t border-slate-800/80 p-2 space-y-0.5 shrink-0">
-        {/* User Menu */}
+      {/* User Section */}
+      <div className="border-t border-border p-2 shrink-0">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
               className={cn(
-                "w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2.5 text-[13px] font-medium transition-all duration-150 cursor-pointer text-slate-500 hover:text-slate-100 hover:bg-slate-800/70",
-                collapsed && "justify-center"
+                "w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors cursor-pointer",
+                "text-muted-foreground hover:text-foreground hover:bg-muted",
+                collapsed && "justify-center px-0"
               )}
               title={collapsed ? displayName : undefined}
             >
@@ -200,36 +227,39 @@ export default function AppSidebar() {
                 <img
                   src={user.profileImageUrl}
                   alt="Profile"
-                  className="w-6 h-6 rounded-full object-cover shrink-0 ring-1 ring-slate-700"
+                  className="w-7 h-7 rounded-full object-cover shrink-0"
                 />
               ) : (
-                <div className="w-6 h-6 rounded-full bg-slate-700 flex items-center justify-center shrink-0">
-                  <User className="w-3 h-3 text-slate-400" />
+                <div className="w-7 h-7 rounded-full bg-muted flex items-center justify-center shrink-0">
+                  <User className="w-3.5 h-3.5 text-muted-foreground" />
                 </div>
               )}
               {!collapsed && (
-                <span className="flex-1 text-left truncate text-slate-400">{displayName}</span>
+                <div className="flex-1 min-w-0 text-left">
+                  <div className="text-sm font-medium truncate">{displayName}</div>
+                  <div className="text-[11px] text-muted-foreground truncate">{user?.email}</div>
+                </div>
               )}
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             side="right"
             align="end"
-            className="w-56 bg-slate-900 border-slate-700 text-slate-200"
+            className="w-56"
           >
-            <div className="px-3 py-2.5 border-b border-slate-700">
-              <p className="text-sm font-semibold text-slate-100 truncate">{displayName}</p>
-              <p className="text-xs text-slate-400 truncate mt-0.5">{user?.email}</p>
+            <div className="px-3 py-2.5 border-b border-border">
+              <p className="text-sm font-medium truncate">{displayName}</p>
+              <p className="text-xs text-muted-foreground truncate mt-0.5">{user?.email}</p>
             </div>
-            <DropdownMenuItem asChild className="mt-1 cursor-pointer focus:bg-slate-800 focus:text-white text-slate-300">
+            <DropdownMenuItem asChild className="mt-1 cursor-pointer">
               <Link href="/jobs" className="flex items-center gap-2">
-                <Building2 className="w-4 h-4" />
+                <Briefcase className="w-4 h-4 text-muted-foreground" />
                 Jobs
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator className="bg-slate-700 my-1" />
+            <DropdownMenuSeparator />
             <DropdownMenuItem
-              className="text-red-400 focus:text-red-300 focus:bg-slate-800 cursor-pointer"
+              className="text-red-600 focus:text-red-600 cursor-pointer"
               onClick={async () => {
                 await fetch("/api/auth/logout", { method: "POST" });
                 navigate("/");
@@ -240,58 +270,19 @@ export default function AppSidebar() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-
       </div>
     </>
   );
 
   return (
-    <>
-      {/* Mobile hamburger button */}
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="fixed top-3 left-3 z-50 md:hidden p-2 rounded-lg bg-slate-900 text-white shadow-lg hover:bg-slate-800 transition-colors"
-        aria-label="Open menu"
-      >
-        <Menu className="w-5 h-5" />
-      </button>
-
-      {/* Mobile overlay backdrop */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 md:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
+    <aside
+      className={cn(
+        "fixed left-0 top-0 h-screen z-40 flex flex-col bg-card border-r border-border transition-all duration-200 ease-in-out",
+        collapsed ? "w-[72px]" : "w-[240px]",
+        "hidden md:flex"
       )}
-
-      {/* Sidebar */}
-      <aside
-        className={cn(
-          "fixed left-0 top-0 h-screen z-40 flex flex-col bg-slate-950 border-r border-slate-800/80 transition-all duration-300 ease-in-out shadow-xl shadow-black/10",
-          collapsed ? "w-[68px]" : "w-[220px]",
-          "hidden md:flex"
-        )}
-      >
-        {sidebarContent}
-      </aside>
-
-      {/* Mobile sidebar overlay */}
-      <aside
-        className={cn(
-          "fixed left-0 top-0 h-screen z-50 flex flex-col bg-slate-950 border-r border-slate-800/80 transition-all duration-300 ease-in-out shadow-xl shadow-black/10 md:hidden",
-          collapsed ? "w-[68px]" : "w-[220px]",
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
-        <button
-          onClick={() => setMobileOpen(false)}
-          className="absolute top-3 right-3 p-1 rounded-md text-slate-500 hover:text-slate-300 hover:bg-slate-800/70 transition-colors z-10"
-          aria-label="Close menu"
-        >
-          <X className="w-4 h-4" />
-        </button>
-        {sidebarContent}
-      </aside>
-    </>
+    >
+      {sidebarContent}
+    </aside>
   );
 }
