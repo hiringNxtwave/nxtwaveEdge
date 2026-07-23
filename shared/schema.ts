@@ -104,12 +104,19 @@ export const otpCodes = pgTable("otp_codes", {
 
 export const companies = pgTable("companies", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
+  userId: varchar("user_id"), // nullable for HubSpot-imported companies
   name: varchar("name").notNull(),
+  domain: varchar("domain"), // Company domain (e.g., 'moengage.com')
   industry: varchar("industry"),
   size: varchar("size"),
   location: varchar("location"),
   website: varchar("website"),
+  linkedinUrl: varchar("linkedin_url"),
+  employeeCount: integer("employee_count"),
+  city: varchar("city"),
+  state: varchar("state"),
+  country: varchar("country"),
+  phone: varchar("phone"),
   description: text("description"),
   verified: boolean("verified").default(false),
   createdAt: timestamp("created_at").defaultNow(),
@@ -173,6 +180,27 @@ export const companyRequirements = pgTable("company_requirements", {
   workCulture: varchar("work_culture"), // startup, corporate, remote-first, etc.
   teamSize: varchar("team_size"),
   
+  // HubSpot Integration
+  hubspotDealId: varchar("hubspot_deal_id"), // HubSpot deal ID for sync
+  hubspotPipelineId: varchar("hubspot_pipeline_id"), // HubSpot pipeline ID
+  hubspotDealStage: varchar("hubspot_deal_stage"), // HubSpot deal stage ID
+  jobType: varchar("job_type"), // 'full_time', 'internship', 'internship_plus_full_time'
+  internshipDuration: varchar("internship_duration"), // e.g., 'Twelve Months'
+  minStipend: integer("min_stipend"), // Monthly stipend in INR
+  maxStipend: integer("max_stipend"), // Monthly stipend in INR
+  interviewMode: varchar("interview_mode"), // 'online', 'offline', 'both'
+  onlineRounds: text("online_rounds"), // JSON array e.g. ["Assessment"]
+  offlineRounds: text("offline_rounds"), // JSON array e.g. ["Technical Round 1","HR"]
+  workTimings: varchar("work_timings"), // e.g., '9AM to 6PM'
+  workingDays: varchar("working_days"), // e.g., '5 days a week'
+  bondOrAgreement: varchar("bond_or_agreement"), // 'yes', 'no'
+  otherBenefits: text("other_benefits"),
+  nurturingRemarks: text("nurturing_remarks"), // Nurturing team remarks
+  profilingPOC: varchar("profiling_poc"), // Profiling point of contact name
+  jobDescriptionLink: varchar("job_description_link"), // Original JD link in HubSpot
+  optInFormPreference: varchar("opt_in_form_preference"), // 'with_opt_in', 'without_opt_in'
+  hubspotMetadata: jsonb("hubspot_metadata"), // Extra HubSpot properties as JSON
+
   // Status
   isActive: boolean("is_active").default(true),
   status: varchar("status").default("active"), // 'active', 'closed', 'draft'

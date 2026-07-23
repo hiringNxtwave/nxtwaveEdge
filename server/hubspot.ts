@@ -1,40 +1,79 @@
-// HubSpot CRM integration — direct API calls using HUBSPOT_API_KEY
+// HubSpot CRM integration — @hubspot/api-client SDK with rate limiting & retries
 
-const HUBSPOT_API_KEY = process.env.HUBSPOT_API_KEY;
-const HUBSPOT_BASE_URL = "https://api.hubapi.com";
+import { Client, AssociationTypes } from "@hubspot/api-client";
 
-function getHeaders() {
-  if (!HUBSPOT_API_KEY) {
-    throw new Error("HUBSPOT_API_KEY environment variable is not set");
+const hubspotClient = new Client({
+  accessToken: process.env.HUBSPOT_API_KEY!,
+  numberOfApiCallRetries: 3,
+});
+
+// All custom deal properties we want to fetch from HubSpot
+const DEAL_PROPERTIES = [
+  "dealname","pipeline","dealstage","amount","closedate","createdate",
+  "job_title","job_id","role_name","company_name","company_domain","jd_link",
+  "ctc_range","location","work_mode","number_of_openings","required_skills",
+  "batch","min_cgp","type_of_role","type_of_requirement","technologies_required",
+  "stream","stipend_range","work_timings","internship_duration","internship_ctc",
+  "bond_service_agreement","passout_year","highest_degree","online_interview_rounds",
+  "offline_interview_rounds","no_of_working_days","nurturing_team_remarks",
+  "profiling_shortlisting_remarks","interview_done_probability","other_benefits",
+  "timeline_for_requirement","expected_hiring_start_date","is_official_crp",
+  "job_application_deadline","jd_count","profiling_poc","education_criteria",
+  "education_department_tags","mode_of_interview_process","min_internship_stipend_per_month",
+  "max_internship_stipend_per_month","cv_sheet_link","user_opt_in_form_preference",
+  "min_ctc_lpa","max_ctc_lpa","availability_form","status_form","job_track","job_type",
+  "10th_percentage","intermediate_percentage","optional_technologies_required",
+];
+
+const COMPANY_PROPERTIES = [
+  "name","domain","website","industry","linkedin_company_page",
+  "numberofemployees","city","state","country","lifecyclestage",
+  "description","phone","hubspot_owner_id",
+];
+
+export async function getDealFromHubSpot(dealId: string) {
+  const deal = await hubspotClient.crm.deals.basicApi.getById(
+    dealId,
+    DEAL_PROPERTIES,
+    undefined,
+    undefined,
+    undefined,
+    true, // Associations
+  );
+
+  // Fetch associated company
+  let company = null;
+  const companyAssociations = await hubspotClient.crm.associations.v4.basicApi.getPage(
+    "deals",
+    dealId,
+    "companies",
+    undefined,
+    undefined,
+  );
+
+  if (companyAssociations.results.length > 0) {
+    const companyId = companyAssociations.results[0].id;
+    company = await hubspotClient.crm.companies.basicApi.getById(
+      companyId,
+      COMPANY_PROPERTIES,
+    );
   }
-  return {
-    Authorization: `Bearer ${HUBSPOT_API_KEY}`,
-    "Content-Type": "application/json",
-  };
+
+  return { deal, company };
 }
 
-async function hubspotRequest(
-  path: string,
-  method: string = "GET",
-  body?: unknown
-): Promise<any> {
-  const options: RequestInit = {
-    method,
-    headers: getHeaders(),
-  };
-  if (body !== undefined) {
-    options.body = JSON.stringify(body);
-  }
+// Pipeline stage labels for display
+const PIPELINE_STAGES: Record<string, Record<string, string>> = {
+  "95243701": {
+    "175041084": "Open to Apply",
+    "175041085": "Applications Closed",
+    "175246708": "Job Hiring Completed",
+    "175246709": "Job Requirement Closed",
+  },
+};
 
-  const response = await fetch(`${HUBSPOT_BASE_URL}${path}`, options);
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`HubSpot API error ${response.status}: ${text}`);
-  }
-
-  if (response.status === 204) return {};
-  return response.json();
+export function getPipelineStageLabel(pipelineId: string, stageId: string): string {
+  return PIPELINE_STAGES[pipelineId]?.[stageId] || stageId;
 }
 
 export async function upsertContact(
@@ -43,18 +82,6 @@ export async function upsertContact(
   lastName: string,
   phone?: string
 ): Promise<string> {
-  const searchResult = await hubspotRequest(
-    "/crm/v3/objects/contacts/search",
-    "POST",
-    {
-      filterGroups: [
-        { filters: [{ propertyName: "email", operator: "EQ", value: email }] },
-      ],
-      properties: ["email", "firstname", "lastname", "phone"],
-      limit: 1,
-    }
-  );
-
   const properties: Record<string, string> = {
     email,
     firstname: firstName,
@@ -62,60 +89,37 @@ export async function upsertContact(
   };
   if (phone) properties.phone = phone;
 
-  if (searchResult.results && searchResult.results.length > 0) {
-    const contactId = searchResult.results[0].id;
-    await hubspotRequest(`/crm/v3/objects/contacts/${contactId}`, "PATCH", {
-      properties,
-    });
-    return contactId;
-  } else {
-    const created = await hubspotRequest("/crm/v3/objects/contacts", "POST", {
-      properties,
-    });
-    return created.id;
-  }
+  const result = await hubspotClient.crm.contacts.batchApi.upsert({
+    inputs: [{ id: email, properties }],
+  } as any);
+  return result.results[0].id;
 }
 
 export async function upsertCompany(
   domain: string,
   name: string
 ): Promise<string> {
-  const searchResult = await hubspotRequest(
-    "/crm/v3/objects/companies/search",
-    "POST",
-    {
-      filterGroups: [
-        { filters: [{ propertyName: "domain", operator: "EQ", value: domain }] },
-      ],
-      properties: ["domain", "name"],
-      limit: 1,
-    }
-  );
-
-  const properties: Record<string, string> = { domain, name };
-
-  if (searchResult.results && searchResult.results.length > 0) {
-    const companyId = searchResult.results[0].id;
-    await hubspotRequest(`/crm/v3/objects/companies/${companyId}`, "PATCH", {
-      properties,
-    });
-    return companyId;
-  } else {
-    const created = await hubspotRequest("/crm/v3/objects/companies", "POST", {
-      properties,
-    });
-    return created.id;
-  }
+  const result = await hubspotClient.crm.companies.batchApi.upsert({
+    inputs: [{ id: domain, properties: { domain, name } }],
+  } as any);
+  return result.results[0].id;
 }
 
 export async function associateContactWithCompany(
   contactId: string,
   companyId: string
 ): Promise<void> {
-  await hubspotRequest(
-    `/crm/v4/objects/contacts/${contactId}/associations/companies/${companyId}`,
-    "PUT",
-    [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 279 }]
+  await hubspotClient.crm.associations.v4.basicApi.create(
+    "contacts",
+    contactId,
+    "companies",
+    companyId,
+    [
+      {
+        associationCategory: "HUBSPOT_DEFINED" as const,
+        associationTypeId: AssociationTypes.contactToCompany,
+      },
+    ]
   );
 }
 
@@ -124,28 +128,32 @@ export async function createDeal(
   contactId: string,
   companyId: string
 ): Promise<string> {
-  const created = await hubspotRequest("/crm/v3/objects/deals", "POST", {
+  const result = await hubspotClient.crm.deals.basicApi.create({
     properties: {
       dealname: dealName,
       dealstage: "appointmentscheduled",
       pipeline: "default",
     },
-  });
-
-  const dealId = created.id;
-
-  await Promise.all([
-    hubspotRequest(
-      `/crm/v4/objects/deals/${dealId}/associations/contacts/${contactId}`,
-      "PUT",
-      [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 3 }]
-    ),
-    hubspotRequest(
-      `/crm/v4/objects/deals/${dealId}/associations/companies/${companyId}`,
-      "PUT",
-      [{ associationCategory: "HUBSPOT_DEFINED", associationTypeId: 5 }]
-    ),
-  ]);
-
-  return dealId;
+    associations: [
+      {
+        to: { id: contactId },
+        types: [
+          {
+            associationCategory: "HUBSPOT_DEFINED" as const,
+            associationTypeId: AssociationTypes.dealToContact,
+          },
+        ],
+      },
+      {
+        to: { id: companyId },
+        types: [
+          {
+            associationCategory: "HUBSPOT_DEFINED" as const,
+            associationTypeId: AssociationTypes.dealToCompany,
+          },
+        ],
+      },
+    ],
+  } as any);
+  return result.id;
 }

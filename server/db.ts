@@ -81,6 +81,34 @@ export async function runStartupMigrations() {
       created_at TIMESTAMP DEFAULT NOW(),
       read_at TIMESTAMP
     )`,
+    // HubSpot integration columns on company_requirements
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS hubspot_deal_id VARCHAR(255)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS hubspot_pipeline_id VARCHAR(255)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS hubspot_deal_stage VARCHAR(255)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS job_type VARCHAR(100)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS internship_duration VARCHAR(100)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS min_stipend INTEGER`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS max_stipend INTEGER`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS interview_mode VARCHAR(50)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS online_rounds TEXT`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS offline_rounds TEXT`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS work_timings VARCHAR(100)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS working_days VARCHAR(100)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS bond_or_agreement VARCHAR(50)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS other_benefits TEXT`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS nurturing_remarks TEXT`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS profiling_poc VARCHAR(255)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS job_description_link VARCHAR(500)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS opt_in_form_preference VARCHAR(100)`,
+    `ALTER TABLE company_requirements ADD COLUMN IF NOT EXISTS hubspot_metadata JSONB`,
+    // Company table extensions for HubSpot import
+    `ALTER TABLE companies ADD COLUMN IF NOT EXISTS domain VARCHAR(255)`,
+    `ALTER TABLE companies ADD COLUMN IF NOT EXISTS linkedin_url VARCHAR(500)`,
+    `ALTER TABLE companies ADD COLUMN IF NOT EXISTS employee_count INTEGER`,
+    `ALTER TABLE companies ADD COLUMN IF NOT EXISTS city VARCHAR(255)`,
+    `ALTER TABLE companies ADD COLUMN IF NOT EXISTS state VARCHAR(255)`,
+    `ALTER TABLE companies ADD COLUMN IF NOT EXISTS country VARCHAR(255)`,
+    `ALTER TABLE companies ADD COLUMN IF NOT EXISTS phone VARCHAR(50)`,
   ];
   for (const stmt of statements) {
     try {

@@ -58,13 +58,16 @@ export interface IStorage {
   // User operations
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
+  getAllUsers(): Promise<User[]>;
   upsertUser(user: UpsertUser): Promise<User>;
   updateUser(id: string, user: Partial<UpsertUser>): Promise<User>;
   
   // Company operations
   getCompanyByUserId(userId: string): Promise<CompanyWithUser | undefined>;
+  getCompanyByDomain(domain: string): Promise<Company | undefined>;
   createCompany(company: InsertCompany): Promise<Company>;
   updateCompany(id: string, company: Partial<InsertCompany>): Promise<Company>;
+  assignCompanyToUser(companyId: string, userId: string): Promise<Company>;
   
   // Company Requirements operations
   getCompanyRequirements(companyId: string): Promise<CompanyRequirements[]>;
@@ -256,6 +259,10 @@ export class DatabaseStorage implements IStorage {
   async getUserByEmail(email: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.email, email));
     return user;
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return db.select().from(users).orderBy(users.createdAt);
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {
@@ -548,6 +555,24 @@ export class DatabaseStorage implements IStorage {
       .values(company)
       .returning();
     return newCompany;
+  }
+
+  async getCompanyByDomain(domain: string): Promise<Company | undefined> {
+    const [company] = await db
+      .select()
+      .from(companies)
+      .where(eq(companies.domain, domain))
+      .limit(1);
+    return company;
+  }
+
+  async assignCompanyToUser(companyId: string, userId: string): Promise<Company> {
+    const [updated] = await db
+      .update(companies)
+      .set({ userId, updatedAt: new Date() })
+      .where(eq(companies.id, companyId))
+      .returning();
+    return updated;
   }
 
   async updateCompany(id: string, company: Partial<InsertCompany>): Promise<Company> {

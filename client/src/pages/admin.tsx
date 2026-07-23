@@ -44,6 +44,8 @@ import {
   Clock,
   ArrowUpRight,
   Inbox,
+  ExternalLink,
+  RefreshCw,
 } from "lucide-react";
 
 interface JobWithCompany {
@@ -94,8 +96,9 @@ interface Student {
 }
 
 const TABS = [
+  { id: "hubspot", label: "HubSpot Import", icon: ExternalLink },
   { id: "jobs", label: "Jobs", icon: Briefcase },
-  { id: "import", label: "Import", icon: Upload },
+  { id: "import", label: "CSV Import", icon: Upload },
   { id: "shared", label: "Shared", icon: Share2 },
   { id: "send", label: "Send", icon: Send },
 ] as const;
@@ -107,13 +110,25 @@ export default function AdminDashboard() {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [activeTab, setActiveTab] = useState("jobs");
+  const [activeTab, setActiveTab] = useState("hubspot");
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<JobWithCompany | null>(null);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [shareExpiry, setShareExpiry] = useState("24");
   const [importPreview, setImportPreview] = useState<any[]>([]);
   const [importFileName, setImportFileName] = useState("");
+  const [dealIdInput, setDealIdInput] = useState("");
+  const [dealData, setDealData] = useState<any>(null);
+  const [dealError, setDealError] = useState("");
+  const [editedJob, setEditedJob] = useState<any>(null);
+  const [editedCompany, setEditedCompany] = useState<any>(null);
+  const [createdCompanyId, setCreatedCompanyId] = useState<string | null>(null);
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [assignMode, setAssignMode] = useState<"existing" | "invite">("existing");
+  const [selectedUserId, setSelectedUserId] = useState("");
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteFirstName, setInviteFirstName] = useState("");
+  const [inviteLastName, setInviteLastName] = useState("");
 
   if (!authLoading && (!isAuthenticated || user?.role !== "admin")) {
     navigate("/");
@@ -172,6 +187,97 @@ export default function AdminDashboard() {
         description: error.message || "Failed to share candidates",
         variant: "destructive",
       });
+    },
+  });
+
+  const fetchDealMutation = useMutation({
+    mutationFn: async (dealId: string) => {
+      const res = await apiRequest("GET", `/api/admin/hubspot-deal/${dealId}`);
+      return res.json();
+    },
+    onSuccess: (data: any) => {
+      setDealData(data);
+      setEditedJob({ ...data.job });
+      setEditedCompany({ ...data.company });
+      setDealError("");
+    },
+    onError: (error: any) => {
+      setDealData(null);
+      setEditedJob(null);
+      setEditedCompany(null);
+      setDealError(error.message || "Failed to fetch deal from HubSpot");
+    },
+  });
+
+  const createJobFromDealMutation = useMutation({
+    mutationFn: async (payload: { jobData: any; companyData: any }) => {
+      const res = await apiRequest("POST", "/api/admin/create-job-from-deal", payload);
+      return res.json();
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: "Job created",
+        description: `Created "${data.job.jobTitle}" at ${data.company.name}`,
+      });
+      setCreatedCompanyId(data.company.id);
+      setAssignDialogOpen(true);
+      setDealData(null);
+      setEditedJob(null);
+      setEditedCompany(null);
+      setDealIdInput("");
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/jobs"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Create failed",
+        description: error.message || "Failed to create job from deal",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Users query for recruiter assignment
+  const { data: allUsers = [] } = useQuery<any[]>({
+    queryKey: ["/api/admin/users"],
+    enabled: assignDialogOpen,
+  });
+
+  const assignCompanyMutation = useMutation({
+    mutationFn: async (payload: { companyId: string; userId: string }) => {
+      return apiRequest("POST", "/api/admin/assign-company", payload);
+    },
+    onSuccess: () => {
+      toast({ title: "Recruiter assigned" });
+      setAssignDialogOpen(false);
+      setCreatedCompanyId(null);
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/jobs"] });
+    },
+    onError: (error: any) => {
+      toast({ title: "Assign failed", description: error.message, variant: "destructive" });
+    },
+  });
+
+  const inviteRecruiterMutation = useMutation({
+    mutationFn: async (payload: { email: string; firstName: string; lastName: string; companyId: string }) => {
+      return apiRequest("POST", "/api/admin/invite-recruiter", payload);
+    },
+    onSuccess: (data: any) => {
+      toast({
+        title: data.isNew ? "Invite sent" : "User assigned",
+        description: data.isNew
+          ? `Invite sent to ${data.user.email}`
+          : `User already exists. Assigned to company.`,
+      });
+      setAssignDialogOpen(false);
+      setCreatedCompanyId(null);
+      setInviteEmail("");
+      setInviteFirstName("");
+      setInviteLastName("");
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/jobs"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+    },
+    onError: (error: any) => {
+      toast({ title: "Invite failed", description: error.message, variant: "destructive" });
     },
   });
 
@@ -261,6 +367,72 @@ export default function AdminDashboard() {
       title: "Link copied",
       description: "Share link copied to clipboard",
     });
+  };
+
+  const exportCSV = () => {
+    const headers = ["Student Name", "Email", "University", "Phone", "Job Title", "Company", "Shared Date", "Expires At", "Status"];
+    const rows = sharedCandidates.map(share => [
+      share.studentName,
+      "",
+      "",
+      "",
+      share.jobTitle,
+      share.companyName,
+      share.createdAt ? new Date(share.createdAt).toLocaleDateString() : "",
+      share.expiresAt ? new Date(share.expiresAt).toLocaleDateString() : "",
+      share.status || ""
+    ]);
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => {
+        const escaped = String(cell).replace(/"/g, '\"');
+        return `"${escaped}"`;
+      }).join(","))
+    ].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `shared-candidates-${Date.now()}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const importCSVData = (shared: SharedCandidate[]) => {
+    const headers = ["Student Name", "Email", "University", "Phone", "Job Title", "Company", "Shared Date", "Expires At", "Status"];
+    const rows = shared.map(share => [
+      share.studentName,
+      "",
+      "",
+      "",
+      share.jobTitle,
+      share.companyName,
+      share.createdAt ? new Date(share.createdAt).toLocaleDateString() : "",
+      share.expiresAt ? new Date(share.expiresAt).toLocaleDateString() : "",
+      share.status || ""
+    ]);
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => {
+        const escaped = String(cell).replace(/"/g, '\"');
+        return `"${escaped}"`;
+      }).join(","))
+    ].join("\n");
+    return csvContent;
+  };
+
+  const downloadCSV = (csvContent: string, filename: string) => {
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const getStatusBadge = (status: string | null) => {
@@ -362,6 +534,374 @@ export default function AdminDashboard() {
           );
         })}
       </div>
+
+      {activeTab === "hubspot" && (
+        <div className="animate-fade-in space-y-5">
+          {/* Deal ID Input */}
+          <div className="surface-card p-6">
+            <h3 className="text-sm font-semibold text-foreground mb-1">Import from HubSpot</h3>
+            <p className="text-xs text-muted-foreground mb-4">
+              Enter a HubSpot Deal ID to fetch job details and create a job on the platform.
+            </p>
+            <div className="flex gap-3">
+              <Input
+                placeholder="Deal ID (e.g., 60171858348)"
+                value={dealIdInput}
+                onChange={(e) => setDealIdInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && dealIdInput.trim()) {
+                    fetchDealMutation.mutate(dealIdInput.trim());
+                  }
+                }}
+                className="flex-1 h-9 font-mono text-sm"
+              />
+              <Button
+                size="sm"
+                className="h-9 px-4"
+                disabled={!dealIdInput.trim() || fetchDealMutation.isPending}
+                onClick={() => fetchDealMutation.mutate(dealIdInput.trim())}
+              >
+                {fetchDealMutation.isPending ? (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                    Fetching…
+                  </>
+                ) : (
+                  <>
+                    <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
+                    Fetch Deal
+                  </>
+                )}
+              </Button>
+            </div>
+            {dealError && (
+              <p className="mt-3 text-xs text-destructive">{dealError}</p>
+            )}
+          </div>
+
+          {/* Deal Preview - Editable Form */}
+          {dealData && editedJob && (
+            <div className="space-y-5 animate-fade-in">
+              {/* Company Card */}
+              {editedCompany && (
+                <div className="surface-card p-5">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                      <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground">Company</h3>
+                      <p className="text-xs text-muted-foreground">
+                        {editedCompany.domain} · {editedCompany.industry || "—"} · {editedCompany.employeeCount || "—"} employees
+                      </p>
+                    </div>
+                    {editedCompany.linkedinUrl && (
+                      <a
+                        href={editedCompany.linkedinUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-auto text-xs text-primary hover:underline flex items-center gap-1"
+                      >
+                        LinkedIn <ArrowUpRight className="w-3 h-3" />
+                      </a>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {[
+                      { label: "Name", value: editedCompany.name, key: "name" },
+                      { label: "Domain", value: editedCompany.domain, key: "domain" },
+                      { label: "City", value: editedCompany.city, key: "city" },
+                      { label: "Country", value: editedCompany.country, key: "country" },
+                    ].map((field) => (
+                      <div key={field.key}>
+                        <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{field.label}</Label>
+                        <Input
+                          value={field.value || ""}
+                          onChange={(e) => setEditedCompany({ ...editedCompany, [field.key]: e.target.value })}
+                          className="h-8 mt-1 text-xs"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Job Details Card */}
+              <div className="surface-card p-5">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Briefcase className="w-4 h-4 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-foreground">Job Details</h3>
+                    <p className="text-xs text-muted-foreground">
+                      HubSpot Deal: {editedJob.hubspotDealId} · Stage: {editedJob.hubspotDealStageLabel || editedJob.hubspotDealStage}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Row 1: Title, Type, Openings */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                  <div className="md:col-span-2">
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Job Title</Label>
+                    <Input
+                      value={editedJob.jobTitle || ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, jobTitle: e.target.value })}
+                      className="h-8 mt-1 text-sm font-medium"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Job Type</Label>
+                      <Input
+                        value={editedJob.jobType || ""}
+                        onChange={(e) => setEditedJob({ ...editedJob, jobType: e.target.value })}
+                        className="h-8 mt-1 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Openings</Label>
+                      <Input
+                        type="number"
+                        value={editedJob.hiresExpected || ""}
+                        onChange={(e) => setEditedJob({ ...editedJob, hiresExpected: parseInt(e.target.value) || 0 })}
+                        className="h-8 mt-1 text-xs"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Row 2: Location, Work Timings, Working Days */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Location</Label>
+                    <Input
+                      value={editedJob.jobLocation || ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, jobLocation: e.target.value })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Work Timings</Label>
+                    <Input
+                      value={editedJob.workTimings || ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, workTimings: e.target.value })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Working Days</Label>
+                    <Input
+                      value={editedJob.workingDays || ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, workingDays: e.target.value })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 3: Salary, Stipend */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Min CTC (LPA)</Label>
+                    <Input
+                      value={editedJob.salaryMin ? (editedJob.salaryMin / 100).toString() : ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, salaryMin: Math.round(parseFloat(e.target.value || "0") * 100) })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Max CTC (LPA)</Label>
+                    <Input
+                      value={editedJob.salaryMax ? (editedJob.salaryMax / 100).toString() : ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, salaryMax: Math.round(parseFloat(e.target.value || "0") * 100) })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Min Stipend/Month</Label>
+                    <Input
+                      type="number"
+                      value={editedJob.minStipend || ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, minStipend: parseInt(e.target.value) || null })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Max Stipend/Month</Label>
+                    <Input
+                      type="number"
+                      value={editedJob.maxStipend || ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, maxStipend: parseInt(e.target.value) || null })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 4: Skills */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Required Skills</Label>
+                    <Input
+                      value={(editedJob.requiredSkills || []).join(", ")}
+                      onChange={(e) => setEditedJob({ ...editedJob, requiredSkills: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
+                      className="h-8 mt-1 text-xs"
+                      placeholder="HTML, CSS, JavaScript"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Preferred Skills</Label>
+                    <Input
+                      value={(editedJob.preferredSkills || []).join(", ")}
+                      onChange={(e) => setEditedJob({ ...editedJob, preferredSkills: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
+                      className="h-8 mt-1 text-xs"
+                      placeholder="GenAI, REST APIs"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 5: Eligibility */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3">
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Passout Year</Label>
+                    <Input
+                      value={(editedJob.graduationYears || []).join(", ")}
+                      onChange={(e) => setEditedJob({ ...editedJob, graduationYears: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Degree</Label>
+                    <Input
+                      value={(editedJob.requiredDegrees || []).join(", ")}
+                      onChange={(e) => setEditedJob({ ...editedJob, requiredDegrees: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Min % (Degree)</Label>
+                    <Input
+                      value={editedJob.minimumCGPA || ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, minimumCGPA: e.target.value })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Bond/Agreement</Label>
+                    <Input
+                      value={editedJob.bondOrAgreement || ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, bondOrAgreement: e.target.value })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                </div>
+
+                {/* Row 6: Interview */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Interview Mode</Label>
+                    <Input
+                      value={editedJob.interviewMode || ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, interviewMode: e.target.value })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Online Rounds</Label>
+                    <Input
+                      value={(editedJob.onlineRounds || []).join(", ")}
+                      onChange={(e) => setEditedJob({ ...editedJob, onlineRounds: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Offline Rounds</Label>
+                    <Input
+                      value={(editedJob.offlineRounds || []).join(", ")}
+                      onChange={(e) => setEditedJob({ ...editedJob, offlineRounds: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) })}
+                      className="h-8 mt-1 text-xs"
+                    />
+                  </div>
+                </div>
+
+                {/* Internship Duration */}
+                {editedJob.internshipDuration && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                    <div>
+                      <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Internship Duration</Label>
+                      <Input
+                        value={editedJob.internshipDuration || ""}
+                        onChange={(e) => setEditedJob({ ...editedJob, internshipDuration: e.target.value })}
+                        className="h-8 mt-1 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Other Benefits</Label>
+                      <Input
+                        value={editedJob.otherBenefits || ""}
+                        onChange={(e) => setEditedJob({ ...editedJob, otherBenefits: e.target.value })}
+                        className="h-8 mt-1 text-xs"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Remarks */}
+                {editedJob.nurturingRemarks && (
+                  <div className="mt-3">
+                    <Label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Nurturing Team Remarks</Label>
+                    <textarea
+                      value={editedJob.nurturingRemarks || ""}
+                      onChange={(e) => setEditedJob({ ...editedJob, nurturingRemarks: e.target.value })}
+                      rows={3}
+                      className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring resize-none"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Create Job Button */}
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setDealData(null);
+                    setEditedJob(null);
+                    setEditedCompany(null);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="sm"
+                  className="px-5"
+                  disabled={createJobFromDealMutation.isPending}
+                  onClick={() => {
+                    if (editedJob && editedCompany) {
+                      createJobFromDealMutation.mutate({
+                        jobData: editedJob,
+                        companyData: editedCompany,
+                      });
+                    }
+                  }}
+                >
+                  {createJobFromDealMutation.isPending ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                      Creating…
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-3.5 h-3.5 mr-1.5" />
+                      Create Job
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {activeTab === "jobs" && (
         <div className="table-wrapper animate-fade-in">
@@ -622,15 +1162,59 @@ export default function AdminDashboard() {
                       {share.expiresAt ? new Date(share.expiresAt).toLocaleDateString() : "—"}
                     </TableCell>
                     <TableCell className="table-cell">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 px-2"
-                        onClick={() => copyShareLink(share.jobId, share.token)}
-                        title="Copy link"
-                      >
-                        <Copy className="w-3.5 h-3.5" />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2"
+                          onClick={() => copyShareLink(share.jobId, share.token)}
+                          title="Copy link"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                          onClick={() => {
+                            const csvRows = sharedCandidates.map(s => (
+                              [
+                                s.studentName,
+                                "",
+                                "",
+                                "",
+                                s.jobTitle,
+                                s.companyName,
+                                s.createdAt ? new Date(s.createdAt).toLocaleDateString() : "",
+                                s.expiresAt ? new Date(s.expiresAt).toLocaleDateString() : "",
+                                s.status || ""
+                              ].map(cell => {
+                                const escaped = String(cell).replace(/"/g, '\"');
+                                return `"${escaped}"`;
+                              }).join(",")
+                            ));
+                            const csvContent = [
+                              ["Student Name", "Email", "University", "Phone", "Job Title", "Company", "Shared Date", "Expires At", "Status"].join(","),
+                              ...csvRows
+                            ].join("\n");
+                            downloadCSV(csvContent, `shared-candidates-${Date.now()}.csv`);
+                          }}
+                          title="Export all as CSV"
+                        >
+                          <svg
+                            className="w-3.5 h-3.imi h-3.5"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          >
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                            <polyline points="14 2 10 6 14 10" />
+                            <line x1="16" y1="8" x2="8" y2="16" />
+                            <polyline points="8 16 12 20 4 20" />
+                          </svg>
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -716,6 +1300,133 @@ export default function AdminDashboard() {
             >
               <Send className="w-3.5 h-3.5 mr-1.5" />
               Generate Link
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Assign Recruiter Dialog */}
+      <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Assign Recruiter</DialogTitle>
+            <DialogDescription>
+              Link a recruiter to this company so they can manage jobs and candidates.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            {/* Mode Toggle */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setAssignMode("existing")}
+                className={`flex-1 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                  assignMode === "existing"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+              >
+                Pick Existing User
+              </button>
+              <button
+                onClick={() => setAssignMode("invite")}
+                className={`flex-1 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                  assignMode === "invite"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+              >
+                Invite New Recruiter
+              </button>
+            </div>
+
+            {/* Existing User Mode */}
+            {assignMode === "existing" && (
+              <div className="space-y-2">
+                <Label className="text-xs font-medium text-muted-foreground">Select a user</Label>
+                <select
+                  value={selectedUserId}
+                  onChange={(e) => setSelectedUserId(e.target.value)}
+                  className="w-full h-9 rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+                >
+                  <option value="">— Choose a user —</option>
+                  {allUsers
+                    .filter((u: any) => u.role === "recruiter" || u.role === "admin")
+                    .map((u: any) => (
+                      <option key={u.id} value={u.id}>
+                        {u.firstName} {u.lastName} ({u.email})
+                      </option>
+                    ))}
+                </select>
+              </div>
+            )}
+
+            {/* Invite New Mode */}
+            {assignMode === "invite" && (
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">First Name *</Label>
+                    <Input
+                      value={inviteFirstName}
+                      onChange={(e) => setInviteFirstName(e.target.value)}
+                      className="h-9 mt-1 text-sm"
+                      placeholder="John"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground">Last Name</Label>
+                    <Input
+                      value={inviteLastName}
+                      onChange={(e) => setInviteLastName(e.target.value)}
+                      className="h-9 mt-1 text-sm"
+                      placeholder="Doe"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs font-medium text-muted-foreground">Email *</Label>
+                  <Input
+                    type="email"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                    className="h-9 mt-1 text-sm"
+                    placeholder="john@company.com"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <Button variant="ghost" size="sm" onClick={() => setAssignDialogOpen(false)}>
+              Skip for now
+            </Button>
+            <Button
+              size="sm"
+              disabled={
+                assignMode === "existing"
+                  ? !selectedUserId || assignCompanyMutation.isPending
+                  : !inviteEmail || !inviteFirstName || inviteRecruiterMutation.isPending
+              }
+              onClick={() => {
+                if (assignMode === "existing" && selectedUserId && createdCompanyId) {
+                  assignCompanyMutation.mutate({ companyId: createdCompanyId, userId: selectedUserId });
+                } else if (assignMode === "invite" && inviteEmail && inviteFirstName && createdCompanyId) {
+                  inviteRecruiterMutation.mutate({
+                    email: inviteEmail,
+                    firstName: inviteFirstName,
+                    lastName: inviteLastName,
+                    companyId: createdCompanyId,
+                  });
+                }
+              }}
+            >
+              {assignMode === "existing" ? (
+                assignCompanyMutation.isPending ? "Assigning…" : "Assign Recruiter"
+              ) : (
+                inviteRecruiterMutation.isPending ? "Sending…" : "Send Invite"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -5,7 +5,7 @@ import { db } from "./db";
 import { otpCodes } from "@shared/schema";
 import { eq, and, gt, desc } from "drizzle-orm";
 import multer from 'multer';
-import { upsertContact, upsertCompany, associateContactWithCompany, createDeal } from "./hubspot";
+import { upsertContact, upsertCompany, associateContactWithCompany, createDeal, getDealFromHubSpot, getPipelineStageLabel } from "./hubspot";
 import { 
   insertCompanySchema,
   insertCompanyRequirementsSchema,
@@ -2032,6 +2032,290 @@ Be helpful, professional, and focus on recruitment and talent discovery assistan
     } catch (error) {
       console.error("Error sharing candidates:", error);
       res.status(500).json({ message: "Failed to share candidates" });
+    }
+  });
+
+  // ============================================
+  // HUBSPOT DEAL → JOB IMPORT ROUTES
+  // ============================================
+
+  // GET /api/admin/hubspot-deal/:dealId - Fetch deal + company from HubSpot
+  app.get('/api/admin/hubspot-deal/:dealId', isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const { dealId } = req.params;
+      const { deal, company } = await getDealFromHubSpot(dealId);
+
+      const p = deal.properties as any;
+      const cp = company?.properties as any;
+
+      // Map HubSpot deal properties to platform job fields
+      const mappedJob = {
+        // Core
+        jobTitle: p.role_name || p.dealname || "",
+        jobDescription: p.nurturing_team_remarks || p.profiling_shortlisting_remarks || "",
+        hiresExpected: parseInt(p.number_of_openings) || 1,
+        jobLocation: p.location || cp?.city || "",
+        workMode: p.work_mode || "onsite",
+
+        // Compensation
+        salaryMin: p.min_ctc_lpa ? Math.round(parseFloat(p.min_ctc_lpa) * 100) : null, // LPA → thousands
+        salaryMax: p.max_ctc_lpa ? Math.round(parseFloat(p.max_ctc_lpa) * 100) : null,
+        minStipend: parseInt(p.min_internship_stipend_per_month) || null,
+        maxStipend: parseInt(p.max_internship_stipend_per_month) || null,
+
+        // Skills
+        requiredSkills: p.technologies_required?.split(";").map((s: string) => s.trim()).filter(Boolean) || [],
+        preferredSkills: p.optional_technologies_required?.split(";").map((s: string) => s.trim()).filter(Boolean) || [],
+
+        // Eligibility
+        graduationYears: p.passout_year ? [p.passout_year] : [],
+        requiredDegrees: p.education_criteria ? p.education_criteria.split(";").map((s: string) => s.trim()).filter(Boolean) : [],
+        minimumCGPA: p.highest_degree?.replace(/[^0-9.]/g, "") || null,
+
+        // Job Details
+        jobType: p.job_type || "",
+        internshipDuration: p.internship_duration || "",
+        workingDays: p.no_of_working_days || "",
+        workTimings: p.work_timings || "",
+        bondOrAgreement: p.bond_service_agreement || "",
+        otherBenefits: p.other_benefits || "",
+
+        // Interview
+        interviewMode: p.mode_of_interview_process || "",
+        onlineRounds: p.online_interview_rounds?.split(";").map((s: string) => s.trim()).filter(Boolean) || [],
+        offlineRounds: p.offline_interview_rounds?.split(";").map((s: string) => s.trim()).filter(Boolean) || [],
+
+        // HubSpot metadata
+        hubspotDealId: deal.id,
+        hubspotPipelineId: p.pipeline || "",
+        hubspotDealStage: p.dealstage || "",
+        hubspotDealStageLabel: getPipelineStageLabel(p.pipeline, p.dealstage),
+        nurturingRemarks: p.nurturing_team_remarks || "",
+        profilingPOC: p.profiling_poc || "",
+        jobDescriptionLink: p.jd_link || "",
+        optInFormPreference: p.user_opt_in_form_preference || "",
+
+        // Raw metadata for reference
+        hubspotMetadata: {
+          dealName: p.dealname,
+          dealCreated: p.createdate,
+          dealClosed: p.closedate,
+          jdCount: p.jd_count,
+          interviewDoneProbability: p.interview_done_probability,
+          timelineForRequirement: p.timeline_for_requirement,
+          expectedHiringStartDate: p.expected_hiring_start_date,
+          cvSheetLink: p.cv_sheet_link,
+          availabilityForm: p.availability_form,
+          statusForm: p.status_form,
+        },
+      };
+
+      const mappedCompany = cp ? {
+        hubspotCompanyId: company!.id,
+        name: cp.name || "",
+        domain: cp.domain || "",
+        website: cp.website || "",
+        industry: cp.industry || "",
+        linkedinUrl: cp.linkedin_company_page || "",
+        employeeCount: parseInt(cp.numberofemployees) || null,
+        city: cp.city || "",
+        state: cp.state || "",
+        country: cp.country || "",
+        description: cp.description || "",
+        phone: cp.phone || "",
+      } : null;
+
+      res.json({ job: mappedJob, company: mappedCompany });
+    } catch (error: any) {
+      console.error("Error fetching HubSpot deal:", error);
+      const message = error?.response?.body?.message || error?.message || "Failed to fetch deal from HubSpot";
+      res.status(500).json({ message });
+    }
+  });
+
+  // POST /api/admin/create-job-from-deal - Create company + job from HubSpot deal data
+  app.post('/api/admin/create-job-from-deal', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const { jobData, companyData } = req.body;
+
+      if (!jobData || !companyData?.domain) {
+        return res.status(400).json({ message: "Job data and company domain are required" });
+      }
+
+      // Find or create company in platform
+      let company = await storage.getCompanyByDomain(companyData.domain);
+      if (!company) {
+        company = await storage.createCompany({
+          name: companyData.name,
+          domain: companyData.domain,
+          website: companyData.website || null,
+          industry: companyData.industry || null,
+          linkedinUrl: companyData.linkedinUrl || null,
+          employeeCount: companyData.employeeCount || null,
+          city: companyData.city || null,
+          state: companyData.state || null,
+          country: companyData.country || null,
+          description: companyData.description || null,
+          phone: companyData.phone || null,
+        });
+      }
+
+      // Create the job
+      const job = await storage.createCompanyRequirements({
+        companyId: company.id,
+        jobTitle: jobData.jobTitle,
+        jobDescription: jobData.jobDescription || `Imported from HubSpot deal ${jobData.hubspotDealId}`,
+        hiresExpected: jobData.hiresExpected || 1,
+        jobLocation: jobData.jobLocation || "",
+        salaryMin: jobData.salaryMin || null,
+        salaryMax: jobData.salaryMax || null,
+        requiredSkills: JSON.stringify(jobData.requiredSkills || []),
+        preferredSkills: JSON.stringify(jobData.preferredSkills || []),
+        graduationYears: JSON.stringify(jobData.graduationYears || []),
+        requiredDegrees: JSON.stringify(jobData.requiredDegrees || []),
+        minimumCGPA: jobData.minimumCGPA || null,
+        workMode: jobData.workMode || "onsite",
+        // HubSpot fields
+        hubspotDealId: jobData.hubspotDealId || null,
+        hubspotPipelineId: jobData.hubspotPipelineId || null,
+        hubspotDealStage: jobData.hubspotDealStage || null,
+        jobType: jobData.jobType || null,
+        internshipDuration: jobData.internshipDuration || null,
+        minStipend: jobData.minStipend || null,
+        maxStipend: jobData.maxStipend || null,
+        interviewMode: jobData.interviewMode || null,
+        onlineRounds: JSON.stringify(jobData.onlineRounds || []),
+        offlineRounds: JSON.stringify(jobData.offlineRounds || []),
+        workTimings: jobData.workTimings || null,
+        workingDays: jobData.workingDays || null,
+        bondOrAgreement: jobData.bondOrAgreement || null,
+        otherBenefits: jobData.otherBenefits || null,
+        nurturingRemarks: jobData.nurturingRemarks || null,
+        profilingPOC: jobData.profilingPOC || null,
+        jobDescriptionLink: jobData.jobDescriptionLink || null,
+        optInFormPreference: jobData.optInFormPreference || null,
+        hubspotMetadata: jobData.hubspotMetadata || null,
+        status: "active",
+      });
+
+      res.json({ message: "Job created successfully", job, company });
+    } catch (error) {
+      console.error("Error creating job from deal:", error);
+      res.status(500).json({ message: "Failed to create job" });
+    }
+  });
+
+  // ============================================
+  // ADMIN — RECRUITER ASSIGNMENT ROUTES
+  // ============================================
+
+  // GET /api/admin/users - List all platform users (for recruiter assignment)
+  app.get('/api/admin/users', isAuthenticated, requireAdmin, async (req, res) => {
+    try {
+      const allUsers = await storage.getAllUsers();
+      res.json(allUsers);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  // POST /api/admin/assign-company - Assign a user to a company
+  app.post('/api/admin/assign-company', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const { companyId, userId } = req.body;
+
+      if (!companyId || !userId) {
+        return res.status(400).json({ message: "companyId and userId are required" });
+      }
+
+      const company = await storage.assignCompanyToUser(companyId, userId);
+      res.json({ message: "Recruiter assigned successfully", company });
+    } catch (error) {
+      console.error("Error assigning company:", error);
+      res.status(500).json({ message: "Failed to assign recruiter" });
+    }
+  });
+
+  // POST /api/admin/invite-recruiter - Create a new user and send invite email
+  app.post('/api/admin/invite-recruiter', isAuthenticated, requireAdmin, async (req: any, res) => {
+    try {
+      const { email, firstName, lastName, companyId } = req.body;
+
+      if (!email || !firstName) {
+        return res.status(400).json({ message: "Email and first name are required" });
+      }
+
+      const emailLower = email.toLowerCase().trim();
+
+      // Check if user already exists
+      const existingUser = await storage.getUserByEmail(emailLower);
+      if (existingUser) {
+        // User exists — just assign them to the company
+        if (companyId) {
+          await storage.assignCompanyToUser(companyId, existingUser.id);
+        }
+        return res.json({
+          message: `User already exists. Assigned to company.`,
+          user: existingUser,
+          isNew: false,
+        });
+      }
+
+      // Create new user with recruiter role
+      const newUser = await storage.upsertUser({
+        email: emailLower,
+        firstName,
+        lastName: lastName || "",
+        role: "recruiter",
+      });
+
+      // Assign to company if provided
+      if (companyId) {
+        await storage.assignCompanyToUser(companyId, newUser.id);
+      }
+
+      // Send invite email
+      const inviteLink = `${req.protocol}://${req.get('host')}/login`;
+      const apiKey = process.env.SENDGRID_API_KEY;
+
+      if (apiKey) {
+        const sgMail = (await import("@sendgrid/mail")).default;
+        sgMail.setApiKey(apiKey);
+        await sgMail.send({
+          to: emailLower,
+          from: { email: "girish@nxtwave.info", name: "NxtWave Edge" },
+          replyTo: { email: "girish@nxtwave.info", name: "NxtWave Edge Support" },
+          subject: `You're invited to NxtWave Edge — Complete your registration`,
+          html: `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
+              <h2 style="color: #1a1a1a; font-size: 20px; margin-bottom: 8px;">Welcome to NxtWave Edge</h2>
+              <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 24px;">
+                Hi ${firstName},<br><br>
+                You've been invited to join <strong>NxtWave Edge</strong> as a recruiter. Complete your registration to start managing candidates.
+              </p>
+              <a href="${inviteLink}" style="display: inline-block; background: #0066cc; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500;">
+                Complete Registration →
+              </a>
+              <p style="color: #999; font-size: 12px; margin-top: 24px;">
+                If the button doesn't work, copy and paste this link:<br>
+                <span style="color: #0066cc;">${inviteLink}</span>
+              </p>
+            </div>
+          `,
+        });
+      } else {
+        console.log(`\n[DEV] Invite link for ${emailLower}: ${inviteLink}`);
+      }
+
+      res.json({
+        message: `Invite sent to ${emailLower}`,
+        user: newUser,
+        isNew: true,
+      });
+    } catch (error) {
+      console.error("Error inviting recruiter:", error);
+      res.status(500).json({ message: "Failed to invite recruiter" });
     }
   });
 

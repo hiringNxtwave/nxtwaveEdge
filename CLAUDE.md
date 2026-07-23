@@ -746,24 +746,26 @@ SESSION_SECRET=your_session_secret
 ## Implementation Priority
 
 ### Phase 1: Core Features (MVP) ✅ COMPLETE
-1. ✅ Database schema changes (3 new tables: `candidate_shares`, `company_interest`, `notifications`)
-2. ✅ Admin dashboard (`/admin` — Jobs, Import CSV/Excel, Shared Candidates, Send)
-3. ✅ Company portal (token-based `/browse?jobId=X&token=Y` with "Mark Interested" button)
-4. ✅ Email system (SendGrid branded HTML shortlist email with dynamic token links)
-5. ✅ Notification system (backend: create, get, unread-count, mark-read, read-all; **UI pending**)
+- ✅ Database schema changes (3 new tables: `candidate_shares`, `company_interest`, `notifications`)
+- ✅ Admin dashboard (`/admin` — Jobs, Import CSV/Excel, Shared Candidates, Send)
+- ✅ Company portal (token-based `/browse?jobId=X&token=Y` with "Mark Interested" button)
+- ✅ Email system (SendGrid branded HTML shortlist email with dynamic token links)
+- ✅ Notification system (backend: create, get, unread-count, mark-read, read-all; **UI pending**)
+
+**Phase 1a: UI Production**
+- ✅ Notification bell UI in header (bell icon with unread badge, dropdown with notifications, mark read/all)
 
 ### Phase 2: Enhanced Features
-6. ✅ Notification bell UI in header (bell icon with unread badge, dropdown with notifications, mark read/all)
-7. ⬜ CSV export in admin dashboard
-8. ⬜ Student expectations capture
-9. ⬜ Pipeline kanban board
-10. ⬜ HubSpot sync enhancement
+- 🔜 CSV export
+- 🔜 Student expectations capture
+- 🔜 Pipeline kanban board (drag-and-drop)
+- 🔜 HubSpot sync enhancement
 
 ### Phase 3: Advanced Features
-11. ⬜ Mobile app (React Native)
-12. ⬜ Advanced analytics
-13. ⬜ AI-powered matching improvements
-14. ⬜ Calendar integration
+- 🔜 Mobile app (React Native)
+- 🔜 Advanced analytics
+- 🔜 AI-powered matching improvements
+- 🔜 Calendar integration
 
 ---
 
